@@ -1,23 +1,28 @@
+"use client";
+import {
+  registerInitialValues,
+  registerValidations,
+} from "@/validators/registerSchema";
 import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 const page = () => {
-  const validateForm = () => {};
-  const initialValuesForm = {
-    name: "",
-    email: "",
-  };
-  //   const formik = useFormik({
-  //   validationSchema=validateForm,
-  //     initialValues= initialValuesForm
-  //   onSubmit=async()=>{
-  //     try {
-  //       const data={name:'user'};
-  //     } catch (error) {
+  const formik = useFormik({
+    validationSchema: registerValidations,
+    initialValues: registerInitialValues,
 
-  //     }
-  //   }
-  // })
+    onSubmit: () => {
+      const data = formik.values;
+      console.log(data);
+
+      // try {
+      // } catch (error) {
+      //   throw new Error(error as string);
+      // } finally {
+      //   formik.setSubmitting(false);
+      // }
+    },
+  });
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-4">
@@ -27,7 +32,10 @@ const page = () => {
       </header>
 
       <section className="flex flex-1 justify-center items-center px-4">
-        <form className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
+        >
           <h1 className="text-4xl font-bold text-center mb-2">Registro</h1>
           <p className="text-gray-400 text-center mb-6">
             Creá una cuenta nueva en DevCore.
@@ -41,9 +49,17 @@ const page = () => {
               <input
                 type="text"
                 id="name"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 placeholder="Ingresá tu nombre"
                 className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
               />
+              {formik.errors.name && formik.touched.name ? (
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.name}
+                </p>
+              ) : null}
             </div>
 
             <div>
@@ -53,9 +69,17 @@ const page = () => {
               <input
                 type="email"
                 id="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 placeholder="Ingresá tu email"
                 className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
               />
+              {formik.errors.email && formik.touched.email ? (
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.email}
+                </p>
+              ) : null}
             </div>
 
             <div>
@@ -65,9 +89,17 @@ const page = () => {
               <input
                 type="password"
                 id="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 placeholder="Creá tu contraseña"
                 className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
               />
+              {formik.errors.password && formik.touched.password ? (
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.password}
+                </p>
+              ) : null}
             </div>
 
             <div>
@@ -77,9 +109,17 @@ const page = () => {
               <input
                 type="password"
                 id="repeatPassword"
+                value={formik.values.repeatPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 placeholder="Repetí tu contraseña"
                 className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
               />
+              {formik.errors.repeatPassword && formik.touched.repeatPassword ? (
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.repeatPassword}
+                </p>
+              ) : null}
             </div>
 
             <div className="flex items-center gap-2 text-xs text-gray-300">

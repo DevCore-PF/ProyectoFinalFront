@@ -3,6 +3,8 @@
 :root {
   --background: #242645;
   --foreground: #171717;
+  --colormine: #d9d9d9;
+  --colormine1: #98989a;
 }
 
 @theme {
@@ -13,18 +15,17 @@
   --color-border: #474b8a;
   --color-button: #7e4bde;
 
-  --color-accent: #bba0ee;
+  --color-accent-dark: #9c75e6;
   --color-accent-light: #dacbf6;
-  --color-accent-lighter: #f0e9fb;
-  --color-accent-strong: #9c75e6;
-  --color-accent-dark: #6126cf;
-  --color-accent-deep: #4c1ea4;
-
+  --color-accent-medium: #bba0ee;
+  
   --color-font-light: #eeeff6;
   --color-font-dark: #090911;
 
   --color-gray-light: #e3e3e3;
   --color-gray-dark: #aba5b6;
+  --color-gray-medium-light: #d9d9d9;
+  --color-gray-medium-dark: #98989a;
 
   --color-yellow-light: #fdf5d9;
   --color-yellow-medium: #fbedbc;
@@ -39,6 +40,7 @@ body {
   color: var(--color-font-light);
   font-family: var(--font-body);
 }
-h1 {
-  font-family: var(--font-title);
+
+input[type="checkbox"]:checked + div .checkbox-indicator {
+  display: block;
 }

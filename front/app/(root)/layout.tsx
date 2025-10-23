@@ -3,6 +3,7 @@ import "../globals.css";
 import { Kodchasan, Be_Vietnam_Pro } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "sonner";
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -32,6 +33,20 @@ export default function RootLayout({
         className={`${beVietnam.variable} ${kodchasan.variable} antialiased`}
       >
         <div>
+          <Toaster
+            position="top-center"
+            expand
+            richColors
+            closeButton
+            offset={16}
+            toastOptions={{
+              style: {
+                justifyContent: "center",
+                gap: 2,
+                background: "#cfd6e8",
+              },
+            }}
+          />
           <Navbar />
           {children}
           <Footer />

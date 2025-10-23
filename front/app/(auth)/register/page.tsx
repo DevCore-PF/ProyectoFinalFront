@@ -1,4 +1,5 @@
 "use client";
+import { toastSuccess } from "@/helpers/toast";
 import {
   registerInitialValues,
   registerValidations,
@@ -14,7 +15,7 @@ const page = () => {
     onSubmit: () => {
       const data = formik.values;
       console.log(data);
-
+      toastSuccess("Usuario registrado!");
       // try {
       // } catch (error) {
       //   throw new Error(error as string);

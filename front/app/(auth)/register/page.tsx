@@ -1,13 +1,32 @@
 "use client";
+//Icons
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
+
+//Helpers
 import { toastSuccess } from "@/helpers/toast";
+
+//Formik
 import {
   registerInitialValues,
   registerValidations,
 } from "@/validators/registerSchema";
 import { useFormik } from "formik";
+
+//Next
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+
 const page = () => {
+  const [show, setShow] = useState(false);
+  const [showR, setShowR] = useState(false);
+  const handleShowPass = () => {
+    setShow(!show);
+  };
+  const handleShowRPass = () => {
+    setShowR(!showR);
+  };
   const formik = useFormik({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
@@ -87,15 +106,20 @@ const page = () => {
               <label htmlFor="password" className="block text-sm mb-1">
                 Contraseña
               </label>
-              <input
-                type="password"
-                id="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Creá tu contraseña"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
-              />
+              <div className="w-full h-12 rounded-md bg-background2 px-3 text-sm flex justify-between focus-within:ring-1 focus-within:ring-purple-300/50">
+                <input
+                  type={show ? "text" : "password"}
+                  id="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Creá tu contraseña"
+                  className="focus:outline-none bg-transparent w-full rounded-md autofill:bg-transparent"
+                />
+                <button onClick={handleShowPass}>
+                  {show ? <FaRegEye /> : <FaRegEyeSlash />}
+                </button>
+              </div>
               {formik.errors.password && formik.touched.password ? (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.password}
@@ -107,15 +131,21 @@ const page = () => {
               <label htmlFor="repeatPassword" className="block text-sm mb-1">
                 Repetir Contraseña
               </label>
-              <input
-                type="password"
-                id="repeatPassword"
-                value={formik.values.repeatPassword}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Repetí tu contraseña"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
-              />
+              <div>
+                <input
+                  type={showR ? "text" : "password"}
+                  id="repeatPassword"
+                  value={formik.values.repeatPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Repetí tu contraseña"
+                  className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                />
+                <button onClick={handleShowPass}>
+                  {showR ? <FaRegEye /> : <FaRegEyeSlash />}
+                </button>
+              </div>
+
               {formik.errors.repeatPassword && formik.touched.repeatPassword ? (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.repeatPassword}

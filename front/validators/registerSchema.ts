@@ -27,7 +27,7 @@ export const registerValidations = Yup.object({
     .max(15, "Máximo debe ser 15 caracteres")
     .matches(/[A-Z]/, "Debe incluir una mayúscula")
     .matches(/[0-9]/, "Debe incluir un número")
-    .matches(/[!@#$%^&*(),.?":{}|<>]/, "debe inlcuir un catacter especial"),
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, "Debe inlcuir un catacter especial"),
 
   repeatPassword: Yup.string()
     .required("Debe confirmar contraseña")

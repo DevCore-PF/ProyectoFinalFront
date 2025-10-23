@@ -37,4 +37,8 @@
 body {
   background: var(--color-background);
   color: var(--color-font-light);
+  font-family: var(--font-body);
+}
+h1 {
+  font-family: var(--font-title);
 }

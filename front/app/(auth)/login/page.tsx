@@ -1,12 +1,42 @@
-//Icons
+"use client";
+
+
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
-//Next
+
+import { toastSuccess } from "@/helpers/toast";
+
+
+import {
+  loginType,
+  loginInitialValues,
+  loginValidations,
+} from "@/validators/loginSchema";
+import { useFormik } from "formik";
+
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
-const page = () => {
+const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const formik = useFormik<loginType>({
+    initialValues: loginInitialValues,
+    validationSchema: loginValidations,
+    onSubmit: (values) => {
+      console.log("Login values:", values);
+      toastSuccess("¡Inicio de sesión exitoso!");
+      // aca iría la lógica de autenticación
+    },
+  });
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-4">
@@ -16,13 +46,17 @@ const page = () => {
       </header>
 
       <section className="flex flex-1 justify-center items-center px-4">
-        <form className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15">
+        <form 
+          onSubmit={formik.handleSubmit}
+          className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
+        >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
           <p className="text-gray-400 text-center mb-6">
             Iniciá sesión para ingresar a tu cuenta.
           </p>
 
           <div className="flex flex-col gap-4">
+            
             <div>
               <label htmlFor="email" className="block text-sm mb-1">
                 Email
@@ -30,27 +64,59 @@ const page = () => {
               <input
                 type="email"
                 id="email"
+                name="email"
                 placeholder="Ingresá tu email"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                  formik.touched.email && formik.errors.email
+                    ? "border border-red-500"
+                    : ""
+                }`}
               />
+              {formik.touched.email && formik.errors.email && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+              )}
             </div>
 
+            
             <div>
               <label htmlFor="password" className="block text-sm mb-1">
                 Contraseña
               </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Creá tu contraseña"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  placeholder="Ingresá tu contraseña"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                    formik.touched.password && formik.errors.password
+                      ? "border border-red-500"
+                      : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                >
+                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                </button>
+              </div>
+              {formik.touched.password && formik.errors.password && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
+              )}
             </div>
 
+            
             <div className="flex items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-center cursor-pointer ">
                 <input type="checkbox" className="sr-only" />
-
                 <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
                   <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
                 </div>
@@ -60,20 +126,27 @@ const page = () => {
               </label>
             </div>
 
+            
             <button
               type="submit"
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold"
+              disabled={!formik.isValid || formik.isSubmitting}
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Iniciar sesión
+              {formik.isSubmitting ? "Iniciando..." : "Iniciar sesión"}
             </button>
 
+            
             <div className="flex items-center my-2">
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
               <span className="px-2 text-gray-medium-light text-xl">o</span>
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            <button className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition">
+            
+            <button 
+              type="button"
+              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition"
+            >
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}
@@ -83,6 +156,7 @@ const page = () => {
               Ingresá con Google
             </button>
 
+            
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
               <Link href="/register" className="text-accent-medium underline">
@@ -97,4 +171,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

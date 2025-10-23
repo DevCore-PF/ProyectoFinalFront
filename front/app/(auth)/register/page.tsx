@@ -73,7 +73,11 @@ const page = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Ingresá tu nombre"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                  formik.touched.name && formik.errors.name
+                    ? "border border-red-500"
+                    : ""
+                }`}
               />
               {formik.errors.name && formik.touched.name ? (
                 <p className="text-red-400 text-sm text-center mt-2">
@@ -93,7 +97,11 @@ const page = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Ingresá tu email"
-                className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                  formik.touched.email && formik.errors.email
+                    ? "border border-red-500"
+                    : ""
+                }`}
               />
               {formik.errors.email && formik.touched.email ? (
                 <p className="text-red-400 text-sm text-center mt-2">
@@ -106,18 +114,27 @@ const page = () => {
               <label htmlFor="password" className="block text-sm mb-1">
                 Contraseña
               </label>
-              <div className="w-full h-12 rounded-md bg-background2 px-3 text-sm flex justify-between focus-within:ring-1 focus-within:ring-purple-300/50">
+              <div className="relative">
                 <input
                   type={show ? "text" : "password"}
                   id="password"
+                  name="password"
+                  placeholder="Ingresá tu contraseña"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  placeholder="Creá tu contraseña"
-                  className="focus:outline-none bg-transparent w-full rounded-md autofill:bg-transparent"
+                  className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                    formik.touched.password && formik.errors.password
+                      ? "border border-red-500"
+                      : ""
+                  }`}
                 />
-                <button onClick={handleShowPass}>
-                  {show ? <FaRegEye /> : <FaRegEyeSlash />}
+                <button
+                  type="button"
+                  onClick={handleShowPass}
+                  className="absolute right-3 cursor-pointer top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                >
+                  {show ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
               {formik.errors.password && formik.touched.password ? (
@@ -131,21 +148,29 @@ const page = () => {
               <label htmlFor="repeatPassword" className="block text-sm mb-1">
                 Repetir Contraseña
               </label>
-              <div>
+               <div className="relative">
                 <input
                   type={showR ? "text" : "password"}
-                  id="repeatPassword"
-                  value={formik.values.repeatPassword}
+                  id="password"
+                  name="password"
+                  placeholder="Ingresá tu contraseña"
+                  value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  placeholder="Repetí tu contraseña"
-                  className="w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                  className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                    formik.touched.password && formik.errors.password
+                      ? "border border-red-500"
+                      : ""
+                  }`}
                 />
-                <button onClick={handleShowPass}>
-                  {showR ? <FaRegEye /> : <FaRegEyeSlash />}
+                <button
+                  type="button"
+                  onClick={handleShowRPass}
+                  className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                >
+                  {showR ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
-
               {formik.errors.repeatPassword && formik.touched.repeatPassword ? (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.repeatPassword}
@@ -153,14 +178,16 @@ const page = () => {
               ) : null}
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-300">
-              <label className="inline-flex items-center cursor-pointer">
+            <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+              <label className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto">
                 <input type="checkbox" className="sr-only" />
-
-                <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
+                <div className="w-5 h-5 border border-border rounded-[5px] flex-shrink-0 flex items-center justify-center mt-0.5">
                   <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
                 </div>
-                <label htmlFor="terms" className="ml-2 select-none text-sm">
+                <label
+                  htmlFor="terms"
+                  className="ml-2 select-none text-sm leading-snug sm:leading-normal"
+                >
                   Acepto los{" "}
                   <span className="underline cursor-pointer text-accent-medium">
                     Términos de Uso
@@ -186,14 +213,17 @@ const page = () => {
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            <button className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition">
+            <button className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center">
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}
                 height={18}
                 alt="Ícono de Google"
+                className="w-4 h-4 sm:w-[18px] sm:h-[18px]"
               />
-              Registrarse con Google
+              <span className="text-ellipsis overflow-hidden text-center">
+                Registro con Google
+              </span>
             </button>
 
             <p className="text-center text-gray-400 text-sm mt-2">

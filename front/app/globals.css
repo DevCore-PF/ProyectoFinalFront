@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --background: #242645;
+  --foreground: #171717;
+  --colormine: #d9d9d9;
+  --colormine1: #98989a;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-background2: #3f4273;
+  --color-navbar: #363968;
+  --color-footer: #131425;
+  --color-border: #474b8a;
+  --color-button: #7e4bde;
+
+  --color-accent-dark: #9c75e6;
+  --color-accent-light: #dacbf6;
+  --color-accent-medium: #bba0ee;
+  
+  --color-font-light: #eeeff6;
+  --color-font-dark: #090911;
+
+  --color-gray-light: #e3e3e3;
+  --color-gray-dark: #aba5b6;
+  --color-gray-medium-light: #d9d9d9;
+  --color-gray-medium-dark: #98989a;
+
+  --color-yellow-light: #fdf5d9;
+  --color-yellow-medium: #fbedbc;
+  --color-yellow-accent: #f8e08e;
+
+  --font-title: "Kodchasan", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-font-light);
+  font-family: var(--font-body);
+}
+
+input[type="checkbox"]:checked + div .checkbox-indicator {
+  display: block;
+}

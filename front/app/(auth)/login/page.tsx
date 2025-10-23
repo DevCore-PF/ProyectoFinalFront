@@ -1,6 +1,11 @@
+//Icons
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
 
+//Next
 import Image from "next/image";
 import Link from "next/link";
+
 const page = () => {
   return (
     <div className="min-h-screen text-font-light flex flex-col">

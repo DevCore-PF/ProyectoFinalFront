@@ -44,3 +44,12 @@ body {
 input[type="checkbox"]:checked + div .checkbox-indicator {
   display: block;
 }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  -webkit-text-fill-color: #f0f0f0 !important;
+  caret-color: #f0f0f0 !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}

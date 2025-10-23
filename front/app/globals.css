@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #242645;
   --foreground: #171717;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-background2: #3f4273;
+  --color-navbar: #363968;
+  --color-footer: #131425;
+  --color-border: #474b8a;
+  --color-button: #7e4bde;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-accent: #bba0ee;
+  --color-accent-light: #dacbf6;
+  --color-accent-lighter: #f0e9fb;
+  --color-accent-strong: #9c75e6;
+  --color-accent-dark: #6126cf;
+  --color-accent-deep: #4c1ea4;
+
+  --color-font-light: #eeeff6;
+  --color-font-dark: #090911;
+
+  --color-gray-light: #e3e3e3;
+  --color-gray-dark: #aba5b6;
+
+  --color-yellow-light: #fdf5d9;
+  --color-yellow-medium: #fbedbc;
+  --color-yellow-accent: #f8e08e;
+
+  --font-title: "Kodchasan", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-font-light);
 }

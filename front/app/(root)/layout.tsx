@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import { Kodchasan, Be_Vietnam_Pro } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -29,7 +31,11 @@ export default function RootLayout({
       <body
         className={`${beVietnam.variable} ${kodchasan.variable} antialiased`}
       >
-        {children}
+        <div>
+          <Navbar />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );

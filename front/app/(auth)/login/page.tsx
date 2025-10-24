@@ -59,11 +59,8 @@ const LoginPage = () => {
               <input
                 type="email"
                 id="email"
-                name="email"
                 placeholder="Ingresá tu email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...formik.getFieldProps("email")}
                 className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
                     ? "border border-red-500"
@@ -85,11 +82,8 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  name="password"
                   placeholder="Ingresá tu contraseña"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
                       ? "border border-red-500"
@@ -137,7 +131,10 @@ const LoginPage = () => {
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            <button className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center">
+            <button
+              disabled={formik.isSubmitting}
+              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center"
+            >
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}

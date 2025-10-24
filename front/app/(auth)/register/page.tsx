@@ -17,6 +17,7 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { registerType } from "../../../validators/registerSchema";
 
 const page = () => {
   const [show, setShow] = useState(false);
@@ -27,7 +28,7 @@ const page = () => {
   const handleShowRPass = () => {
     setShowR(!showR);
   };
-  const formik = useFormik({
+  const formik = useFormik<registerType>({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
 
@@ -69,9 +70,7 @@ const page = () => {
               <input
                 type="text"
                 id="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...formik.getFieldProps("name")}
                 placeholder="Ingresá tu nombre"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.name && formik.errors.name
@@ -93,9 +92,7 @@ const page = () => {
               <input
                 type="email"
                 id="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...formik.getFieldProps("email")}
                 placeholder="Ingresá tu email"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
@@ -118,11 +115,8 @@ const page = () => {
                 <input
                   type={show ? "text" : "password"}
                   id="password"
-                  name="password"
                   placeholder="Ingresá tu contraseña"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
                       ? "border border-red-500"
@@ -132,7 +126,7 @@ const page = () => {
                 <button
                   type="button"
                   onClick={handleShowPass}
-                  className="absolute right-3 cursor-pointer top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                  className="absolute right-3  top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
                 >
                   {show ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
@@ -148,15 +142,12 @@ const page = () => {
               <label htmlFor="repeatPassword" className="block text-sm mb-1">
                 Repetir Contraseña
               </label>
-               <div className="relative">
+              <div className="relative">
                 <input
                   type={showR ? "text" : "password"}
-                  id="password"
-                  name="password"
+                  id="repeatPassword"
                   placeholder="Ingresá tu contraseña"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...formik.getFieldProps("repeatPassword")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
                       ? "border border-red-500"
@@ -181,7 +172,7 @@ const page = () => {
             <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto">
                 <input type="checkbox" className="sr-only" />
-                <div className="w-5 h-5 border border-border rounded-[5px] flex-shrink-0 flex items-center justify-center mt-0.5">
+                <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
                   <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
                 </div>
                 <label
@@ -202,7 +193,9 @@ const page = () => {
 
             <button
               type="submit"
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold"
+              disabled={!formik.isValid || formik.isSubmitting}
+              
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
               Registrarme
             </button>
@@ -213,7 +206,10 @@ const page = () => {
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            <button className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center">
+            <button 
+            disabled={formik.isSubmitting}
+              
+            className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center ">
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}

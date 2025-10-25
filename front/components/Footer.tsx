@@ -1,3 +1,4 @@
+"use client";
 import { TbMailFilled } from "react-icons/tb";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
@@ -5,8 +6,31 @@ import { BsFacebook } from "react-icons/bs";
 import { BsTwitterX } from "react-icons/bs";
 import { FaLinkedin } from "react-icons/fa6";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import React from "react";
 
 const Footer = () => {
+  const router = useRouter();
+  const currentPath = usePathname();
+  const rutaDestino = "/";
+
+  const handleInicioClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (currentPath === rutaDestino) {
+      e.preventDefault();
+
+      const targetElement = document.getElementById("item");
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    } else {
+      e.preventDefault();
+      router.push("/#item");
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col bg-footer pb-5">
@@ -18,7 +42,7 @@ const Footer = () => {
             <div className="flex flex-row items-center gap-1">
               {" "}
               <TbMailFilled size={16} />
-              <p>correo@electronico.com</p>
+              <p>devcoreacademia@gmail.com</p>
             </div>
             <div className="flex flex-row items-center gap-1">
               <FaPhoneAlt size={14} />
@@ -34,19 +58,27 @@ const Footer = () => {
             {/* contenedor derecho */}
             <div className="flex flex-col text-[#ABA5B6] gap-2 text-[12px] font-normal">
               {/* columna izq-der */}
-              <p className="text-white font-semibold text-sm">Inicio</p>
-              <Link href="/">Beneficios</Link>
-              <Link href="/">Nuestros Cursos</Link>
-              <Link href="/">Testimonios</Link>
-              <Link href="/">Preguntas Frecuentes</Link>
-            </div>
-            <div className="flex flex-col text-[#ABA5B6] gap-2 text-[12px] font-normal">
-              {/* columna cntr-der */}
-              <p className="text-white font-semibold text-sm">Sobre Nosotros</p>
 
-              <Link href="/">La Empresa</Link>
-              <Link href="/">Logros</Link>
-              <Link href="/">Nuestras metas</Link>
+              <Link href="/#item" onClick={handleInicioClick}>
+                <p className="text-white font-semibold text-sm">Inicio</p>
+              </Link>
+
+              <Link href="/benefits">Beneficios</Link>
+              <Link href="/ourcourses">Nuestros Cursos</Link>
+              <Link href="/testimonials">Testimonios</Link>
+              <Link href="/faq">Preguntas Frecuentes</Link>
+            </div>
+            <div className="flex flex-col text-gray-dark gap-2 text-[12px] font-normal">
+              {/* columna cntr-der */}
+              <Link href="/aboutus">
+                <p className="text-white font-semibold text-sm">
+                  Sobre Nosotros
+                </p>
+              </Link>
+
+              <Link href="/company">La Empresa</Link>
+              <Link href="/achievements">Logros</Link>
+              <Link href="/ourgoals">Nuestras metas</Link>
             </div>
             <div>
               {/* columna der-der */}

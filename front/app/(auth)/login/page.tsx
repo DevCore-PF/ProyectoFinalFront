@@ -1,12 +1,9 @@
 "use client";
 
-
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
-
 import { toastSuccess } from "@/helpers/toast";
-
 
 import {
   loginType,
@@ -14,7 +11,6 @@ import {
   loginValidations,
 } from "@/validators/loginSchema";
 import { useFormik } from "formik";
-
 
 import Image from "next/image";
 import Link from "next/link";
@@ -46,7 +42,7 @@ const LoginPage = () => {
       </header>
 
       <section className="flex flex-1 justify-center items-center px-4">
-        <form 
+        <form
           onSubmit={formik.handleSubmit}
           className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
         >
@@ -56,7 +52,6 @@ const LoginPage = () => {
           </p>
 
           <div className="flex flex-col gap-4">
-            
             <div>
               <label htmlFor="email" className="block text-sm mb-1">
                 Email
@@ -64,11 +59,8 @@ const LoginPage = () => {
               <input
                 type="email"
                 id="email"
-                name="email"
                 placeholder="Ingresá tu email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...formik.getFieldProps("email")}
                 className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
                     ? "border border-red-500"
@@ -76,11 +68,12 @@ const LoginPage = () => {
                 }`}
               />
               {formik.touched.email && formik.errors.email && (
-                <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.email}
+                </p>
               )}
             </div>
 
-            
             <div>
               <label htmlFor="password" className="block text-sm mb-1">
                 Contraseña
@@ -89,11 +82,8 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  name="password"
                   placeholder="Ingresá tu contraseña"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
                       ? "border border-red-500"
@@ -103,17 +93,18 @@ const LoginPage = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                  className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
                 >
                   {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
               {formik.touched.password && formik.errors.password && (
-                <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
+                <p className="text-red-400 text-sm text-center mt-2">
+                  {formik.errors.password}
+                </p>
               )}
             </div>
 
-            
             <div className="flex items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-center cursor-pointer ">
                 <input type="checkbox" className="sr-only" />
@@ -126,7 +117,6 @@ const LoginPage = () => {
               </label>
             </div>
 
-            
             <button
               type="submit"
               disabled={!formik.isValid || formik.isSubmitting}
@@ -135,28 +125,28 @@ const LoginPage = () => {
               {formik.isSubmitting ? "Iniciando..." : "Iniciar sesión"}
             </button>
 
-            
             <div className="flex items-center my-2">
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
               <span className="px-2 text-gray-medium-light text-xl">o</span>
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            
-            <button 
-              type="button"
-              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition"
+            <button
+              disabled={formik.isSubmitting}
+              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center"
             >
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}
                 height={18}
                 alt="Ícono de Google"
+                className="w-4 h-4 sm:w-[18px] sm:h-[18px]"
               />
-              Ingresá con Google
+              <span className="text-ellipsis overflow-hidden text-center">
+                Ingresá con Google
+              </span>
             </button>
 
-            
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
               <Link href="/register" className="text-accent-medium underline">

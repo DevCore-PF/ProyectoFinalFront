@@ -41,18 +41,20 @@ export const handleChangeLink = (
   }
 };
 
-export const handleChangeCertificate = (
+export const handleChangeCertificate = async (
   e: ChangeEvent<HTMLInputElement>,
   id: number,
   formik: FormikValues
 ) => {
   const files = [...formik.values.certificates];
   files[id] = e.target.files?.[0] || null;
-  formik.setFieldValue("certificates", files);
+
+  await formik.setFieldValue("certificates", files);
+  formik.setFieldTouched("certificates", true, true);
 };
 
 export const handleBlurCertificate = (formik: FormikValues) => {
-  formik.setFieldTouched("certificates", true);
+  formik.setFieldTouched("certificates", true, true);
 };
 
 export const handleChangePicture = async (

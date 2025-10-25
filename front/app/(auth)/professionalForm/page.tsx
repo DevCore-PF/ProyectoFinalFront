@@ -221,11 +221,11 @@ const RegisterProfesor = () => {
                   <label htmlFor="certificates" className="block text-sm ">
                     Certificados o títulos *
                   </label>
-                  {formik.values.certificates.map((_, i) => (
+                  {formik.values.certificates.map((certificate, i) => (
                     <div key={i} className="relative mt-2">
                       <input
                         type="file"
-                        id="certificates"
+                        id={`certificate-${i}`}
                         name="certificates"
                         onChange={(e) => {
                           handleChangeCertificate(e, i, formik);
@@ -234,18 +234,17 @@ const RegisterProfesor = () => {
                         className="hidden"
                       />
                       <label
-                        htmlFor="certificates"
-                        className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer border ${
+                        htmlFor={`certificate-${i}`}
+                        className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
                           formik.touched.certificates &&
                           formik.errors.certificates
                             ? "border-red-500"
-                            : "border-transparent"
+                            : "border-accent-medium/70"
                         }`}
-                        
                       >
                         <span className="text-font-light/55">
-                          {formik.values.certificates[i]
-                            ? formik.values.certificates[i]?.name
+                          {certificate
+                            ? certificate.name
                             : "Subí tu certificado..."}
                         </span>
                         <span className="bg-background px-2 py-1  ml-3 rounded-md transition-all duration-200 hover:scale-105">
@@ -291,63 +290,6 @@ const RegisterProfesor = () => {
                       </p>
                     )}
                 </div>
-                {/* <div>
-                  <label htmlFor="certificates" className="block text-sm mb-1">
-                    Certificados o títulos *
-                  </label>
-                  {formik.values.certificates.map((_, i) => (
-                    <div key={i} className="relative mt-2">
-                      <input
-                        type="file"
-                        id="certificates"
-                        name="certificates"
-                        onChange={(e) => {
-                          handleChangeCertificate(e, i, formik);
-                        }}
-                        onBlur={() => handleBlurCertificate(formik)}
-                        className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 cursor-pointer ${
-                          formik.touched.certificates &&
-                          formik.errors.certificates
-                            ? "border border-red-500"
-                            : ""
-                        }`}
-                      />
-                      {i > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => closeCertificate(i, formik)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
-                        >
-                          <IoCloseCircleOutline size={28} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
-                    onClick={() => addCertificate(formik)}
-                  >
-                    + Agregar certificado
-                  </button>
-                  {formik.touched.certificates &&
-                    formik.errors.certificates && (
-                      <p className="text-red-400 text-sm text-center mt-2">
-                        {typeof formik.errors.certificates === "string"
-                          ? formik.errors.certificates
-                          : Array.isArray(formik.errors.certificates)
-                          ? formik.errors.certificates
-                              .map((err) =>
-                                typeof err === "string"
-                                  ? err
-                                  : "Archivo inválido"
-                              )
-                              .filter(Boolean)
-                              .join(", ")
-                          : "Archivo inválido"}
-                      </p>
-                    )}
-                </div> */}
 
                 <div>
                   <label htmlFor="links" className="block text-sm mb-1">
@@ -409,13 +351,24 @@ const RegisterProfesor = () => {
           </div>
 
           <div className="mt-6">
-            <label className="block text-sm mb-1">Breve biografía *</label>
+            <label htmlFor="bio" className="block text-sm mb-1">
+              Breve biografía *
+            </label>
             <textarea
               id="bio"
               placeholder="Contanos tu experiencia y enfoque de enseñanza..."
               {...formik.getFieldProps("bio")}
-              className="w-full h-28 rounded-md bg-background2 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 resize-none"
+              className={`w-full h-28 rounded-md bg-background2 p-3  text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                formik.touched.bio && formik.errors.bio
+                  ? "border border-red-500"
+                  : ""
+              }`}
             />
+            {formik.errors.bio && formik.touched.bio ? (
+              <p className="text-red-400 text-sm text-center mt-2">
+                {formik.errors.bio}
+              </p>
+            ) : null}
           </div>
 
           {/* ARREGLAR CHECKBOXES*/}

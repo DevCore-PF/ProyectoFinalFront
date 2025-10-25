@@ -102,4 +102,8 @@ export const professionalFormValidation = Yup.object({
       if (!arr || !Array.isArray(arr)) return false;
       return arr.some((v) => v instanceof File);
     }),
+
+  bio: Yup.string()
+    .required("Biografia es requerida")
+    .min(30, "Mínimo 30 caracteres").max(250,'Máximo 250 caracteres'),
 });

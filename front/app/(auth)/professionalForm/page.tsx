@@ -3,7 +3,7 @@
 import { useFormik } from "formik";
 //Next / React
 import Link from "next/link";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 //Helpers
 import { toastSuccess } from "@/helpers/toast";
 import {
@@ -15,9 +15,6 @@ import {
 import { IoCloseCircleOutline } from "react-icons/io5";
 
 const RegisterProfesor = () => {
-  const [certificates, setCertificates] = useState<(File | null)[]>([null]);
-  const [links, setLinks] = useState([""]);
-
   const formik = useFormik<professionalFormType>({
     initialValues: professionalForm,
     validationSchema: professionalFormValidation,
@@ -28,20 +25,34 @@ const RegisterProfesor = () => {
   });
 
   const addCertificate = () => {
-    setCertificates([...certificates, null]);
+    formik.setFieldValue("certificates", [...formik.values.certificates, null]);
   };
 
   const closeCertificate = (id: number) => {
-    if (certificates.length === 1) return;
-    setCertificates(certificates.filter((_, index) => index !== id));
+    if (formik.values.certificates.length === 1) return;
+    const newFiles = formik.values.certificates.filter((_, idx) => idx !== id);
+    formik.setFieldValue("certificates", newFiles);
   };
+
   const addLink = () => {
-    setLinks([...links, ""]);
+    if (formik.values.links) {
+      formik.setFieldValue("links", [...formik.values.links, ""]);
+    }
   };
 
   const closeLink = (id: number) => {
-    if (links.length === 1) return;
-    setLinks(links.filter((_, index) => index !== id));
+    if (formik.values.links?.length === 1) return;
+    if (formik.values.links) {
+      const newFiles = formik.values.links.filter((_, idx) => idx !== id);
+      formik.setFieldValue("links", newFiles);
+    }
+  };
+  const handleChangeLink = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+    if (formik.values.links) {
+      const newLinks = [...formik.values.links];
+      newLinks[id] = e.target.value;
+      formik.setFieldValue("links", newLinks);
+    }
   };
   return (
     <div className="min-h-screen flex flex-col text-font-light bg-background">
@@ -135,7 +146,7 @@ const RegisterProfesor = () => {
                     id="picture"
                     type="file"
                     {...formik.getFieldProps("picture")}
-                    className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                    className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 cursor-pointer ${
                       formik.touched.picture && formik.errors.picture
                         ? "border border-red-500"
                         : ""
@@ -202,22 +213,24 @@ const RegisterProfesor = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="links" className="block text-sm mb-1">
+                  <label htmlFor="certificates" className="block text-sm mb-1">
                     Certificados o títulos *
                   </label>
-                  {certificates.map((certificate, i) => (
+                  {formik.values.certificates.map((_, i) => (
                     <div key={i} className="relative mt-2">
                       <input
                         type="file"
+                        id="certificates"
+                        name="certificates"
                         onChange={(e) => {
                           const files = [...formik.values.certificates];
-                          files[i] = e.target.files?.[0] || null; 
+                          files[i] = e.target.files?.[0] || null;
                           formik.setFieldValue("certificates", files);
                         }}
                         onBlur={() =>
                           formik.setFieldTouched("certificates", true)
                         }
-                        className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                        className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 cursor-pointer ${
                           formik.touched.certificates &&
                           formik.errors.certificates
                             ? "border border-red-500"
@@ -235,46 +248,54 @@ const RegisterProfesor = () => {
                       )}
                     </div>
                   ))}
+                  <button
+                    type="button"
+                    className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
+                    onClick={addCertificate}
+                  >
+                    + Agregar certificado
+                  </button>
                   {formik.touched.certificates &&
                     formik.errors.certificates && (
                       <p className="text-red-400 text-sm text-center mt-2">
-                        {Array.isArray(formik.errors.certificates)
+                        {typeof formik.errors.certificates === "string"
+                          ? formik.errors.certificates
+                          : Array.isArray(formik.errors.certificates)
                           ? formik.errors.certificates
                               .map((err) =>
                                 typeof err === "string"
                                   ? err
                                   : "Archivo inválido"
                               )
+                              .filter(Boolean)
                               .join(", ")
-                          : formik.errors.certificates}
+                          : "Archivo inválido"}
                       </p>
                     )}
                 </div>
-                <button
-                  type="button"
-                  onClick={addCertificate}
-                  className="text-accent-medium text-sm hover:underline self-end cursor-pointer"
-                >
-                  + Agregar certificado
-                </button>
                 <div>
                   <label htmlFor="links" className="block text-sm mb-1">
                     Links profesionales
                   </label>
-                  {links.map((link, i) => (
+
+                  {formik.values.links?.map((link, i) => (
                     <div key={i} className="relative mt-2">
                       <input
                         type="text"
                         value={link}
-                        id="links"
+                        id={`link-${i}`}
                         onChange={(e) => {
-                          const newLinks = [...links];
-                          newLinks[i] = e.target.value;
-                          setLinks(newLinks);
+                          handleChangeLink(e, i);
                         }}
                         placeholder="Link a portfolio, LinkedIn o sitio personal"
-                        className="w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
+                        onBlur={() => formik.setFieldTouched("links", true)}
+                        className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                          formik.touched.links && formik.errors.links
+                            ? "border border-red-500"
+                            : ""
+                        }`}
                       />
+
                       {i > 0 && (
                         <button
                           type="button"
@@ -286,6 +307,18 @@ const RegisterProfesor = () => {
                       )}
                     </div>
                   ))}
+
+                  {formik.touched.links && formik.errors.links && (
+                    <p className="text-red-400 text-sm text-center mt-2">
+                      {Array.isArray(formik.errors.links)
+                        ? formik.errors.links
+                            .map((err) =>
+                              typeof err === "string" ? err : "Link inválido"
+                            )
+                            .join(", ")
+                        : (formik.errors.links as string)}
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -299,7 +332,6 @@ const RegisterProfesor = () => {
             </div>
           </div>
 
-          {/* BIO */}
           <div className="mt-6">
             <label className="block text-sm mb-1">Breve biografía *</label>
             <textarea
@@ -310,7 +342,7 @@ const RegisterProfesor = () => {
             />
           </div>
 
-          {/* CHECKBOXES */}
+          {/* ARREGLAR CHECKBOXES*/}
           <div className="flex flex-col gap-2 mt-4 text-xs sm:text-sm text-gray-300">
             <label className="flex items-center gap-2">
               <input type="checkbox" className="accent-accent-medium" />

@@ -43,7 +43,7 @@ export interface professionalFormType {
   area: string;
   bio: string;
   certificates: (File | null)[];
-  links: string | null;
+  links: string[] | null;
 }
 
 export const professionalForm = {
@@ -55,7 +55,7 @@ export const professionalForm = {
   area: "",
   bio: "",
   certificates: [null],
-  links: "",
+  links: [""],
 };
 
 export const professionalFormValidation = Yup.object({
@@ -70,20 +70,22 @@ export const professionalFormValidation = Yup.object({
   profession: Yup.string().required("Profesión requerida"),
 
   area: Yup.string().required("Especialización requerida"),
-
   certificates: Yup.array()
     .of(
       Yup.mixed<File>()
-        .required("Se requiere por lo menos una certificación")
+        .nullable()
         .test("fileType", "Solo se permiten imágenes o PDF", (value) => {
-          if (!value) return false;
+          if (!value) return true;
           return [
             "image/jpeg",
             "image/png",
             "image/jpg",
             "application/pdf",
-          ].includes(value.type);
+          ].includes((value as File).type);
         })
     )
-    .min(1, "Se requiere por lo menos una certificación"),
+    .test("atLeastOne", "Se requiere por lo menos una certificación", (arr) => {
+      if (!arr || !Array.isArray(arr)) return false;
+      return arr.some((v) => v instanceof File);
+    }),
 });

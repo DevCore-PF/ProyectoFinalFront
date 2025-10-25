@@ -38,7 +38,7 @@ export interface professionalFormType {
   fullName: string;
   email: string;
   phone: string | null;
-  picture: string;
+  picture: File | null;
   profession: string;
   area: string;
   bio: string;
@@ -50,7 +50,7 @@ export const professionalForm = {
   fullName: "",
   email: "",
   phone: "",
-  picture: "",
+  picture: null,
   profession: "",
   area: "",
   bio: "",
@@ -65,11 +65,25 @@ export const professionalFormValidation = Yup.object({
 
   email: Yup.string().required("Email requerido").email("Email inválido"),
 
-  picture: Yup.string().required("Foto de perfil requerida"),
+  picture: Yup.mixed()
+    .required("Foto de perfil requerida")
+    .test("fileType", "El archivo debe ser una imagen", (value) => {
+      if (!value || !(value instanceof File)) return false;
+      return value.type.startsWith("image/");
+    })
+    .test("fileExtension", "Solo se permiten JPG o PNG", (value) => {
+      if (!value || !(value instanceof File)) return true;
+      return ["image/jpeg", "image/png"].includes(value.type);
+    })
+    .test("fileSize", "La imagen no puede superar los 2 MB", (value) => {
+      if (!value || !(value instanceof File)) return true;
+      return value.size <= 2 * 1024 * 1024;
+    }),
 
   profession: Yup.string().required("Profesión requerida"),
 
   area: Yup.string().required("Especialización requerida"),
+
   certificates: Yup.array()
     .of(
       Yup.mixed<File>()

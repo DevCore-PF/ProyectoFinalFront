@@ -3,7 +3,6 @@
 import { useFormik } from "formik";
 //Next / React
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
 //Helpers
 import { toastSuccess } from "@/helpers/toast";
 import {
@@ -13,6 +12,18 @@ import {
 } from "@/validators/registerSchema";
 //Icons
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { IoFolderOutline } from "react-icons/io5";
+import {
+  addCertificate,
+  addLink,
+  closeCertificate,
+  closeLink,
+  handleBlurCertificate,
+  handleBlurPicture,
+  handleChangeCertificate,
+  handleChangeLink,
+  handleChangePicture,
+} from "@/helpers/formHandlers";
 
 const RegisterProfesor = () => {
   const formik = useFormik<professionalFormType>({
@@ -24,36 +35,6 @@ const RegisterProfesor = () => {
     },
   });
 
-  const addCertificate = () => {
-    formik.setFieldValue("certificates", [...formik.values.certificates, null]);
-  };
-
-  const closeCertificate = (id: number) => {
-    if (formik.values.certificates.length === 1) return;
-    const newFiles = formik.values.certificates.filter((_, idx) => idx !== id);
-    formik.setFieldValue("certificates", newFiles);
-  };
-
-  const addLink = () => {
-    if (formik.values.links) {
-      formik.setFieldValue("links", [...formik.values.links, ""]);
-    }
-  };
-
-  const closeLink = (id: number) => {
-    if (formik.values.links?.length === 1) return;
-    if (formik.values.links) {
-      const newFiles = formik.values.links.filter((_, idx) => idx !== id);
-      formik.setFieldValue("links", newFiles);
-    }
-  };
-  const handleChangeLink = (e: ChangeEvent<HTMLInputElement>, id: number) => {
-    if (formik.values.links) {
-      const newLinks = [...formik.values.links];
-      newLinks[id] = e.target.value;
-      formik.setFieldValue("links", newLinks);
-    }
-  };
   return (
     <div className="min-h-screen flex flex-col text-font-light bg-background">
       <header className="p-4">
@@ -76,7 +57,6 @@ const RegisterProfesor = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* DATOS PERSONALES */}
             <div>
               <h2 className="text-lg font-medium mb-3">Datos personales</h2>
 
@@ -142,26 +122,43 @@ const RegisterProfesor = () => {
                   <label htmlFor="picture" className="block text-sm mb-1">
                     Foto de perfil *
                   </label>
+
                   <input
                     id="picture"
                     type="file"
-                    {...formik.getFieldProps("picture")}
-                    className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 cursor-pointer ${
-                      formik.touched.picture && formik.errors.picture
-                        ? "border border-red-500"
-                        : ""
-                    }`}
+                    name="picture"
+                    onChange={(e) => {
+                      handleChangePicture(e, formik);
+                    }}
+                    onBlur={() => handleBlurPicture(formik)}
+                    className="hidden"
                   />
-                  {formik.errors.picture && formik.touched.picture ? (
+
+                  <label
+                    htmlFor="picture"
+                    className={`flex items-center justify-between w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer border ${
+                      formik.touched.picture && formik.errors.picture
+                        ? "border-red-500"
+                        : "border-transparent"
+                    }`}
+                  >
+                    <span className="text-font-light">
+                      {formik.values.picture
+                        ? formik.values.picture.name
+                        : "Seleccionar archivo..."}
+                    </span>
+                    <IoFolderOutline className="text-accent-medium" size={22} />
+                  </label>
+
+                  {formik.errors.picture && formik.touched.picture && (
                     <p className="text-red-400 text-sm text-center mt-2">
                       {formik.errors.picture}
                     </p>
-                  ) : null}
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* INFORMACIÓN ACADÉMICA */}
             <div>
               <h2 className="text-lg font-medium mb-3">
                 Información académica
@@ -223,13 +220,9 @@ const RegisterProfesor = () => {
                         id="certificates"
                         name="certificates"
                         onChange={(e) => {
-                          const files = [...formik.values.certificates];
-                          files[i] = e.target.files?.[0] || null;
-                          formik.setFieldValue("certificates", files);
+                          handleChangeCertificate(e, i, formik);
                         }}
-                        onBlur={() =>
-                          formik.setFieldTouched("certificates", true)
-                        }
+                        onBlur={() => handleBlurCertificate(formik)}
                         className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 cursor-pointer ${
                           formik.touched.certificates &&
                           formik.errors.certificates
@@ -240,7 +233,7 @@ const RegisterProfesor = () => {
                       {i > 0 && (
                         <button
                           type="button"
-                          onClick={() => closeCertificate(i)}
+                          onClick={() => closeCertificate(i, formik)}
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
                         >
                           <IoCloseCircleOutline size={28} />
@@ -251,7 +244,7 @@ const RegisterProfesor = () => {
                   <button
                     type="button"
                     className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
-                    onClick={addCertificate}
+                    onClick={() => addCertificate(formik)}
                   >
                     + Agregar certificado
                   </button>
@@ -285,7 +278,7 @@ const RegisterProfesor = () => {
                         value={link}
                         id={`link-${i}`}
                         onChange={(e) => {
-                          handleChangeLink(e, i);
+                          handleChangeLink(e, i, formik);
                         }}
                         placeholder="Link a portfolio, LinkedIn o sitio personal"
                         onBlur={() => formik.setFieldTouched("links", true)}
@@ -299,7 +292,7 @@ const RegisterProfesor = () => {
                       {i > 0 && (
                         <button
                           type="button"
-                          onClick={() => closeLink(i)}
+                          onClick={() => closeLink(i, formik)}
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
                         >
                           <IoCloseCircleOutline size={28} />
@@ -323,7 +316,7 @@ const RegisterProfesor = () => {
 
                 <button
                   type="button"
-                  onClick={addLink}
+                  onClick={() => addLink(formik)}
                   className="text-accent-medium text-sm hover:underline self-end cursor-pointer"
                 >
                   + Agregar link

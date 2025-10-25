@@ -40,6 +40,7 @@ export const handleChangeLink = (
     formik.setFieldValue("links", newLinks);
   }
 };
+
 export const handleChangeCertificate = (
   e: ChangeEvent<HTMLInputElement>,
   id: number,
@@ -49,17 +50,21 @@ export const handleChangeCertificate = (
   files[id] = e.target.files?.[0] || null;
   formik.setFieldValue("certificates", files);
 };
+
 export const handleBlurCertificate = (formik: FormikValues) => {
   formik.setFieldTouched("certificates", true);
 };
 
-  export const handleChangePicture = async (e: ChangeEvent<HTMLInputElement>,formik: FormikValues) => {
-    const file = e.target.files?.[0] || null;
+export const handleChangePicture = async (
+  e: ChangeEvent<HTMLInputElement>,
+  formik: FormikValues
+) => {
+  const file = e.target.files?.[0] || null;
 
-    await formik.setFieldValue("picture", file);
-    formik.setFieldTouched("picture", true, true); // El tercer parámetro fuerza la validación
-  };
+  await formik.setFieldValue("picture", file);
+  formik.setFieldTouched("picture", true, true); // El tercer parámetro fuerza la validación
+};
 
-  export const handleBlurPicture = (formik: FormikValues) => {
-    formik.setFieldTouched("picture", true, true);
-  };
+export const handleBlurPicture = (formik: FormikValues) => {
+  formik.setFieldTouched("picture", true, true);
+};

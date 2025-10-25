@@ -1,8 +1,10 @@
 "use client";
 //Formik
 import { useFormik } from "formik";
+
 //Next / React
 import Link from "next/link";
+
 //Helpers
 import { toastSuccess } from "@/helpers/toast";
 import {
@@ -10,9 +12,13 @@ import {
   professionalFormType,
   professionalFormValidation,
 } from "@/validators/registerSchema";
+
 //Icons
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { IoFolderOutline } from "react-icons/io5";
+import { FiUploadCloud } from "react-icons/fi";
+
+//Helpers
 import {
   addCertificate,
   addLink,
@@ -122,7 +128,6 @@ const RegisterProfesor = () => {
                   <label htmlFor="picture" className="block text-sm mb-1">
                     Foto de perfil *
                   </label>
-
                   <input
                     id="picture"
                     type="file"
@@ -136,18 +141,21 @@ const RegisterProfesor = () => {
 
                   <label
                     htmlFor="picture"
-                    className={`flex items-center justify-between w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer border ${
+                    className={`flex  items-center justify-between w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
                       formik.touched.picture && formik.errors.picture
                         ? "border-red-500"
-                        : "border-transparent"
+                        : "border-accent-medium/70"
                     }`}
                   >
-                    <span className="text-font-light">
+                    <span className="text-font-light/55">
                       {formik.values.picture
                         ? formik.values.picture.name
-                        : "Seleccionar archivo..."}
+                        : "Subí tu foto..."}
                     </span>
-                    <IoFolderOutline className="text-accent-medium" size={22} />
+                    <FiUploadCloud
+                      className="text-accent-medium transition-all duration-200 hover:scale-110"
+                      size={28}
+                    />
                   </label>
 
                   {formik.errors.picture && formik.touched.picture && (
@@ -210,6 +218,80 @@ const RegisterProfesor = () => {
                 </div>
 
                 <div>
+                  <label htmlFor="certificates" className="block text-sm ">
+                    Certificados o títulos *
+                  </label>
+                  {formik.values.certificates.map((_, i) => (
+                    <div key={i} className="relative mt-2">
+                      <input
+                        type="file"
+                        id="certificates"
+                        name="certificates"
+                        onChange={(e) => {
+                          handleChangeCertificate(e, i, formik);
+                        }}
+                        onBlur={() => handleBlurCertificate(formik)}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="certificates"
+                        className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer border ${
+                          formik.touched.certificates &&
+                          formik.errors.certificates
+                            ? "border-red-500"
+                            : "border-transparent"
+                        }`}
+                        
+                      >
+                        <span className="text-font-light/55">
+                          {formik.values.certificates[i]
+                            ? formik.values.certificates[i]?.name
+                            : "Subí tu certificado..."}
+                        </span>
+                        <span className="bg-background px-2 py-1  ml-3 rounded-md transition-all duration-200 hover:scale-105">
+                          <IoFolderOutline
+                            className="text-accent-medium  "
+                            size={25}
+                          />
+                        </span>
+                      </label>
+                      {i > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => closeCertificate(i, formik)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
+                        >
+                          <IoCloseCircleOutline size={28} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
+                    onClick={() => addCertificate(formik)}
+                  >
+                    + Agregar certificado
+                  </button>
+                  {formik.touched.certificates &&
+                    formik.errors.certificates && (
+                      <p className="text-red-400 text-sm text-center mt-2">
+                        {typeof formik.errors.certificates === "string"
+                          ? formik.errors.certificates
+                          : Array.isArray(formik.errors.certificates)
+                          ? formik.errors.certificates
+                              .map((err) =>
+                                typeof err === "string"
+                                  ? err
+                                  : "Archivo inválido"
+                              )
+                              .filter(Boolean)
+                              .join(", ")
+                          : "Archivo inválido"}
+                      </p>
+                    )}
+                </div>
+                {/* <div>
                   <label htmlFor="certificates" className="block text-sm mb-1">
                     Certificados o títulos *
                   </label>
@@ -265,7 +347,8 @@ const RegisterProfesor = () => {
                           : "Archivo inválido"}
                       </p>
                     )}
-                </div>
+                </div> */}
+
                 <div>
                   <label htmlFor="links" className="block text-sm mb-1">
                     Links profesionales

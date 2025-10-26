@@ -1,11 +1,22 @@
 "use client";
-
+//Helpers
 import { toastSuccess } from "@/helpers/toast";
+//Formik
+import { useFormik } from "formik";
 import {
   contactInitialValues,
   contactValidations,
 } from "@/validators/contactSchema";
-import { useFormik } from "formik";
+//Icons
+import { IoMail } from "react-icons/io5";
+import { FaPhone } from "react-icons/fa6";
+import { FaLocationDot } from "react-icons/fa6";
+import { FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebook } from "react-icons/fa";
+
+//Next
+import Link from "next/link";
 
 const ContactPage = () => {
   const formik = useFormik({
@@ -18,7 +29,7 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen text-white flex flex-col items-center justify-center px-4 py-8">
-      <h1 className="text-4xl md:text-5xl font-bold mb-12">Contactanos</h1>
+      <h1 className="text-4xl md:text-5xl font-bold mb-12">Contáctanos</h1>
 
       <div className=" w-full max-w-6xl flex ">
         <div className=" border-border border w-full rounded-l-2xl p-8 shadow-xl">
@@ -96,10 +107,7 @@ const ContactPage = () => {
                   maxLength={300}
                   id="message"
                   value={formik.values.message}
-                  onChange={(e) => {
-                    formik.handleChange;
-                    formik.setFieldTouched("message", true, true);
-                  }}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   placeholder="Escribe tu mensaje"
                   className={`w-full h-28 rounded-md bg-background2 p-3  text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
@@ -125,76 +133,72 @@ const ContactPage = () => {
                   {formik.values.message.length}/300
                 </p>
               </div>
+              <button
+                type="submit"
+                onClick={() => {
+                  formik.setTouched({
+                    name: true,
+                    email: true,
+                    subject: true,
+                    message: true,
+                  });
+                }}
+                disabled={formik.isSubmitting}
+                className="bg-button/90 hover:bg-button cursor-pointer self-center flex transition rounded-md py-2 mt-2 px-3 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Enviar mensaje
+              </button>
             </div>
-
-            {/* Botón */}
-            <button
-              type="submit"
-              onClick={() => {
-                formik.setTouched({
-                  name: true,
-                  email: true,
-                  subject: true,
-                  message: true,
-                });
-              }}
-              disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Enviar mensaje
-            </button>
           </div>
         </div>
 
-        {/* Info de contacto */}
         <div className="bg-background2 rounded-r-2xl w-1/2 p-8 shadow-xl flex flex-col justify-between">
-          {/* Email */}
-          <div className="mb-8">
+          <div className=" flex flex-col justify-center items-center border-border-light border rounded-md p-5">
             <div className="w-12 h-12 bg-[#2d2f54] rounded-lg flex items-center justify-center mb-4 border border-[#5a5d8e]">
-              {/* <Mail className="text-white" size={24} /> */}
+              <IoMail size={22} className="text-[#BFC1DE]" />
             </div>
-            <p className="text-gray-300 text-sm">support@devcore.com</p>
+            <p className="text-gray-300 text-sm">devcoreacademia@gmail.com</p>
           </div>
 
-          {/* Teléfono */}
-          <div className="mb-8">
+          <div className="flex flex-col justify-center items-center border-border-light border rounded-md p-5">
             <div className="w-12 h-12 bg-[#2d2f54] rounded-lg flex items-center justify-center mb-4 border border-[#5a5d8e]">
-              {/* <Phone className="text-white" size={24} /> */}
+              <FaPhone size={20} className="text-[#BFC1DE]" />
             </div>
             <p className="text-gray-300 text-sm">+91 00000 00000</p>
           </div>
 
-          {/* Ubicación */}
-          <div className="mb-8">
+          <div className="flex flex-col justify-center items-center border-border-light border rounded-md p-5">
             <div className="w-12 h-12 bg-[#2d2f54] rounded-lg flex items-center justify-center mb-4 border border-[#5a5d8e]">
-              {/* <MapPin className="text-white" size={24} /> */}
+              <FaLocationDot size={22} className="text-[#BFC1DE]" />
             </div>
             <p className="text-gray-300 text-sm">En algún lugar del mundo</p>
           </div>
 
-          {/* Redes sociales */}
-          <div>
+          <div className="flex flex-col justify-center items-center border-border-light border rounded-md p-5">
             <div className="flex gap-3 mb-3">
-              <a
-                href="#"
+              <Link
+                target="_blank"
+                href="http://www.facebook.com"
+                className="w-10 h-10 bg-[#2d2f54] rounded-lg flex items-center justify-center hover:bg-[#3d3f64] transition-colors border border-[rgb(90,93,142)]"
+              >
+                <FaFacebook size={22} className="text-[#BFC1DE]" />
+              </Link>
+              <Link
+                target="_blank"
+                href="http://www.twitter.com"
                 className="w-10 h-10 bg-[#2d2f54] rounded-lg flex items-center justify-center hover:bg-[#3d3f64] transition-colors border border-[#5a5d8e]"
               >
-                {/* <Facebook className="text-white" size={20} /> */}
-              </a>
-              <a
-                href="#"
+                <FaXTwitter size={21} className="text-[#BFC1DE]" />
+              </Link>
+              <Link
+                target="_blank"
+                href="http://www.linkedin.com"
                 className="w-10 h-10 bg-[#2d2f54] rounded-lg flex items-center justify-center hover:bg-[#3d3f64] transition-colors border border-[#5a5d8e]"
               >
-                {/* <Twitter className="text-white" size={20} /> */}
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-[#2d2f54] rounded-lg flex items-center justify-center hover:bg-[#3d3f64] transition-colors border border-[#5a5d8e]"
-              >
-                {/* <Linkedin className="text-white" size={20} /> */}
-              </a>
+                <FaLinkedin size={22} className="text-[#BFC1DE]" />
+              </Link>
             </div>
-            <p className="text-gray-400 text-sm">Perfiles</p>
+            <p className="text-gray-300 text-sm">Perfiles</p>
           </div>
         </div>
       </div>

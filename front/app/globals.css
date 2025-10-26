@@ -5,6 +5,7 @@
   --foreground: #171717;
   --colormine: #d9d9d9;
   --colormine1: #98989a;
+  --color: #9c75e6;
 }
 
 @theme {
@@ -13,11 +14,12 @@
   --color-navbar: #363968;
   --color-footer: #131425;
   --color-border: #474b8a;
+  --color-border-light: #7c7fbb;
   --color-button: #7e4bde;
-  --color-accent-dark: #9c75e6;
+  /* --color-accent-dark: #9c75e6; */
   --color-accent-light: #dacbf6;
   --color-accent-medium: #bba0ee;
-  
+
   --color-font-light: #eeeff6;
   --color-font-dark: #090911;
 
@@ -44,8 +46,10 @@ input[type="checkbox"]:checked + div .checkbox-indicator {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
-  -webkit-box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  box-shadow: 0 0 0px 1000px
+    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px
+    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
   -webkit-text-fill-color: #f0f0f0 !important;
   caret-color: #f0f0f0 !important;
   transition: background-color 9999s ease-in-out 0s !important;

@@ -32,6 +32,9 @@
 
   --font-title: "Kodchasan", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
+
+
+  --font-mono: var(--font-mono);
 }
 
 body {

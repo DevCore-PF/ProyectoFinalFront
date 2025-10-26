@@ -42,7 +42,6 @@ const RegisterProfesor = () => {
       toastSuccess("Registro enviado!");
     },
   });
-
   return (
     <div className="min-h-screen flex flex-col text-font-light bg-background">
       <header className="p-4">
@@ -84,11 +83,11 @@ const RegisterProfesor = () => {
                         : ""
                     }`}
                   />
-                  {formik.errors.fullName && formik.touched.fullName ? (
+                  {formik.errors.fullName && formik.touched.fullName && (
                     <p className="text-red-400 text-sm text-center mt-2">
                       {formik.errors.fullName}
                     </p>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -106,11 +105,11 @@ const RegisterProfesor = () => {
                         : ""
                     }`}
                   />
-                  {formik.errors.email && formik.touched.email ? (
+                  {formik.errors.email && formik.touched.email && (
                     <p className="text-red-400 text-sm text-center mt-2">
                       {formik.errors.email}
                     </p>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -190,11 +189,11 @@ const RegisterProfesor = () => {
                         : ""
                     }`}
                   />
-                  {formik.errors.profession && formik.touched.profession ? (
+                  {formik.errors.profession && formik.touched.profession && (
                     <p className="text-red-400 text-sm text-center mt-2">
                       {formik.errors.profession}
                     </p>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -223,57 +222,61 @@ const RegisterProfesor = () => {
                   <label htmlFor="certificates" className="block text-sm ">
                     Certificados o títulos *
                   </label>
-                  {formik.values.certificates.map((certificate, i) => (
-                    <div key={i} className="relative mt-2">
-                      <input
-                        type="file"
-                        id={`certificate-${i}`}
-                        name="certificates"
-                        onChange={(e) => {
-                          handleChangeCertificate(e, i, formik);
-                        }}
-                        onBlur={() => handleBlurCertificate(formik)}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor={`certificate-${i}`}
-                        className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
-                          formik.touched.certificates &&
-                          formik.errors.certificates
-                            ? "border-red-500"
-                            : "border-accent-medium/70"
-                        }`}
-                      >
-                        <span className="text-font-light/55">
-                          {certificate
-                            ? certificate.name
-                            : "Subí tu certificado..."}
-                        </span>
-                        <span className="bg-background px-2 py-1  ml-3 rounded-md transition-all duration-200 hover:scale-105">
-                          <IoFolderOutline
-                            className="text-accent-medium  "
-                            size={25}
-                          />
-                        </span>
-                      </label>
-                      {i > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => closeCertificate(i, formik)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
+                  {formik.values.certificates.map((certificate, i) => {
+                    return (
+                      <div key={i} className="relative mt-2">
+                        <input
+                          type="file"
+                          id={`certificate-${i}`}
+                          name="certificates"
+                          onChange={(e) => {
+                            handleChangeCertificate(e, i, formik);
+                          }}
+                          onBlur={() => handleBlurCertificate(formik)}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor={`certificate-${i}`}
+                          className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
+                            formik.touched.certificates &&
+                            formik.errors.certificates
+                              ? "border-red-500"
+                              : "border-accent-medium/70"
+                          }`}
                         >
-                          <IoCloseCircleOutline size={28} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
-                    onClick={() => addCertificate(formik)}
-                  >
-                    + Agregar certificado
-                  </button>
+                          <span className="text-font-light/55">
+                            {certificate
+                              ? certificate.name
+                              : "Subí tu certificado..."}
+                          </span>
+                          <span className="bg-background px-2 py-1  ml-3 rounded-md transition-all duration-200 hover:scale-105">
+                            <IoFolderOutline
+                              className="text-accent-medium  "
+                              size={25}
+                            />
+                          </span>
+                        </label>
+                        {i > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => closeCertificate(i, formik)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
+                          >
+                            <IoCloseCircleOutline size={28} />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {formik.values.certificates.length < 4 ? (
+                    <button
+                      type="button"
+                      className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer "
+                      onClick={() => addCertificate(formik)}
+                    >
+                      + Agregar certificado
+                    </button>
+                  ) : null}
                   {formik.touched.certificates &&
                     formik.errors.certificates && (
                       <p className="text-red-400 text-sm text-center mt-2">
@@ -340,14 +343,15 @@ const RegisterProfesor = () => {
                     </p>
                   )}
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => addLink(formik)}
-                  className="text-accent-medium text-sm hover:underline self-end cursor-pointer"
-                >
-                  + Agregar link
-                </button>
+                {formik.values.links && formik.values.links?.length < 5 ? (
+                  <button
+                    type="button"
+                    onClick={() => addLink(formik)}
+                    className="text-accent-medium text-sm hover:underline self-end cursor-pointer"
+                  >
+                    + Agregar link
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

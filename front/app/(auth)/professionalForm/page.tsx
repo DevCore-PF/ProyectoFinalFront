@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import Link from "next/link";
 
 //Helpers
-import { toastSuccess } from "@/helpers/toast";
+import { toastConfirm, toastSuccess } from "@/helpers/toast";
 import {
   professionalForm,
   professionalFormType,
@@ -37,11 +37,26 @@ const RegisterProfesor = () => {
     initialValues: professionalForm,
     validationSchema: professionalFormValidation,
     validateOnMount: false,
-    onSubmit: (values) => {
-      console.log(values);
-      toastSuccess("Registro enviado!");
+    onSubmit: () => {
+      toastConfirm(
+        "Enviar formulario",
+        async () => {
+          try {
+            // llamado a la api
+            toastSuccess("Registro enviado!");
+            formik.resetForm();
+          } catch (error) {
+          } finally {
+            formik.setSubmitting(false);
+          }
+        },
+        () => {
+          formik.setSubmitting(false);
+        }
+      );
     },
   });
+
   return (
     <div className="min-h-screen flex flex-col text-font-light bg-background">
       <header className="p-4">

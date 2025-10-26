@@ -4,7 +4,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
 //Helpers
-import { toastSuccess } from "@/helpers/toast";
+import { toastConfirm, toastSuccess } from "@/helpers/toast";
 
 //Formik
 import {
@@ -34,17 +34,25 @@ const page = () => {
     validateOnMount: false,
 
     onSubmit: () => {
-      const data = formik.values;
-      console.log(data);
-      toastSuccess("Usuario registrado!");
-      // try {
-      // } catch (error) {
-      //   throw new Error(error as string);
-      // } finally {
-      //   formik.setSubmitting(false);
-      // }
+      toastConfirm(
+        "Enviar formulario",
+        async () => {
+          try {
+            // llamado a la api
+            toastSuccess("Registro enviado!");
+            formik.resetForm();
+          } catch (error) {
+          } finally {
+            formik.setSubmitting(false);
+          }
+        },
+        () => {
+          formik.setSubmitting(false);
+        }
+      );
     },
   });
+
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-4">

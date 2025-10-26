@@ -7,5 +7,5 @@ export const suscriptionInitialValues = {
 };
 
 export const suscriptionValidation = Yup.object({
-  email: Yup.string().email("Email inválido").required("Tu email es requerido"),
+  email: Yup.string().email("Email inválido").required("Debes ingresar tu email"),
 });

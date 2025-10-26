@@ -31,7 +31,6 @@
 
   --font-title: "Kodchasan", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
-  
 
   --font-mono: var(--font-mono);
 }
@@ -41,7 +40,9 @@ body {
   color: var(--color-font-light);
   font-family: var(--font-body);
 }
-
+html {
+  scroll-behavior: smooth;
+}
 input[type="checkbox"]:checked + div .checkbox-indicator {
   display: block;
 }

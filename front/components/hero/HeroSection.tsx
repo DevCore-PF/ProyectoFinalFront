@@ -1,3 +1,5 @@
+"use client";
+import Link from "next/link";
 import CreativityBadge from "./CreativityBadge";
 import EmailSubscription from "./EmailSubscription";
 import Image from "next/image";
@@ -5,7 +7,7 @@ import Image from "next/image";
 const HeroSection = () => {
   return (
     <>
-      <div className="min-h-screen p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+      <div className="min-h-screen pt-6 pb-22  relative overflow-hidden">
         <div className="relative z-10 min-h-screen flex flex-col">
           <div className="flex-1 flex flex-col justify-center items-center px-4 sm:px-8 lg:px-16 text-center pt-12 sm:pt-16 lg:pt-20">
             <div className="mb-4 sm:mb-6">
@@ -22,9 +24,12 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12 w-full sm:w-auto px-4 max-w-md sm:max-w-none">
-              <button className="px-6 sm:px-8 py-3 bg-button/90 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer hover:scale-105 active:scale-95">
+              <Link
+                href={`#courses`}
+                className="px-6 sm:px-8 py-3 bg-button/90 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer hover:scale-105 active:scale-95"
+              >
                 Explorar cursos
-              </button>
+              </Link>
               <button className="px-6 sm:px-8 py-3 bg-font-light text-font-dark/80 text-sm md:text-base hover:bg-gray-100 hover:text-button font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg">
                 Ver Planes
               </button>

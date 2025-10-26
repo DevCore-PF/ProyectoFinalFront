@@ -181,7 +181,7 @@ const page = () => {
             <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
               <label
                 htmlFor="checkboxTerms"
-                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto group"
+                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto"
               >
                 <input
                   id="checkboxTerms"
@@ -192,8 +192,28 @@ const page = () => {
                   onBlur={formik.handleBlur}
                   className="sr-only"
                 />
-                <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
-                  <div className="w-3 h-3 bg-accent-dark rounded-xs opacity-0 group-has-checked:opacity-100 transition-opacity"></div>
+                <div
+                  className={`w-5 h-5 border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5 transition-all ${
+                    formik.values.checkboxTerms
+                      ? "bg-accent-dark border-accent-dark"
+                      : "border-border"
+                  }`}
+                >
+                  <svg
+                    className={`w-3 h-3 text-white transition-opacity ${
+                      formik.values.checkboxTerms ? "opacity-100" : "opacity-0"
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
                 </div>
                 <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
                   Acepto los{" "}
@@ -213,12 +233,11 @@ const page = () => {
                 </span>
               </label>
               {formik.errors.checkboxTerms && formik.touched.checkboxTerms && (
-                <p className="text-red-400 flex items-center justify-center text-sm text-center 2">
+                <p className="text-red-400 flex items-center justify-center text-sm text-center">
                   {formik.errors.checkboxTerms}
                 </p>
               )}
             </div>
-
             <button
               type="submit"
               onClick={() => {

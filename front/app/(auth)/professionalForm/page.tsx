@@ -30,7 +30,7 @@ import {
   handleChangeCertificate,
   handleChangeLink,
   handleChangePicture,
-} from "@/helpers/formHandlers";
+} from "@/helpers/formProfessionalHandlers";
 
 const RegisterProfesor = () => {
   const formik = useFormik<professionalFormType>({

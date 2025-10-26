@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 import { FormikValues } from "formik";
 
+//Register
 export const addCertificate = (formik: FormikValues) => {
   formik.setFieldValue("certificates", [...formik.values.certificates, null]);
 };

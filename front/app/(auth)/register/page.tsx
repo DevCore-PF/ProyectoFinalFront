@@ -72,18 +72,18 @@ const page = () => {
                 type="text"
                 id="name"
                 {...formik.getFieldProps("name")}
-                placeholder="Ingresá tu nombre"
+                placeholder="Ingresa tu nombre"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.name && formik.errors.name
                     ? "border border-red-500"
                     : ""
                 }`}
               />
-              {formik.errors.name && formik.touched.name ? (
+              {formik.errors.name && formik.touched.name && (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.name}
                 </p>
-              ) : null}
+              )}
             </div>
 
             <div>
@@ -94,18 +94,18 @@ const page = () => {
                 type="email"
                 id="email"
                 {...formik.getFieldProps("email")}
-                placeholder="Ingresá tu email"
+                placeholder="Ingresa tu email"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
                     ? "border border-red-500"
                     : ""
                 }`}
               />
-              {formik.errors.email && formik.touched.email ? (
+              {formik.errors.email && formik.touched.email && (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.email}
                 </p>
-              ) : null}
+              )}
             </div>
 
             <div>
@@ -116,7 +116,7 @@ const page = () => {
                 <input
                   type={show ? "text" : "password"}
                   id="password"
-                  placeholder="Ingresá tu contraseña"
+                  placeholder="Crea tu contraseña"
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
@@ -132,11 +132,11 @@ const page = () => {
                   {show ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
-              {formik.errors.password && formik.touched.password ? (
+              {formik.errors.password && formik.touched.password && (
                 <p className="text-red-400 text-sm text-center mt-2">
                   {formik.errors.password}
                 </p>
-              ) : null}
+              )}
             </div>
 
             <div>
@@ -147,7 +147,7 @@ const page = () => {
                 <input
                   type={showR ? "text" : "password"}
                   id="repeatPassword"
-                  placeholder="Ingresá tu contraseña"
+                  placeholder="Confirma tu contraseña"
                   {...formik.getFieldProps("repeatPassword")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password

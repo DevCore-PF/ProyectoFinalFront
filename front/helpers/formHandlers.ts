@@ -70,3 +70,11 @@ export const handleChangePicture = async (
 export const handleBlurPicture = (formik: FormikValues) => {
   formik.setFieldTouched("picture", true, true);
 };
+
+export const handleChangeBio = (
+  e: ChangeEvent<HTMLTextAreaElement>,
+  formik: FormikValues
+) => {
+  formik.handleChange(e);
+  formik.setFieldTouched("bio", true, true);
+};

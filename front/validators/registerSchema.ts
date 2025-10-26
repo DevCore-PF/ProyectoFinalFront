@@ -4,6 +4,7 @@ export interface registerType {
   email: string;
   password: string;
   repeatPassword: string;
+  checkboxTerms: boolean;
 }
 
 export const registerInitialValues = {
@@ -11,6 +12,7 @@ export const registerInitialValues = {
   email: "",
   password: "",
   repeatPassword: "",
+  checkboxTerms: false,
 };
 
 export const registerValidations = Yup.object({
@@ -32,6 +34,10 @@ export const registerValidations = Yup.object({
   repeatPassword: Yup.string()
     .required("Debe confirmar contraseña")
     .oneOf([Yup.ref("password")], "Contraseñas deben coincidir"),
+  checkboxTerms: Yup.boolean().oneOf(
+    [true],
+    "Debes aceptar los Términos y Condiciones"
+  ),
 });
 
 export interface professionalFormType {
@@ -44,6 +50,9 @@ export interface professionalFormType {
   bio: string;
   certificates: (File | null)[];
   links: string[] | null;
+  checkboxInfo: boolean;
+  checkboxTerms: boolean;
+  checkboxSupervision: boolean;
 }
 
 export const professionalForm = {
@@ -56,6 +65,9 @@ export const professionalForm = {
   bio: "",
   certificates: [null],
   links: [""],
+  checkboxInfo: false,
+  checkboxTerms: false,
+  checkboxSupervision: false,
 };
 
 export const professionalFormValidation = Yup.object({
@@ -105,5 +117,21 @@ export const professionalFormValidation = Yup.object({
 
   bio: Yup.string()
     .required("Biografia es requerida")
-    .min(30, "Mínimo 30 caracteres").max(250,'Máximo 250 caracteres'),
+    .min(30, "Mínimo 30 caracteres")
+    .max(250, "Máximo 250 caracteres"),
+
+  checkboxInfo: Yup.boolean().oneOf(
+    [true],
+    "Debes declarar que la información es verídica"
+  ),
+
+  checkboxTerms: Yup.boolean().oneOf(
+    [true],
+    "Debes aceptar los Términos y Condiciones"
+  ),
+
+  checkboxSupervision: Yup.boolean().oneOf(
+    [true],
+    "Debes aceptar que tu solicitud está sujeta a revisión"
+  ),
 });

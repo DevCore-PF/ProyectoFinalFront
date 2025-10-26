@@ -31,6 +31,7 @@ const page = () => {
   const formik = useFormik<registerType>({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
+    validateOnMount: false,
 
     onSubmit: () => {
       const data = formik.values;
@@ -170,31 +171,58 @@ const page = () => {
             </div>
 
             <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
-              <label className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto">
-                <input type="checkbox" className="sr-only" />
+              <label
+                htmlFor="checkboxTerms"
+                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto group"
+              >
+                <input
+                  id="checkboxTerms"
+                  name="checkboxTerms"
+                  type="checkbox"
+                  checked={formik.values.checkboxTerms}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="sr-only"
+                />
                 <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
-                  <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
+                  <div className="w-3 h-3 bg-accent-dark rounded-xs opacity-0 group-has-checked:opacity-100 transition-opacity"></div>
                 </div>
-                <label
-                  htmlFor="terms"
-                  className="ml-2 select-none text-sm leading-snug sm:leading-normal"
-                >
+                <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
                   Acepto los{" "}
-                  <span className="underline cursor-pointer text-accent-medium">
-                    Términos de Uso
-                  </span>{" "}
+                  <Link
+                    href={"/terms"}
+                    className="text-accent-medium hover:underline"
+                  >
+                    Términos y Condiciones
+                  </Link>{" "}
                   y las{" "}
-                  <span className="underline cursor-pointer text-accent-medium">
+                  <Link
+                    href={"/privacyPolicy"}
+                    className="text-accent-medium hover:underline"
+                  >
                     Políticas de Privacidad
-                  </span>
-                </label>
+                  </Link>
+                </span>
               </label>
+              {formik.errors.checkboxTerms && formik.touched.checkboxTerms && (
+                <p className="text-red-400 flex items-center justify-center text-sm text-center 2">
+                  {formik.errors.checkboxTerms}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
-              
+              onClick={() => {
+                formik.setTouched({
+                  name: true,
+                  email: true,
+                  password: true,
+                  repeatPassword: true,
+                  checkboxTerms: true,
+                });
+              }}
+              disabled={formik.isSubmitting}
               className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
               Registrarme
@@ -206,10 +234,10 @@ const page = () => {
               <div className="flex-1 h-px bg-gray-medium-dark"></div>
             </div>
 
-            <button 
-            disabled={formik.isSubmitting}
-              
-            className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center ">
+            <button
+              disabled={formik.isSubmitting}
+              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center "
+            >
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}
@@ -223,9 +251,12 @@ const page = () => {
             </button>
 
             <p className="text-center text-gray-400 text-sm mt-2">
-              ¿Ya tenés una cuenta?{" "}
-              <Link href="/login" className="text-accent-medium underline">
-                Ingresá
+              ¿Ya tienes una cuenta?{" "}
+              <Link
+                href="/login"
+                className="text-accent-medium hover:underline"
+              >
+                Ingresa
               </Link>
               <span className="items-center text-xl">&rarr;</span>
             </p>

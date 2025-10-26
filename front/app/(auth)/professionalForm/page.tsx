@@ -26,6 +26,7 @@ import {
   closeLink,
   handleBlurCertificate,
   handleBlurPicture,
+  handleChangeBio,
   handleChangeCertificate,
   handleChangeLink,
   handleChangePicture,
@@ -35,6 +36,7 @@ const RegisterProfesor = () => {
   const formik = useFormik<professionalFormType>({
     initialValues: professionalForm,
     validationSchema: professionalFormValidation,
+    validateOnMount: false,
     onSubmit: (values) => {
       console.log(values);
       toastSuccess("Registro enviado!");
@@ -210,11 +212,11 @@ const RegisterProfesor = () => {
                         : ""
                     }`}
                   />
-                  {formik.errors.area && formik.touched.area ? (
+                  {formik.errors.area && formik.touched.area && (
                     <p className="text-red-400 text-sm text-center mt-2">
                       {formik.errors.area}
                     </p>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -355,43 +357,153 @@ const RegisterProfesor = () => {
               Breve biografía *
             </label>
             <textarea
+              maxLength={250}
               id="bio"
+              value={formik.values.bio}
+              onChange={(e) => {
+                handleChangeBio(e, formik);
+              }}
+              onBlur={formik.handleBlur}
               placeholder="Contanos tu experiencia y enfoque de enseñanza..."
-              {...formik.getFieldProps("bio")}
               className={`w-full h-28 rounded-md bg-background2 p-3  text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                 formik.touched.bio && formik.errors.bio
                   ? "border border-red-500"
                   : ""
               }`}
             />
-            {formik.errors.bio && formik.touched.bio ? (
+            {formik.errors.bio && formik.touched.bio && (
               <p className="text-red-400 text-sm text-center mt-2">
                 {formik.errors.bio}
               </p>
-            ) : null}
+            )}
+            <p
+              className={`text-sm flex justify-end mr-2 ${
+                formik.values.bio.length === 250
+                  ? "text-red-400"
+                  : formik.values.bio.length >= 230
+                  ? "text-yellow-400"
+                  : "text-font-light/50"
+              }`}
+            >
+              {formik.values.bio.length}/250
+            </p>
           </div>
 
-          {/* ARREGLAR CHECKBOXES*/}
-          <div className="flex flex-col gap-2 mt-4 text-xs sm:text-sm text-gray-300">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" className="accent-accent-medium" />
-              Declaro que la información proporcionada es verídica
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" className="accent-accent-medium" />
-              Acepto los Términos y condiciones para instructores
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" className="accent-accent-medium" />
-              Entiendo que mi solicitud está sujeta a aprobación del equipo de
-              DevCore
-            </label>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+              <label
+                htmlFor="checkboxInfo"
+                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto group"
+              >
+                <input
+                  id="checkboxInfo"
+                  name="checkboxInfo"
+                  type="checkbox"
+                  checked={formik.values.checkboxInfo}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="sr-only"
+                />
+                <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
+                  <div className="w-3 h-3 bg-accent-dark rounded-xs opacity-0 group-has-checked:opacity-100 transition-opacity"></div>
+                </div>
+                <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
+                  Declaro que la información proporcionada es verídica
+                </span>
+              </label>
+
+              {formik.errors.checkboxInfo && formik.touched.checkboxInfo && (
+                <p className="text-red-400 flex items-center justify-center text-sm text-center 2">
+                  {formik.errors.checkboxInfo}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+              <label
+                htmlFor="checkboxTerms"
+                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto group"
+              >
+                <input
+                  id="checkboxTerms"
+                  name="checkboxTerms"
+                  type="checkbox"
+                  checked={formik.values.checkboxTerms}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="sr-only"
+                />
+                <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
+                  <div className="w-3 h-3 bg-accent-dark rounded-xs opacity-0 group-has-checked:opacity-100 transition-opacity"></div>
+                </div>
+                <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
+                  Acepto los{" "}
+                  <Link
+                    href={"terms"}
+                    className="text-accent-medium hover:underline "
+                  >
+                    Términos y Condiciones para instructores
+                  </Link>
+                </span>
+              </label>
+              {formik.errors.checkboxTerms && formik.touched.checkboxTerms && (
+                <p className="text-red-400 flex items-center justify-center text-sm text-center 2">
+                  {formik.errors.checkboxTerms}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+              <label
+                htmlFor="checkboxSupervision"
+                className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto group"
+              >
+                <input
+                  id="checkboxSupervision"
+                  name="checkboxSupervision"
+                  type="checkbox"
+                  checked={formik.values.checkboxSupervision}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="sr-only"
+                />
+                <div className="w-5 h-5 border border-border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5">
+                  <div className="w-3 h-3 bg-accent-dark rounded-xs opacity-0 group-has-checked:opacity-100 transition-opacity"></div>
+                </div>
+                <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
+                  Entiendo que mi solicitud está sujeta a aprobación del equipo
+                  de
+                  <span className="font-title">DevCore</span>
+                </span>
+              </label>
+              {formik.errors.checkboxSupervision &&
+                formik.touched.checkboxSupervision && (
+                  <p className="text-red-400 flex items-center justify-center text-sm text-center 2">
+                    {formik.errors.checkboxSupervision}
+                  </p>
+                )}
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={!formik.isValid || formik.isSubmitting}
-            className="bg-button/90 hover:bg-button transition rounded-md py-2 mt-6 font-semibold w-full sm:w-auto px-6 mx-auto block disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() => {
+              formik.setTouched({
+                fullName: true,
+                email: true,
+                phone: true,
+                picture: true,
+                profession: true,
+                area: true,
+                bio: true,
+                certificates: true,
+                links: true,
+                checkboxInfo: true,
+                checkboxTerms: true,
+                checkboxSupervision: true,
+              });
+            }}
+            disabled={formik.isSubmitting}
+            className=" cursor-pointer bg-button/90 hover:bg-button transition rounded-md py-2 mt-6 font-semibold w-full sm:w-auto px-6 mx-auto block disabled:cursor-not-allowed disabled:opacity-50"
           >
             Completar registro
           </button>

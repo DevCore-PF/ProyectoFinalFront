@@ -3,8 +3,8 @@
 import Calendar from "@/components/dashboard/Calendar";
 import ProgressCard from "@/components/dashboard/ProgressCard";
 import QuickAccessCard from "@/components/dashboard/QuickAccessCard";
-import WelcomeCard from "@/components/dashboard/WelcomeCard";
-import RecommendedCourses from "@/components/RecomendedCourses";
+import WelcomeCard from "@/components/dashboard/StudentWelcomeCard";
+import RecommendedCourses from "@/components/dashboard/RecomendedCourses";
 import { HiBookOpen, HiCheckCircle } from "react-icons/hi";
 const DashboardPage = () => {
   const userData = {
@@ -81,6 +81,7 @@ const DashboardPage = () => {
         </div>
 
         <div className="mb-4 md:mb-10">
+          
           <QuickAccessCard items={quickAccessItems} />
         </div>
 
@@ -88,7 +89,8 @@ const DashboardPage = () => {
           <ProgressCard title="Mi progreso" progressItems={progressData} />
         </div>
 
-        <div>
+
+        <div >
           <RecommendedCourses courses={recommendedCourses} />
         </div>
       </div>

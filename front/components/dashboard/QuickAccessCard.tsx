@@ -1,12 +1,15 @@
-import { 
-  HiArrowRight
-} from "react-icons/hi";
+import { HiArrowRight } from "react-icons/hi";
 const QuickAccessCard = ({ items }) => {
   return (
     <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-white shadow-xl hover:border-slate-600/50 transition-all duration-300">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-200">
-        Acceso rápido
-      </h2>
+      <div className="mb-5">
+        <h2 className="text-xl md:text-2xl font-bold  text-slate-200">
+          Acceso rápido
+        </h2>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Tus cursos activos y tareas pendientes en un vistazo
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item) => (
@@ -35,4 +38,3 @@ const QuickAccessCard = ({ items }) => {
 };
 
 export default QuickAccessCard;
-

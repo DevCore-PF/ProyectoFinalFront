@@ -8,7 +8,6 @@ const WelcomeCard = ({
   weeklyGoalProgress = 0,
   goalHours = 0,
   currentHours = 0,
-  showWeeklyGoal = true,
 }) => {
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
@@ -17,7 +16,7 @@ const WelcomeCard = ({
   });
 
   return (
-    <div className="bg-transparent h-full flex flex-col justify-center backdrop-blur-sm border border-slate-700 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
+    <div className="h-full flex flex-col justify-center bg-linear-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl ">
       <div className="mb-6">
         <p className="text-slate-400 text-xs uppercase tracking-wider mb-3">
           {currentDate}
@@ -28,7 +27,7 @@ const WelcomeCard = ({
         <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
       </div>
 
-      {showWeeklyGoal && (
+      {
         <div className="rounded-xl p-5 md:p-6 mb-4 bg-slate-900/50 border border-slate-700/30">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-3">
@@ -62,7 +61,7 @@ const WelcomeCard = ({
             </span>
           </div>
         </div>
-      )}
+      }
 
       <button
         onClick={() => console.log("Navegando a ajustes de perfil")}

@@ -2,10 +2,14 @@ import { HiAcademicCap } from "react-icons/hi";
 const ProgressCard = ({ title, progressItems }) => {
   return (
     <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-200">
-        {title}
-      </h2>
-
+      <div className="mb-5">
+        <h2 className="text-xl md:text-2xl font-bold  text-slate-200">
+          {title}
+        </h2>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Sigue tu avance y logros en cada curso
+        </p>
+      </div>
       <div className="space-y-6">
         {progressItems.map((item) => (
           <div

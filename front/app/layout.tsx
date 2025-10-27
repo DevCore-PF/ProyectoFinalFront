@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Kodchasan, Be_Vietnam_Pro } from "next/font/google";
+import {
+  Kodchasan,
+  Be_Vietnam_Pro,
+
+  Fira_Code,
+} from "next/font/google";
 import { Toaster } from "sonner";
+
+const fontFira_Code = Fira_Code({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -28,22 +40,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${beVietnam.variable} ${kodchasan.variable} antialiased`}
+        className={`${beVietnam.variable} ${kodchasan.variable} ${fontFira_Code.variable}  antialiased`}
       >
         <Toaster
-              position="top-center"
-              expand
-              richColors
-              closeButton
-              offset={16}
-              toastOptions={{
-                style: {
-                  justifyContent: "center",
-                  gap: 2,
-                  background: "#cfd6e8",
-                },
-              }}
-            />
+          position="top-center"
+          expand
+          richColors
+          closeButton
+          offset={16}
+          toastOptions={{
+            style: {
+              justifyContent: "center",
+              gap: 2,
+              background: "#cfd6e8",
+            },
+          }}
+        />{" "}
         {children}
       </body>
     </html>

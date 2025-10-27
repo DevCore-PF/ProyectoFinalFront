@@ -22,6 +22,7 @@ const LoginPage = () => {
   const formik = useFormik<loginType>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
+    validateOnMount: false,
     onSubmit: (values) => {
       console.log("Login values:", values);
       toastSuccess("¡Inicio de sesión exitoso!");
@@ -59,7 +60,7 @@ const LoginPage = () => {
               <input
                 type="email"
                 id="email"
-                placeholder="Ingresá tu email"
+                placeholder="Ingresa tu email"
                 {...formik.getFieldProps("email")}
                 className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
@@ -82,7 +83,7 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  placeholder="Ingresá tu contraseña"
+                  placeholder="Ingresa tu contraseña"
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
@@ -119,7 +120,13 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
+              onClick={() => {
+                formik.setTouched({
+                  email: true,
+                  password: true,
+                });
+              }}
+              disabled={formik.isSubmitting}
               className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {formik.isSubmitting ? "Iniciando..." : "Iniciar sesión"}
@@ -149,7 +156,7 @@ const LoginPage = () => {
 
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
-              <Link href="/register" className="text-accent-medium underline">
+              <Link href="/register" className="text-accent-medium hover:underline">
                 Registrate
               </Link>
               <span className="items-center text-xl">&rarr;</span>

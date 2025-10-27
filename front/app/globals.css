@@ -5,6 +5,7 @@
   --foreground: #171717;
   --colormine: #d9d9d9;
   --colormine1: #98989a;
+  --color: #cf8282;
 }
 
 @theme {
@@ -13,11 +14,11 @@
   --color-navbar: #363968;
   --color-footer: #131425;
   --color-border: #474b8a;
+  --color-border-light: #7c7fbb;
   --color-button: #7e4bde;
-  --color-accent-dark: #9c75e6;
   --color-accent-light: #dacbf6;
   --color-accent-medium: #bba0ee;
-  
+
   --color-font-light: #eeeff6;
   --color-font-dark: #090911;
 
@@ -30,6 +31,8 @@
 
   --font-title: "Kodchasan", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
+
+  --font-mono: var(--font-mono);
 }
 
 body {
@@ -37,16 +40,30 @@ body {
   color: var(--color-font-light);
   font-family: var(--font-body);
 }
-
+html {
+  scroll-behavior: smooth;
+}
 input[type="checkbox"]:checked + div .checkbox-indicator {
   display: block;
 }
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
-  -webkit-box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  box-shadow: 0 0 0px 1000px
+    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px
+    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
   -webkit-text-fill-color: #f0f0f0 !important;
   caret-color: #f0f0f0 !important;
   transition: background-color 9999s ease-in-out 0s !important;
+}
+
+button[data-button]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(126, 75, 222, 0.4);
+}
+
+button[data-cancel-button]:hover {
+  background: #4a5088 !important;
+  border-color: #5a6298 !important;
 }

@@ -6,7 +6,7 @@ import { IoArrowForward } from "react-icons/io5";
 
 const CoursesGrid = () => {
   return (
-    <div className="min-h-screen p-20">
+    <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-5xl font-bold text-font-light mb-4">
@@ -23,7 +23,7 @@ const CoursesGrid = () => {
             return (
               <div
                 key={course.id}
-                className="bg-slate-800/10 backdrop-blur-xs border border-slate-700/50 rounded-2xl p-6 hover:border-border-light/80 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-background2/70 flex flex-col"
+                className="group bg-slate-800/10 backdrop-blur-xs border border-slate-700/50 rounded-2xl p-6 hover:border-border-light/80 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-background2/70 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`${course.bgColor} p-3 rounded-xl`}>
@@ -62,13 +62,13 @@ const CoursesGrid = () => {
                   </div>
                 )}
 
+                {/* flecha con link */}
                 <div className="flex justify-end mt-auto">
                   <Link
                     href={`/courses/${course.id}`}
-                    className="inline-flex items-center gap-2 text-font-light text-sm font-semibold hover:gap-3 transition-all duration-300 group"
+                    className="bg-slate-700/50 p-3 rounded-lg group-hover:bg-slate-600/50 transition-all duration-300"
                   >
-                    Ver más
-                    <IoArrowForward className="text-lg group-hover:translate-x-1 transition-transform" />
+                    <IoArrowForward className="text-slate-300 text-xl -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>

@@ -3,6 +3,8 @@ import CoursesGrid from "@/components/CoursesGrid";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/hero/HeroSection";
 import Navbar from "@/components/Navbar";
+import PricingPlans from "@/components/Pricing";
+import Testimonials from "@/components/Testimonials";
 
 export default function Home() {
   return (
@@ -11,6 +13,8 @@ export default function Home() {
       <HeroSection />
       <CoursesGrid />
       <WhyChooseUs />
+      <PricingPlans />
+      <Testimonials />
       <Footer />
     </main>
   );

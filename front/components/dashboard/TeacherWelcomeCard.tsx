@@ -64,7 +64,7 @@ const TeacherWelcomeCard = ({ userName = "", userEmail = "" }) => {
                       <div className="p-2 bg-purple-500/10 rounded-lg text-accent-light group-hover:bg-purple-500/20  transition-all">
                         {option.icon}
                       </div>
-                      <span className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
+                      <span className="text-sm font-medium text-slate-200  transition-colors">
                         {option.title}
                       </span>
                     </button>

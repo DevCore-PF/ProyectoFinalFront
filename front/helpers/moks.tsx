@@ -21,6 +21,7 @@ import {
   HiEye,
 } from "react-icons/hi";
 
+import { FaCheck, FaTimes } from 'react-icons/fa';
 export const courses = [
   {
     id: 1,
@@ -204,3 +205,76 @@ export const teacherManagementOptions = [
     onClick: () => console.log("Ver cursos pendientes"),
   },
 ];
+
+export const testimonials = [
+  {
+    id: 1,
+    name: "Damian Duchaisnes",
+    country: "France",
+    flag: "🇫🇷",
+    text: "Las habilidades de programación que adquirí con las cursos de DevCore me dieron más confianza para crear por mi cuenta.",
+    image: "/images/user1.png",
+  },
+  {
+    id: 2,
+    name: "Sam Phelan",
+    country: "USA",
+    flag: "🇺🇸",
+    text: "He probado varias plataformas de aprendizaje y DevCore sin duda como DevCore. Aprender ha mucho más fácil y divertido.",
+    image: "/images/user6.png",
+  },
+  {
+    id: 3,
+    name: "Ana Laura Rodríguez",
+    country: "ARG",
+    flag: "🇦🇷",
+    text: "El curso de diseño web me brindó una base sólida. Los instructores eran expertos y siempre dispuestos a ayudar, y el entorno de aprendizaje, aunque grabado, resultó muy interactivo y motivador. Lo recomiendo totalmente.",
+    image: "/images/user3.png",
+  },
+];
+
+export const featuresChooseUs = [
+  {
+    id: 1,
+    number: "01",
+    title: "Horario de estudio flexible",
+    description:
+      "Organiza tus cursos según tus compromisos y responsabilidades.",
+  },
+  {
+    id: 2,
+    number: "02",
+    title: "Instrucciones de expertos",
+    description:
+      "Aprende de profesionales con experiencia real en diseño y desarrollo.",
+  },
+  {
+    id: 3,
+    number: "03",
+    title: "Variedad de cursos",
+    description:
+      "Explora una amplia gama de temas de diseño y desarrollo sobre distintos temas.",
+  },
+  {
+    id: 4,
+    number: "04",
+    title: "Contenido actualizado",
+    description:
+      "Accede a tutoriales actualizados que reflejan las últimas tendencias y prácticas de la industria.",
+  },
+  {
+    id: 5,
+    number: "05",
+    title: "Proyectos y ejercicios prácticos",
+    description:
+      "Desarrolla tus habilidades que requiere una experiencia en el mundo real.",
+  },
+  {
+    id: 6,
+    number: "06",
+    title: "Entorno de aprendizaje interactivo",
+    description:
+      "Conéctate con otros estudiantes, intercambia ideas y recibe retroalimentación.",
+  },
+];
+

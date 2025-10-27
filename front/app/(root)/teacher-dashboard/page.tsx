@@ -47,7 +47,7 @@ const TeacherDashboardPage = () => {
             userEmail={teacherData.userEmail}
           />
         </div>
-        <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
+        <div className="bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
           <div className="flex items-center gap-3 mb-10">
             <div className="p-2.5 bg-purple-500/10 rounded-lg">
               <HiBookOpen className="w-6 h-6 text-accent-light" />
@@ -84,14 +84,14 @@ const TeacherDashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-10">
-          {/* Cursos Destacados */}
-          <div className="lg:col-span-2 bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
+        
+          <div className="lg:col-span-2 flex flex-col justify-center bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2.5 bg-yellow-500/10 rounded-lg">
-                <HiTrendingUp className="w-6 h-6 text-yellow-400" />
+                <HiTrendingUp className="md:w-6 md:h-6 text-yellow-200" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-slate-200">
+                <h2 className="text-lg md:text-2xl font-bold text-slate-200">
                   CURSOS DESTACADOS
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -108,16 +108,16 @@ const TeacherDashboardPage = () => {
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-200 mb-1">
+                      <h3 className="text-sm md:text-lg font-semibold text-slate-200 mb-1">
                         {course.title}
                       </h3>
-                      <p className="text-sm text-slate-400">
+                      <p className="text-xs md:text-sm text-slate-400">
                         Ingresos generados
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-green-400">
-                        ${course.revenue.toFixed(2)}
+                      <p className="text-xs md:text-2xl font-bold text-green-600">
+                        ${course.revenue.toFixed(0)}
                       </p>
                       <p className="text-sm text-green-400 flex items-center gap-1 justify-end">
                         <HiTrendingUp className="w-4 h-4" />
@@ -130,11 +130,10 @@ const TeacherDashboardPage = () => {
             </div>
           </div>
 
-          {/* Actividad Reciente */}
           <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2.5 bg-blue-500/10 rounded-lg">
-                <HiChartBar className="w-6 h-6 text-blue-400" />
+                <HiChartBar className="w-6 h-6 text-blue-300" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-200">ACTIVIDAD</h2>

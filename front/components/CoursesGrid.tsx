@@ -8,11 +8,11 @@ const CoursesGrid = () => {
   return (
     <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className=" mb-12">
           <h2 className="text-2xl md:text-5xl font-bold text-font-light mb-4">
             Explora Nuestros Cursos
           </h2>
-          <p className="hidden md:block text-slate-300 text-lg max-w-2xl mx-auto">
+          <p className="hidden md:block text-slate-300 text-lg  ">
             Descubre una amplia variedad de cursos y rutas profesionales
             diseñadas para impulsar tu carrera en tecnología
           </p>

@@ -47,7 +47,7 @@ const EmailSubscription = () => {
             type="email"
             placeholder="Ingresa tu email"
             {...formik.getFieldProps("email")}
-            className={`relative w-full h-12 rounded-md bg-font-light/50 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 transition-all placeholder:text-font-dark/60 ${
+            className={`relative w-full h-12 rounded-md bg-font-light/70 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 transition-all placeholder:text-font-dark/60 ${
               showErrors && formik.errors.email ? "border border-red-500" : ""
             }`}
           />

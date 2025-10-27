@@ -1,68 +1,75 @@
-import React from 'react';
-import { HiCog } from 'react-icons/hi';
+"use client";
 
-interface WelcomeCardProps {
-  userName: string;
-  userEmail: string;
-  weeklyGoalProgress?: number; // porcentaje de 0-100
-  goalHours?: number;
-  currentHours?: number;
-  showWeeklyGoal?: boolean; // prop para controlar la meta semanal en card correspondiente
-}
+import { HiCog, HiTrendingUp, HiClock } from "react-icons/hi";
 
-const WelcomeCard: React.FC<WelcomeCardProps> = ({
-  userName,
-  userEmail,
+const WelcomeCard = ({
+  userName = "",
+  userEmail = "",
   weeklyGoalProgress = 0,
   goalHours = 0,
   currentHours = 0,
-  showWeeklyGoal = true // usado para evitar armar componente muy pequeño y no reutilizable
+  showWeeklyGoal = true,
 }) => {
-  const currentDate = new Date().toLocaleDateString('es-ES', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
+  const currentDate = new Date().toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 
   return (
-    <div className="rounded-xl p-8 text-white shadow-lg font-body" style={{ backgroundColor: '#3F4273' }}>
+    <div className="bg-transparent h-full flex flex-col justify-center backdrop-blur-sm border border-slate-700 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-6">
-        <p className="text-gray-300 text-sm mb-3 font-normal">{currentDate}</p>
-        <h1 className="text-3xl font-medium mb-2" style={{ fontWeight: 500 }}>¡Bienvenid@ {userName}!</h1>
-        <p className="text-gray-300 text-base font-light">{userEmail}</p>
+        <p className="text-slate-400 text-xs uppercase tracking-wider mb-3">
+          {currentDate}
+        </p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2  text-slate-200">
+          ¡Bienvenid@ {userName}!
+        </h1>
+        <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
       </div>
-      
-      
+
       {showWeeklyGoal && (
-        <div className="rounded-lg p-6 mb-4" style={{ backgroundColor: '#2B2C4F' }}>
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-base font-medium">Meta semanal</span>
-            <span className="text-base font-medium">{weeklyGoalProgress}%</span>
+        <div className="rounded-xl p-5 md:p-6 mb-4 bg-slate-900/50 border border-slate-700/30">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500/10 rounded-lg">
+                <HiTrendingUp className="w-5 h-5 text-yellow-light" />
+              </div>
+              <span className="text-base font-semibold text-slate-200">
+                Meta semanal
+              </span>
+            </div>
+            <span className="text-lg font-bold text-slate-400">
+              {weeklyGoalProgress}%
+            </span>
           </div>
-          
-          <div className="w-full bg-gray-700 rounded-full h-4 mb-3">
-            <div 
-              className="h-4 rounded-full transition-all duration-500 ease-out"
-              style={{ 
-                width: `${weeklyGoalProgress}%`,
-                backgroundColor: '#FBEDBC'
-              }}
+
+          <div className="w-full bg-slate-700/50 rounded-full h-2.5 mb-4 overflow-hidden">
+            <div
+              className="h-2.5 rounded-full transition-all duration-700 ease-out bg-linear-to-r from-button/40  to-button shadow-lg shadow-purple-500/50"
+              style={{ width: `${weeklyGoalProgress}%` }}
             ></div>
           </div>
-          
-          <p className="text-sm text-gray-300 font-light">
-            Llevas {currentHours} horas de {goalHours} horas
-          </p>
+
+          <div className="flex items-center gap-2 text-sm text-slate-400">
+            <HiClock className="w-4 h-4" />
+            <span>
+              <span className="text-slate-200 font-semibold">
+                {currentHours}h
+              </span>{" "}
+              de{" "}
+              <span className="text-slate-200 font-semibold">{goalHours}h</span>
+            </span>
+          </div>
         </div>
       )}
-      
-      
-      <button 
-        onClick={() => console.log('Navegando a ajustes de perfil')}
-        className="flex items-center space-x-2 mt-4 text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer"
+
+      <button
+        onClick={() => console.log("Navegando a ajustes de perfil")}
+        className="flex items-center gap-2 text-slate-400 hover:underline cursor-pointer transition-colors duration-200 group"
       >
-        <HiCog className="text-lg" />
-        <span className="text-sm font-light">Ajustes de perfil</span>
+        <HiCog className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+        <span className="text-sm font-medium">Ajustes de perfil</span>
       </button>
     </div>
   );

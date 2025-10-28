@@ -9,7 +9,7 @@ import { updateRoleService } from "@/services/user.services";
 
 import { useFormik } from "formik";
 import { roleValidation } from "@/validators/registerSchema";
-import { toastError } from "@/helpers/toast";
+import { toastError, toastSuccess } from "@/helpers/toast";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
@@ -17,7 +17,7 @@ import { useAuth } from "@/context/UserContext";
 const page = () => {
   const router = useRouter();
   const { token, isLoading, setToken, setUser } = useAuth();
-
+  let rol = "";
   const formik = useFormik({
     initialValues: {
       role: "",
@@ -27,11 +27,19 @@ const page = () => {
       try {
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
+          console.log("data de rol", data);
 
           if (data.access_token) {
             setToken(data.access_token);
           }
           setUser(data.user);
+          if (formik.values.role === "student") {
+            rol = "alumn@";
+          } else {
+            rol = "profesor";
+          }
+          toastSuccess(`Has seleccionado ${rol}.
+            Revisa tu email para verificar tu cuenta.`);
           router.push("/login");
         }
       } catch (error) {
@@ -122,9 +130,9 @@ const page = () => {
                 <p className="text-3xl sm:text-5xl text-center">Alumn@</p>
               </span>
             </div>
-            {/* {formik.errors.role && showError(formik.errors.role)} */}
           </div>
           <button
+            disabled={formik.isSubmitting}
             type="submit"
             onClick={() => {
               formik.setTouched({

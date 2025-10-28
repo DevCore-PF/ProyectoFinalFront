@@ -1,21 +1,3 @@
-// interface User {
-//   id: number;
-//   name: string;
-//   email: string;
-//   address?: string;
-//   phone?: string;
-//   role: string;
-//   credentials: {
-//     id: number;
-//     password: string;
-//   };
-//   token: string;
-// }
-
-// interface UserProviderProps {
-//   children: React.ReactElement;
-// }
-
 "use client";
 import {
   createContext,
@@ -28,6 +10,7 @@ import {
 interface User {
   email: string;
   hasCompletedProfile: boolean;
+  isEmailVerified: boolean;
   id: string;
   name: string;
   role: "student" | "teacher" | "admin" | null;
@@ -86,11 +69,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.removeItem("user");
     setTokenState(null);
     setUserState(null);
+    window.location.href = "/";
   };
 
   return (
     <AuthContext.Provider
-      value={{ token, setToken, isLoading, logout, user, setUser }}
+      value={{
+        token,
+        setToken,
+        isLoading,
+        logout,
+        user,
+        setUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

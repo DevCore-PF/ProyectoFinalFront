@@ -13,14 +13,16 @@ import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
 const TeacherDashboardPage = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
-  useEffect(() => {
-    if (!user || user.role !== "teacher") {
-      router.push("/");
-    }
-  }, [user, router]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user || user.role !== "teacher") {
+        router.push("/");
+      }
+    }
+  }, [user, isLoading, router]);
   const handleViewCourseDetails = (courseId: number) => {
     console.log(`Ver detalles del curso: ${courseId}`);
   };

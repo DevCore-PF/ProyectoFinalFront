@@ -29,8 +29,6 @@ const page = () => {
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
-  const { user } = useAuth();
-
   const handleShowPass = () => {
     setShow(!show);
   };
@@ -52,11 +50,16 @@ const page = () => {
             setToken(data.access_token);
             setUser(data.user);
             toastSuccess("Registro enviado!");
+
             formik.resetForm();
             router.replace("/role");
           } catch (error) {
             if (error instanceof Error) {
               if (error.message === "El correo electrónico ya está en uso") {
+                toastError(error.message);
+              } else if (
+                error.message === "Debe aceptar lo terminos y condiciones"
+              ) {
                 toastError(error.message);
               }
             } else {
@@ -271,7 +274,7 @@ const page = () => {
                 });
               }}
               disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-400"
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90"
             >
               Registrarme
             </button>

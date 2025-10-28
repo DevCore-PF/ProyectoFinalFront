@@ -12,14 +12,17 @@ import { useFormik } from "formik";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginUserService } from "@/services/user.services";
 import { toastError, toastSuccess } from "@/helpers/toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/UserContext";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
   const router = useRouter();
+  const { setToken, setUser, user } = useAuth();
   const formik = useFormik<LoginType>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -27,7 +30,11 @@ const LoginPage = () => {
     onSubmit: async () => {
       try {
         const data = await loginUserService(formik.values);
+        setToken(data.access_token);
+        setUser(data.user);
         toastSuccess("Login exitoso!");
+        console.log("esta es mi data", data);
+
         router.push("/");
       } catch (error) {
         if (error instanceof Error) {
@@ -40,7 +47,11 @@ const LoginPage = () => {
       }
     },
   });
-
+  useEffect(() => {
+    if (user && !user.isEmailVerified) {
+      setShowEmailNotVerified(true);
+    }
+  }, [user]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -59,10 +70,16 @@ const LoginPage = () => {
           className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
         >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
-          <p className="text-gray-400 text-center mb-6">
-            Iniciá sesión para ingresar a tu cuenta.
-          </p>
-
+          {showEmailNotVerified ? (
+            <p className="text-red-400 text-center mb-6">
+              Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
+              entrada.
+            </p>
+          ) : (
+            <p className="text-gray-400 text-center mb-6">
+              Iniciá sesión para ingresar a tu cuenta.
+            </p>
+          )}
           <div className="flex flex-col gap-4">
             <div>
               <label htmlFor="email" className="block text-sm mb-1">

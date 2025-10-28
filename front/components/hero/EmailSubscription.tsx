@@ -25,14 +25,14 @@ const EmailSubscription = () => {
       console.log("Newsletter subscription:", values.email);
       toastSuccess("¡Te has suscrito al newsletter exitosamente!");
       setIsSubscribing(false);
-      setShowErrors(false); 
+      setShowErrors(false);
       formik.resetForm();
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowErrors(true); 
+    setShowErrors(true);
     formik.handleSubmit();
   };
 
@@ -40,14 +40,14 @@ const EmailSubscription = () => {
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
-          <div className="absolute -inset-2 bg-purple-300/30 blur-3xl rounded-lg -z-10"></div>
+          <div className="absolute -inset-2 bg-purple-300/10 blur-3xl rounded-lg -z-10"></div>
           <div className="absolute -inset-1 bg-purple-100/20 blur-2xl rounded-lg -z-10"></div>
 
           <input
             type="email"
             placeholder="Ingresa tu email"
             {...formik.getFieldProps("email")}
-            className={`relative w-full h-12 rounded-md bg-font-light/50 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 transition-all placeholder:text-font-dark/60 ${
+            className={`relative w-full h-12 rounded-md bg-font-light/70 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 transition-all placeholder:text-font-dark/60 ${
               showErrors && formik.errors.email ? "border border-red-500" : ""
             }`}
           />
@@ -58,9 +58,8 @@ const EmailSubscription = () => {
 
         <div className="relative">
           <div className="absolute -inset-3 bg-purple-100/10 blur-3xl rounded-lg -z-10"></div>
-          <div className="absolute -inset-2 bg-purple-400/30 blur-3xl rounded-lg -z-10"></div>
-          <div className="absolute -inset-1 bg-purple-600/20 blur-3xl rounded-lg -z-10"></div>
-          <div className="absolute -inset-1 bg-gray-500/70 blur-3xl rounded-lg -z-10"></div>
+
+          <div className="absolute -inset-1 bg-gray-500/40 blur-3xl rounded-lg -z-10"></div>
           <button
             type="submit"
             disabled={isSubscribing}

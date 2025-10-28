@@ -37,13 +37,7 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       icon: <HiPencil className="text-xl" />,
       onClick: () => console.log('Editar curso existente')
     },
-    {
-      id: 'add-video',
-      title: 'Agregar un nuevo video',
-      description: 'Añade lecciones a un curso ya publicado o en borrador.',
-      icon: <HiVideoCamera className="text-xl" />,
-      onClick: () => console.log('Agregar nuevo video')
-    },
+ 
     {
       id: 'statistics',
       title: 'Ver mis estadísticas',

@@ -1,75 +1,36 @@
-import React from 'react';
-
-interface QuickAccessItem {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  onClick: () => void;
-}
-
-interface QuickAccessCardProps {
-  items: QuickAccessItem[];
-}
-
-const QuickAccessCard: React.FC<QuickAccessCardProps> = ({ items }) => {
+import { HiArrowRight } from "react-icons/hi";
+const QuickAccessCard = ({ items }) => {
   return (
-    <div className="space-y-4 font-body">
-      <h2 
-        className="text-4xl text-white mb-6 text-center" 
-        style={{ 
-          fontWeight: 400,
-          letterSpacing: '0.01em',
-          lineHeight: 1.2,
-          fontFamily: '"Be Vietnam Pro", sans-serif'
-        }}
-      >
-        Acceso rápido
-      </h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+    <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-white shadow-xl hover:border-slate-600/50 transition-all duration-300">
+      <div className="mb-5">
+        <h2 className="text-xl md:text-2xl font-bold  text-slate-200">
+          Acceso rápido
+        </h2>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Tus cursos activos y tareas pendientes en un vistazo
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item) => (
-          <div
+          <button
             key={item.id}
             onClick={item.onClick}
-            className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
-            style={{ 
-              backgroundColor: '#3F4273',
-              border: '0.8px solid #FBEDBC'
-            }}
+            className="group flex items-start gap-4 p-5 rounded-xl bg-slate-900/50 border cursor-pointer border-slate-700/30 hover:border-button/80 hover:bg-slate-900/70 transition-all duration-300 text-left hover:scale-[1.02]"
           >
-            <div className="flex items-start space-x-4">
-              <div className="flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
-                <div style={{ 
-                  color: '#FBEDBC',
-                  width: '24px',
-                  height: '32px',
-                  minWidth: '24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <div style={{ width: '100%', height: '100%', color: '#FBEDBC' }}>
-                    {item.icon}
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium mb-1 text-white">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-200 font-light">{item.description}</p>
-              </div>
+            <div className="p-3 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors shrink-0">
+              {item.icon}
             </div>
-            
-            <button 
-              className="mt-4 w-full py-2 px-4 rounded-lg text-sm font-medium hover:opacity-90 transition-colors duration-200"
-              style={{ 
-                backgroundColor: '#FBEDBC',
-                color: '#242645'
-              }}
-            >
-              Ver más
-            </button>
-          </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xs font-bold mb-1 text-font-light uppercase tracking-wider">
+                {item.title}
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+            <HiArrowRight className="w-5 h-5 text-slate-500 group-hover:text-button  group-hover:translate-x-1 transition-all duration-300 mt-1" />
+          </button>
         ))}
       </div>
     </div>

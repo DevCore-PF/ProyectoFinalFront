@@ -278,3 +278,26 @@ export const featuresChooseUs = [
   },
 ];
 
+
+  export const faqs = [
+    {
+      question: "¿Puedo inscribirme en varios cursos al mismo tiempo?",
+      answer: "¡Desde! Puedes explotar en todos los cursos que quieras y acceder a ellos cuando te resulte más cómodo."
+    },
+    {
+      question: "¿Qué tipo de soporte ofrecen los instructores?",
+      answer: "Nuestros instructores ofrecen soporte a través de foros de discusión, sesiones de Q&A en vivo y respuestas directas a tus preguntas dentro de la plataforma."
+    },
+    {
+      question: "¿Los cursos son a tu propio ritmo o tienen fechas fijas de inicio y fin?",
+      answer: "Todos nuestros cursos son a tu propio ritmo, lo que significa que puedes comenzar cuando quieras y avanzar según tu disponibilidad."
+    },
+    {
+      question: "¿Hay requisitos previos para inscribirme?",
+      answer: "La mayoría de nuestros cursos no requieren conocimientos previos, aunque algunos cursos avanzados pueden requerir experiencia básica en el tema."
+    },
+    {
+      question: "¿Puedo descargar el material para verlo sin conexión?",
+      answer: "Sí, con el Plan Pro puedes descargar los materiales del curso y las lecciones en video para acceder a ellos sin conexión en cualquier momento."
+    }
+  ];

@@ -21,11 +21,14 @@ const Testimonials = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-slate-600/40 border border-slate-400/50  rounded-2xl overflow-hidden ">
+          <div className="bg-slate-900/50 backdrop-blur-xs border-transparent border hover:border-slate-400/50  rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
-                <FaQuoteLeft className="absolute top-4 left-4 text-white/80 text-2xl z-10" />
-                <img
+                <div className="absolute bg-black/30  inset-0"></div>
+                <FaQuoteLeft className="absolute top-4 left-4 text-accent-light text-2xl z-10" />
+                <Image
+                  width={300}
+                  height={100}
                   src={testimonials[0].image}
                   alt={testimonials[0].name}
                   className="w-full h-full object-cover"
@@ -49,11 +52,14 @@ const Testimonials = () => {
             </div>
           </div>
 
-          <div className="bg-slate-600/40  border  border-slate-400/50  rounded-2xl overflow-hidden ">
+          <div className="bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50  hover:border-slate-400/50 rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
-                <FaQuoteLeft className="absolute top-4 left-4 text-white/80 text-2xl z-10" />
-                <img
+                <div className="absolute bg-black/40  inset-0"></div>
+                <FaQuoteLeft className="absolute top-4 left-4 text-accent-light text-2xl z-10" />
+                <Image
+                  width={300}
+                  height={100}
                   src={testimonials[1].image}
                   alt={testimonials[1].name}
                   className="w-full h-full object-cover"
@@ -76,11 +82,14 @@ const Testimonials = () => {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-2 bg-slate-600/40 border  border-slate-400/50  rounded-2xl overflow-hidden ">
+          <div className="lg:col-span-2 bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50 hover:border-slate-400/50 rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
-                <FaQuoteLeft className="absolute top-4 left-4 text-white/80 text-2xl z-10" />
-                <img
+                <div className="absolute bg-black/25  inset-0"></div>
+                <FaQuoteLeft className="absolute top-4 left-4 text-accent-light text-2xl z-10" />
+                <Image
+                  width={300}
+                  height={100}
                   src={testimonials[2].image}
                   alt={testimonials[2].name}
                   className="w-full h-full object-cover"

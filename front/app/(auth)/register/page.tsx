@@ -4,7 +4,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
 //Helpers
-import { toastConfirm, toastSuccess } from "@/helpers/toast";
+import { toastConfirm, toastError, toastSuccess } from "@/helpers/toast";
 
 //Formik
 import {
@@ -18,8 +18,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { registerType } from "../../../validators/registerSchema";
-
+import { registerUser } from "@/services/user.services";
+import { useRouter } from "next/navigation";
 const page = () => {
+  const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
   const handleShowPass = () => {
@@ -28,6 +30,7 @@ const page = () => {
   const handleShowRPass = () => {
     setShowR(!showR);
   };
+
   const formik = useFormik<registerType>({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
@@ -38,10 +41,16 @@ const page = () => {
         "Enviar formulario",
         async () => {
           try {
-            // llamado a la api
+            const data = await registerUser(formik.values);
             toastSuccess("Registro enviado!");
             formik.resetForm();
+            router.replace("/role");
           } catch (error) {
+            if (error instanceof Error) {
+              toastError(error.message);
+            } else {
+              toastError("Error desconocido");
+            }
           } finally {
             formik.setSubmitting(false);
           }
@@ -148,15 +157,15 @@ const page = () => {
             </div>
 
             <div>
-              <label htmlFor="repeatPassword" className="block text-sm mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm mb-1">
                 Repetir Contraseña
               </label>
               <div className="relative">
                 <input
                   type={showR ? "text" : "password"}
-                  id="repeatPassword"
+                  id="confirmPassword"
                   placeholder="Confirma tu contraseña"
-                  {...formik.getFieldProps("repeatPassword")}
+                  {...formik.getFieldProps("confirmPassword")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
                       ? "border border-red-500"
@@ -171,9 +180,10 @@ const page = () => {
                   {showR ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
-              {formik.errors.repeatPassword && formik.touched.repeatPassword ? (
+              {formik.errors.confirmPassword &&
+              formik.touched.confirmPassword ? (
                 <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.repeatPassword}
+                  {formik.errors.confirmPassword}
                 </p>
               ) : null}
             </div>
@@ -245,7 +255,7 @@ const page = () => {
                   name: true,
                   email: true,
                   password: true,
-                  repeatPassword: true,
+                  confirmPassword: true,
                   checkboxTerms: true,
                 });
               }}

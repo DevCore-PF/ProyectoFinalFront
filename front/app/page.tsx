@@ -1,5 +1,6 @@
 import WhyChooseUs from "@/components/ChooseUs";
 import CoursesGrid from "@/components/CoursesGrid";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/hero/HeroSection";
 import Navbar from "@/components/Navbar";
@@ -15,6 +16,7 @@ export default function Home() {
       <WhyChooseUs />
       <PricingPlans />
       <Testimonials />
+      <FAQ/>
       <Footer />
     </main>
   );

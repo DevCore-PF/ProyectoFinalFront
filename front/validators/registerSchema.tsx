@@ -3,7 +3,7 @@ export interface registerType {
   name: string;
   email: string;
   password: string;
-  repeatPassword: string;
+  confirmPassword: string;
   checkboxTerms: boolean;
 }
 
@@ -11,7 +11,7 @@ export const registerInitialValues = {
   name: "",
   email: "",
   password: "",
-  repeatPassword: "",
+  confirmPassword: "",
   checkboxTerms: false,
 };
 
@@ -31,7 +31,7 @@ export const registerValidations = Yup.object({
     .matches(/[0-9]/, "Debe incluir un número")
     .matches(/[!@#$%^&*(),.?":{}|<>-]/, "Debe inlcuir un catacter especial"),
 
-  repeatPassword: Yup.string()
+  confirmPassword: Yup.string()
     .required("Debe confirmar contraseña")
     .oneOf([Yup.ref("password")], "Contraseñas deben coincidir"),
   checkboxTerms: Yup.boolean().oneOf(

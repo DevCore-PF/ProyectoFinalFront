@@ -6,13 +6,11 @@ import {
   SiNodedotjs,
   SiMongodb,
   SiPython,
-  SiMysql,
   SiFigma,
   SiSwift,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import {
-  HiChevronDown,
   HiPlus,
   HiUpload,
   HiPencil,
@@ -21,7 +19,7 @@ import {
   HiEye,
 } from "react-icons/hi";
 
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { HiBookOpen, HiCheckCircle } from "react-icons/hi";
 export const courses = [
   {
     id: 1,
@@ -278,26 +276,116 @@ export const featuresChooseUs = [
   },
 ];
 
+export const faqs = [
+  {
+    question: "¿Puedo inscribirme en varios cursos al mismo tiempo?",
+    answer:
+      "¡Desde! Puedes explotar en todos los cursos que quieras y acceder a ellos cuando te resulte más cómodo.",
+  },
+  {
+    question: "¿Qué tipo de soporte ofrecen los instructores?",
+    answer:
+      "Nuestros instructores ofrecen soporte a través de foros de discusión, sesiones de Q&A en vivo y respuestas directas a tus preguntas dentro de la plataforma.",
+  },
+  {
+    question:
+      "¿Los cursos son a tu propio ritmo o tienen fechas fijas de inicio y fin?",
+    answer:
+      "Todos nuestros cursos son a tu propio ritmo, lo que significa que puedes comenzar cuando quieras y avanzar según tu disponibilidad.",
+  },
+  {
+    question: "¿Hay requisitos previos para inscribirme?",
+    answer:
+      "La mayoría de nuestros cursos no requieren conocimientos previos, aunque algunos cursos avanzados pueden requerir experiencia básica en el tema.",
+  },
+  {
+    question: "¿Puedo descargar el material para verlo sin conexión?",
+    answer:
+      "Sí, con el Plan Pro puedes descargar los materiales del curso y las lecciones en video para acceder a ellos sin conexión en cualquier momento.",
+  },
+];
 
-  export const faqs = [
+export const recommendedCourses = [
+  {
+    id: "1",
+    name: "React Avanzado",
+    description: "Domina hooks, context y patrones avanzados",
+    duration: "12 horas",
+    rating: "4.8",
+  },
+  {
+    id: "2",
+    name: "TypeScript desde cero",
+    description: "Aprende tipado estático para JavaScript",
+    duration: "8 horas",
+    rating: "4.9",
+  },
+  {
+    id: "3",
+    name: "Node.js y Express",
+    description: "Crea APIs robustas con Node",
+    duration: "15 horas",
+    rating: "4.7",
+  },
+];
+
+export const progressData = [
+  { id: "1", name: "Diseño UX", progress: 28 },
+  { id: "2", name: "JavaScript", progress: 70 },
+  { id: "3", name: "CSS", progress: 60 },
+];
+
+export const studentData = {
+  userName: "Sofia",
+  userEmail: "sofiarodriguez@gmail.com",
+  weeklyGoalProgress: 68,
+  goalHours: 4,
+  currentHours: 2.7,
+};
+
+export const quickAccessItems = [
+  {
+    id: "courses",
+    title: "CURSOS",
+    description: "Accede a todos los cursos en los que estás inscripto.",
+    icon: <HiBookOpen className="w-6 h-6 text-accent-light" />,
+    onClick: () => console.log("Navegando a cursos"),
+  },
+  {
+    id: "tasks",
+    title: "TAREAS",
+    description: "Completa las tareas asignadas a cada lección.",
+    icon: <HiCheckCircle className="w-6 h-6 text-accent-light" />,
+    onClick: () => console.log("Navegando a tareas"),
+  },
+];
+
+export const teacherFeaturedCourses = [
+  { id: 1, title: "Introducción a React", revenue: 12247.55, trend: "+15%" },
+  { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
+];
+
+  export const teacherRecentActivity = [
     {
-      question: "¿Puedo inscribirme en varios cursos al mismo tiempo?",
-      answer: "¡Desde! Puedes explotar en todos los cursos que quieras y acceder a ellos cuando te resulte más cómodo."
+      id: 1,
+      type: "review",
+      text: "Nueva reseña 5★ en 'Introducción a React'",
+      time: "Hace 2 horas",
     },
     {
-      question: "¿Qué tipo de soporte ofrecen los instructores?",
-      answer: "Nuestros instructores ofrecen soporte a través de foros de discusión, sesiones de Q&A en vivo y respuestas directas a tus preguntas dentro de la plataforma."
+      id: 2,
+      type: "enrollment",
+      text: "15 nuevos estudiantes esta semana",
+      time: "Hace 5 horas",
     },
     {
-      question: "¿Los cursos son a tu propio ritmo o tienen fechas fijas de inicio y fin?",
-      answer: "Todos nuestros cursos son a tu propio ritmo, lo que significa que puedes comenzar cuando quieras y avanzar según tu disponibilidad."
+      id: 3,
+      type: "update",
+      text: "Actualización completada en 'JavaScript Avanzado'",
+      time: "Hace 1 día",
     },
-    {
-      question: "¿Hay requisitos previos para inscribirme?",
-      answer: "La mayoría de nuestros cursos no requieren conocimientos previos, aunque algunos cursos avanzados pueden requerir experiencia básica en el tema."
-    },
-    {
-      question: "¿Puedo descargar el material para verlo sin conexión?",
-      answer: "Sí, con el Plan Pro puedes descargar los materiales del curso y las lecciones en video para acceder a ellos sin conexión en cualquier momento."
-    }
   ];
+  export const teacherData = {
+    userName: "Carolina",
+    userEmail: "carolinaperez@gmail.com",
+  };

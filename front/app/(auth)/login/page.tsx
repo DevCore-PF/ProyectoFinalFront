@@ -3,10 +3,8 @@
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
-import { toastSuccess } from "@/helpers/toast";
-
 import {
-  loginType,
+  LoginType,
   loginInitialValues,
   loginValidations,
 } from "@/validators/loginSchema";
@@ -15,18 +13,31 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { loginUserService } from "@/services/user.services";
+import { toastError, toastSuccess } from "@/helpers/toast";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const formik = useFormik<loginType>({
+  const router = useRouter();
+  const formik = useFormik<LoginType>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
     validateOnMount: false,
-    onSubmit: (values) => {
-      console.log("Login values:", values);
-      toastSuccess("¡Inicio de sesión exitoso!");
-      // aca iría la lógica de autenticación
+    onSubmit: async () => {
+      try {
+        const data = await loginUserService(formik.values);
+        toastSuccess("Login exitoso!");
+        router.push("/");
+      } catch (error) {
+        if (error instanceof Error) {
+          toastError(error.message);
+        } else {
+          toastError("Error desconocido");
+        }
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
 
@@ -106,7 +117,7 @@ const LoginPage = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-300">
+            {/* <div className="flex items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-center cursor-pointer ">
                 <input type="checkbox" className="sr-only" />
                 <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
@@ -116,7 +127,7 @@ const LoginPage = () => {
                   Recordarme
                 </label>
               </label>
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -156,7 +167,10 @@ const LoginPage = () => {
 
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
-              <Link href="/register" className="text-accent-medium hover:underline">
+              <Link
+                href="/register"
+                className="text-accent-medium hover:underline"
+              >
                 Registrate
               </Link>
               <span className="items-center text-xl">&rarr;</span>

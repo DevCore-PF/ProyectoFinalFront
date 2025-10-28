@@ -1,18 +1,28 @@
 import * as Yup from "yup";
-export interface registerType {
+export interface RegisterType {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-  checkboxTerms: boolean;
+  checkBoxTerms: boolean;
 }
 
+export interface RegisterResponse {
+  access_token: string;
+  user: {
+    email: string;
+    hasCompletedProfile: boolean;
+    id: string;
+    name: string;
+    role: "student" | "teacher" | "admin" | null;
+  };
+}
 export const registerInitialValues = {
   name: "",
   email: "",
   password: "",
   confirmPassword: "",
-  checkboxTerms: false,
+  checkBoxTerms: false,
 };
 
 export const registerValidations = Yup.object({
@@ -29,7 +39,7 @@ export const registerValidations = Yup.object({
     .max(15, "Máximo debe ser 15 caracteres")
     .matches(/[A-Z]/, "Debe incluir una mayúscula")
     .matches(/[0-9]/, "Debe incluir un número")
-    .matches(/[!@#$%^&*(),.?":{}|<>-]/, "Debe inlcuir un catacter especial"),
+    .matches(/[!@#$%^&*]/, "Debe inlcuir un catacter especial !@#$%^&*"),
 
   confirmPassword: Yup.string()
     .required("Debe confirmar contraseña")
@@ -38,6 +48,14 @@ export const registerValidations = Yup.object({
     [true],
     "Debes aceptar los Términos y Condiciones"
   ),
+});
+// La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*,La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*
+export interface roleType {
+  role: string;
+}
+
+export const roleValidation = Yup.object({
+  role: Yup.string().required("Debes seleccionar un rol"),
 });
 
 export interface professionalFormType {

@@ -3,8 +3,7 @@
 //Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
-
-//Next
+// Next
 import Link from "next/link";
 import { updateRoleService } from "@/services/user.services";
 
@@ -150,4 +149,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SelectRolePage;

@@ -60,25 +60,41 @@ const Footer = () => {
               {/* columna izq-der */}
 
               <Link href="/#item" onClick={handleInicioClick}>
-                <p className="text-white font-semibold text-sm">Inicio</p>
+                <p className="text-white font-semibold text-sm hover:text-shadow-xs text-shadow-white">
+                  Inicio
+                </p>
               </Link>
 
-              <Link href="/benefits">Beneficios</Link>
-              <Link href="/ourcourses">Nuestros Cursos</Link>
-              <Link href="/testimonials">Testimonios</Link>
-              <Link href="/faq">Preguntas Frecuentes</Link>
+              <Link href="/benefits" className="hover:text-white">
+                Beneficios
+              </Link>
+              <Link href="/ourcourses" className="hover:text-white">
+                Nuestros Cursos
+              </Link>
+              <Link href="/testimonials" className="hover:text-white">
+                Testimonios
+              </Link>
+              <Link href="/faq" className="hover:text-white">
+                Preguntas Frecuentes
+              </Link>
             </div>
             <div className="flex flex-col text-gray-dark gap-2 text-[12px] font-normal">
               {/* columna cntr-der */}
               <Link href="/aboutus">
-                <p className="text-white font-semibold text-sm">
+                <p className="text-white font-semibold text-sm hover:text-shadow-xs text-shadow-white">
                   Sobre Nosotros
                 </p>
               </Link>
 
-              <Link href="/company">La Empresa</Link>
-              <Link href="/achievements">Logros</Link>
-              <Link href="/ourgoals">Nuestras metas</Link>
+              <Link href="/company" className="hover:text-white">
+                La Empresa
+              </Link>
+              <Link href="/achievements" className="hover:text-white">
+                Logros
+              </Link>
+              <Link href="/ourgoals" className="hover:text-white">
+                Nuestras metas
+              </Link>
             </div>
             <div>
               {/* columna der-der */}

@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/UnderConstruction";
 import React from "react";
 
 const AchievementsPage = () => {
-  return <div>AchievementsPage</div>;
+return <UnderConstruction />;
 };
 
 export default AchievementsPage;

@@ -2,9 +2,19 @@
 import { HiChevronDown, HiCog } from "react-icons/hi";
 import { teacherManagementOptions } from "@/helpers/moks";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 const TeacherWelcomeCard = ({ userName = "", userEmail = "" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
+  const handleProfileSettings = () => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      router.push(`/profile/${user.id}/settings`);
+    } else {
+      router.push("/login");
+    }
+  };
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
     month: "long",
@@ -23,7 +33,7 @@ const TeacherWelcomeCard = ({ userName = "", userEmail = "" }) => {
           </h1>
           <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
           <button
-            onClick={() => console.log("Navegando a ajustes de perfil")}
+            onClick={handleProfileSettings}
             className="flex items-center gap-2 mt-3 text-slate-400 hover:underline cursor-pointer transition-colors duration-200 group"
           >
             <HiCog className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />

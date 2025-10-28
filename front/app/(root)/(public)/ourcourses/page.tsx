@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/UnderConstruction";
 import React from "react";
 
 const OurCoursesPage = () => {
-  return <div>OurCoursesPage</div>;
+return <UnderConstruction />;
 };
 
 export default OurCoursesPage;

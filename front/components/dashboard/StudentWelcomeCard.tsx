@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { HiCog, HiTrendingUp, HiClock } from "react-icons/hi";
-
+import { useRouter } from "next/navigation";
 const WelcomeCard = ({
   userName = "",
   userEmail = "",
@@ -11,13 +11,34 @@ const WelcomeCard = ({
   currentHours = 0,
 }) => {
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const router = useRouter();
 
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+  useEffect(() => {
+    const timer1 = setTimeout(() => setAnimatedProgress(0), 0);
+    const timer2 = setTimeout(() => {
+      setAnimatedProgress(weeklyGoalProgress);
+    }, 200);
 
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [weeklyGoalProgress]);
+
+  const handleProfileSettings = () => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      router.push(`/profile/${user.id}/settings`);
+    } else {
+      router.push("/login");
+    }
+  };
   useEffect(() => {
     const startDelay = setTimeout(() => {
       setAnimatedProgress(weeklyGoalProgress);
@@ -88,7 +109,7 @@ const WelcomeCard = ({
       </div>
 
       <button
-        onClick={() => console.log("Navegando a ajustes de perfil")}
+        onClick={handleProfileSettings}
         className="flex items-center gap-2 text-slate-400 hover:underline cursor-pointer transition-colors duration-200 group"
       >
         <HiCog className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />

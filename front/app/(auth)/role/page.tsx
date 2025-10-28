@@ -27,7 +27,7 @@ const page = () => {
       try {
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-          console.log("data de rol", data);
+       
 
           if (data.access_token) {
             setToken(data.access_token);
@@ -149,4 +149,4 @@ const page = () => {
   );
 };
 
-export default SelectRolePage;
+export default page;

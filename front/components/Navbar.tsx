@@ -1,24 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  
   const { user, logout } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  console.log('este es mi rol de nav',user?.role);
-  console.log('este es mi user de nav',user);
+  useEffect(() => {
+    setIsAuthenticated(!!(user && user.role));
+  }, [user]);
   return (
     <>
-      {!user ? (
+      {!isAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <div className="flex items-center space-x-2">
+            <Link href={"/"} className="flex items-center space-x-2 cursor-pointer">
               <span className="font-bold text-lg">DevCore</span>
-            </div>
+            </Link>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -32,31 +33,31 @@ export default function Navbar() {
             <div className="hidden md:flex flex-1 justify-center space-x-2">
               <Link
                 href="/"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Inicio
               </Link>
               <Link
                 href="/courses"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Cursos
               </Link>
               <Link
                 href="/aboutus"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
               </Link>
               <Link
                 href="/plans"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Planes
               </Link>
               <Link
                 href="/contact"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
               </Link>
@@ -95,7 +96,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="hover:bg-yellow-light hover:text-navbar px-3 py-2 rounded-md transition-colors duration-200 inline-block"
+                  className="hover:bg-background hover:text-navbar px-3 py-2 rounded-md transition-colors duration-200 inline-block"
                 >
                   {link.label}
                 </Link>
@@ -123,9 +124,9 @@ export default function Navbar() {
       ) : (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <div className="flex items-center space-x-2">
+            <Link href={"/"} className="flex items-center space-x-2 cursor-pointer">
               <span className="font-bold text-lg">DevCore</span>
-            </div>
+            </Link>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -139,38 +140,38 @@ export default function Navbar() {
             <div className="hidden md:flex flex-1 justify-center space-x-2">
               <Link
                 href="/"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Inicio
               </Link>
               <Link
                 href="/courses"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Cursos
               </Link>
               <Link
                 href="/aboutus"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
               </Link>
               <Link
                 href="/plans"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Planes
               </Link>
               <Link
                 href="/contact"
-                className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
               </Link>
             </div>
 
             <div className="hidden md:flex space-x-1">
-              {user.role && (
+              {user?.role && (
                 <Link
                   href={
                     user.role === "student"
@@ -186,7 +187,7 @@ export default function Navbar() {
               )}
               <button
                 onClick={logout}
-                className="hover:bg-button p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-button p-3 rounded-md cursor-pointer transition-colors duration-200"
               >
                 Log out
               </button>
@@ -195,7 +196,7 @@ export default function Navbar() {
 
           <div
             className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-              menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              menuOpen ? "max-h-105 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
             <div className="flex flex-col items-center space-y-4 pb-4 text-sm font-bold border-t border-gray-200 pt-4">
@@ -210,7 +211,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="hover:bg-yellow-light hover:text-navbar px-3 py-2 rounded-md transition-colors duration-200 inline-block"
+                  className="hover:background hover:text-navbar px-3 py-2 rounded-md transition-colors duration-200 inline-block"
                 >
                   {link.label}
                 </Link>
@@ -218,20 +219,26 @@ export default function Navbar() {
 
               <hr className="w-3/4 border-gray-300" />
 
-              <Link
-                href="/register"
-                onClick={() => setMenuOpen(false)}
-                className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200 inline-block"
+              {user?.role && (
+                <Link
+                  href={
+                    user.role === "student"
+                      ? "/dashboard"
+                      : user.role === "teacher"
+                      ? "/teacher-dashboard"
+                      : "/admin-dashboard"
+                  }
+                  className="hover:bg-button p-3 rounded-md transition-colors duration-200"
+                >
+                  Dashboard
+                </Link>
+              )}
+              <button
+                onClick={logout}
+                className="hover:bg-button p-2 rounded-md transition-colors duration-200"
               >
-                Registro
-              </Link>
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200 inline-block"
-              >
-                Login
-              </Link>
+                Log out
+              </button>
             </div>
           </div>
         </nav>

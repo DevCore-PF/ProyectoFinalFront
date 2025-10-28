@@ -15,6 +15,7 @@ export interface RegisterResponse {
     id: string;
     name: string;
     role: "student" | "teacher" | "admin" | null;
+    isEmailVerified: false;
   };
 }
 export const registerInitialValues = {

@@ -34,9 +34,9 @@ const HeroSection = () => {
               >
                 Explorar cursos
               </Link>
-              <button className="px-6 sm:px-8 py-3 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 text-white text-sm md:text-base hover:bg-slate-800/80 hover:border-slate-600/50 font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg">
+              <Link href="#pricing" className="px-6 sm:px-8 py-3 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 text-white text-sm md:text-base hover:bg-slate-800/80 hover:border-slate-600/50 font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg">
                 Ver Planes
-              </button>
+              </Link>
             </div>
           </div>
 

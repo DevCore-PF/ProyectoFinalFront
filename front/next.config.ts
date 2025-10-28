@@ -1,17 +1,20 @@
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  images: {
-    remotePatterns: [
+// const nextConfig: NextConfig = {
+//   /* config options here */
+// };
+
+// export default nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
       {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/dtbpi3bic/image/upload/**",
+        source: "/api/:path*",
+        destination: "http://localhost:3001/:path*",
       },
-    ],
+    ];
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

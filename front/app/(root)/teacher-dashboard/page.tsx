@@ -1,40 +1,27 @@
 "use client";
 import TeacherWelcomeCard from "@/components/dashboard/TeacherWelcomeCard";
 import CourseCard from "@/components/dashboard/CourseCard";
-import { teacherCourses } from "@/helpers/moks";
+import {
+  teacherCourses,
+  teacherData,
+  teacherFeaturedCourses,
+  teacherRecentActivity,
+} from "@/helpers/moks";
 import { HiBookOpen, HiTrendingUp, HiChartBar } from "react-icons/hi";
+import { useEffect } from "react";
+import { useAuth } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const TeacherDashboardPage = () => {
-  const featuredCourses = [
-    { id: 1, title: "Introducción a React", revenue: 12247.55, trend: "+15%" },
-    { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
-  ];
-  const recentActivity = [
-    {
-      id: 1,
-      type: "review",
-      text: "Nueva reseña 5★ en 'Introducción a React'",
-      time: "Hace 2 horas",
-    },
-    {
-      id: 2,
-      type: "enrollment",
-      text: "15 nuevos estudiantes esta semana",
-      time: "Hace 5 horas",
-    },
-    {
-      id: 3,
-      type: "update",
-      text: "Actualización completada en 'JavaScript Avanzado'",
-      time: "Hace 1 día",
-    },
-  ];
-  const teacherData = {
-    userName: "Carolina",
-    userEmail: "carolinaperez@gmail.com",
-  };
+  const { user } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (!user || user.role !== "teacher") {
+      router.push("/");
+    }
+  }, [user, router]);
 
-  const handleViewCourseDetails = (courseId) => {
+  const handleViewCourseDetails = (courseId: number) => {
     console.log(`Ver detalles del curso: ${courseId}`);
   };
 
@@ -84,7 +71,6 @@ const TeacherDashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-10">
-        
           <div className="lg:col-span-2 flex flex-col justify-center bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2.5 bg-yellow-500/10 rounded-lg">
@@ -101,7 +87,7 @@ const TeacherDashboardPage = () => {
             </div>
 
             <div className="space-y-4">
-              {featuredCourses.map((course) => (
+              {teacherFeaturedCourses.map((course) => (
                 <div
                   key={course.id}
                   className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
@@ -144,7 +130,7 @@ const TeacherDashboardPage = () => {
             </div>
 
             <div className="space-y-3">
-              {recentActivity.map((activity) => (
+              {teacherRecentActivity.map((activity) => (
                 <div
                   key={activity.id}
                   className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"

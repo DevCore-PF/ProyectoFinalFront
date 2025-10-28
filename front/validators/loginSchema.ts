@@ -1,11 +1,11 @@
 import * as Yup from "yup";
 
-export interface loginType {
+export interface LoginType {
   email: string;
   password: string;
 }
 
-export const loginInitialValues: loginType = {
+export const loginInitialValues: LoginType = {
   email: "",
   password: "",
 };

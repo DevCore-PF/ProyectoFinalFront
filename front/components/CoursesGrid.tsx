@@ -8,11 +8,11 @@ const CoursesGrid = () => {
   return (
     <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className=" mb-12">
           <h2 className="text-2xl md:text-5xl font-bold text-font-light mb-4">
             Explora Nuestros Cursos
           </h2>
-          <p className="hidden md:block text-slate-300 text-lg max-w-2xl mx-auto">
+          <p className="hidden md:block text-slate-300 text-lg  ">
             Descubre una amplia variedad de cursos y rutas profesionales
             diseñadas para impulsar tu carrera en tecnología
           </p>
@@ -23,7 +23,7 @@ const CoursesGrid = () => {
             return (
               <div
                 key={course.id}
-                className="group bg-slate-800/10 backdrop-blur-xs border border-slate-700/50 rounded-2xl p-6 hover:border-border-light/80 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-background2/70 flex flex-col"
+                className="group bg-accent-medium/8 backdrop-blur-xs border border-slate-700/50 rounded-2xl p-6 hover:border-border-light/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-background2/70 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`${course.bgColor} p-3 rounded-xl`}>
@@ -62,13 +62,12 @@ const CoursesGrid = () => {
                   </div>
                 )}
 
-                {/* flecha con link */}
                 <div className="flex justify-end mt-auto">
                   <Link
                     href={`/courses/${course.id}`}
-                    className="bg-slate-700/50 p-3 rounded-lg group-hover:bg-slate-600/50 transition-all duration-300"
+                    className="bg-slate-600/90 p-3 rounded-lg  transition-all duration-300 hover:shadow-slate-800 hover:shadow-md hover:bg-slate-600/40"
                   >
-                    <IoArrowForward className="text-slate-300 text-xl -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                    <IoArrowForward className="text-slate-300 text-xl -rotate-45 group-hover:rotate-0 transition-transform duration-200" />
                   </Link>
                 </div>
               </div>

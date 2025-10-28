@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  Kodchasan,
-  Be_Vietnam_Pro,
-
-  Fira_Code,
-} from "next/font/google";
+import { Kodchasan, Be_Vietnam_Pro, Fira_Code } from "next/font/google";
 import { Toaster } from "sonner";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const fontFira_Code = Fira_Code({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: "400",
 });
-
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -56,7 +52,9 @@ export default function RootLayout({
             },
           }}
         />{" "}
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

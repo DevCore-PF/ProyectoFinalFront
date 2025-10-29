@@ -3,22 +3,27 @@
 //Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
-// Next
+// Next/React
 import Link from "next/link";
-import { updateRoleService } from "@/services/user.services";
-
-import { useFormik } from "formik";
-import { roleValidation } from "@/validators/registerSchema";
-import { toastError, toastSuccess } from "@/helpers/toast";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+//Services
+import { updateRoleService } from "@/services/user.services";
+//Formik
+import { useFormik } from "formik";
+//Validators/Types
+import { roleValidation } from "@/validators/registerSchema";
+import { RoleData } from "@/types/forms.types";
+//Helpers
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+//Context
 import { useAuth } from "@/context/UserContext";
 
 const page = () => {
   const router = useRouter();
   const { token, isLoading, setToken, setUser } = useAuth();
   let rol = "";
-  const formik = useFormik({
+  const formik = useFormik<RoleData>({
     initialValues: {
       role: "",
     },
@@ -27,7 +32,6 @@ const page = () => {
       try {
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-       
 
           if (data.access_token) {
             setToken(data.access_token);

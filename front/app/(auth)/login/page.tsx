@@ -1,21 +1,22 @@
 "use client";
-
+//Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
-import {
-  LoginType,
-  loginInitialValues,
-  loginValidations,
-} from "@/validators/loginSchema";
+//Types & Validators
+import { LoginFormData } from "@/types/auth.types";
+import { loginInitialValues, loginValidations } from "@/validators/loginSchema";
+//Formik
 import { useFormik } from "formik";
-
+//Next/React
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { loginUserService } from "@/services/user.services";
-import { toastError, toastSuccess } from "@/helpers/toast";
 import { useRouter } from "next/navigation";
+//Services
+import { loginUserService } from "@/services/user.services";
+//Helpers
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+//Context
 import { useAuth } from "@/context/UserContext";
 
 const LoginPage = () => {
@@ -23,7 +24,7 @@ const LoginPage = () => {
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
   const router = useRouter();
   const { setToken, setUser, user } = useAuth();
-  const formik = useFormik<LoginType>({
+  const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
     validateOnMount: false,

@@ -2,28 +2,31 @@
 //Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
 //Helpers
-import { toastConfirm, toastError, toastSuccess } from "@/helpers/toast";
-
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
 //Formik
 import {
   registerInitialValues,
   registerValidations,
 } from "@/validators/registerSchema";
 import { useFormik } from "formik";
-
 //Next / React
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 //Types
-import { RegisterType } from "../../../validators/registerSchema";
+import { RegisterFormData } from "@/types/auth.types";
 //Services
 import { registerUserService } from "@/services/user.services";
 //Context
 import { useAuth } from "@/context/UserContext";
+import { RegisterResponse } from "../../../types/api.types";
+
 const page = () => {
   const { setToken, setUser } = useAuth();
   const router = useRouter();
@@ -36,7 +39,7 @@ const page = () => {
     setShowR(!showR);
   };
 
-  const formik = useFormik<RegisterType>({
+  const formik = useFormik<RegisterFormData>({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
     validateOnMount: false,
@@ -46,7 +49,9 @@ const page = () => {
         "Enviar formulario",
         async () => {
           try {
-            const data = await registerUserService(formik.values);
+            const data: RegisterResponse = await registerUserService(
+              formik.values
+            );
             setToken(data.access_token);
             setUser(data.user);
             toastSuccess("Registro enviado!");

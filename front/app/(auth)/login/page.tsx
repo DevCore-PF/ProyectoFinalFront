@@ -36,6 +36,7 @@ const LoginPage = () => {
         console.log("esta es mi data", data);
 
         router.push("/");
+        // window.location.reload();
       } catch (error) {
         if (error instanceof Error) {
           toastError(error.message);
@@ -51,6 +52,9 @@ const LoginPage = () => {
     if (user && !user.isEmailVerified) {
       setShowEmailNotVerified(true);
     }
+    // if (user) {
+    //   router.push("/");
+    // }
   }, [user]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -136,15 +140,15 @@ const LoginPage = () => {
 
             {/* <div className="flex items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-center cursor-pointer ">
-                <input type="checkbox" className="sr-only" />
-                <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
-                  <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
-                </div>
-                <label htmlFor="terms" className="ml-2 select-none text-sm ">
-                  Recordarme
-                </label>
+              <input type="checkbox" className="sr-only" />
+              <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
+              <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
+              </div>
+              <label htmlFor="terms" className="ml-2 select-none text-sm ">
+              Recordarme
               </label>
-            </div> */}
+              </label>
+              </div> */}
 
             <button
               type="submit"

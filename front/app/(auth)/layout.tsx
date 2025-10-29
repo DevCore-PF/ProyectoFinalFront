@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import { Kodchasan, Be_Vietnam_Pro, Fira_Code } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/UserContext";
@@ -53,9 +53,7 @@ export default function RootLayout({
             },
           }}
         />{" "}
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

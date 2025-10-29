@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
 
-import Image from "next/image";
+
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,7 +12,7 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    setIsAuthenticated(!!(user && user.role));
+   setIsAuthenticated(!!user?.role);
   }, [user]);
   return (
     <>
@@ -58,7 +58,7 @@ export default function Navbar() {
                 Planes
               </Link>
               <Link
-                href="/contact"
+                href="/contactUs"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
@@ -92,7 +92,7 @@ export default function Navbar() {
                 { href: "/courses", label: "Cursos" },
                 { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
-                { href: "/contact", label: "Contacto" },
+                { href: "/contacUst", label: "Contacto" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -165,7 +165,7 @@ export default function Navbar() {
                 Planes
               </Link>
               <Link
-                href="/contact"
+                href="/contactUs"
                 className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
@@ -207,7 +207,7 @@ export default function Navbar() {
                 { href: "/courses", label: "Cursos" },
                 { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
-                { href: "/contact", label: "Contacto" },
+                { href: "/contactUs", label: "Contacto" },
               ].map((link) => (
                 <Link
                   key={link.href}

@@ -75,14 +75,130 @@ export const updateRoleService = async (role: string, token: string) => {
     throw error;
   }
 };
-// {
-// esto devuelve login
-//   "user": {
-//     "id": "8f394f59-f0f6-472b-ae58-031f757c76e1",
-//     "email": "lauramussa94@gmail.com",
-//     "name": "Laura Daniela ",
-//     "role": "student",
-//     "hasCompletedProfile": false
-//   },
-//   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjM5NGY1OS1mMGY2LTQ3MmItYWU1OC0wMzFmNzU3Yzc2ZTEiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc2MTY2NzM3MSwiZXhwIjoxNzYxNjcwOTcxfQ.iQlKP8K54nXBh8TYbg5yTE7qWgTFxW870hlncfPv57I"
-// }
+
+
+export interface UploadImageResponse {
+  success: boolean;
+  imageUrl: string;
+  message: string;
+}
+
+
+export interface UserUpdateResponse {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  profileImage?: string;
+}
+
+export const uploadProfileImageService = async (
+  userId: string,
+  imageFile: File,
+  token: string
+): Promise<UploadImageResponse> => {
+  try {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    const response = await fetch(`${API_URL}/users/${userId}/upload/profile`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      let errorMessage = 'Error al subir la imagen';
+      try {
+        const error = await response.json();
+        errorMessage = error.message || error.error || errorMessage;
+        console.error('Error del servidor:', error);
+      } catch (parseError) {
+        const textError = await response.text();
+        console.error('Respuesta del servidor:', textError);
+        errorMessage = `Error ${response.status}: ${textError}`;
+      }
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // 🔍 LOG PARA VER QUÉ DEVUELVE EL BACKEND
+    console.log('Respuesta completa del backend:', data);
+    
+    // Intenta extraer la URL de diferentes posibles campos
+    const imageUrl = 
+      data.secure_url || 
+      data.imageUrl || 
+      data.profileImage || 
+      data.image ||
+      data.url ||
+      data.data?.profileImage ||
+      data.data?.image ||
+      data.data?.url;
+    
+    if (!imageUrl) {
+      console.error('No se encontró URL en la respuesta. Estructura completa:', JSON.stringify(data, null, 2));
+      throw new Error('No se recibió la URL de la imagen del servidor');
+    }
+    
+    return {
+      success: true,
+      imageUrl: imageUrl,
+      message: data.message || 'Imagen subida correctamente',
+    };
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Error de conexión con el servidor. Verifica tu conexión a internet.');
+    }
+    
+    throw error;
+  }
+};
+
+// 
+
+/**
+ * Función para obtener datos del usuario
+ */
+export const getUserProfileService = async (
+  userId: string,
+  token: string
+): Promise<UserUpdateResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error al obtener el perfil');
+    }
+
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error('Error al obtener perfil:', error);
+    throw error;
+  }
+};
+
+/**
+ * Función para actualizar datos del usuario en SessionStorage
+ */
+export const updateUserInSession = (updatedUser: UserUpdateResponse): void => {
+  try {
+    sessionStorage.setItem('user', JSON.stringify(updatedUser));
+  } catch (error) {
+    console.error('Error al actualizar SessionStorage:', error);
+  }
+};
+

@@ -139,34 +139,34 @@ export default function Navbar() {
               {menuOpen ? "✕" : "☰"}
             </button>
 
-            <div className="hidden md:flex flex-1 justify-center space-x-2">
+            <div className="hidden md:flex flex-1 justify-center space-x-2 ">
               <Link
                 href="/"
-                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light  p-3 rounded-md transition-colors duration-200"
               >
                 Inicio
               </Link>
               <Link
                 href="/courses"
-                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light  p-3 rounded-md transition-colors duration-200"
               >
                 Cursos
               </Link>
               <Link
                 href="/aboutus"
-                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
               </Link>
               <Link
                 href="/plans"
-                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Planes
               </Link>
               <Link
                 href="/contactUs"
-                className="hover:bg-background hover:text-navbar p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light   p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
               </Link>

@@ -1,4 +1,5 @@
 "use client";
+import { clearSession } from "@/helpers/session.helpers";
 import {
   createContext,
   useContext,
@@ -65,8 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    clearSession();
     setTokenState(null);
     setUserState(null);
     window.location.href = "/";

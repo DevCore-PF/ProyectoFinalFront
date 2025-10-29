@@ -1,8 +1,7 @@
 import UnderConstruction from "@/components/UnderConstruction";
-import React from "react";
 
-const OurCoursesPage = () => {
+const AchievementsPage = () => {
 return <UnderConstruction />;
 };
 
-export default OurCoursesPage;
+export default AchievementsPage;

@@ -2,16 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { uploadProfileImageService, updateUserInSession } from '@/services/user.services';
+import { uploadProfileImageService  } from '@/services/user.services';
 import { useAuth } from '@/context/UserContext';
+import { UserProfile } from '@/types/user.types';
+import { updateUserInSession } from '@/helpers/session.helpers';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  profileImage?: string;
-}
+
 
 const ProfileSettings = () => {
   const params = useParams();

@@ -2,7 +2,7 @@
 //React
 import { useState } from "react";
 //Helpers
-import { toastSuccess } from "@/helpers/toast";
+import { toastSuccess } from "@/helpers/alerts.helper";
 //Formik
 import { useFormik } from "formik";
 import {

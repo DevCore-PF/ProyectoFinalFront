@@ -3,9 +3,14 @@
 //Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
+import { CiCircleCheck } from "react-icons/ci";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { FaCheck } from "react-icons/fa";
+import { FaCheckDouble } from "react-icons/fa6";
+
 // Next/React
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 //Services
 import { updateRoleService } from "@/services/user.services";
@@ -18,12 +23,13 @@ import { RoleData } from "@/types/forms.types";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
-import { log } from "console";
 
 const page = () => {
   const router = useRouter();
   const { token, isLoading, setToken, setUser, user } = useAuth();
+  const isSubmittingRole = useRef(false);
   let rol = "";
+
   const formik = useFormik<RoleData>({
     initialValues: {
       role: "",
@@ -31,6 +37,8 @@ const page = () => {
     validationSchema: roleValidation,
     onSubmit: async () => {
       try {
+        isSubmittingRole.current = true;
+
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
 
@@ -39,13 +47,10 @@ const page = () => {
           }
           setUser(data.user);
 
-          if (formik.values.role === "student") {
-            rol = "alumn@";
-          } else {
-            rol = "profesor";
-          }
+          const rol = formik.values.role === "student" ? "alumn@" : "profesor";
 
           if (data.user.isEmailVerified) {
+            toastSuccess("Login exitoso!");
             router.push("/");
           } else {
             toastSuccess(
@@ -60,13 +65,16 @@ const page = () => {
         } else {
           toastError("Error desconocido");
         }
+        isSubmittingRole.current = false;
       } finally {
         formik.setSubmitting(false);
       }
     },
   });
+
   useEffect(() => {
-    if (user && user.role) {
+    // Solo redirigir si NO estamos en proceso de submit
+    if (user && user.role && !isSubmittingRole.current) {
       toastSuccess("Login exitoso!");
       router.push("/");
     }
@@ -102,67 +110,206 @@ const page = () => {
   }
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit} className="min-h-screen ">
       <div className="min-h-screen text-font-light flex flex-col">
-        <header className="p-4">
-          <Link href="/">
-            <span className="font-semibold">LOGO</span>
+        <header className="p-6 backdrop-blur-sm">
+          <Link href="/" className="inline-block">
+            <span className="text-xl font-bold text-font-light hover:opacity-80 transition-opacity">
+              LOGO
+            </span>
           </Link>
         </header>
 
-        <section className="flex flex-col items-center justify-center mt-15 px-4">
-          <h1 className="text-2xl sm:text-4xl text-center">
-            Bienvenid@ a DevCore.
-          </h1>
-          <h3 className="text-2xl sm:text-3xl mt-3 text-center">
-            Elegí tu perfil:
-          </h3>
-          <div className="flex flex-col mb-15">
-            <div className="flex flex-wrap justify-center gap-8 mt-10 ">
-              <span
+        <section className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+          <div className="max-w-5xl w-full space-y-12">
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-linear-to-r from-font-light via-accent-light to-font-light bg-clip-text text-transparent animate-gradient">
+                Bienvenid@ a DevCore
+              </h1>
+              <p className="text-xl sm:text-2xl text-font-light/70 font-light">
+                Elige tu perfil para comenzar
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+              <div
                 onClick={() => handleSelectRole("teacher")}
-                className={`shrink-0 flex flex-col gap-10 border-2 p-12 sm:p-20 rounded-[10px] transition-all duration-300 cursor-pointer
-              ${
-                formik.values.role === "teacher"
-                  ? " border-accent-medium/70   shadow-[0_0_15px_#bba0eed4] scale-105"
-                  : "border-border hover:scale-105 hover:shadow-[0_0_8px_#474b8a]"
-              } bg-background2/50`}
+                className={`group relative overflow-hidden rounded-2xl transition-all duration-500 cursor-pointer
+                  ${
+                    formik.values.role === "teacher"
+                      ? "scale-105 shadow-2xl shadow-accent-medium/40"
+                      : "hover:scale-102 shadow-lg hover:shadow-xl"
+                  }`}
               >
-                <GoMortarBoard
-                  className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
-                  size={250}
-                />
-                <p className="text-3xl sm:text-5xl text-center">Profesor</p>
-              </span>
-              <span
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br from-accent-medium/10 to-transparent transition-opacity duration-500
+                    ${
+                      formik.values.role === "teacher"
+                        ? "opacity-100"
+                        : "opacity-0 group-hover:opacity-50"
+                    }`}
+                ></div>
+
+                <div
+                  className={`relative border-2 rounded-2xl p-8 sm:p-12 backdrop-blur-sm transition-all duration-500
+                    ${
+                      formik.values.role === "teacher"
+                        ? "border-accent-medium bg-background2/80"
+                        : "border-border bg-background2/50 group-hover:border-accent-medium/50"
+                    }`}
+                >
+                  <div className="flex flex-col items-center gap-8">
+                    <div className="relative">
+                      <div
+                        className={`absolute inset-0 rounded-full blur-2xl transition-opacity duration-500
+                          ${
+                            formik.values.role === "teacher"
+                              ? "opacity-30 bg-accent-medium"
+                              : "opacity-0 group-hover:opacity-20 group-hover:bg-accent-medium"
+                          }`}
+                      ></div>
+                      <GoMortarBoard
+                        className={`relative text-[#bfc1de] transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40
+                          ${
+                            formik.values.role === "teacher"
+                              ? "scale-110 drop-shadow-[0_0_15px_rgba(187,160,238,0.5)]"
+                              : "group-hover:scale-105"
+                          }`}
+                      />
+                    </div>
+
+                    <div className="text-center space-y-2">
+                      <h3 className="text-3xl sm:text-4xl font-semibold">
+                        Profesor
+                      </h3>
+                      <p className="text-sm sm:text-base text-font-light/60 max-w-xs">
+                        Crea cursos y comparte tu conocimiento
+                      </p>
+                    </div>
+
+                    {formik.values.role === "teacher" && (
+                      <div className="absolute top-4 right-4">
+                        <IoMdCheckmarkCircleOutline size={29} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div
                 onClick={() => handleSelectRole("student")}
-                className={`shrink-0 flex flex-col gap-10 border-2 p-12 sm:p-20 rounded-[10px] transition-all duration-300 cursor-pointer
-              ${
-                formik.values.role === "student"
-                  ? " border-accent-medium/70   shadow-[0_0_15px_#bba0eed4] scale-105"
-                  : "border-border hover:scale-105 hover:shadow-[0_0_8px_#474b8a]"
-              } bg-background2/50`}
+                className={`group relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer
+                  ${
+                    formik.values.role === "student"
+                      ? "scale-105 shadow-2xl shadow-accent-medium/40"
+                      : "hover:scale-102 shadow-lg hover:shadow-xl"
+                  }`}
               >
-                <HiOutlineComputerDesktop
-                  className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
-                  size={250}
-                />
-                <p className="text-3xl sm:text-5xl text-center">Alumn@</p>
-              </span>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br from-accent-medium/10 to-transparent transition-opacity duration-500
+                    ${
+                      formik.values.role === "student"
+                        ? "opacity-100"
+                        : "opacity-0 group-hover:opacity-50"
+                    }`}
+                ></div>
+
+                <div
+                  className={`relative border-2 rounded-2xl p-8 sm:p-12 backdrop-blur-sm transition-all duration-500
+                    ${
+                      formik.values.role === "student"
+                        ? "border-accent-medium bg-background2/80"
+                        : "border-border bg-background2/50 group-hover:border-accent-medium/50"
+                    }`}
+                >
+                  <div className="flex flex-col items-center gap-8">
+                    <div className="relative">
+                      <div
+                        className={`absolute inset-0 rounded-full blur-2xl transition-opacity duration-500
+                          ${
+                            formik.values.role === "student"
+                              ? "opacity-30 bg-accent-medium"
+                              : "opacity-0 group-hover:opacity-20 group-hover:bg-accent-medium"
+                          }`}
+                      ></div>
+                      <HiOutlineComputerDesktop
+                        className={`relative text-[#bfc1de] transition-all duration-500 w-32 h-32 sm:w-40 sm:h-40
+                          ${
+                            formik.values.role === "student"
+                              ? "scale-110 drop-shadow-[0_0_15px_rgba(187,160,238,0.5)]"
+                              : "group-hover:scale-105"
+                          }`}
+                      />
+                    </div>
+
+                    <div className="text-center space-y-2">
+                      <h3 className="text-3xl sm:text-4xl font-semibold">
+                        Alumn@
+                      </h3>
+                      <p className="text-sm sm:text-base text-font-light/60 max-w-xs">
+                        Aprende y desarrolla nuevas habilidades
+                      </p>
+                    </div>
+
+                    {formik.values.role === "student" && (
+                      <div className="absolute top-4 right-4">
+                        <IoMdCheckmarkCircleOutline size={29} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center pt-4">
+              <button
+                disabled={formik.isSubmitting}
+                type="submit"
+                onClick={() => {
+                  formik.setTouched({
+                    role: true,
+                  });
+                }}
+                className={` relative px-10 py-4 rounded-xl text-lg sm:text-xl font-medium
+                  transition-all duration-300 overflow-hidden
+                  ${
+                    formik.isSubmitting
+                      ? "cursor-not-allowed opacity-50"
+                      : "px-6 sm:px-8 py-3 bg-button/90 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer hover:scale-105 active:scale-95"
+                  }
+                  bg-button/70
+                  disabled:from-gray-500 disabled:to-gray-600 disabled:hover:scale-100 disabled:shadow-none`}
+              >
+                <span className="relative z-10 flex items-center gap-3">
+                  {formik.isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 rounded-full "></div>
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      Continuar
+                      <svg
+                        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
+                      </svg>
+                    </>
+                  )}
+                </span>
+
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              </button>
             </div>
           </div>
-          <button
-            disabled={formik.isSubmitting}
-            type="submit"
-            onClick={() => {
-              formik.setTouched({
-                role: true,
-              });
-            }}
-            className="px-5 py-2 border border-font-light rounded-xl mb-10 hover:scale-103 transition-all duration-150 cursor-pointer text-lg sm:text-xl font-light disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-          >
-            Continuar
-          </button>
         </section>
       </div>
     </form>

@@ -35,7 +35,7 @@ const LoginPage = () => {
         const data = await loginUserService(formik.values);
         setToken(data.access_token);
         setUser(data.user);
-        toastSuccess("Login exitoso!");
+        // toastSuccess("Login exitoso!");
         console.log("esta es mi data", data);
 
         router.push("/");

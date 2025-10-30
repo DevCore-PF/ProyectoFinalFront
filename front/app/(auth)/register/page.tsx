@@ -68,6 +68,10 @@ const page = () => {
                 error.message === "Debe aceptar lo terminos y condiciones"
               ) {
                 toastError(error.message);
+              } else if (
+                error.message.includes("Por favor, inicia sesión con Google.")
+              ) {
+                toastError(error.message);
               }
             } else {
               toastError("Error desconocido");

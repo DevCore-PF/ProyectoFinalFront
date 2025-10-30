@@ -26,6 +26,8 @@ import { registerUserService } from "@/services/user.services";
 //Context
 import { useAuth } from "@/context/UserContext";
 import { RegisterResponse } from "../../../types/api.types";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
+import GitHubAuthButton from "@/components/GitHubAuthButton";
 
 const page = () => {
   const { setToken, setUser } = useAuth();
@@ -89,10 +91,10 @@ const page = () => {
         </Link>
       </header>
 
-      <section className="flex flex-1 justify-center items-center px-4">
+      <section className="flex flex-1 justify-center items-center sm:px-4">
         <form
           onSubmit={formik.handleSubmit}
-          className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
+          className="border-border border p-4 sm:p-8 rounded-2xl w-full max-w-lg shadow-lg m-10 sm:m-15"
         >
           <h1 className="text-4xl font-bold text-center mb-2">Registro</h1>
           <p className="text-gray-400 text-center mb-6">
@@ -285,27 +287,14 @@ const page = () => {
             </button>
 
             <div className="flex items-center my-2">
-              <div className="flex-1 h-px bg-gray-medium-dark"></div>
+              <div className="flex-1 h-px bg-border/80"></div>
               <span className="px-2 text-gray-medium-light text-xl">o</span>
-              <div className="flex-1 h-px bg-gray-medium-dark"></div>
+              <div className="flex-1 h-px bg-border/80"></div>
             </div>
-
-            <button
-              disabled={formik.isSubmitting}
-              className="flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center "
-            >
-              <Image
-                src="/icons/googleIcon.svg"
-                width={18}
-                height={18}
-                alt="Ícono de Google"
-                className="w-4 h-4 sm:w-[18px] sm:h-[18px] "
-              />
-              <span className="text-ellipsis overflow-hidden text-center">
-                Registro con Google
-              </span>
-            </button>
-
+            <div className="flex gap-4 justify-evenly sm:justify-center ">
+              <GoogleAuthButton />
+              <GitHubAuthButton />
+            </div>
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Ya tienes una cuenta?{" "}
               <Link

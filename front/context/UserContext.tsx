@@ -15,7 +15,7 @@ interface User {
   id: string;
   name: string;
   role: "student" | "teacher" | "admin" | null;
-  // image:string
+
 }
 
 interface AuthContextType {
@@ -39,11 +39,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userData = sessionStorage.getItem("user");
 
     setTokenState(userToken);
-
     if (userData) {
       setUserState(JSON.parse(userData));
     }
-
     setIsLoading(false);
   }, []);
 
@@ -65,6 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserState(newUser);
   };
 
+ 
   const logout = () => {
     clearSession();
     setTokenState(null);

@@ -18,10 +18,11 @@ import { RoleData } from "@/types/forms.types";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
+import { log } from "console";
 
 const page = () => {
   const router = useRouter();
-  const { token, isLoading, setToken, setUser } = useAuth();
+  const { token, isLoading, setToken, setUser, user } = useAuth();
   let rol = "";
   const formik = useFormik<RoleData>({
     initialValues: {
@@ -37,14 +38,21 @@ const page = () => {
             setToken(data.access_token);
           }
           setUser(data.user);
+
           if (formik.values.role === "student") {
             rol = "alumn@";
           } else {
             rol = "profesor";
           }
-          toastSuccess(`Has seleccionado ${rol}.
-            Revisa tu email para verificar tu cuenta.`);
-          router.push("/login");
+
+          if (data.user.isEmailVerified) {
+            router.push("/");
+          } else {
+            toastSuccess(
+              `Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`
+            );
+            router.push("/login");
+          }
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -58,10 +66,18 @@ const page = () => {
     },
   });
   useEffect(() => {
+    if (user && user.role) {
+      toastSuccess("Login exitoso!");
+      router.push("/");
+    }
+  }, [user, router]);
+
+  useEffect(() => {
     if (formik.errors.role) {
       toastError(formik.errors.role);
     }
   }, [formik.errors.role]);
+
   useEffect(() => {
     if (!isLoading && !token) {
       toastError("No estás autenticado");

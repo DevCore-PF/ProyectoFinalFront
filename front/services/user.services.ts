@@ -54,6 +54,23 @@ export const loginUserService = async (values: LoginFormData) => {
     throw error;
   }
 };
+export const getCurrentUserService = async (token: string, id: number) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo usuario");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error al conseguir el servicio atual: ", error);
+    throw error;
+  }
+};
 
 export const updateRoleService = async (role: string, token: string) => {
   try {
@@ -77,7 +94,6 @@ export const updateRoleService = async (role: string, token: string) => {
     throw error;
   }
 };
-
 
 export const uploadProfileImageService = async (
   userId: string,
@@ -179,4 +195,3 @@ export const getUserProfileService = async (
     throw error;
   }
 };
-

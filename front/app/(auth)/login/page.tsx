@@ -18,6 +18,8 @@ import { loginUserService } from "@/services/user.services";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
+import GitHubAuthButton from "@/components/GitHubAuthButton";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,6 @@ const LoginPage = () => {
         console.log("esta es mi data", data);
 
         router.push("/");
-        // window.location.reload();
       } catch (error) {
         if (error instanceof Error) {
           toastError(error.message);
@@ -53,9 +54,6 @@ const LoginPage = () => {
     if (user && !user.isEmailVerified) {
       setShowEmailNotVerified(true);
     }
-    // if (user) {
-    //   router.push("/");
-    // }
   }, [user]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -72,7 +70,7 @@ const LoginPage = () => {
       <section className="flex flex-1 justify-center items-center px-4">
         <form
           onSubmit={formik.handleSubmit}
-          className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
+          className="border-border border p-4 sm:p-8 rounded-2xl w-full max-w-lg shadow-lg m-10 sm:m-15"
         >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
           {showEmailNotVerified ? (
@@ -139,18 +137,6 @@ const LoginPage = () => {
               )}
             </div>
 
-            {/* <div className="flex items-center gap-2 text-xs text-gray-300">
-              <label className="inline-flex items-center cursor-pointer ">
-              <input type="checkbox" className="sr-only" />
-              <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
-              <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
-              </div>
-              <label htmlFor="terms" className="ml-2 select-none text-sm ">
-              Recordarme
-              </label>
-              </label>
-              </div> */}
-
             <button
               type="submit"
               onClick={() => {
@@ -166,26 +152,14 @@ const LoginPage = () => {
             </button>
 
             <div className="flex items-center my-2">
-              <div className="flex-1 h-px bg-gray-medium-dark"></div>
+              <div className="flex-1 h-px bg-border/80"></div>
               <span className="px-2 text-gray-medium-light text-xl">o</span>
-              <div className="flex-1 h-px bg-gray-medium-dark"></div>
+              <div className="flex-1 h-px bg-border/80"></div>
             </div>
-
-            <button
-              disabled={formik.isSubmitting}
-              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center"
-            >
-              <Image
-                src="/icons/googleIcon.svg"
-                width={18}
-                height={18}
-                alt="Ícono de Google"
-                className="w-4 h-4 sm:w-[18px] sm:h-[18px]"
-              />
-              <span className="text-ellipsis overflow-hidden text-center">
-                Ingresá con Google
-              </span>
-            </button>
+            <div className="flex gap-4 justify-center ">
+              <GoogleAuthButton />
+              <GitHubAuthButton />
+            </div>
 
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
@@ -193,7 +167,7 @@ const LoginPage = () => {
                 href="/register"
                 className="text-accent-medium hover:underline"
               >
-                Registrate
+                Ingresa
               </Link>
               <span className="items-center text-xl">&rarr;</span>
             </p>

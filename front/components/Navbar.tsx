@@ -1,9 +1,7 @@
 "use client";
-
+// Next/ React
 import { useState } from "react";
-
 import Link from "next/link";
-
 import Image from "next/image";
 
 export default function Navbar() {
@@ -50,14 +48,14 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/courses"
+            href="/our-courses"
             className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
           >
             Cursos
           </Link>
 
           <Link
-            href="/aboutus"
+            href="/about-us"
             className="hover:bg-yellow-light hover:text-navbar p-3 rounded-md transition-colors duration-200"
           >
             Sobre nosotros
@@ -108,9 +106,9 @@ export default function Navbar() {
           {[
             { href: "/", label: "Inicio" },
 
-            { href: "/courses", label: "Cursos" },
+            { href: "/our-courses", label: "Cursos" },
 
-            { href: "/aboutus", label: "Sobre nosotros" },
+            { href: "/about-us", label: "Sobre nosotros" },
 
             { href: "/plans", label: "Planes" },
 

@@ -1,4 +1,3 @@
-<<<<<<< HEAD:front/app/(public)/achievements/page.tsx
 // Next/React
 import Link from "next/link";
 
@@ -306,13 +305,8 @@ const AchievementsPage = () => {
       </div>
     </div>
   );
-=======
-import UnderConstruction from "@/components/UnderConstruction";
-import React from "react";
-
-const AchievementsPage = () => {
-return <UnderConstruction />;
->>>>>>> origin/dev:front/app/(root)/(public)/achievements/page.tsx
 };
 
 export default AchievementsPage;
+
+// kk

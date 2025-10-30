@@ -23,7 +23,7 @@ const TeacherDashboardPage = () => {
       }
     }
   }, [user, isLoading, router]);
-  const handleViewCourseDetails = (courseId: number) => {
+  const handleViewCourseDetails = (courseId: number | string) => {
     console.log(`Ver detalles del curso: ${courseId}`);
   };
 
@@ -56,7 +56,7 @@ const TeacherDashboardPage = () => {
               <CourseCard
                 key={course.id}
                 course={course}
-                onViewDetails={handleViewCourseDetails}
+                viewDetails={handleViewCourseDetails}
               />
             ))}
           </div>

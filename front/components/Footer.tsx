@@ -68,7 +68,7 @@ const Footer = () => {
               <Link href="/benefits" className="hover:text-white">
                 Beneficios
               </Link>
-              <Link href="/ourcourses" className="hover:text-white">
+              <Link href="/courses" className="hover:text-white">
                 Nuestros Cursos
               </Link>
               <Link href="/testimonials" className="hover:text-white">

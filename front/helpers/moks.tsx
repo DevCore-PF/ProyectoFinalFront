@@ -164,7 +164,6 @@ export const teacherCourses = [
     visibility: "Privado",
   },
 ];
-
 export const teacherManagementOptions = [
   {
     id: "create-course",

@@ -58,7 +58,7 @@ export default function Navbar() {
                 Planes
               </Link>
               <Link
-                href="/contactUs"
+                href="/contact-us"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
@@ -165,7 +165,7 @@ export default function Navbar() {
                 Planes
               </Link>
               <Link
-                href="/contactUs"
+                href="/contact-us"
                 className="hover:bg-background hover:text-font-light   p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
@@ -207,7 +207,7 @@ export default function Navbar() {
                 { href: "/courses", label: "Cursos" },
                 { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
-                { href: "/contactUs", label: "Contacto" },
+                { href: "/contact-us", label: "Contacto" },
               ].map((link) => (
                 <Link
                   key={link.href}

@@ -1,4 +1,5 @@
-const API_URL = "/api";
+// const API_URL = "/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Types
 import { RegisterResponse } from "@/types/api.types";
 import { RegisterFormData, LoginFormData } from "@/types/auth.types";
@@ -21,9 +22,7 @@ export const registerUserService = async (
       throw new Error(error.message || "Error en el registro");
     }
 
-    console.log("esta es data", data);
     const response = await data.json();
-    console.log("esta es response", response);
 
     return response;
   } catch (error) {
@@ -195,3 +194,6 @@ export const getUserProfileService = async (
     throw error;
   }
 };
+
+///payments/created-checkout-session post devuelve array de courseIds:['']
+//se le manda el Token y por body se le manda en modo de un arreglo, la respuesta de cuando mando esto es una  URL q te redirige a stripe para hacer el Pago

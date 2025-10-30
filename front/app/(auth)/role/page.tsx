@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 //Services
-import { updateRoleService } from "@/services/user.services";
+import { updateRoleService } from "@/services/user.service";
 //Formik
 import { useFormik } from "formik";
 //Validators/Types

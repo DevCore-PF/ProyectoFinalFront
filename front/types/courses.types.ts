@@ -1,6 +1,6 @@
-import { courses } from '../helpers/moks';
+
 export interface Course {
-  id: string | number;
+  id: string ;
   title: string;
   students: number;
   rating: number;
@@ -14,6 +14,6 @@ export interface Course {
 
 export interface CourseCardProps {
   course: Course;
-  viewDetails: (id: string | number) => void;
+  viewDetails: (id: string ) => void;
 }
 

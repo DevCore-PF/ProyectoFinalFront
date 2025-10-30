@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
 //Services
-import { registerUserService } from "@/services/user.services";
+import { registerUserService } from "@/services/user.service";
 //Context
 import { useAuth } from "@/context/UserContext";
 import { RegisterResponse } from "../../../types/api.types";

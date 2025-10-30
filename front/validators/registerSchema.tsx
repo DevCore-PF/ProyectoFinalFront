@@ -1,18 +1,12 @@
+import { RegisterFormData } from "@/types/auth.types";
 import * as Yup from "yup";
-export interface registerType {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  checkboxTerms: boolean;
-}
 
-export const registerInitialValues = {
+export const registerInitialValues: RegisterFormData = {
   name: "",
   email: "",
   password: "",
   confirmPassword: "",
-  checkboxTerms: false,
+  checkBoxTerms: false,
 };
 
 export const registerValidations = Yup.object({
@@ -29,7 +23,7 @@ export const registerValidations = Yup.object({
     .max(15, "Máximo debe ser 15 caracteres")
     .matches(/[A-Z]/, "Debe incluir una mayúscula")
     .matches(/[0-9]/, "Debe incluir un número")
-    .matches(/[!@#$%^&*(),.?":{}|<>-]/, "Debe inlcuir un catacter especial"),
+    .matches(/[!@#$%^&*]/, "Debe inlcuir un catacter especial !@#$%^&*"),
 
   confirmPassword: Yup.string()
     .required("Debe confirmar contraseña")
@@ -38,6 +32,13 @@ export const registerValidations = Yup.object({
     [true],
     "Debes aceptar los Términos y Condiciones"
   ),
+});
+
+
+
+
+export const roleValidation = Yup.object({
+  role: Yup.string().required("Debes seleccionar un rol"),
 });
 
 export interface professionalFormType {

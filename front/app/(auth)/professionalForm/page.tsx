@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import Link from "next/link";
 
 //Helpers
-import { toastConfirm, toastSuccess } from "@/helpers/toast";
+import { toastConfirm, toastSuccess } from "@/helpers/alerts.helper";
 import {
   professionalForm,
   professionalFormType,

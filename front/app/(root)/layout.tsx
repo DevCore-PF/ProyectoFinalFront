@@ -4,6 +4,7 @@ import { Kodchasan, Be_Vietnam_Pro } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
+import { AuthProvider } from "../../context/UserContext";
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -47,9 +48,11 @@ export default function RootLayout({
               },
             }}
           />
-          <Navbar />
-          {children}
-          <Footer />
+          <AuthProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthProvider>
         </div>
       </body>
     </html>

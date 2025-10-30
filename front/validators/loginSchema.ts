@@ -1,11 +1,7 @@
+import { LoginFormData } from "@/types/auth.types";
 import * as Yup from "yup";
 
-export interface loginType {
-  email: string;
-  password: string;
-}
-
-export const loginInitialValues: loginType = {
+export const loginInitialValues: LoginFormData = {
   email: "",
   password: "",
 };

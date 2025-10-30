@@ -2,25 +2,33 @@
 //Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
 //Helpers
-import { toastConfirm, toastError, toastSuccess } from "@/helpers/toast";
-
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
 //Formik
 import {
   registerInitialValues,
   registerValidations,
 } from "@/validators/registerSchema";
 import { useFormik } from "formik";
-
-//Next
+//Next / React
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { registerType } from "../../../validators/registerSchema";
-import { registerUser } from "@/services/user.services";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+//Types
+import { RegisterFormData } from "@/types/auth.types";
+//Services
+import { registerUserService } from "@/services/user.services";
+//Context
+import { useAuth } from "@/context/UserContext";
+import { RegisterResponse } from "../../../types/api.types";
+
 const page = () => {
+  const { setToken, setUser } = useAuth();
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
@@ -31,7 +39,7 @@ const page = () => {
     setShowR(!showR);
   };
 
-  const formik = useFormik<registerType>({
+  const formik = useFormik<RegisterFormData>({
     validationSchema: registerValidations,
     initialValues: registerInitialValues,
     validateOnMount: false,
@@ -41,13 +49,24 @@ const page = () => {
         "Enviar formulario",
         async () => {
           try {
-            const data = await registerUser(formik.values);
+            const data: RegisterResponse = await registerUserService(
+              formik.values
+            );
+            setToken(data.access_token);
+            setUser(data.user);
             toastSuccess("Registro enviado!");
+
             formik.resetForm();
             router.replace("/role");
           } catch (error) {
             if (error instanceof Error) {
-              toastError(error.message);
+              if (error.message === "El correo electrónico ya está en uso") {
+                toastError(error.message);
+              } else if (
+                error.message === "Debe aceptar lo terminos y condiciones"
+              ) {
+                toastError(error.message);
+              }
             } else {
               toastError("Error desconocido");
             }
@@ -144,7 +163,7 @@ const page = () => {
                 <button
                   type="button"
                   onClick={handleShowPass}
-                  className="absolute right-3  top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                  className="absolute right-3 cursor-pointer  top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
                 >
                   {show ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
@@ -181,37 +200,37 @@ const page = () => {
                 </button>
               </div>
               {formik.errors.confirmPassword &&
-              formik.touched.confirmPassword ? (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.confirmPassword}
-                </p>
-              ) : null}
+                formik.touched.confirmPassword && (
+                  <p className="text-red-400 text-sm text-center mt-2">
+                    {formik.errors.confirmPassword}
+                  </p>
+                )}
             </div>
 
             <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
               <label
-                htmlFor="checkboxTerms"
+                htmlFor="checkBoxTerms"
                 className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto"
               >
                 <input
-                  id="checkboxTerms"
-                  name="checkboxTerms"
+                  id="checkBoxTerms"
+                  name="checkBoxTerms"
                   type="checkbox"
-                  checked={formik.values.checkboxTerms}
+                  checked={formik.values.checkBoxTerms}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className="sr-only"
                 />
                 <div
                   className={`w-5 h-5 border rounded-[5px] shrink-0 flex items-center justify-center mt-0.5 transition-all ${
-                    formik.values.checkboxTerms
+                    formik.values.checkBoxTerms
                       ? "bg-accent-dark border-accent-dark"
                       : "border-border"
                   }`}
                 >
                   <svg
                     className={`w-3 h-3 text-white transition-opacity ${
-                      formik.values.checkboxTerms ? "opacity-100" : "opacity-0"
+                      formik.values.checkBoxTerms ? "opacity-100" : "opacity-0"
                     }`}
                     fill="none"
                     viewBox="0 0 24 24"
@@ -242,9 +261,9 @@ const page = () => {
                   </Link>
                 </span>
               </label>
-              {formik.errors.checkboxTerms && formik.touched.checkboxTerms && (
+              {formik.errors.checkBoxTerms && formik.touched.checkBoxTerms && (
                 <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                  {formik.errors.checkboxTerms}
+                  {formik.errors.checkBoxTerms}
                 </p>
               )}
             </div>
@@ -256,11 +275,11 @@ const page = () => {
                   email: true,
                   password: true,
                   confirmPassword: true,
-                  checkboxTerms: true,
+                  checkBoxTerms: true,
                 });
               }}
               disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90"
             >
               Registrarme
             </button>
@@ -273,14 +292,14 @@ const page = () => {
 
             <button
               disabled={formik.isSubmitting}
-              className="flex items-center justify-center gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center "
+              className="flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center "
             >
               <Image
                 src="/icons/googleIcon.svg"
                 width={18}
                 height={18}
                 alt="Ícono de Google"
-                className="w-4 h-4 sm:w-[18px] sm:h-[18px]"
+                className="w-4 h-4 sm:w-[18px] sm:h-[18px] "
               />
               <span className="text-ellipsis overflow-hidden text-center">
                 Registro con Google

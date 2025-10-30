@@ -1,120 +1,156 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-// Icons
+//Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
-// Next
+// Next/React
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+//Services
+import { updateRoleService } from "@/services/user.services";
+//Formik
+import { useFormik } from "formik";
+//Validators/Types
+import { roleValidation } from "@/validators/registerSchema";
+import { RoleData } from "@/types/forms.types";
+//Helpers
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+//Context
+import { useAuth } from "@/context/UserContext";
 
-import { selectUserRole } from "@/services/user.services";
-
-const SelectRolePage = () => {
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+const page = () => {
   const router = useRouter();
+  const { token, isLoading, setToken, setUser } = useAuth();
+  let rol = "";
+  const formik = useFormik<RoleData>({
+    initialValues: {
+      role: "",
+    },
+    validationSchema: roleValidation,
+    onSubmit: async () => {
+      try {
+        if (token) {
+          const data = await updateRoleService(formik.values.role, token);
 
-  const handleRoleSelect = (role: string) => {
-    setSelectedRole(role);
-  };
-
-  const handleContinue = async () => {
-    if (!selectedRole) return;
-
-    setIsLoading(true);
-
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      alert("Error: No hay token de autenticación. Por favor, inicia sesión.");
-      setIsLoading(false);
-      router.push("/login");
-      return;
-    }
-
-    try {
-      const success = await selectUserRole(selectedRole, token);
-
-      if (success) {
-        alert(
-          `Rol '${selectedRole}' guardado con éxito. Por favor, inicia sesión.`
-        );
-        router.push("/login");
+          if (data.access_token) {
+            setToken(data.access_token);
+          }
+          setUser(data.user);
+          if (formik.values.role === "student") {
+            rol = "alumn@";
+          } else {
+            rol = "profesor";
+          }
+          toastSuccess(`Has seleccionado ${rol}.
+            Revisa tu email para verificar tu cuenta.`);
+          router.push("/login");
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toastError(error.message);
+        } else {
+          toastError("Error desconocido");
+        }
+      } finally {
+        formik.setSubmitting(false);
       }
-    } catch (error) {
-      alert((error as Error).message);
-    } finally {
-      setIsLoading(false);
+    },
+  });
+  useEffect(() => {
+    if (formik.errors.role) {
+      toastError(formik.errors.role);
     }
+  }, [formik.errors.role]);
+  useEffect(() => {
+    if (!isLoading && !token) {
+      toastError("No estás autenticado");
+      router.push("/register");
+    }
+  }, [token, isLoading, router]);
+
+  const handleSelectRole = (role: string) => {
+    formik.setFieldValue("role", role);
   };
 
-  const baseCardClasses =
-    "shrink-0 flex flex-col gap-10 border-2 rounded-[10px] duration-300 transition-all cursor-pointer p-12 sm:p-20";
-  const unselectedClasses =
-    "border-border bg-background2/50 hover:scale-105 hover:shadow-[0_0_10px_#474b8a] hover:brightness-110";
-  const selectedClasses =
-    "border-[#474b8a] scale-105 shadow-[0_0_20px_#474b8a] bg-background2 brightness-120";
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Cargando...</p>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen text-font-light flex flex-col">
-      <header className="p-4">
-        <Link href="/">
-          <span className="font-semibold">LOGO</span>
-        </Link>
-      </header>
+    <form onSubmit={formik.handleSubmit}>
+      <div className="min-h-screen text-font-light flex flex-col">
+        <header className="p-4">
+          <Link href="/">
+            <span className="font-semibold">LOGO</span>
+          </Link>
+        </header>
 
-      <section className="flex flex-col items-center justify-center mt-15 px-4 flex-1">
-        <h1 className="text-2xl sm:text-4xl text-center">
-          Bienvenid@ a DevCore.
-        </h1>
-        <h3 className="text-2xl sm:text-3xl mt-3 text-center">
-          Elegí tu perfil:
-        </h3>
-
-        <div className="flex flex-wrap justify-center gap-8 mt-10 mb-16">
-          <span
-            className={`${baseCardClasses} ${
-              selectedRole === "TEACHER" ? selectedClasses : unselectedClasses
-            }`}
-            onClick={() => handleRoleSelect("TEACHER")}
+        <section className="flex flex-col items-center justify-center mt-15 px-4">
+          <h1 className="text-2xl sm:text-4xl text-center">
+            Bienvenid@ a DevCore.
+          </h1>
+          <h3 className="text-2xl sm:text-3xl mt-3 text-center">
+            Elegí tu perfil:
+          </h3>
+          <div className="flex flex-col mb-15">
+            <div className="flex flex-wrap justify-center gap-8 mt-10 ">
+              <span
+                onClick={() => handleSelectRole("teacher")}
+                className={`shrink-0 flex flex-col gap-10 border-2 p-12 sm:p-20 rounded-[10px] transition-all duration-300 cursor-pointer
+              ${
+                formik.values.role === "teacher"
+                  ? " border-accent-medium/70   shadow-[0_0_15px_#bba0eed4] scale-105"
+                  : "border-border hover:scale-105 hover:shadow-[0_0_8px_#474b8a]"
+              } bg-background2/50`}
+              >
+                <GoMortarBoard
+                  className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
+                  size={250}
+                />
+                <p className="text-3xl sm:text-5xl text-center">Profesor</p>
+              </span>
+              <span
+                onClick={() => handleSelectRole("student")}
+                className={`shrink-0 flex flex-col gap-10 border-2 p-12 sm:p-20 rounded-[10px] transition-all duration-300 cursor-pointer
+              ${
+                formik.values.role === "student"
+                  ? " border-accent-medium/70   shadow-[0_0_15px_#bba0eed4] scale-105"
+                  : "border-border hover:scale-105 hover:shadow-[0_0_8px_#474b8a]"
+              } bg-background2/50`}
+              >
+                <HiOutlineComputerDesktop
+                  className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
+                  size={250}
+                />
+                <p className="text-3xl sm:text-5xl text-center">Alumn@</p>
+              </span>
+            </div>
+          </div>
+          <button
+            disabled={formik.isSubmitting}
+            type="submit"
+            onClick={() => {
+              formik.setTouched({
+                role: true,
+              });
+            }}
+            className="px-5 py-2 border border-font-light rounded-xl mb-10 hover:scale-103 transition-all duration-150 cursor-pointer text-lg sm:text-xl font-light disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
-            <GoMortarBoard
-              className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
-              size={250}
-            />
-            <p className="text-3xl sm:text-5xl text-center">Profesor</p>
-          </span>
-
-          <span
-            className={`${baseCardClasses} ${
-              selectedRole === "STUDENT" ? selectedClasses : unselectedClasses
-            }`}
-            onClick={() => handleRoleSelect("STUDENT")}
-          >
-            <HiOutlineComputerDesktop
-              className="text-[#bfc1de] w-full h-auto max-w-[150px] sm:max-w-[250px]"
-              size={250}
-            />
-            <p className="text-3xl sm:text-5xl text-center">Alumn@</p>
-          </span>
-        </div>
-
-        <button
-          onClick={handleContinue}
-          disabled={!selectedRole || isLoading}
-          className={`px-5 py-2 rounded-xl mb-10 transition-all duration-150 text-lg sm:text-xl font-light 
-            ${
-              selectedRole && !isLoading
-                ? "border-font-light hover:scale-103 cursor-pointer bg-blue-600 text-white"
-                : "border-gray-500 text-gray-500 cursor-not-allowed opacity-50"
-            }`}
-        >
-          {isLoading ? "Guardando..." : "Continuar"}
-        </button>
-      </section>
-    </div>
+            Continuar
+          </button>
+        </section>
+      </div>
+    </form>
   );
 };
 
-export default SelectRolePage;
+export default page;

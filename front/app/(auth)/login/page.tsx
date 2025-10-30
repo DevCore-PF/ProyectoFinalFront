@@ -1,35 +1,62 @@
 "use client";
-
+//Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
-import { toastSuccess } from "@/helpers/toast";
-
-import {
-  loginType,
-  loginInitialValues,
-  loginValidations,
-} from "@/validators/loginSchema";
+//Types & Validators
+import { LoginFormData } from "@/types/auth.types";
+import { loginInitialValues, loginValidations } from "@/validators/loginSchema";
+//Formik
 import { useFormik } from "formik";
-
+//Next/React
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+//Services
+import { loginUserService } from "@/services/user.services";
+//Helpers
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+//Context
+import { useAuth } from "@/context/UserContext";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const formik = useFormik<loginType>({
+  const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
+  const router = useRouter();
+  const { setToken, setUser, user } = useAuth();
+  const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
     validateOnMount: false,
-    onSubmit: (values) => {
-      console.log("Login values:", values);
-      toastSuccess("¡Inicio de sesión exitoso!");
-      // aca iría la lógica de autenticación
+    onSubmit: async () => {
+      try {
+        const data = await loginUserService(formik.values);
+        setToken(data.access_token);
+        setUser(data.user);
+        toastSuccess("Login exitoso!");
+        console.log("esta es mi data", data);
+
+        router.push("/");
+        // window.location.reload();
+      } catch (error) {
+        if (error instanceof Error) {
+          toastError(error.message);
+        } else {
+          toastError("Error desconocido");
+        }
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
-
+  useEffect(() => {
+    if (user && !user.isEmailVerified) {
+      setShowEmailNotVerified(true);
+    }
+    // if (user) {
+    //   router.push("/");
+    // }
+  }, [user]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -48,10 +75,16 @@ const LoginPage = () => {
           className="border-border border p-8 rounded-2xl w-full max-w-lg shadow-lg m-15"
         >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
-          <p className="text-gray-400 text-center mb-6">
-            Iniciá sesión para ingresar a tu cuenta.
-          </p>
-
+          {showEmailNotVerified ? (
+            <p className="text-red-400 text-center mb-6">
+              Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
+              entrada.
+            </p>
+          ) : (
+            <p className="text-gray-400 text-center mb-6">
+              Iniciá sesión para ingresar a tu cuenta.
+            </p>
+          )}
           <div className="flex flex-col gap-4">
             <div>
               <label htmlFor="email" className="block text-sm mb-1">
@@ -106,17 +139,17 @@ const LoginPage = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-300">
+            {/* <div className="flex items-center gap-2 text-xs text-gray-300">
               <label className="inline-flex items-center cursor-pointer ">
-                <input type="checkbox" className="sr-only" />
-                <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
-                  <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
-                </div>
-                <label htmlFor="terms" className="ml-2 select-none text-sm ">
-                  Recordarme
-                </label>
+              <input type="checkbox" className="sr-only" />
+              <div className="w-5 h-5 border border-border rounded-[5px] flex items-center justify-center">
+              <div className="w-3 h-2.5 bg-accent-dark rounded-xs hidden checkbox-indicator"></div>
+              </div>
+              <label htmlFor="terms" className="ml-2 select-none text-sm ">
+              Recordarme
               </label>
-            </div>
+              </label>
+              </div> */}
 
             <button
               type="submit"
@@ -156,7 +189,10 @@ const LoginPage = () => {
 
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
-              <Link href="/register" className="text-accent-medium hover:underline">
+              <Link
+                href="/register"
+                className="text-accent-medium hover:underline"
+              >
                 Registrate
               </Link>
               <span className="items-center text-xl">&rarr;</span>

@@ -1,13 +1,8 @@
+import { ContactFormData } from "@/types/forms.types";
 import * as Yup from "yup";
 
-export interface contactFormType {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
 
-export const contactInitialValues = {
+export const contactInitialValues:ContactFormData = {
   name: "",
   email: "",
   subject: "",

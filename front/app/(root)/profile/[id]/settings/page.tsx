@@ -12,7 +12,7 @@ import { updateUserInSession } from '@/helpers/session.helpers';
 const ProfileSettings = () => {
   const params = useParams();
   const router = useRouter();
-  const { user: contextUser, token, isLoading } = useAuth();
+  const { user: contextUser, token, isLoading, setUser: setContextUser } = useAuth();
   const userId = params.id as string;
 
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -103,11 +103,17 @@ const ProfileSettings = () => {
       const result = await uploadProfileImageService(user.id, selectedImage, token);
       
       if (result.success) {
-        
+        // Actualizar estado local
         const updatedUser = { ...user, profileImage: result.imageUrl };
         setUser(updatedUser);
         
+        // Actualizar contexto global
+        if (contextUser) {
+          const updatedContextUser = { ...contextUser, profileImage: result.imageUrl };
+          setContextUser(updatedContextUser);
+        }
         
+        // Actualizar sessionStorage
         updateUserInSession(updatedUser);
         
         setMessage({ type: 'success', text: result.message });

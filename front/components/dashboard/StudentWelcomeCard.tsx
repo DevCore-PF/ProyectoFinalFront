@@ -1,14 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { HiCog, HiTrendingUp, HiClock } from "react-icons/hi";
+import { HiCog, HiTrendingUp, HiClock, HiUser } from "react-icons/hi";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import ProfileImage from "@/components/ui/ProfileImage";
+
 const WelcomeCard = ({
   userName = "",
   userEmail = "",
+  profileImage,
   weeklyGoalProgress = 0,
   goalHours = 0,
   currentHours = 0,
+}: {
+  userName?: string;
+  userEmail?: string;
+  profileImage?: string;
+  weeklyGoalProgress?: number;
+  goalHours?: number;
+  currentHours?: number;
 }) => {
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const router = useRouter();
@@ -57,10 +68,20 @@ const WelcomeCard = ({
         <p className="text-slate-400 text-xs uppercase tracking-wider mb-3">
           {currentDate}
         </p>
-        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-slate-200">
-          ¡Bienvenid@ {userName}!
-        </h1>
-        <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
+        <div className="flex items-center gap-4 mb-2">
+          <ProfileImage 
+            user={{ profileImage, name: userName }}
+            size={48}
+            showEditButton={true}
+            onEditClick={handleProfileSettings}
+          />
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-200">
+              ¡Bienvenid@ {userName}!
+            </h1>
+            <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-xl p-5 md:p-6 mb-4 bg-slate-900/50 border border-slate-700/30">

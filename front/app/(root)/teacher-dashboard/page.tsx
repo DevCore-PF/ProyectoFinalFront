@@ -32,8 +32,9 @@ const TeacherDashboardPage = () => {
       <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
         <div className="mb-6 relative z-10">
           <TeacherWelcomeCard
-            userName={teacherData.userName}
-            userEmail={teacherData.userEmail}
+            userName={user?.name}
+            userEmail={user?.email}
+            profileImage={user?.profileImage}
           />
         </div>
         <div className="bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">

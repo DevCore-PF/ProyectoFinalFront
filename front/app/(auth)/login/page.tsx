@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 //Services
 import { loginUserService } from "@/services/user.services";
 //Helpers
@@ -23,6 +23,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setToken, setUser, user } = useAuth();
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
@@ -49,6 +50,7 @@ const LoginPage = () => {
       }
     },
   });
+  
   useEffect(() => {
     if (user && !user.isEmailVerified) {
       setShowEmailNotVerified(true);
@@ -57,6 +59,37 @@ const LoginPage = () => {
     //   router.push("/");
     // }
   }, [user]);
+
+  // Efecto para manejar los parámetros de verificación de email
+  useEffect(() => {
+    const verified = searchParams.get('verified');
+    const error = searchParams.get('error');
+
+    if (verified === 'true') {
+      toastSuccess('¡Email verificado correctamente! Ya puedes iniciar sesión.');
+      // Limpiar la URL sin recargar la página
+      window.history.replaceState({}, '', '/login');
+    } else if (error) {
+      let errorMessage = 'Error en la verificación del email.';
+      
+      switch (error) {
+        case 'invalid-token':
+          errorMessage = 'Token de verificación inválido o expirado.';
+          break;
+        case 'verification-failed':
+          errorMessage = 'La verificación falló. Intenta solicitar un nuevo email.';
+          break;
+        case 'verification-error':
+          errorMessage = 'Error interno durante la verificación.';
+          break;
+      }
+      
+      toastError(errorMessage);
+      // Limpiar la URL sin recargar la página
+      window.history.replaceState({}, '', '/login');
+    }
+  }, [searchParams]);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

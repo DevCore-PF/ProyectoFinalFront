@@ -4,7 +4,6 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 //Helpers
 import {
-  toastConfirm,
   toastError,
   toastSuccess,
 } from "@/helpers/alerts.helper";
@@ -17,7 +16,7 @@ import { useFormik } from "formik";
 //Next / React
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
@@ -26,8 +25,9 @@ import { registerUserService } from "@/services/user.services";
 //Context
 import { useAuth } from "@/context/UserContext";
 import { RegisterResponse } from "../../../types/api.types";
+import Spinner from "@/components/ui/Spinner";
 
-const page = () => {
+const RegisterPage = () => {
   const { setToken, setUser } = useAuth();
   const router = useRouter();
   const [show, setShow] = useState(false);
@@ -44,40 +44,32 @@ const page = () => {
     initialValues: registerInitialValues,
     validateOnMount: false,
 
-    onSubmit: () => {
-      toastConfirm(
-        "Enviar formulario",
-        async () => {
-          try {
-            const data: RegisterResponse = await registerUserService(
-              formik.values
-            );
-            setToken(data.access_token);
-            setUser(data.user);
-            toastSuccess("Registro enviado!");
+    onSubmit: async () => {
+      try {
+        const data: RegisterResponse = await registerUserService(
+          formik.values
+        );
+        setToken(data.access_token);
+        setUser(data.user);
+        toastSuccess("Registro enviado!");
 
-            formik.resetForm();
-            router.replace("/role");
-          } catch (error) {
-            if (error instanceof Error) {
-              if (error.message === "El correo electrónico ya está en uso") {
-                toastError(error.message);
-              } else if (
-                error.message === "Debe aceptar lo terminos y condiciones"
-              ) {
-                toastError(error.message);
-              }
-            } else {
-              toastError("Error desconocido");
-            }
-          } finally {
-            formik.setSubmitting(false);
+        formik.resetForm();
+        router.replace("/role");
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message === "El correo electrónico ya está en uso") {
+            toastError(error.message);
+          } else if (
+            error.message === "Debe aceptar lo terminos y condiciones"
+          ) {
+            toastError(error.message);
           }
-        },
-        () => {
-          formik.setSubmitting(false);
+        } else {
+          toastError("Error desconocido");
         }
-      );
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
 
@@ -279,9 +271,16 @@ const page = () => {
                 });
               }}
               disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90"
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90 flex items-center justify-center gap-2"
             >
-              Registrarme
+              {formik.isSubmitting ? (
+                <>
+                  <Spinner size="sm" />
+                  <span>Registrando...</span>
+                </>
+              ) : (
+                "Registrarme"
+              )}
             </button>
 
             <div className="flex items-center my-2">
@@ -294,15 +293,19 @@ const page = () => {
               disabled={formik.isSubmitting}
               className="flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 gap-2 bg-font-light cursor-pointer text-font-dark py-2 rounded-md hover:bg-gray-100 transition text-xs sm:text-base px-3 sm:px-4 text-center "
             >
-              <Image
-                src="/icons/googleIcon.svg"
-                width={18}
-                height={18}
-                alt="Ícono de Google"
-                className="w-4 h-4 sm:w-[18px] sm:h-[18px] "
-              />
+              {formik.isSubmitting ? (
+                <Spinner size="sm" className="border-gray-400 border-t-gray-600" />
+              ) : (
+                <Image
+                  src="/icons/googleIcon.svg"
+                  width={18}
+                  height={18}
+                  alt="Ícono de Google"
+                  className="w-4 h-4 sm:w-[18px] sm:h-[18px] "
+                />
+              )}
               <span className="text-ellipsis overflow-hidden text-center">
-                Registro con Google
+                {formik.isSubmitting ? "Procesando..." : "Registro con Google"}
               </span>
             </button>
 
@@ -323,4 +326,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default RegisterPage;

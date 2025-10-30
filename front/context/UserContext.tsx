@@ -15,7 +15,7 @@ interface User {
   id: string;
   name: string;
   role: "student" | "teacher" | "admin" | null;
-  // image:string
+  profileImage?: string;
 }
 
 interface AuthContextType {

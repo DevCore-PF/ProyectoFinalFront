@@ -1,13 +1,11 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { uploadProfileImageService  } from '@/services/user.services';
-import { useAuth } from '@/context/UserContext';
-import { UserProfile } from '@/types/user.types';
-import { updateUserInSession } from '@/helpers/session.helpers';
-
-
+"use client";
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import { uploadProfileImageService } from "@/services/user.service";
+import { useAuth } from "@/context/UserContext";
+import { UserProfile } from "@/types/user.types";
+import { updateUserInSession } from "@/helpers/session.helpers";
 
 const ProfileSettings = () => {
   const params = useParams();
@@ -17,44 +15,41 @@ const ProfileSettings = () => {
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  
   useEffect(() => {
-    if (isLoading) return; 
+    if (isLoading) return;
 
     if (!contextUser || !token) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
-    
     if (contextUser.id !== userId) {
-      router.push('/dashboard');
+      router.push("/dashboard");
       return;
     }
 
-    
     const userProfile: UserProfile = {
       id: contextUser.id,
       name: contextUser.name,
       email: contextUser.email,
-      role: contextUser.role || 'student',
-      profileImage: undefined 
+      role: contextUser.role || "student",
+      profileImage: undefined,
     };
 
-    
-    const userData = sessionStorage.getItem('user');
+    const userData = sessionStorage.getItem("user");
     if (userData) {
       try {
         const sessionUser = JSON.parse(userData);
         if (sessionUser.profileImage || sessionUser.image) {
-          userProfile.profileImage = sessionUser.profileImage || sessionUser.image;
+          userProfile.profileImage =
+            sessionUser.profileImage || sessionUser.image;
         }
       } catch (error) {
-        console.error('Error parsing session data:', error);
+        console.error("Error parsing session data:", error);
       }
     }
 
@@ -67,28 +62,28 @@ const ProfileSettings = () => {
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      
-      if (!file.type.startsWith('image/')) {
-        setMessage({ type: 'error', text: 'Por favor selecciona una imagen válida' });
+      if (!file.type.startsWith("image/")) {
+        setMessage({
+          type: "error",
+          text: "Por favor selecciona una imagen válida",
+        });
         return;
       }
 
-      
       if (file.size > 1024 * 1024) {
-        setMessage({ type: 'error', text: 'La imagen no debe superar 1MB' });
+        setMessage({ type: "error", text: "La imagen no debe superar 1MB" });
         return;
       }
 
       setSelectedImage(file);
-      
-      
+
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
-      
-      setMessage({ type: '', text: '' });
+
+      setMessage({ type: "", text: "" });
     }
   };
 
@@ -96,27 +91,31 @@ const ProfileSettings = () => {
     if (!selectedImage || !user || !token) return;
 
     setIsUploading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
     try {
-      
-      const result = await uploadProfileImageService(user.id, selectedImage, token);
-      
+      const result = await uploadProfileImageService(
+        user.id,
+        selectedImage,
+        token
+      );
+
       if (result.success) {
-        
         const updatedUser = { ...user, profileImage: result.imageUrl };
         setUser(updatedUser);
-        
-        
+
         updateUserInSession(updatedUser);
-        
-        setMessage({ type: 'success', text: result.message });
+
+        setMessage({ type: "success", text: result.message });
         setSelectedImage(null);
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Error de conexión. Inténtalo nuevamente.';
-      setMessage({ type: 'error', text: errorMessage });
+      console.error("Error uploading image:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Error de conexión. Inténtalo nuevamente.";
+      setMessage({ type: "error", text: errorMessage });
     } finally {
       setIsUploading(false);
     }
@@ -124,8 +123,8 @@ const ProfileSettings = () => {
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
-    setImagePreview(user?.profileImage || '');
-    setMessage({ type: '', text: '' });
+    setImagePreview(user?.profileImage || "");
+    setMessage({ type: "", text: "" });
   };
 
   if (isLoading) {
@@ -153,8 +152,6 @@ const ProfileSettings = () => {
   return (
     <main className="min-h-screen bg-[linear-gradient(rgba(255,255,255,0.05)_3px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_2px,transparent_1px)] bg-size-[100px_100px]">
       <div className="container mx-auto px-4 py-8">
-        
-        
         <div className="mb-8">
           <button
             onClick={() => router.back()}
@@ -171,8 +168,6 @@ const ProfileSettings = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          
           <div className="lg:col-span-1">
             <div className="bg-background2/30 border border-border rounded-xl p-6 backdrop-blur-sm">
               <h2 className="text-xl font-semibold text-font-light mb-4">
@@ -197,16 +192,13 @@ const ProfileSettings = () => {
             </div>
           </div>
 
-          
           <div className="lg:col-span-2">
             <div className="bg-background2/30 border border-border rounded-xl p-6 backdrop-blur-sm">
               <h2 className="text-xl font-semibold text-font-light mb-6">
                 Foto de Perfil
               </h2>
-              
+
               <div className="flex flex-col md:flex-row gap-8">
-                
-                
                 <div className="flex-shrink-0">
                   <div className="w-32 h-32 rounded-xl overflow-hidden border-2 border-border-light/20 bg-background2/50">
                     {imagePreview ? (
@@ -228,12 +220,12 @@ const ProfileSettings = () => {
                   </div>
                 </div>
 
-                
                 <div className="flex-1 space-y-4">
-                  
-                  
                   <div>
-                    <label htmlFor="image-upload" className="block text-sm font-medium text-font-light mb-2">
+                    <label
+                      htmlFor="image-upload"
+                      className="block text-sm font-medium text-font-light mb-2"
+                    >
                       Seleccionar nueva imagen
                     </label>
                     <input
@@ -248,7 +240,6 @@ const ProfileSettings = () => {
                     </p>
                   </div>
 
-                  
                   {selectedImage && (
                     <div className="flex gap-3">
                       <button
@@ -262,10 +253,10 @@ const ProfileSettings = () => {
                             Subiendo...
                           </>
                         ) : (
-                          'Guardar Imagen'
+                          "Guardar Imagen"
                         )}
                       </button>
-                      
+
                       <button
                         onClick={handleRemoveImage}
                         disabled={isUploading}
@@ -276,17 +267,17 @@ const ProfileSettings = () => {
                     </div>
                   )}
 
-                  
                   {message.text && (
-                    <div className={`p-3 rounded-lg text-sm ${
-                      message.type === 'success' 
-                        ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
-                        : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                    }`}>
+                    <div
+                      className={`p-3 rounded-lg text-sm ${
+                        message.type === "success"
+                          ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                          : "bg-red-500/20 text-red-300 border border-red-500/30"
+                      }`}
+                    >
                       {message.text}
                     </div>
                   )}
-
                 </div>
               </div>
             </div>

@@ -1,10 +1,38 @@
+"use client";
+import { useAuth } from "@/context/UserContext";
 //Next
 import { courses } from "@/helpers/moks";
+import { paymentService } from "@/services/payment.service";
+import { CourseCardProps } from "@/types/courses.types";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 //Incos
 import { IoArrowForward } from "react-icons/io5";
 
 const CoursesGrid = () => {
+  const router = useRouter();
+  const { token, user } = useAuth();
+  // const handleBuyCourse = async () => {
+  //   // Verificar autenticación
+  //   if (!token || !user) {
+  //     router.push("/login");
+  //     return;
+  //   }
+
+  //   try {
+  //     // Llamar al backend para crear la sesión de Stripe
+  //     const data = await paymentService.createCheckoutSession(token, [
+  //       course.id,
+  //     ]);
+
+  //     // Redirigir a Stripe
+  //     if (data.url) {
+  //       window.location.href = data.url;
+  //     }
+  //   } catch (err: any) {
+  //     console.log(err.message);
+  //   }
+  // };
   return (
     <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">
@@ -63,6 +91,7 @@ const CoursesGrid = () => {
                 )}
 
                 <div className="flex justify-end mt-auto">
+                  {/* <button onClick={handleBuyCourse}>Comprar</button> */}
                   <Link
                     href={`/courses/${course.id}`}
                     className="bg-slate-600/90 p-3 rounded-lg  transition-all duration-300 hover:shadow-slate-800 hover:shadow-md hover:bg-slate-600/40"

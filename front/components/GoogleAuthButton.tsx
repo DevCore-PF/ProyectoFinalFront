@@ -1,11 +1,13 @@
 "use client";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Next
 import { usePathname } from "next/navigation";
 //Icons
 import { FcGoogle } from "react-icons/fc";
 const GoogleAuthButton = () => {
   const handleGoogleAuth = () => {
-    window.location.href = "http://localhost:3001/auth/google";
+    window.location.href = `${API_URL}/auth/google`;
   };
   const pathname = usePathname();
   return (

@@ -1,4 +1,3 @@
-
 "use client";
 //Next/React
 import { useEffect, useRef, Suspense } from "react";
@@ -10,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 //Helpers
 import { toastSuccess } from "@/helpers/alerts.helper";
 //Services
-import { getCurrentUserService } from "@/services/user.services";
+import { getCurrentUserService } from "@/services/user.service";
 
 // Componente interno que usa useSearchParams
 function AuthCallbackContent() {

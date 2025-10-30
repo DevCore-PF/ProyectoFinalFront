@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 //Services
-import { loginUserService } from "@/services/user.services";
+import { loginUserService } from "@/services/user.service";
 //Helpers
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context

@@ -1,6 +1,6 @@
 "use client";
 //Helpers
-import { toastSuccess } from "@/helpers/toast";
+import { toastSuccess } from "@/helpers/alerts.helper";
 //Formik
 import { useFormik } from "formik";
 import {
@@ -17,9 +17,11 @@ import { FaFacebook } from "react-icons/fa";
 
 //Next
 import Link from "next/link";
+//Types
+import { ContactFormData } from "../../../../types/forms.types";
 
 const ContactPage = () => {
-  const formik = useFormik({
+  const formik = useFormik<ContactFormData>({
     validationSchema: contactValidations,
     initialValues: contactInitialValues,
     onSubmit: () => {

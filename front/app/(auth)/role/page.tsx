@@ -3,22 +3,28 @@
 //Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
-// Next
+// Next/React
 import Link from "next/link";
-import { updateRoleService } from "@/services/user.services";
-
-import { useFormik } from "formik";
-import { roleValidation } from "@/validators/registerSchema";
-import { toastError, toastSuccess } from "@/helpers/toast";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+//Services
+import { updateRoleService } from "@/services/user.services";
+//Formik
+import { useFormik } from "formik";
+//Validators/Types
+import { roleValidation } from "@/validators/registerSchema";
+import { RoleData } from "@/types/forms.types";
+//Helpers
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+//Context
 import { useAuth } from "@/context/UserContext";
+import { log } from "console";
 
 const page = () => {
   const router = useRouter();
-  const { token, isLoading, setToken, setUser } = useAuth();
+  const { token, isLoading, setToken, setUser, user } = useAuth();
   let rol = "";
-  const formik = useFormik({
+  const formik = useFormik<RoleData>({
     initialValues: {
       role: "",
     },
@@ -27,20 +33,26 @@ const page = () => {
       try {
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-       
 
           if (data.access_token) {
             setToken(data.access_token);
           }
           setUser(data.user);
+
           if (formik.values.role === "student") {
             rol = "alumn@";
           } else {
             rol = "profesor";
           }
-          toastSuccess(`Has seleccionado ${rol}.
-            Revisa tu email para verificar tu cuenta.`);
-          router.push("/login");
+
+          if (data.user.isEmailVerified) {
+            router.push("/");
+          } else {
+            toastSuccess(
+              `Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`
+            );
+            router.push("/login");
+          }
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -54,10 +66,18 @@ const page = () => {
     },
   });
   useEffect(() => {
+    if (user && user.role) {
+      toastSuccess("Login exitoso!");
+      router.push("/");
+    }
+  }, [user, router]);
+
+  useEffect(() => {
     if (formik.errors.role) {
       toastError(formik.errors.role);
     }
   }, [formik.errors.role]);
+
   useEffect(() => {
     if (!isLoading && !token) {
       toastError("No estás autenticado");

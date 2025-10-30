@@ -1,24 +1,7 @@
+import { RegisterFormData } from "@/types/auth.types";
 import * as Yup from "yup";
-export interface RegisterType {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  checkBoxTerms: boolean;
-}
 
-export interface RegisterResponse {
-  access_token: string;
-  user: {
-    email: string;
-    hasCompletedProfile: boolean;
-    id: string;
-    name: string;
-    role: "student" | "teacher" | "admin" | null;
-    isEmailVerified: false;
-  };
-}
-export const registerInitialValues = {
+export const registerInitialValues: RegisterFormData = {
   name: "",
   email: "",
   password: "",
@@ -50,10 +33,9 @@ export const registerValidations = Yup.object({
     "Debes aceptar los Términos y Condiciones"
   ),
 });
-// La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*,La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*
-export interface roleType {
-  role: string;
-}
+
+
+
 
 export const roleValidation = Yup.object({
   role: Yup.string().required("Debes seleccionar un rol"),

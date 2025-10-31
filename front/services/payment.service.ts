@@ -3,7 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const paymentService = {
   createCheckoutSession: async (token: string, courseIds: string[]) => {
     const response = await fetch(
-      `${API_URL}/payments/create-checkout-session`,
+      `${API_URL}/payment/create-checkout-session`,
       {
         method: "POST",
         headers: {

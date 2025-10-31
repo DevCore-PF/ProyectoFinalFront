@@ -1,150 +1,164 @@
 "use client";
 
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
-import { toastError } from "@/helpers/alerts.helper";
+import { createCheckoutSession } from "@/services/payments.service";
+import { getAllCoursesService } from "@/services/course.service";
+import { Course } from "@/types/courses.types";
+import { HiShoppingCart, HiArrowLeft, HiCheckCircle } from "react-icons/hi";
 
 export default function CheckoutPage() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [courses, setCourses] = useState<Course[]>([]);
 
-  const selectedCourses = [
-    {
-      id: "550e8400-e29b-41d4-a716-446655440000", // Reemplaza con IDs reales
-      title: "Curso de React Avanzado",
-      price: 99.99,
-      description: "Aprende React con hooks y contextos",
-    },
-    {
-      id: "550e8400-e29b-41d4-a716-446655440001",
-      title: "Curso de Node.js",
-      price: 89.99,
-      description: "Backend con Express y TypeScript",
-    },
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        ////////////////////////aca despues usaria el cart
+        const data = await getAllCoursesService();
+        setCourses(data);
+      } catch (error: any) {
+        console.error("Error:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const handleCheckout = async () => {
+    if (!token) {
+      setError("No hay sesión activa");
+      return;
+    }
+
     setLoading(true);
-    setError(null);
-    const { token, isLoading } = useAuth();//puedo user el is loading de mi conetext
+    setError("");
+
     try {
-      // 1. Obtener el token del usuario (ajusta según tu sistema de auth)
-
-      if (!token) {
-        toastError("Debes iniciar sesión para continuar");
-        setLoading(false);
-        return;
-      }
-
-      // 2. Extraer solo los IDs (UUIDs) de los cursos
-      const courseIds = selectedCourses.map((course) => course.id);
-
-      // 3. Llamar al endpoint del backend
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/payments/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            courseIds: courseIds,
-          }),
-        }
-      );
-
-      // 4. Parsear la respuesta
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Error al crear la sesión de pago");
-      }
-
-      // 5. Redirigir a la URL de Stripe
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No se recibió la URL de pago");
-      }
+      const courseIds = courses.map((course) => course.id);
+      const { url } = await createCheckoutSession(token, courseIds);
+      window.location.href = url;
     } catch (err: any) {
-      console.error("Error en checkout:", err);
+      console.error("Error al crear sesión de pago:", err);
       setError(err.message || "Error al procesar el pago");
       setLoading(false);
     }
   };
 
-  const totalAmount = selectedCourses.reduce(
-    (sum, course) => sum + course.price,
-    0
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold mb-2">Carrito de compra</h1>
-          <p className="text-gray-600 mb-8">
-            Revisa tu selección antes de proceder al pago
-          </p>
-
-          {/* Lista de cursos */}
-          <div className="space-y-4 mb-6">
-            {selectedCourses.map((course) => (
-              <div
-                key={course.id}
-                className="border border-gray-200 rounded-lg p-4"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-1">
-                      {course.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {course.description}
-                    </p>
-                  </div>
-                  <div className="ml-4">
-                    <span className="text-xl font-bold text-blue-600">
-                      ${course.price.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Total */}
-          <div className="border-t border-gray-200 pt-4 mb-6">
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-2xl font-bold">Total:</span>
-              <span className="text-2xl font-bold text-blue-600">
-                ${totalAmount.toFixed(2)} USD
-              </span>
-            </div>
-          </div>
-
-          {/* Error */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-              {error}
-            </div>
-          )}
-
-          <button
-            onClick={handleCheckout}
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {loading ? "Procesando..." : "🔒 Proceder al pago seguro"}
-          </button>
-
-          <p className="text-sm text-gray-500 text-center mt-4">
-            Serás redirigido a Stripe para completar tu compra
+    <div className="min-h-screen p-4 sm:p-8 lg:p-20">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-3xl md:text-5xl font-bold text-font-light mb-4">
+            Confirmar Compra
+          </h1>
+          <p className="text-slate-300 text-sm md:text-base">
+            Revisa tu orden antes de proceder al pago
           </p>
         </div>
+
+        {loading && courses.length === 0 ? (
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-12 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-button"></div>
+              <p className="text-slate-300 text-lg">Cargando cursos...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 mb-6 shadow-xl hover:border-slate-600/50 transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-purple-500/10 rounded-lg">
+                  <HiShoppingCart className="w-6 h-6 text-button" />
+                </div>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-200">
+                  Resumen de la Orden
+                </h2>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                {courses.map((course, index) => (
+                  <div
+                    key={course.id}
+                    className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-button/20 text-button font-semibold text-sm">
+                        {index + 1}
+                      </div>
+                      <span className="text-slate-200 font-medium text-sm md:text-base">
+                        {course.title}
+                      </span>
+                    </div>
+                    {/* <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
+                      ${course.price.toFixed(2)}
+                    </span> */}
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-slate-700/50 pt-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-button/10 border border-button/30">
+                  <span className="text-slate-200 text-lg md:text-xl font-bold">
+                    Total:
+                  </span>
+                  <span className="text-slate-200 text-xl md:text-2xl font-bold tabular-nums">
+                    $
+                    {/* {courses
+                      .reduce((sum, course) => sum + course.price, 0)
+                      .toFixed(2)} */}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-red-900/40 backdrop-blur-sm border border-red-500/50 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <div className="shrink-0 mt-0.5">
+                  <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <span className="text-red-400 text-xs font-bold">!</span>
+                  </div>
+                </div>
+                <p className="text-red-200 text-sm md:text-base">{error}</p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <button
+                onClick={handleCheckout}
+                disabled={loading || courses.length === 0}
+                className="group w-full bg-button hover:bg-button/80 disabled:bg-slate-700 disabled:cursor-not-allowed text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Procesando...</span>
+                  </>
+                ) : (
+                  <>
+                    <HiCheckCircle className="w-6 h-6" />
+                    <span>Pagar con Stripe</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => router.push("/cart")}
+                className="group w-full bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700/50 hover:border-slate-600/50 text-slate-200 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+              >
+                <HiArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
+                <span>Volver al Carrito</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

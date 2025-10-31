@@ -30,7 +30,7 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
 
 const page = () => {
-  const { setToken, setUser } = useAuth();
+  const { setToken, setUser, user } = useAuth();
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
@@ -55,24 +55,14 @@ const page = () => {
               formik.values
             );
             setToken(data.access_token);
-            setUser(data.user);
+            setUser(data.userReturn);
             toastSuccess("Registro enviado!");
 
             formik.resetForm();
             router.replace("/role");
           } catch (error) {
             if (error instanceof Error) {
-              if (error.message === "El correo electrónico ya está en uso") {
-                toastError(error.message);
-              } else if (
-                error.message === "Debe aceptar lo terminos y condiciones"
-              ) {
-                toastError(error.message);
-              } else if (
-                error.message.includes("Por favor, inicia sesión con Google.")
-              ) {
-                toastError(error.message);
-              }
+              toastError(error.message);
             } else {
               toastError("Error desconocido");
             }

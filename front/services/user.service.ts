@@ -23,6 +23,7 @@ export const registerUserService = async (
     }
 
     const response = await data.json();
+    console.log("Esta es mi data desde registerService", response);
 
     return response;
   } catch (error) {

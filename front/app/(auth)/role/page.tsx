@@ -41,15 +41,22 @@ const page = () => {
 
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-
+          ///////////////CONSOLE.LOGS
+          console.log("Data completa:", data);
+          console.log("Usuario:", data.userReturn);
+          console.log("Is email verified:", data.userReturn?.isEmailVerified);
+          console.log("Is google account:", data.userReturn?.isGoogleAccount);
           if (data.access_token) {
             setToken(data.access_token);
           }
-          setUser(data.user);
+          setUser(data.userReturn);
 
           const rol = formik.values.role === "student" ? "alumn@" : "profesor";
 
-          if (data.user.isEmailVerified) {
+          if (
+            data.userReturn.isEmailVerified ||
+            data.userReturn.isGoogleAccount
+          ) {
             toastSuccess("Login exitoso!");
             router.push("/");
           } else {

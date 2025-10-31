@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 //Services
 import { loginUserService } from "@/services/user.service";
 //Helpers
@@ -26,6 +26,7 @@ const LoginPage = () => {
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
   const router = useRouter();
   const { setToken, setUser, user } = useAuth();
+  const searchParams = useSearchParams();
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -34,8 +35,8 @@ const LoginPage = () => {
       try {
         const data = await loginUserService(formik.values);
         setToken(data.access_token);
-        setUser(data.user);
-        // toastSuccess("Login exitoso!");
+        setUser(data.userReturn);
+        toastSuccess("Login exitoso!");
         console.log("esta es mi data", data);
 
         router.push("/");
@@ -58,6 +59,13 @@ const LoginPage = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // useEffect(() => {
+  //   const error = searchParams.get("error");
+  //   if (error) {
+  //     toastError(decodeURIComponent(error));
+  //   }
+  // }, [searchParams]);
 
   return (
     <div className="min-h-screen text-font-light flex flex-col">

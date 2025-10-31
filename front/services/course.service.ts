@@ -10,13 +10,10 @@ export const getAllCoursesService = async () => {
     });
 
     if (!data.ok) {
-      const errorText = await data.text(); // Cambia a .text() primero
-      console.error("Response error:", errorText);
       throw new Error("Hubo un problema al obtener los cursos");
     }
 
     const response = await data.json();
-    console.log("esta es mi data de cursos", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos: ", error);

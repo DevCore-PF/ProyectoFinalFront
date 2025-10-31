@@ -1,6 +1,5 @@
-
 export interface Course {
-  id: string ;
+  id: string;
   title: string;
   students: number;
   rating: number;
@@ -14,6 +13,6 @@ export interface Course {
 
 export interface CourseCardProps {
   course: Course;
-  viewDetails: (id: string ) => void;
+  viewDetails: (id: string) => void;
 }
 

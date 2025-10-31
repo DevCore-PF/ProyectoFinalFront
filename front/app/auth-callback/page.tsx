@@ -1,42 +1,42 @@
 // app/auth-callback/page.tsx
 "use client";
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { useAuth } from "@/context/UserContext";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 
 export default function AuthCallback() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const { setToken } = useAuth();
 
-  useEffect(() => {
-    const token = searchParams.get("token");
-    const error = searchParams.get("error");
-    const message = searchParams.get("message");
+  // useEffect(() => {
+    // const token = searchParams.get("token");
+    // const error = searchParams.get("error");
+    // const message = searchParams.get("message");
 
-    if (error) {
-      // Manejar diferentes tipos de errores
-      if (error === "Conflict" || message?.includes("ya está registrado")) {
-        toastError(
-          message || "Este email ya está registrado. Por favor, inicia sesión con tu contraseña."
-        );
-        router.replace("/login?error=email_conflict");
-      } else {
-        toastError(message || "Error en la autenticación con Google");
-        router.replace("/login?error=auth_failed");
-      }
-      return;
-    }
+    // if (error) {
+    //   // Manejar diferentes tipos de errores
+    //   if (error === "Conflict" || message?.includes("ya está registrado")) {
+    //     toastError(
+    //       message || "Este email ya está registrado. Por favor, inicia sesión con tu contraseña."
+    //     );
+    //     router.replace("/login?error=email_conflict");
+    //   } else {
+    //     toastError(message || "Error en la autenticación con Google");
+    //     router.replace("/login?error=auth_failed");
+    //   }
+    //   return;
+    // }
 
-    if (token) {
-      setToken(token);
-      router.replace("/role");
-    } else {
-      toastError("Error en la autenticación");
-      router.replace("/login?error=no_token");
-    }
-  }, [searchParams, setToken, router]);
+  //   if (token) {
+  //     setToken(token);
+  //     router.replace("/role");
+  //   } else {
+  //     toastError("Error en la autenticación");
+  //     router.replace("/login?error=no_token");
+  //   }
+  // }, [searchParams, setToken, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

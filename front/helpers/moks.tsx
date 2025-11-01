@@ -364,27 +364,81 @@ export const teacherFeaturedCourses = [
   { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
 ];
 
-  export const teacherRecentActivity = [
-    {
-      id: 1,
-      type: "review",
-      text: "Nueva reseña 5★ en 'Introducción a React'",
-      time: "Hace 2 horas",
-    },
-    {
-      id: 2,
-      type: "enrollment",
-      text: "15 nuevos estudiantes esta semana",
-      time: "Hace 5 horas",
-    },
-    {
-      id: 3,
-      type: "update",
-      text: "Actualización completada en 'JavaScript Avanzado'",
-      time: "Hace 1 día",
-    },
-  ];
-  export const teacherData = {
-    userName: "Carolina",
-    userEmail: "carolinaperez@gmail.com",
-  };
+export const teacherRecentActivity = [
+  {
+    id: 1,
+    type: "review",
+    text: "Nueva reseña 5★ en 'Introducción a React'",
+    time: "Hace 2 horas",
+  },
+  {
+    id: 2,
+    type: "enrollment",
+    text: "15 nuevos estudiantes esta semana",
+    time: "Hace 5 horas",
+  },
+  {
+    id: 3,
+    type: "update",
+    text: "Actualización completada en 'JavaScript Avanzado'",
+    time: "Hace 1 día",
+  },
+];
+export const teacherData = {
+  userName: "Carolina",
+  userEmail: "carolinaperez@gmail.com",
+};
+
+export const memberships = [
+  {
+    name: "Mensual",
+    price: 29,
+    period: "/mes",
+    duration: "1 mes",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+    ],
+    popular: false,
+  },
+  {
+    name: "Trimestral",
+    price: 69,
+    period: "/3 meses",
+    duration: "3 meses",
+    savings: "Ahorra 20%",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+      "Proyectos prácticos guiados",
+    ],
+    popular: true,
+  },
+  {
+    name: "Anual",
+    price: 199,
+    period: "/año",
+    duration: "12 meses",
+    savings: "Ahorra 43%",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario VIP",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+      "Proyectos prácticos guiados",
+      "Mentoría 1 a 1 mensual",
+      "Acceso anticipado a contenido",
+    ],
+    popular: false,
+  },
+];

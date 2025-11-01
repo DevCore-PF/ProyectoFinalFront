@@ -11,11 +11,18 @@ import {
 interface User {
   email: string;
   hasCompletedProfile: boolean;
-  isEmailVerified: boolean;
   id: string;
   name: string;
   role: "student" | "teacher" | "admin" | null;
-
+  isEmailVerified: false;
+  resetPasswordToken: null;
+  resetPasswordExpires: null;
+  checkBoxTerms: boolean;
+  emailVerificationToken: string;
+  googleId: null;
+  image: null;
+  isActive: boolean;
+  isGoogleAccount: false;
 }
 
 interface AuthContextType {
@@ -63,7 +70,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserState(newUser);
   };
 
- 
   const logout = () => {
     clearSession();
     setTokenState(null);

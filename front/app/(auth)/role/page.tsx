@@ -41,11 +41,6 @@ const page = () => {
 
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-          ///////////////CONSOLE.LOGS
-          console.log("Data completa:", data);
-          console.log("Usuario:", data.userReturn);
-          console.log("Is email verified:", data.userReturn?.isEmailVerified);
-          console.log("Is google account:", data.userReturn?.isGoogleAccount);
           if (data.access_token) {
             setToken(data.access_token);
           }
@@ -58,6 +53,7 @@ const page = () => {
             data.userReturn.isGoogleAccount
           ) {
             toastSuccess("Login exitoso!");
+            // <ModalTerms/>
             router.push("/");
           } else {
             toastSuccess(

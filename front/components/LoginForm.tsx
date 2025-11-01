@@ -2,6 +2,7 @@
 //Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { FaExclamation } from "react-icons/fa6";
 //Types & Validators
 import { LoginFormData } from "@/types/auth.types";
 import { loginInitialValues, loginValidations } from "@/validators/loginSchema";
@@ -96,14 +97,17 @@ const LoginForm = () => {
                 {...formik.getFieldProps("email")}
                 className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
-                    ? "border border-red-500"
+                    ? "border border-amber-400/50"
                     : ""
                 }`}
               />
-              {formik.touched.email && formik.errors.email && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.email}
-                </p>
+              {formik.errors.email && formik.touched.email && (
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-400/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.email}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -119,7 +123,7 @@ const LoginForm = () => {
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
@@ -131,10 +135,13 @@ const LoginForm = () => {
                   {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
-              {formik.touched.password && formik.errors.password && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.password}
-                </p>
+              {formik.errors.password && formik.touched.password && (
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.password}</span>
+                  </p>
+                </div>
               )}
             </div>
 

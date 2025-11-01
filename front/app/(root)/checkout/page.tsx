@@ -151,7 +151,7 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => router.push("/cart")}
-                className="group w-full bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700/50 hover:border-slate-600/50 text-slate-200 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                className="group w-full cursor-pointer bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700/50 hover:border-slate-600/50 text-slate-200 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
               >
                 <HiArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
                 <span>Volver al Carrito</span>

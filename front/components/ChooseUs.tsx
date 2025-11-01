@@ -1,6 +1,4 @@
 import { featuresChooseUs } from "@/helpers/moks";
-import Link from "next/link";
-import { IoArrowForward } from "react-icons/io5";
 
 const WhyChooseUs = () => {
   return (
@@ -23,7 +21,7 @@ const WhyChooseUs = () => {
           {featuresChooseUs.map((feature) => (
             <div
               key={feature.id}
-              className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 hover:border-border-light/80 "
+              className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 hover:border-button/70 "
             >
               <div className="text-6xl md:text-7xl font-bold text-font-light mb-6">
                 {feature.number}

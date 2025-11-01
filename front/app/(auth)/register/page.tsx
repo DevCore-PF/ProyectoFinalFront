@@ -2,6 +2,7 @@
 //Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { FaExclamation } from "react-icons/fa6";
 //Helpers
 import {
   toastConfirm,
@@ -107,14 +108,17 @@ const page = () => {
                 placeholder="Ingresa tu nombre"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.name && formik.errors.name
-                    ? "border border-red-500"
+                    ? "border border-amber-400/50"
                     : ""
                 }`}
               />
               {formik.errors.name && formik.touched.name && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.name}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.name}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -129,14 +133,17 @@ const page = () => {
                 placeholder="Ingresa tu email"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
-                    ? "border border-red-500"
+                    ? "border border-amber-400/50"
                     : ""
                 }`}
               />
               {formik.errors.email && formik.touched.email && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.email}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.email}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -152,7 +159,7 @@ const page = () => {
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
@@ -165,9 +172,12 @@ const page = () => {
                 </button>
               </div>
               {formik.errors.password && formik.touched.password && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.password}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.password}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -182,8 +192,9 @@ const page = () => {
                   placeholder="Confirma tu contraseña"
                   {...formik.getFieldProps("confirmPassword")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
-                    formik.touched.password && formik.errors.password
-                      ? "border border-red-500"
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
@@ -197,9 +208,12 @@ const page = () => {
               </div>
               {formik.errors.confirmPassword &&
                 formik.touched.confirmPassword && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.confirmPassword}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.confirmPassword}</span>
+                    </p>
+                  </div>
                 )}
             </div>
 
@@ -258,9 +272,12 @@ const page = () => {
                 </span>
               </label>
               {formik.errors.checkBoxTerms && formik.touched.checkBoxTerms && (
-                <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                  {formik.errors.checkBoxTerms}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.checkBoxTerms}</span>
+                  </p>
+                </div>
               )}
             </div>
             <button

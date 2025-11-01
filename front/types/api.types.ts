@@ -11,7 +11,7 @@ export interface RegisterResponse {
     isEmailVerified: false;
     resetPasswordToken: null;
     resetPasswordExpires: null;
-    checkBoxTerms: null;
+    checkBoxTerms: boolean;
     emailVerificationToken: string;
     googleId: null;
     image: null;

@@ -1,6 +1,8 @@
 "use client";
-//React
+//Next/React
 import { useState } from "react";
+//Icons
+import { FaExclamation } from "react-icons/fa6";
 //Helpers
 import { toastSuccess } from "@/helpers/alerts.helper";
 //Formik
@@ -20,10 +22,9 @@ const EmailSubscription = () => {
     validationSchema: suscriptionValidation,
     onSubmit: async (values) => {
       setIsSubscribing(true);
-      // simulacion de api call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log("Newsletter subscription:", values.email);
-      toastSuccess("¡Te has suscrito al newsletter exitosamente!");
+      toastSuccess("Te has suscrito al newsletter!");
       setIsSubscribing(false);
       setShowErrors(false);
       formik.resetForm();
@@ -37,40 +38,52 @@ const EmailSubscription = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="relative">
-          <div className="absolute -inset-2 bg-purple-300/10 blur-3xl rounded-lg -z-10"></div>
-          <div className="absolute -inset-1 bg-purple-100/20 blur-2xl rounded-lg -z-10"></div>
+    <div className="max-w-7xl mx-auto mb-6">
+      <div className="relative group">
+        <div className="absolute inset-0 bg-linear-to-br from-button/10 to-purple-500/10 rounded-2xl blur-xl group-hover:from-button/20 group-hover:to-purple-500/20 transition-all duration-500"></div>
+        <div className="relative bg-slate-800/60 backdrop-blur-sm border border-border-light/50 rounded-2xl p-6 hover:border-slate-600/70 transition-all duration-300">
+          <div className="flex flex-col">
+            <h3 className="text-white font-semibold text-xl mb-2 text-center">
+              Ofertas exclusivas
+            </h3>
+            <p className="text-slate-300 text-sm mb-4 text-center">
+              Suscríbete para recibir descuentos y contenido exclusivo
+            </p>
 
-          <input
-            type="email"
-            placeholder="Ingresa tu email"
-            {...formik.getFieldProps("email")}
-            className={`relative w-full h-12 rounded-md bg-font-light/70 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 transition-all placeholder:text-font-dark/60 ${
-              showErrors && formik.errors.email ? "border border-red-500" : ""
-            }`}
-          />
-          {showErrors && formik.errors.email && (
-            <p className="text-red-400 text-sm mt-1">{formik.errors.email}</p>
-          )}
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-3 flex gap-2 items-center justify-center"
+            >
+              <input
+                type="email"
+                placeholder="Ingresa tu email"
+                {...formik.getFieldProps("email")}
+                className={`w-1/2 h-11 mb-0 rounded-lg bg-slate-900/60 backdrop-blur-sm border px-4 text-sm text-white placeholder:text-slate-400 focus:outline-none transition-all ${
+                  showErrors && formik.errors.email
+                    ? "border-amber-400/50 focus:border-amber-500/70 focus:ring-1 focus:ring-amber-500/50"
+                    : "border-slate-700/50 focus:border-button/50 focus:ring-1 focus:ring-button/50"
+                }`}
+              />
+
+              <button
+                type="submit"
+                disabled={isSubscribing}
+                className="w-1/4 h-10 text-sm  bg-button hover:bg-[#6d3dc4] text-white font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-102 active:scale-95 hover:shadow-lg hover:shadow-button/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                {isSubscribing ? "Suscribiendo..." : "Suscribirme"}
+              </button>
+            </form>
+            {showErrors && formik.errors.email && (
+              <div className="px-3 py-2 w-1/3 mx-auto mt-2 bg-amber-500/10 border flex items-center justify-center border-amber-500/30 rounded-lg">
+                <p className="text-amber-300 text-xs flex items-center gap-2">
+                  <FaExclamation className="shrink-0" size={14} />
+                  <span>{formik.errors.email}</span>
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-
-        <div className="relative">
-          <div className="absolute -inset-3 bg-purple-100/10 blur-3xl rounded-lg -z-10"></div>
-
-          <div className="absolute -inset-1 bg-gray-500/40 blur-3xl rounded-lg -z-10"></div>
-          <button
-            type="submit"
-            disabled={isSubscribing}
-            className="relative w-full text-sm md:text-base py-3 bg-button/90 hover:bg-button text-font-light font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-purple-500/25"
-          >
-            {isSubscribing
-              ? "Suscribiendo..."
-              : "Suscribite para recibir ofertas"}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

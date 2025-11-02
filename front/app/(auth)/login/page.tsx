@@ -33,7 +33,7 @@ const LoginPage = () => {
       try {
         const data = await loginUserService(formik.values);
         setToken(data.access_token);
-        setUser(data.user);
+        setUser(data.userReturn);
         toastSuccess("Login exitoso!");
         console.log("esta es mi data", data);
 

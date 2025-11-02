@@ -50,7 +50,7 @@ const RegisterPage = () => {
           formik.values
         );
         setToken(data.access_token);
-        setUser(data.user);
+        setUser(data.userReturn);
         toastSuccess("Registro enviado!");
 
         formik.resetForm();

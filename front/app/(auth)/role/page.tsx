@@ -36,7 +36,7 @@ const page = () => {
           if (data.access_token) {
             setToken(data.access_token);
           }
-          setUser(data.user);
+          setUser(data.userReturn);
           if (formik.values.role === "student") {
             rol = "alumn@";
           } else {

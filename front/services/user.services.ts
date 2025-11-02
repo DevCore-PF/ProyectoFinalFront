@@ -1,6 +1,6 @@
-const API_URL = "/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 //Types
-import { RegisterResponse } from "@/types/api.types";
+import { RegisterResponse, LoginResponse, UpdateRoleResponse } from "@/types/api.types";
 import { RegisterFormData, LoginFormData } from "@/types/auth.types";
 import { UploadImageResponse, UserUpdateResponse } from "@/types/user.types";
 
@@ -32,7 +32,7 @@ export const registerUserService = async (
   }
 };
 
-export const loginUserService = async (values: LoginFormData) => {
+export const loginUserService = async (values: LoginFormData): Promise<LoginResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
@@ -55,7 +55,7 @@ export const loginUserService = async (values: LoginFormData) => {
   }
 };
 
-export const updateRoleService = async (role: string, token: string) => {
+export const updateRoleService = async (role: string, token: string): Promise<UpdateRoleResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/select-role`, {
       method: "PATCH",
@@ -176,6 +176,28 @@ export const getUserProfileService = async (
     return userData;
   } catch (error) {
     console.error("Error al obtener perfil:", error);
+    throw error;
+  }
+};
+
+// Servicio para obtener usuario actual (usado en OAuth callbacks)
+export const getCurrentUserService = async (token: string, id: string) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo usuario");
+    }
+    
+    const userData = await response.json();
+    // Si el backend devuelve userReturn en lugar de directamente el user
+    return userData.userReturn || userData;
+  } catch (error) {
+    console.error("Error al conseguir el usuario actual: ", error);
     throw error;
   }
 };

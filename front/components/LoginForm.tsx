@@ -11,8 +11,8 @@ import { useFormik } from "formik";
 //Next/React
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+// import { useSearchParams } from "next/navigation";
 //Services
 import { loginUserService } from "@/services/user.service";
 //Helpers
@@ -25,9 +25,9 @@ import GitHubAuthButton from "@/components/GitHubAuthButton";
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
-  const router = useRouter();
+
   const { setToken, setUser, user } = useAuth();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -38,9 +38,7 @@ const LoginForm = () => {
         setToken(data.access_token);
         setUser(data.userReturn);
         toastSuccess("Login exitoso!");
-        console.log("esta es mi data", data);
-
-        router.push("/");
+        window.location.href = "/";
       } catch (error) {
         if (error instanceof Error) {
           toastError(error.message);
@@ -175,7 +173,7 @@ const LoginForm = () => {
                 href="/register"
                 className="text-accent-medium hover:underline"
               >
-                Ingresa
+                Registrate
               </Link>
               <span className="items-center text-xl">&rarr;</span>
             </p>

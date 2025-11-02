@@ -50,16 +50,17 @@ const page = () => {
 
           if (
             data.userReturn.isEmailVerified ||
-            data.userReturn.isGoogleAccount
+            data.userReturn.isGoogleAccount ||
+            data.userReturn.role
           ) {
             toastSuccess("Login exitoso!");
             // <ModalTerms/>
-            router.push("/");
+            window.location.href = "/";
           } else {
             toastSuccess(
               `Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`
             );
-            router.push("/login");
+            window.location.href = "/login";
           }
         }
       } catch (error) {

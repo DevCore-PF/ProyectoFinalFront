@@ -40,7 +40,7 @@ const EmailSubscription = () => {
   return (
     <div className="max-w-7xl mx-auto mb-6">
       <div className="relative group">
-        <div className="absolute inset-0 bg-linear-to-br from-button/10 to-purple-500/10 rounded-2xl blur-xl group-hover:from-button/20 group-hover:to-purple-500/20 transition-all duration-500"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-button/10 to-purple-500/10 rounded-2xl blur-2xl group-hover:from-button/20 group-hover:to-purple-500/10 transition-all duration-500"></div>
         <div className="relative bg-slate-800/60 backdrop-blur-sm border border-border-light/50 rounded-2xl p-6 hover:border-slate-600/70 transition-all duration-300">
           <div className="flex flex-col">
             <h3 className="text-white font-semibold text-xl mb-2 text-center">

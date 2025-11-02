@@ -58,9 +58,8 @@ const page = () => {
             setToken(data.access_token);
             setUser(data.userReturn);
             toastSuccess("Registro enviado!");
-
             formik.resetForm();
-            router.replace("/role");
+            window.location.href = "/role";
           } catch (error) {
             if (error instanceof Error) {
               toastError(error.message);

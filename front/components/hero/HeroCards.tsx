@@ -13,7 +13,7 @@ const HeroCards = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <div className="space-y-6">
         <div className="relative group">
-          <div className="absolute inset-0 bg-button/20 rounded-2xl blur-xl group-hover:bg-button/30 transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-background2/30 rounded-2xl blur-xl group-hover:bg-background2/40 transition-all duration-500"></div>
           <div className="relative bg-slate-800/60 backdrop-blur-sm border border-border-light/50 rounded-2xl p-6 hover:border-button/50 transition-all duration-300">
             <div className="flex flex-col">
               <div className="flex items-center gap-4 mb-4">
@@ -44,7 +44,7 @@ const HeroCards = () => {
         </div>
 
         <div className="relative group">
-          <div className="absolute inset-0 bg-purple-500/20 rounded-2xl blur-xl group-hover:bg-purple-500/30 transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-background2/30 rounded-2xl blur-xl group-hover:bg-background2/40 transition-all duration-500"></div>
           <div className="relative bg-slate-800/60 backdrop-blur-sm border border-border-light/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300">
             <div className="flex flex-col">
               <div className="flex items-center gap-4 mb-4">
@@ -72,7 +72,7 @@ const HeroCards = () => {
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <div className="bg-gradient-to-r from-button/10 to-purple-500/10 border border-border-light/30 rounded-xl p-3 hover:border-button/40 transition-all duration-300">
+          <div className="bg-linear-to-r from-button/10 to-purple-500/10 border border-border-light/30 rounded-xl p-3 hover:border-button/40 transition-all duration-300">
             <p className="text-yellow-200/90 font-mono font-semibold text-sm lg:text-base text-center">
               <span className="font-title">&lt;</span> Tu próxima lección al
               alcance de tu mano{" "}
@@ -86,14 +86,11 @@ const HeroCards = () => {
 
       <div className="relative">
         <div className="relative h-full min-h-[400px] lg:min-h-[500px]">
-       
-          <div className="absolute inset-0 bg-linear-to-br from-button/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl"></div>
-          <div className="relative h-full bg-slate-800/40 backdrop-blur-sm border-2 border-button/30 rounded-3xl p-8 overflow-hidden">
-         
+          <div className="absolute inset-0 bg-linear-to-br from-button/10 via-purple-500/10 to-pink-500/20 rounded-3xl blur-2xl"></div>
+          <div className="relative h-full bg-slate-800/40 backdrop-blur-sm border border-border-light/30 rounded-3xl p-8 overflow-hidden">
             <div className="absolute top-10 right-10 w-32 h-32 bg-button/10 rounded-full blur-xl"></div>
-            <div className="absolute bottom-10 left-10 w-40 h-40 bg-purple-500/10 rounded-full blur-xl"></div>
+            <div className="absolute bottom-10 left-10 w-40 h-40 bg-purple-600/10 rounded-full blur-xl"></div>
 
-     
             <div className="relative z-10 h-full flex flex-col justify-center items-center text-center">
               <div className="mb-8">
                 <div className="inline-flex p-6 bg-button/10 backdrop-blur-sm rounded-2xl border border-button/30 mb-6">
@@ -110,9 +107,7 @@ const HeroCards = () => {
 
               <div className="grid grid-cols-3 gap-6 w-full max-w-lg">
                 <div className="text-center">
-                  <div className="text-button text-3xl font-bold mb-1">
-                    50+
-                  </div>
+                  <div className="text-button text-3xl font-bold mb-1">50+</div>
                   <div className="text-slate-400 text-sm">Cursos</div>
                 </div>
                 <div className="text-center border-x border-slate-700/50">
@@ -122,9 +117,7 @@ const HeroCards = () => {
                   <div className="text-slate-400 text-sm">Estudiantes</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-button text-3xl font-bold mb-1">
-                    95%
-                  </div>
+                  <div className="text-button text-3xl font-bold mb-1">95%</div>
                   <div className="text-slate-400 text-sm">Satisfacción</div>
                 </div>
               </div>

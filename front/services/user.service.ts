@@ -48,6 +48,8 @@ export const loginUserService = async (values: LoginFormData) => {
     }
 
     const response = await data.json();
+    console.log("esta es mi data desde loginServcie: ", response);
+
     return response;
   } catch (error) {
     console.error("Error al loguearse: ", error);
@@ -65,6 +67,8 @@ export const getCurrentUserService = async (token: string, id: number) => {
     if (!response.ok) {
       throw new Error("Error obteniendo usuario");
     }
+    console.log("Respuesta de user.service: ", response);
+
     return response.json();
   } catch (error) {
     console.error("Error al conseguir el servicio atual: ", error);
@@ -88,6 +92,7 @@ export const updateRoleService = async (role: string, token: string) => {
       throw new Error(error.message || "Error al seleccionar el rol");
     }
     const response = await data.json();
+
     return response;
   } catch (error) {
     console.error("Error al registrar:", error);

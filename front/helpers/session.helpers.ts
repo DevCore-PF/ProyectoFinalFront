@@ -1,5 +1,5 @@
 //Types
-import { UserProfile, UserUpdateResponse } from "@/types/user.types";
+import { UserUpdateResponse } from "@/types/user.types";
 
 export const updateUserInSession = (updatedUser: UserUpdateResponse): void => {
   try {
@@ -24,11 +24,19 @@ export const removeTokenFromSession = (): void => {
     console.error("Error al eliminar token:", error);
   }
 };
+export const removeTimestampFromSession = (): void => {
+  try {
+    sessionStorage.removeItem("userTimestamp");
+  } catch (error) {
+    console.error("Error al eliminar timestamp:", error);
+  }
+};
 
 export const clearSession = (): void => {
   try {
     removeUserFromSession();
     removeTokenFromSession();
+    removeTimestampFromSession();
   } catch (error) {
     console.error("Error al limpiar sesión:", error);
   }

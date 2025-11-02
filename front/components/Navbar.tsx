@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
-
-
+import CartDropdown from "@/components/CartDropdown"; // 👈 Importar el componente
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,14 +11,18 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-   setIsAuthenticated(!!user?.role);
+    setIsAuthenticated(!!user?.role);
   }, [user]);
+
   return (
     <>
       {!isAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <Link href={"/"} className="flex items-center space-x-2 cursor-pointer">
+            <Link
+              href={"/"}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               <span className="font-bold text-lg">DevCore</span>
             </Link>
 
@@ -92,7 +95,7 @@ export default function Navbar() {
                 { href: "/courses", label: "Cursos" },
                 { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
-                { href: "/contacUst", label: "Contacto" },
+                { href: "/contact-us", label: "Contacto" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -126,7 +129,10 @@ export default function Navbar() {
       ) : (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <Link href={"/"} className="flex items-center space-x-2 cursor-pointer">
+            <Link
+              href={"/"}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               <span className="font-bold text-lg">DevCore</span>
             </Link>
 
@@ -139,16 +145,16 @@ export default function Navbar() {
               {menuOpen ? "✕" : "☰"}
             </button>
 
-            <div className="hidden md:flex flex-1 justify-center space-x-2 ">
+            <div className="hidden md:flex flex-1 justify-center space-x-2">
               <Link
                 href="/"
-                className="hover:bg-background hover:text-font-light  p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Inicio
               </Link>
               <Link
                 href="/courses"
-                className="hover:bg-background hover:text-font-light  p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Cursos
               </Link>
@@ -166,13 +172,17 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/contact-us"
-                className="hover:bg-background hover:text-font-light   p-3 rounded-md transition-colors duration-200"
+                className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Contacto
               </Link>
             </div>
 
-            <div className="hidden md:flex space-x-1">
+            <div className="hidden md:flex items-center space-x-1">
+           
+                <CartDropdown />
+            
+
               {user?.role && (
                 <Link
                   href={

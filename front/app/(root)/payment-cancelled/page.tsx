@@ -1,7 +1,8 @@
 "use client";
-
+//Next
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+//Icons
 import { HiRefresh, HiHome, HiShoppingCart } from "react-icons/hi";
 import { HiExclamationTriangle } from "react-icons/hi2";
 

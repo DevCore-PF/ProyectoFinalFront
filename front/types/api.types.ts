@@ -5,7 +5,7 @@ export interface RegisterResponse {
   userReturn: {
     email: string;
     hasCompletedProfile: boolean;
-    id: string;
+    id: number;
     name: string;
     role: "student" | "teacher" | "admin" | null;
     isEmailVerified: false;

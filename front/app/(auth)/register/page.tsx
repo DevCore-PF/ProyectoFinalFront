@@ -18,7 +18,7 @@ import { useFormik } from "formik";
 //Next / React
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
@@ -48,32 +48,26 @@ const page = () => {
     validateOnMount: false,
 
     onSubmit: () => {
-      toastConfirm(
-        "Enviar formulario",
-        async () => {
-          try {
-            const data: RegisterResponse = await registerUserService(
-              formik.values
-            );
-            setToken(data.access_token);
-            setUser(data.userReturn);
-            toastSuccess("Registro enviado!");
-            formik.resetForm();
-            window.location.href = "/role";
-          } catch (error) {
-            if (error instanceof Error) {
-              toastError(error.message);
-            } else {
-              toastError("Error desconocido");
-            }
-          } finally {
-            formik.setSubmitting(false);
+      toastConfirm("Enviar formulario", async () => {
+        try {
+          const data: RegisterResponse = await registerUserService(
+            formik.values
+          );
+          setToken(data.access_token);
+          setUser(data.userReturn);
+          toastSuccess("Registro enviado!");
+          formik.resetForm();
+          window.location.href = "/role";
+        } catch (error) {
+          if (error instanceof Error) {
+            toastError(error.message);
+          } else {
+            toastError("Error desconocido");
           }
-        },
-        () => {
+        } finally {
           formik.setSubmitting(false);
         }
-      );
+      });
     },
   });
 
@@ -291,9 +285,16 @@ const page = () => {
                 });
               }}
               disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90"
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90 flex items-center justify-center gap-2"
             >
-              Registrarme
+              {formik.isSubmitting ? (
+                <>
+                  {/* <Spinner size="sm" /> */}
+                  <span>Registrando...</span>
+                </>
+              ) : (
+                "Registrarme"
+              )}
             </button>
 
             <div className="flex items-center my-2">

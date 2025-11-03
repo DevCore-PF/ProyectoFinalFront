@@ -130,6 +130,9 @@ export const teacherCourses = [
   {
     id: "1",
     title: "Desarrollo Front-end",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 32,
     rating: 4.1,
     price: 52.0,
@@ -142,6 +145,9 @@ export const teacherCourses = [
   {
     id: "2",
     title: "HTML Avanzado",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 0,
     rating: 0.0,
     price: 16.0,
@@ -154,6 +160,9 @@ export const teacherCourses = [
   {
     id: "3",
     title: "CSS y Sass Profesional",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 18,
     rating: 4.7,
     price: 35.0,
@@ -169,7 +178,10 @@ export const teacherManagementOptions = [
     id: "create-course",
     title: "Crear nuevo curso",
     icon: <HiPlus className="w-4 h-4" />,
-    onClick: () => console.log("Crear nuevo curso"),
+    onClick: () => {
+      console.log("Navegando a crear curso...");
+      // Esta función será sobrescrita en el componente
+    },
   },
   {
     id: "upload-resources",

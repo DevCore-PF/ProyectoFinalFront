@@ -1,6 +1,7 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
 import { getCurrentUserService } from "@/services/user.service";
+import { User } from "@/types/auth.types";
 import {
   createContext,
   useContext,
@@ -8,23 +9,6 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-
-interface User {
-  email: string;
-  hasCompletedProfile: boolean;
-  id: number;
-  name: string;
-  role: "student" | "teacher" | "admin" | null;
-  isEmailVerified: false;
-  resetPasswordToken: null;
-  resetPasswordExpires: null;
-  checkBoxTerms: boolean;
-  emailVerificationToken: string;
-  googleId: null;
-  image: null;
-  isActive: boolean;
-  isGoogleAccount: false;
-}
 
 interface AuthContextType {
   token: string | null;

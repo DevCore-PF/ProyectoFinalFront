@@ -10,8 +10,13 @@ import { updateUserInSession } from "@/helpers/session.helpers";
 const ProfileSettings = () => {
   const params = useParams();
   const router = useRouter();
-  const { user: contextUser, token, isLoading } = useAuth();
-  const userId = params.id as string;
+  const {
+    user: contextUser,
+    token,
+    isLoading,
+    setUser: setContextUser,
+  } = useAuth();
+  const userId = params.id;
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -27,13 +32,13 @@ const ProfileSettings = () => {
       return;
     }
 
-    if (contextUser.id !== userId) {
+    if (contextUser.id !== Number(userId)) {
       router.push("/dashboard");
       return;
     }
 
     const userProfile: UserProfile = {
-      id: contextUser.id,
+      id: JSON.stringify(contextUser.id),
       name: contextUser.name,
       email: contextUser.email,
       role: contextUser.role || "student",
@@ -101,9 +106,20 @@ const ProfileSettings = () => {
       );
 
       if (result.success) {
+        // Actualizar estado local
         const updatedUser = { ...user, profileImage: result.imageUrl };
         setUser(updatedUser);
 
+        // Actualizar contexto global
+        if (contextUser) {
+          const updatedContextUser = {
+            ...contextUser,
+            profileImage: result.imageUrl,
+          };
+          setContextUser(updatedContextUser);
+        }
+
+        // Actualizar sessionStorage
         updateUserInSession(updatedUser);
 
         setMessage({ type: "success", text: result.message });

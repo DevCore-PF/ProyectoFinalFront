@@ -33,6 +33,7 @@ const DashboardPage = () => {
             <WelcomeCard
               userName={user?.name}
               userEmail={user?.email}
+              profileImage={user?.profileImage}
               weeklyGoalProgress={studentData.weeklyGoalProgress}
               goalHours={studentData.goalHours}
               currentHours={studentData.currentHours}

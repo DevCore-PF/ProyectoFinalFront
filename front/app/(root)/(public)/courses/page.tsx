@@ -109,7 +109,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-1",
       profession: "Desarrolladora Frontend",
-      specialty: "React & JavaScript",
+      speciality: "React & JavaScript",
       user: {
         id: "user-1",
         name: "Ana García",
@@ -134,7 +134,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-2",
       profession: "Desarrollador Backend",
-      specialty: "Node.js & APIs",
+      speciality: "Node.js & APIs",
       user: {
         id: "user-2",
         name: "Carlos Mendoza",
@@ -159,7 +159,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-3",
       profession: "Desarrolladora Mobile",
-      specialty: "React Native",
+      speciality: "React Native",
       user: {
         id: "user-3",
         name: "María López",
@@ -184,7 +184,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-4",
       profession: "Data Scientist",
-      specialty: "Machine Learning",
+      speciality: "Machine Learning",
       user: {
         id: "user-4",
         name: "Dr. Roberto Silva",
@@ -209,7 +209,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-5",
       profession: "Database Administrator",
-      specialty: "PostgreSQL",
+      speciality: "PostgreSQL",
       user: {
         id: "user-5",
         name: "Luis Rodríguez",
@@ -234,7 +234,7 @@ const coursesData: Course[] = [
     professor: {
       id: "prof-6",
       profession: "Cloud Architect",
-      specialty: "AWS",
+      speciality: "AWS",
       user: {
         id: "user-6",
         name: "Elena Torres",
@@ -341,7 +341,7 @@ const CourseCard = ({
               <div className="text-slate-400 text-xs">
                 <span className="text-slate-500">Especialidad: </span>
                 <span className="text-slate-300 font-semibold">
-                  {course.professor.specialty}
+                  {course.professor.speciality}
                 </span>
               </div>
             </div>
@@ -409,7 +409,7 @@ const CoursesPage = () => {
         </div>
 
         {/* Estadísticas */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="  mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
             <h3 className="text-3xl font-bold text-white mb-2">
               {showRealCourses ? "∞" : `${coursesData.length}+`}

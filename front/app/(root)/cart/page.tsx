@@ -10,9 +10,10 @@ import {
   HiArrowRight,
   HiCreditCard,
 } from "react-icons/hi";
+import { toastConfirm } from "@/helpers/alerts.helper";
 
 export default function CartPage() {
-  const { cart, removeFromCart, loading, getTotal, refreshCart } = useCart();
+  const { cart, removeFromCart, clearCart, getTotal, refreshCart } = useCart();
 
   useEffect(() => {
     refreshCart();
@@ -26,6 +27,9 @@ export default function CartPage() {
       console.log(error);
       throw error;
     }
+  };
+  const handleClear = () => {
+    toastConfirm("Eliminar carrito", () => clearCart());
   };
   if (cart.length === 0) {
     return (
@@ -120,7 +124,6 @@ export default function CartPage() {
                   <span>Subtotal:</span>
                   <span className="font-semibold tabular-nums">
                     ${getTotal().toFixed(2)}
-                    
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-300">
@@ -133,7 +136,6 @@ export default function CartPage() {
                 <span className="text-xl font-bold text-slate-200">Total:</span>
                 <span className="text-2xl md:text-3xl font-bold text-slate-200 tabular-nums">
                   ${getTotal().toFixed(2)}
-                  
                 </span>
               </div>
 
@@ -144,13 +146,20 @@ export default function CartPage() {
                 <HiCreditCard className="w-5 h-5" />
                 <span>Proceder al Pago</span>
               </button>
-
-              <button
-                onClick={() => router.push("/courses")}
-                className="w-full cursor-pointer bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700/50 hover:border-slate-600/50 text-slate-200 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95"
-              >
-                Continuar comprando
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => router.push("/courses")}
+                  className="w-full cursor-pointer bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700/50 hover:border-slate-600/50 text-slate-200 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                >
+                  Continuar comprando
+                </button>
+                <button
+                  onClick={() => handleClear()}
+                  className=" cursor-pointer bg-amber-900/50 hover:bg-amber-900/70 border border-amber-500/50 hover:border-amber-400/50 text-amber-400 p-3 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                >
+                  Limpiar
+                </button>
+              </div>
 
               <div className="mt-6 p-4  bg-button/10 border border-button/30 rounded-xl">
                 <p className="text-slate-300 text-sm text-center">

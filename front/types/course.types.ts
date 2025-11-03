@@ -1,27 +1,27 @@
 // Enums que coinciden con el backend
 export enum CourseDifficulty {
-  BEGINNER = 'PRINCIPIANTE',
-  INTERMEDIATE = 'INTERMEDIO',
-  ADVANCED = 'AVANZADO'
+  BEGINNER = "PRINCIPIANTE",
+  INTERMEDIATE = "INTERMEDIO",
+  ADVANCED = "AVANZADO",
 }
 
 export enum CourseCategory {
-  FRONTEND = 'Front End',
-  BACKEND = 'Backend',
-  DATA_SCIENCE = 'Data Science',
-  DATABASE = 'Database',
-  VIDEO_GAMES = 'Video Games',
-  MOBILE_DEVELOPMENT = 'Mobile Development'
+  FRONTEND = "Front End",
+  BACKEND = "Backend",
+  DATA_SCIENCE = "Data Science",
+  DATABASE = "Database",
+  VIDEO_GAMES = "Video Games",
+  MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
 export enum CourseType {
-  COURSE = 'Curso',
-  CAREER = 'Carrera'
+  COURSE = "Curso",
+  CAREER = "Carrera",
 }
 
 export enum CourseStatus {
-  DRAFT = 'EN REVISION',
-  PUBLISHED = 'PUBLICADO'
+  DRAFT = "EN REVISION",
+  PUBLISHED = "PUBLICADO",
 }
 
 // Interfaces para formularios
@@ -57,7 +57,7 @@ export interface Course {
   professor: {
     id: string;
     profession: string;
-    specialty: string;
+    speciality: string;
     user: {
       id: string;
       name: string;

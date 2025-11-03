@@ -28,7 +28,6 @@ export default function PaymentSuccess() {
     <div className="min-h-screen  flex items-center justify-center p-4 sm:p-8">
       <div className="max-w-2xl w-full">
         <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 md:p-12 text-center shadow-2xl hover:border-slate-600/50 transition-all duration-300">
-    
           <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-8">
             <div className="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
             <div className="relative w-full h-full bg-green-500/10 border-2 border-green-500/50 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -88,7 +87,7 @@ export default function PaymentSuccess() {
           <div className="mt-8 text-center animate-fadeIn">
             <p className="text-slate-400 text-sm">
               ¿Necesitas ayuda?{" "}
-              <Link 
+              <Link
                 href="/contact-us"
                 className="text-button hover:underline font-semibold"
               >

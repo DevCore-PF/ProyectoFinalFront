@@ -14,7 +14,7 @@ export interface ProfessorProfile {
   id: string;
   phone?: string;
   profession: string;
-  specialty: string;
+  speciality: string;
   biography?: string;
   certificates: string[];
   professionalLinks?: string[];
@@ -57,7 +57,7 @@ export interface UpdateRoleResponse {
 export interface CreateProfessorProfileDto {
   phone?: string;
   profession: string;
-  speciality: string; // Note: backend usa 'speciality' no 'specialty'
+  speciality: string; 
   biography?: string;
   certificates: File[];
   professionalLinks?: string[];
@@ -71,7 +71,7 @@ export interface ProfessorProfileResponse {
   id: string;
   phone?: string;
   profession: string;
-  specialty: string;
+  speciality: string;
   biography?: string;
   certificates: string[];
   professionalLinks?: string[];

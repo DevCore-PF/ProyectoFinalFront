@@ -37,27 +37,7 @@ export const addToCartService = async (token: string, courseId: string) => {
   }
 };
 
-// export const addToCartService = async (token: string, courseId: string) => {
-//   try {
-//     const data = await fetch(`${API_URL}/cart/add`, {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ courseId }),
-//     });
 
-//     if (!data.ok) {
-//       const error = await data.json();
-//       throw new Error(error.message || "Error en el registro");
-//     }
-//     return data.json();
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// };
 
 export const removeFromCartService = async (token: string, courseId: string) => {
   const response = await fetch(`${API_URL}/cart/remove/${courseId}`, {
@@ -75,7 +55,7 @@ export const removeFromCartService = async (token: string, courseId: string) => 
   return response.json();
 };
 
-export const clearCart = async (token: string) => {
+export const clearCartService = async (token: string) => {
   const response = await fetch(`${API_URL}/cart/clear`, {
     method: "DELETE",
     headers: {
@@ -90,3 +70,4 @@ export const clearCart = async (token: string) => {
 
   return response.json();
 };
+

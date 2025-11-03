@@ -7,30 +7,15 @@ import { createCheckoutSession } from "@/services/payments.service";
 import { getAllCoursesService } from "@/services/course.service";
 import { Course } from "@/types/courses.types";
 import { HiShoppingCart, HiArrowLeft, HiCheckCircle } from "react-icons/hi";
+import { useCart } from "@/context/CartContext";
+import { courses } from "../../../helpers/moks";
 
 export default function CheckoutPage() {
   const { token } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        ////////////////////////aca despues usaria el cart
-        const data = await getAllCoursesService();
-        setCourses(data);
-      } catch (error: any) {
-        console.error("Error:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCourses();
-  }, []);
+  const { cart, clearCart } = useCart();
 
   const handleCheckout = async () => {
     if (!token) {
@@ -40,11 +25,13 @@ export default function CheckoutPage() {
 
     setLoading(true);
     setError("");
-
     try {
-      const courseIds = courses.map((course) => course.id);
-      const { url } = await createCheckoutSession(token, courseIds);
-      window.location.href = url;
+      if (cart.length > 0) {
+        const courseIds = cart.map((course) => course.id);
+        const { url } = await createCheckoutSession(token, courseIds);
+        clearCart();
+        window.location.href = url;
+      }
     } catch (err: any) {
       console.error("Error al crear sesión de pago:", err);
       setError(err.message || "Error al procesar el pago");
@@ -84,7 +71,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-3 mb-6">
-                {courses.map((course, index) => (
+                {cart.map((course, index) => (
                   <div
                     key={course.id}
                     className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"

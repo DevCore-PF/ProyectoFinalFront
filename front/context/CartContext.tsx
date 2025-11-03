@@ -11,6 +11,7 @@ import React, {
 import { useAuth } from "./UserContext";
 import {
   addToCartService,
+  clearCartService,
   getCartService,
   removeFromCartService,
 } from "@/services/cart.service";
@@ -21,7 +22,7 @@ interface CartContextType {
   loading: boolean;
   addToCart: (course: Course) => Promise<void>;
   removeFromCart: (courseId: string) => Promise<void>;
-  //   clearCart: () => Promise<void>;
+  clearCart: () => Promise<void>;
   getTotal: () => number;
   refreshCart: () => Promise<void>;
 }
@@ -83,17 +84,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  //   const clearCart = async () => {
-  //     if (!token) return;
+  const clearCart = async () => {
+    if (!token) return;
 
-  //     try {
-  //       await cartService.clearCart(token);
-  //       setCart([]);
-  //     } catch (error) {
-  //       console.error('Error al limpiar el carrito:', error);
-  //       throw error;
-  //     }
-  //   };
+    try {
+      await clearCartService(token);
+      setCart([]);
+    } catch (error) {
+      console.error("Error al limpiar el carrito:", error);
+      throw error;
+    }
+  };
 
   const getTotal = () => {
     return cart.reduce((sum, course) => sum + Number(course.price), 0);
@@ -106,7 +107,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         loading,
         addToCart,
         removeFromCart,
-        // clearCart,
+        clearCart,
         getTotal,
         refreshCart,
       }}

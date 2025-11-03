@@ -41,7 +41,6 @@ export default function CartDropdown() {
     };
   }, [isOpen]);
 
-  // Detectar si se puede hacer scroll
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
@@ -62,7 +61,6 @@ export default function CartDropdown() {
     }
   }, [isOpen, cart]);
 
-  // Scroll continuo al mantener presionado
   const startScrolling = (direction: "up" | "down") => {
     if (scrollRef.current) {
       const scrollAmount = direction === "up" ? -30 : 30;
@@ -94,11 +92,11 @@ export default function CartDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative hover:bg-background cursor-pointer animate  hover:text-font-light p-3 rounded-md transition-all duration-200 group"
+        className="relative  hover:bg-background cursor-pointer animate  hover:text-font-light px-3 py-2 rounded-md transition-all duration-200 group"
       >
-        <HiShoppingCart className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+        <HiShoppingCart className=" mr-1.5 flex w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
         {cart.length > 0 && (
-          <span className="absolute top-5 -right-1  text-amber-300 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+          <span className="absolute pr-2 top-4 -right-1  text-amber-300 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
             {cart.length}
           </span>
         )}

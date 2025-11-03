@@ -4,6 +4,7 @@ import {
   ProfessorProfileResponse, 
   UserWithProfile 
 } from "@/types/api.types";
+import { User } from "@/types/auth.types";
 import { TeacherValidationStatus } from "@/types/validation.types";
 
 /**
@@ -12,7 +13,7 @@ import { TeacherValidationStatus } from "@/types/validation.types";
 export const getUserWithProfileService = async (
   userId: string,
   token: string
-): Promise<UserWithProfile> => {
+): Promise<User> => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "GET",

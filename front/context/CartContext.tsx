@@ -14,7 +14,7 @@ import {
   getCartService,
   removeFromCartService,
 } from "@/services/cart.service";
-import { Course } from "@/types/courses.types";
+import { Course } from "@/types/course.types";
 
 interface CartContextType {
   cart: Course[];

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Course, CourseCategory, CourseDifficulty, CourseType } from '@/types/course.types';
 import { categoryConfig } from '@/helpers/course.helpers';
+import { useAddToCart } from '@/hooks/useAddToCart';
 
 interface RealCourseCardProps {
   course: Course;
@@ -11,7 +12,8 @@ const RealCourseCard: React.FC<RealCourseCardProps> = ({ course }) => {
   const config = categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
   const Icon = config.icon;
 
-  // Mapear dificultades al formato de display
+  const { handleAddToCart } = useAddToCart();
+  // Mapear dificultades al formato de disptlay
   const difficultyMap = {
     [CourseDifficulty.BEGINNER]: 'Principiante',
     [CourseDifficulty.INTERMEDIATE]: 'Intermedio',
@@ -49,6 +51,12 @@ const RealCourseCard: React.FC<RealCourseCardProps> = ({ course }) => {
                 <span className="text-green-400 text-lg font-bold">
                   ${course.price}
                 </span>
+                  <button
+                onClick={() => handleAddToCart(course)}
+                className="bg-slate-700/50 hover:bg-slate-600/50 px-4 py-2 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300"
+              >
+                Agregar a carrito
+              </button>
                 <button className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30">
                   Ver Curso
                 </button>

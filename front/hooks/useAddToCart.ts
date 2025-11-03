@@ -1,5 +1,5 @@
 // src/hooks/useAddToCart.ts
-import { Course } from "@/types/courses.types";
+import { Course } from "@/types/course.types";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/UserContext";

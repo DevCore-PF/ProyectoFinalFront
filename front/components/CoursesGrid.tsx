@@ -9,28 +9,8 @@ import { useRouter } from "next/navigation";
 import { IoArrowForward } from "react-icons/io5";
 
 const CoursesGrid = () => {
-  const { addToCart, cart } = useCart();
-  const router = useRouter();
-  const { token, user } = useAuth();
 
-  const handleAddToCart = async () => {
-    // Si no hay usuario, redirigir al login
-    if (!user || !token) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      //  await addToCart(course);
-      // Opcional: mostrar notificación de éxito
-      alert("Curso agregado al carrito");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al agregar al carrito");
-    } finally {
-      // setLoading(false);
-    }
-  };
+ 
   return (
     <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">

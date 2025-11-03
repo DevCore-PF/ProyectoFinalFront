@@ -9,8 +9,13 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
+  
+  
+  
   const handleGoogleAuth = () => {
     setIsLoading(true);
+    console.log();
+    
     window.location.href = `${API_URL}/auth/google`;
     setTimeout(() => {
       setIsLoading(false);

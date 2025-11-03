@@ -56,7 +56,7 @@ export const loginUserService = async (values: LoginFormData) => {
     throw error;
   }
 };
-export const getCurrentUserService = async (token: string, id: number) => {
+export const getCurrentUserService = async (token: string, id: number | string) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, {
       headers: {

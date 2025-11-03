@@ -60,11 +60,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  //REFRESCA EL USER DELSDE EL BACK
   useEffect(() => {
     const fetchUser = async () => {
       if (token && user?.id) {
-        // Solo refresca si han pasado más de 5 segundos desde que se guardó el usuario
         const userTimestamp = sessionStorage.getItem("userTimestamp");
         const now = Date.now();
 

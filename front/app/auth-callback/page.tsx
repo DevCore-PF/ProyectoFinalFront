@@ -1,42 +1,58 @@
 // app/auth-callback/page.tsx
 "use client";
 import { useEffect } from "react";
-import { useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
-import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+import { toastError } from "@/helpers/alerts.helper";
+import { jwtDecode } from "jwt-decode";
+import { JwtPayload } from "@/types/auth.types";
+import { getCurrentUserService } from "@/services/user.service";
 
 export default function AuthCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setToken } = useAuth();
+  const { setToken, setUser } = useAuth();
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const error = searchParams.get("error");
-    const message = searchParams.get("message");
+    const handleAuth = async () => {
+      const token = searchParams.get("token");
+      console.log("TOKEN AOUTHCALLBACK:", token);
 
-    if (error) {
-      // Manejar diferentes tipos de errores
-      if (error === "Conflict" || message?.includes("ya está registrado")) {
-        toastError(
-          message || "Este email ya está registrado. Por favor, inicia sesión con tu contraseña."
-        );
-        router.replace("/login?error=email_conflict");
-      } else {
-        toastError(message || "Error en la autenticación con Google");
+      if (!token) {
+        toastError("Error en la autenticación");
+        router.replace("/login?error=no_token");
+        return;
+      }
+
+      try {
+        // Decodificar el JWT para obtener el payload
+        const decoded = jwtDecode<JwtPayload>(token);
+
+        console.log("TOKEN DECO AOUTHCALLBACK:", decoded);
+        // Guardar el token primero
+        setToken(token);
+
+        // Obtener los datos completos del usuario desde el backend
+        const userData = await getCurrentUserService(token, decoded.sub);
+
+        console.log("USER AOUTHCALLBACK:", userData);
+        // Setear el usuario en el context
+        setUser(userData);
+
+        if (decoded.role === "teacher" || decoded.role === "student") {
+          window.location.href = "/";
+        } else {
+          window.location.href = "/role";
+        }
+      } catch (error) {
+        console.error("Error en la autenticación:", error);
+        toastError("Error al procesar la autenticación");
         router.replace("/login?error=auth_failed");
       }
-      return;
-    }
+    };
 
-    if (token) {
-      setToken(token);
-      router.replace("/role");
-    } else {
-      toastError("Error en la autenticación");
-      router.replace("/login?error=no_token");
-    }
-  }, [searchParams, setToken, router]);
+    handleAuth();
+  }, [searchParams, setToken, setUser, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

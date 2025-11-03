@@ -170,7 +170,10 @@ export const teacherManagementOptions = [
     id: "create-course",
     title: "Crear nuevo curso",
     icon: <HiPlus className="w-4 h-4" />,
-    onClick: () => console.log("Crear nuevo curso"),
+    onClick: () => {
+      console.log("Navegando a crear curso...");
+      // Esta función será sobrescrita en el componente
+    },
   },
   {
     id: "upload-resources",

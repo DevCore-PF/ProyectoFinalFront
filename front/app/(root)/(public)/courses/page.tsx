@@ -1,5 +1,6 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
+import RealCoursesGrid from '@/components/RealCoursesGrid';
 import { 
   FaCode, 
   FaDatabase, 
@@ -193,8 +194,28 @@ const coursesData = [
   }
 ];
 
+// Interfaces para tipos
+interface MockCourse {
+  id: number;
+  category: string;
+  title: string;
+  description: string;
+  duration: string;
+  level: string;
+  instructor: string;
+  syllabus: string[];
+}
+
+interface CategoryConfig {
+  icon: React.ComponentType<{ className?: string }>;
+  gradient: string;
+  iconGradient: string;
+  badgeColor: string;
+  textColor: string;
+}
+
 // Componente de tarjeta de curso usando Layout 1
-const CourseCard = ({ course, config }: { course: any, config: any }) => {
+const CourseCard = ({ course, config }: { course: MockCourse, config: CategoryConfig }) => {
   const Icon = config.icon;
   return (
     <div className="group bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl overflow-hidden hover:border-slate-600/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#3f4273]/70">
@@ -257,6 +278,8 @@ const CourseCard = ({ course, config }: { course: any, config: any }) => {
 
 // Componente principal de la página de cursos
 const CoursesPage = () => {
+  const [showRealCourses, setShowRealCourses] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1b3e] to-[#0f1020] p-8 md:p-20">
       <div className="max-w-6xl mx-auto">
@@ -267,27 +290,59 @@ const CoursesPage = () => {
           <p className="text-slate-300 text-lg mb-6">
             Descubre una amplia variedad de cursos especializados para impulsar tu carrera en tecnología
           </p>
+          
+          {/* Toggle entre cursos mockeados y reales */}
+          <div className="flex items-center gap-4 mb-8">
+            <button
+              onClick={() => setShowRealCourses(false)}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                !showRealCourses
+                  ? 'bg-[#7e4bde] text-white shadow-lg'
+                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+              }`}
+            >
+              Cursos Demo
+            </button>
+            <button
+              onClick={() => setShowRealCourses(true)}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                showRealCourses
+                  ? 'bg-[#7e4bde] text-white shadow-lg'
+                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+              }`}
+            >
+              Cursos Reales
+            </button>
+          </div>
         </div>
         
         {/* Grid de cursos */}
         <div className="space-y-8">
-          {coursesData.map((course) => {
-            const config = categoryConfig[course.category as keyof typeof categoryConfig];
-            return (
-              <CourseCard
-                key={course.id}
-                course={course}
-                config={config}
-              />
-            );
-          })}
+          {showRealCourses ? (
+            <RealCoursesGrid />
+          ) : (
+            coursesData.map((course) => {
+              const config = categoryConfig[course.category as keyof typeof categoryConfig];
+              return (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  config={config}
+                />
+              );
+            })
+          )}
         </div>
 
         {/* Estadísticas */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
-            <h3 className="text-3xl font-bold text-white mb-2">{coursesData.length}+</h3>
-            <p className="text-slate-300">Cursos Disponibles</p>
+            <h3 className="text-3xl font-bold text-white mb-2">
+              {showRealCourses ? '∞' : `${coursesData.length}+`}
+            </h3>
+            <p className="text-slate-300">
+              {showRealCourses ? 'Cursos Creados por Profesores' : 'Cursos Demo'}
+            </p>
           </div>
           <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
             <h3 className="text-3xl font-bold text-white mb-2">200+</h3>

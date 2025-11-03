@@ -80,11 +80,15 @@ const TeacherWelcomeCard = ({
           {isMenuOpen && (
             <div className="absolute md:-right-5 mt-3 w-full md:w-72 bg-slate-900/98 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-2">
-                {teacherManagementOptions.map((option, index) => (
+                {teacherManagementOptions.map((option) => (
                   <div key={option.id}>
                     <button
                       onClick={() => {
-                        console.log(option.title);
+                        if (option.id === 'create-course') {
+                          router.push('/teacher-dashboard/create-course');
+                        } else {
+                          console.log(option.title);
+                        }
                         setIsMenuOpen(false);
                       }}
                       className="w-full px-4 py-3.5 cursor-pointer hover:bg-slate-800/70 rounded-lg transition-all duration-200 text-left flex items-center gap-4 group"

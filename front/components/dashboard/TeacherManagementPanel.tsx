@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { HiPlus, HiUpload, HiPencil, HiVideoCamera, HiChartBar, HiCurrencyDollar, HiEye } from 'react-icons/hi';
 
 interface ManagementOption {
@@ -15,13 +16,18 @@ interface TeacherManagementPanelProps {
 }
 
 const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ className = '' }) => {
+  const router = useRouter();
+  
   const managementOptions: ManagementOption[] = [
     {
       id: 'create-course',
       title: 'Crear nuevo curso',
       description: 'Inicia el flujo de creación desde cero.',
       icon: <HiPlus className="text-xl" />,
-      onClick: () => console.log('Crear nuevo curso')
+      onClick: () => {
+        console.log('Navegando a crear curso...');
+        router.push('/teacher-dashboard/create-course');
+      }
     },
     {
       id: 'upload-resources',

@@ -1,5 +1,6 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
+import { UserWithProfile } from "@/types/api.types";
 import {
   createContext,
   useContext,
@@ -8,37 +9,29 @@ import {
   ReactNode,
 } from "react";
 
-interface User {
-  email: string;
-  hasCompletedProfile: boolean;
-  isEmailVerified: boolean;
-  id: string;
-  name: string;
-  role: "student" | "teacher" | "admin" | null;
-  profileImage?: string;
-}
-
 interface AuthContextType {
   token: string | null;
   setToken: (token: string | null) => void;
   isLoading: boolean;
   logout: () => void;
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: UserWithProfile | null;
+  setUser: (user: UserWithProfile | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setTokenState] = useState<string | null>(null);
-  const [user, setUserState] = useState<User | null>(null);
+  const [user, setUserState] = useState<UserWithProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const userToken = sessionStorage.getItem("token");
     const userData = sessionStorage.getItem("user");
 
-    setTokenState(userToken);
+    if (userToken) {
+      setTokenState(userToken);
+    }
 
     if (userData) {
       setUserState(JSON.parse(userData));
@@ -56,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setTokenState(newToken);
   };
 
-  const setUser = (newUser: User | null) => {
+  const setUser = (newUser: UserWithProfile | null) => {
     if (newUser) {
       sessionStorage.setItem("user", JSON.stringify(newUser));
     } else {

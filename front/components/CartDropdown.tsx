@@ -12,6 +12,7 @@ import {
   HiClock,
   HiAcademicCap,
 } from "react-icons/hi";
+import { toastConfirm } from "@/helpers/alerts.helper";
 
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,24 +23,24 @@ export default function CartDropdown() {
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { cart, getTotal, removeFromCart } = useCart();
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       dropdownRef.current &&
+  //       !dropdownRef.current.contains(event.target as Node)
+  //     ) {
+  //       setIsOpen(false);
+  //     }
+  //   };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+  //   if (isOpen) {
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [isOpen]);
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
@@ -87,18 +88,31 @@ export default function CartDropdown() {
       scrollRef.current.scrollBy({ top: scrollAmount, behavior: "smooth" });
     }
   };
-
+  const handleRemove = (id: string) => {
+    toastConfirm("Eliminar", async () => {
+      try {
+        await removeFromCart(id);
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    });
+  };
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative  hover:bg-background cursor-pointer animate  hover:text-font-light px-3 py-2 rounded-md transition-all duration-200 group"
       >
-        <HiShoppingCart className=" mr-1.5 flex w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
-        {cart.length > 0 && (
-          <span className="absolute pr-2 top-4 -right-1  text-amber-300 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-            {cart.length}
-          </span>
+        {cart.length > 0 ? (
+          <>
+            <HiShoppingCart className=" mr-1.5 flex w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+            <span className="absolute pr-2 top-4 -right-1  text-amber-300 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+              {cart.length}
+            </span>
+          </>
+        ) : (
+          <HiShoppingCart className="  flex w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
         )}
       </button>
 
@@ -160,7 +174,7 @@ export default function CartDropdown() {
                           <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-slate-200 group-hover:text-white transition-colors duration-200">
                             {course.title}
                           </h4>
-                          <button onClick={() => removeFromCart(course.id)}>
+                          <button onClick={() => handleRemove(course.id)}>
                             <HiX className=" w-4 h-4 cursor-pointer hover:scale-110  text-slate-400 hover:text-slate-200 transition-all duration-100" />
                           </button>
                         </div>

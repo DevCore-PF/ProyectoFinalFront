@@ -27,16 +27,16 @@ export interface ProfessorProfile {
 }
 
 // Interface extendida para Usuario con perfil de profesor
-export interface UserWithProfile {
-  email: string;
-  hasCompletedProfile: boolean;
-  id: string;
-  name: string;
-  role: "student" | "teacher" | "admin" | null;
-  isEmailVerified: boolean;
-  profileImage?: string;
-  professorProfile?: ProfessorProfile;
-}
+// export interface UserWithProfile {
+//   email: string;
+//   hasCompletedProfile: boolean;
+//   id: string;
+//   name: string;
+//   role: "student" | "teacher" | "admin" | null;
+//   isEmailVerified: boolean;
+//   profileImage?: string;
+//   professorProfile?: ProfessorProfile;
+// }
 
 export interface RegisterResponse {
   access_token: string;
@@ -45,12 +45,12 @@ export interface RegisterResponse {
 
 export interface LoginResponse {
   access_token: string;
-  userReturn: UserWithProfile;
+  userReturn: User;
 }
 
 export interface UpdateRoleResponse {
   access_token?: string;
-  userReturn: UserWithProfile;
+  userReturn: User;
 }
 
 // DTOs para formulario de profesor

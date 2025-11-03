@@ -1,9 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
-import { 
-  ProfessorProfileResponse, 
-  UserWithProfile 
-} from "@/types/api.types";
+import { ProfessorProfileResponse } from "@/types/api.types";
 import { User } from "@/types/auth.types";
 import { TeacherValidationStatus } from "@/types/validation.types";
 
@@ -18,14 +15,16 @@ export const getUserWithProfileService = async (
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Error al obtener el perfil del usuario");
+      throw new Error(
+        error.message || "Error al obtener el perfil del usuario"
+      );
     }
 
     return await response.json();
@@ -44,15 +43,15 @@ export const getTeacherValidationStatus = async (
 ): Promise<TeacherValidationStatus> => {
   try {
     const user = await getUserWithProfileService(userId, token);
-    
+
     // Si no es profesor
-    if (user.role !== 'teacher') {
+    if (user.role !== "teacher") {
       return {
         isValidated: false,
-        status: 'not-submitted',
+        status: "not-submitted",
         hasCompletedProfile: false,
         canCreateCourses: false,
-        message: 'Debes tener rol de profesor para crear cursos'
+        message: "Debes tener rol de profesor para crear cursos",
       };
     }
 
@@ -60,20 +59,21 @@ export const getTeacherValidationStatus = async (
     if (!user.professorProfile) {
       return {
         isValidated: false,
-        status: 'not-submitted',
+        status: "not-submitted",
         hasCompletedProfile: false,
         canCreateCourses: false,
-        message: 'Debes completar tu perfil profesional para poder crear cursos'
+        message:
+          "Debes completar tu perfil profesional para poder crear cursos",
       };
     }
 
     // Si tiene professorProfile, por ahora siempre está aprobado
     return {
       isValidated: true,
-      status: 'approved',
+      status: "approved",
       hasCompletedProfile: true,
       canCreateCourses: true,
-      message: '¡Tu perfil está completo! Ya puedes crear cursos'
+      message: "¡Tu perfil está completo! Ya puedes crear cursos",
     };
   } catch (error) {
     console.error("Error al obtener estado de validación:", error);
@@ -87,12 +87,12 @@ export const getTeacherValidationStatus = async (
 export const submitProfessionalValidation = async (
   formData: FormData,
   token: string
-): Promise<{ access_token: string; userReturn: UserWithProfile }> => {
+): Promise<{ access_token: string; userReturn: User }> => {
   try {
     const response = await fetch(`${API_URL}/profiles`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         // No incluir Content-Type para FormData - el browser lo configura automáticamente
       },
       body: formData,
@@ -116,12 +116,12 @@ export const submitProfessionalValidation = async (
 export const updateProfessionalValidation = async (
   formData: FormData,
   token: string
-): Promise<{ access_token: string; userReturn: UserWithProfile }> => {
+): Promise<{ access_token: string; userReturn: User }> => {
   try {
     const response = await fetch(`${API_URL}/profiles`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         // No incluir Content-Type para FormData
       },
       body: formData,
@@ -129,7 +129,9 @@ export const updateProfessionalValidation = async (
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Error al actualizar el perfil profesional");
+      throw new Error(
+        error.message || "Error al actualizar el perfil profesional"
+      );
     }
 
     return await response.json();

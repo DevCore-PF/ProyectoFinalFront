@@ -35,6 +35,7 @@ export interface User {
   image: null;
   isActive: boolean;
   isGoogleAccount: false;
+  isGitAcocount: false;
   professorProfile?: ProfessorProfile;
   profileImage?: string;
 }

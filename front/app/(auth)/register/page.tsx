@@ -53,6 +53,7 @@ const page = () => {
           const data: RegisterResponse = await registerUserService(
             formik.values
           );
+
           setToken(data.access_token);
           setUser(data.userReturn);
           toastSuccess("Registro enviado!");

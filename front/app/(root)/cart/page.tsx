@@ -19,14 +19,15 @@ export default function CartPage() {
     refreshCart();
   }, []);
   const router = useRouter();
-
-  const handleRemove = async (id: string) => {
-    try {
-      await removeFromCart(id);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  const handleRemove = (id: string) => {
+    toastConfirm("Eliminar", async () => {
+      try {
+        await removeFromCart(id);
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    });
   };
   const handleClear = () => {
     toastConfirm("Eliminar carrito", () => clearCart());

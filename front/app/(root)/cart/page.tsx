@@ -10,7 +10,6 @@ import {
   HiArrowRight,
   HiCreditCard,
 } from "react-icons/hi";
-import { useAuth } from "@/context/UserContext";
 
 export default function CartPage() {
   const { cart, removeFromCart, loading, getTotal, refreshCart } = useCart();
@@ -46,7 +45,7 @@ export default function CartPage() {
 
             <button
               onClick={() => router.push("/courses")}
-              className="group inline-flex items-center gap-3 bg-button hover:bg-button/80 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
+              className="group cursor-pointer inline-flex items-center gap-3 bg-button hover:bg-button/80 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
             >
               <span>Ver Cursos</span>
               <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -92,9 +91,9 @@ export default function CartPage() {
                         </p>
                       )} */}
                       <div className="flex items-center gap-4 flex-wrap">
-                        {/* <span className="font-bold text-xl md:text-2xl text-slate-200 tabular-nums">
-                          ${course.price.toFixed(2)}
-                        </span> */}
+                        <span className="font-bold text-xl md:text-2xl text-slate-200 tabular-nums">
+                          ${Number(course.price).toFixed(2)}
+                        </span>
                         <button
                           onClick={() => handleRemove(course.id)}
                           className="group/btn cursor-pointer flex items-center gap-2 text-red-300 hover:text-red-200 text-sm font-medium transition-colors duration-200"
@@ -120,8 +119,8 @@ export default function CartPage() {
                 <div className="flex justify-between text-slate-300">
                   <span>Subtotal:</span>
                   <span className="font-semibold tabular-nums">
-                    {/* ${getTotal().toFixed(2)} */}
-                    $370,368.00
+                    ${getTotal().toFixed(2)}
+                    
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-300">
@@ -133,8 +132,8 @@ export default function CartPage() {
               <div className="flex justify-between items-center mb-6 pb-6 border-b border-slate-700/50">
                 <span className="text-xl font-bold text-slate-200">Total:</span>
                 <span className="text-2xl md:text-3xl font-bold text-slate-200 tabular-nums">
-                  {/* ${getTotal().toFixed(2)} */}
-                  $370,368.00
+                  ${getTotal().toFixed(2)}
+                  
                 </span>
               </div>
 

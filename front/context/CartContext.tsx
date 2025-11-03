@@ -96,7 +96,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   //   };
 
   const getTotal = () => {
-    return cart.reduce((sum, course) => sum + course.price, 0);
+    return cart.reduce((sum, course) => sum + Number(course.price), 0);
   };
 
   return (

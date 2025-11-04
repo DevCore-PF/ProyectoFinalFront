@@ -13,7 +13,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart ,getTotal} = useCart();
 
   const handleCheckout = async () => {
     if (!token) {
@@ -82,9 +82,9 @@ export default function CheckoutPage() {
                         {course.title}
                       </span>
                     </div>
-                    {/* <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
-                      ${course.price.toFixed(2)}
-                    </span> */}
+                    <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
+                      ${Number(course.price).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -96,9 +96,7 @@ export default function CheckoutPage() {
                   </span>
                   <span className="text-slate-200 text-xl md:text-2xl font-bold tabular-nums">
                     $
-                    {/* {courses
-                      .reduce((sum, course) => sum + course.price, 0)
-                      .toFixed(2)} */}
+                   ${getTotal().toFixed(2)}
                   </span>
                 </div>
               </div>

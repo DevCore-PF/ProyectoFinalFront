@@ -1,6 +1,4 @@
 import { featuresChooseUs } from "@/helpers/moks";
-import Link from "next/link";
-import { IoArrowForward } from "react-icons/io5";
 
 const WhyChooseUs = () => {
   return (
@@ -17,7 +15,6 @@ const WhyChooseUs = () => {
               estudiantes en un entorno interactivo y dinámico
             </p>
           </div>
-        
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuresChooseUs.map((feature) => (

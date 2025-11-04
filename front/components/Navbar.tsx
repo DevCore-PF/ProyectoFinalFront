@@ -47,7 +47,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/about-us"
+                href="/aboutus"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -91,9 +91,9 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/about-us", label: "Sobre nosotros" },
+                { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
-                { href: "/contac-us", label: "Contacto" },
+                { href: "/contacUst", label: "Contacto" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -157,7 +157,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/about-us"
+                href="/aboutus"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -209,7 +209,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/about-us", label: "Sobre nosotros" },
+                { href: "/aboutus", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
                 { href: "/contact-us", label: "Contacto" },
               ].map((link) => (

@@ -128,7 +128,7 @@
 
 import Link from "next/link";
 import CreativityBadge from "./CreativityBadge";
-import EmailSubscription from "./EmailSubscription";
+
 import Image from "next/image";
 
 const HeroSection = () => {
@@ -188,13 +188,13 @@ const HeroSection = () => {
                     <input
                       type="email"
                       placeholder="Ingresa tu email"
-                      className="w-full h-12 rounded-lg bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 px-4 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-[#7e4bde]/50 focus:ring-1 focus:ring-[#7e4bde]/50 transition-all"
+                      className="w-full h-12 rounded-lg bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 px-4 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-button/50 focus:ring-1 focus:ring-button/50 transition-all"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full text-sm md:text-base py-3 bg-[#7e4bde] hover:bg-[#6d3dc4] text-white font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-[#7e4bde]/30"
+                    className="w-full text-sm md:text-base py-3 bg-button hover:bg-[#6d3dc4] text-white font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30"
                   >
                     Suscribite para recibir ofertas
                   </button>

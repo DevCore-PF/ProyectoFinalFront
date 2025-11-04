@@ -1,5 +1,17 @@
-import { HiBookOpen, HiClock, HiStar, HiArrowRight } from "react-icons/hi";
-const RecommendedCourses = ({ courses }) => {
+import { HiClock, HiStar, HiArrowRight } from "react-icons/hi";
+
+interface Course {
+  id: string;
+  name: string;
+  description: string;
+  duration: string;
+  rating: number | string | null | undefined;
+}
+
+interface RecommendedCoursesProps {
+  courses: Course[];
+}
+const RecommendedCourses = ({ courses }: RecommendedCoursesProps) => {
   return (
     <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">

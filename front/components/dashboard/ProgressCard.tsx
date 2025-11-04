@@ -1,5 +1,17 @@
 import { HiAcademicCap } from "react-icons/hi";
-const ProgressCard = ({ title, progressItems }) => {
+
+interface ProgressItem {
+  id: string;
+  name: string;
+  progress: number;
+}
+
+interface ProgressCardProps {
+  title: string;
+  progressItems: ProgressItem[];
+}
+
+const ProgressCard = ({ title, progressItems }: ProgressCardProps) => {
   return (
     <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">

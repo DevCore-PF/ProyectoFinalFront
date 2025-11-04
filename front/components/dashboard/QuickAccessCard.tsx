@@ -1,5 +1,21 @@
 import { HiArrowRight } from "react-icons/hi";
-const QuickAccessCard = ({ items }) => {
+import { ReactElement } from "react";
+
+interface QuickAccessItem {
+  id: string;
+  title: string;
+  description: string;
+
+  icon: ReactElement;
+
+  onClick: () => void;
+}
+
+interface QuickAccessCardProps {
+  items: QuickAccessItem[];
+}
+
+const QuickAccessCard = ({ items }: QuickAccessCardProps) => {
   return (
     <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-white shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">

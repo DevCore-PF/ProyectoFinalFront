@@ -1,7 +1,26 @@
 import { HiEye, HiEyeOff, HiStar, HiUsers } from "react-icons/hi";
 
-const CourseCard = ({ course, onViewDetails }) => {
-  const getStatusColor = (status) => {
+interface Course {
+  id: string;
+  title: string;
+  students: number;
+  rating: number | null | undefined;
+  price: number | null | undefined;
+  status: "Publicado" | "Borrador" | "En revisión" | string;
+  createdDate: string;
+  lastUpdate: string;
+  totalDuration: string;
+  visibility: "Público" | "Privado" | string;
+}
+
+interface CourseCardProps {
+  course: Course;
+
+  onViewDetails: (courseId: string) => void;
+}
+
+const CourseCard = ({ course, onViewDetails }: CourseCardProps) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "Publicado":
         return "text-green-600 border-green-500/30";
@@ -13,31 +32,31 @@ const CourseCard = ({ course, onViewDetails }) => {
         return "bg-slate-500/20 text-slate-400 border-slate-500/30";
     }
   };
+  const formattedPrice = (course.price ?? 0).toFixed(2);
+  const formattedRating = (course.rating ?? 0).toFixed(1);
 
   return (
     <div className="group bg-slate-900/50 backdrop-blur-xs border border-slate-700/30 rounded-xl p-4 sm:p-5">
-    
       <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
         <div className="flex-1">
           <h3 className="text-base sm:text-lg font-bold text-slate-200 mb-2">
             {course.title}
           </h3>
-          
+
           <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-400">
             <div className="flex items-center gap-1.5">
               <HiUsers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="font-medium">{course.students} alumnos</span>
             </div>
-            |            <span className="hidden xs:inline">|</span>
+            | <span className="hidden xs:inline">|</span>
             <div className="flex items-center gap-1.5">
               <HiStar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
-              <span className="font-medium">{course.rating.toFixed(1)}</span>
+              <span className="font-medium">{formattedRating}</span>
             </div>
-            |
-            <span className="hidden xs:inline">|</span>
+            |<span className="hidden xs:inline">|</span>
             <div className="flex gap-1">
               <span className="font-bold text-slate-400">
-                ${course.price.toFixed(2)}
+                ${formattedPrice}
               </span>
             </div>
           </div>
@@ -52,7 +71,7 @@ const CourseCard = ({ course, onViewDetails }) => {
         </div>
       </div>
 
-      <div className="items-center flex justify-between items-center gap-3 sm:gap-4 mb-4 text-xs sm:text-sm pb-4 border-b border-slate-700/30">
+      <div className="items-center flex justify-between gap-3 sm:gap-4 mb-4 text-xs sm:text-sm pb-4 border-b border-slate-700/30">
         <div>
           <span className="text-slate-500 text-xs font-medium block mb-1">
             Creado:

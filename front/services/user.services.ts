@@ -78,7 +78,6 @@ export const updateRoleService = async (role: string, token: string) => {
   }
 };
 
-
 export const uploadProfileImageService = async (
   userId: string,
   imageFile: File,
@@ -102,6 +101,7 @@ export const uploadProfileImageService = async (
         const error = await response.json();
         errorMessage = error.message || error.error || errorMessage;
         console.error("Error del servidor:", error);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (parseError) {
         const textError = await response.text();
         console.error("Respuesta del servidor:", textError);
@@ -179,4 +179,3 @@ export const getUserProfileService = async (
     throw error;
   }
 };
-

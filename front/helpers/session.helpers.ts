@@ -1,5 +1,5 @@
 //Types
-import { UserProfile, UserUpdateResponse } from "@/types/user.types";
+import { UserUpdateResponse } from "@/types/user.types";
 
 export const updateUserInSession = (updatedUser: UserUpdateResponse): void => {
   try {

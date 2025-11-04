@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { HiChevronDown, HiCog } from "react-icons/hi";
 import { teacherManagementOptions } from "@/helpers/moks";

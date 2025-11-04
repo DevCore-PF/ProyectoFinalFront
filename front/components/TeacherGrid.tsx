@@ -1,10 +1,10 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { Course } from '@/types/course.types';
-import { getTeacherCoursesService } from '@/services/course.service';
-import { useAuth } from '@/context/UserContext'
-import { HiBookOpen } from 'react-icons/hi';
-import RealCourseCard from './RealCourseCard';
+"use client";
+import React, { useState, useEffect } from "react";
+import { Course } from "@/types/course.types";
+import { getTeacherCoursesService } from "@/services/course.service";
+import { useAuth } from "@/context/UserContext";
+import { HiBookOpen } from "react-icons/hi";
+import RealCourseCard from "./RealCourseCard";
 
 const TeacherCoursesGrid: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -13,26 +13,27 @@ const TeacherCoursesGrid: React.FC = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    const fetchTeacherCourses = async () => {      
-      if (!user?.professorProfile?.id) {
+    const professorProfile = user?.professorProfile;
+    const fetchTeacherCourses = async () => {
+      if (!professorProfile || !professorProfile.id) {
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        const coursesData = await getTeacherCoursesService(user.professorProfile.id);
+        const coursesData = await getTeacherCoursesService(professorProfile.id);
         setCourses(coursesData);
       } catch (err) {
-        console.error('Error fetching teacher courses:', err);
-        setError('Error al cargar tus cursos');
+        console.error("Error fetching teacher courses:", err);
+        setError("Error al cargar tus cursos");
       } finally {
         setLoading(false);
       }
     };
 
     fetchTeacherCourses();
-  }, [user,courses]);
+  }, [user, courses]);
 
   if (loading) {
     return (
@@ -46,8 +47,8 @@ const TeacherCoursesGrid: React.FC = () => {
     return (
       <div className="text-center py-16 text-red-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
         <p className="text-lg">{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           className="mt-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300"
         >
           Intentar de nuevo
@@ -71,13 +72,10 @@ const TeacherCoursesGrid: React.FC = () => {
   return (
     <div className="space-y-6">
       {courses.map((course) => (
-        <RealCourseCard
-          key={course.id}
-          course={course}
-        />
+        <RealCourseCard key={course.id} course={course} />
       ))}
     </div>
   );
 };
 
-export default TeacherCoursesGrid
+export default TeacherCoursesGrid;

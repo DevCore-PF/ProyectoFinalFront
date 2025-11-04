@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/UserContext";
 import {
-  getTeacherValidationStatus,
   submitProfessionalValidation,
   updateProfessionalValidation,
   getUserWithProfileService,
@@ -28,10 +27,16 @@ export const useTeacherValidation = () => {
       setIsLoading(true);
       setError(null);
 
-      console.log("🔍 LoadValidationStatus - Usuario actual:", user);
+      console.log("🔍 LoadValidationStatus - Usuario actual:", {
+        id: user.id,
+        role: user.role, 
+        professorProfile: user.professorProfile,
+        professorProfileType: typeof user.professorProfile,
+        hasCompletedProfile: user.hasCompletedProfile
+      });
 
       // Si el usuario ya tiene professorProfile, crear el estado directamente
-      if (user.role === "teacher" && user.professorProfile) {
+      if (user.role === "teacher" && user.professorProfile && typeof user.professorProfile === "object") {
         console.log("✅ Usuario tiene professorProfile - perfil completo");
         const newValidationStatus = {
           isValidated: true, // Por ahora siempre aprobado una vez que tiene profile
@@ -44,26 +49,28 @@ export const useTeacherValidation = () => {
         return; // Salir temprano ya que tenemos toda la información
       }
 
-      // Si es teacher pero no tiene professorProfile, verificar desde el backend
+      // Si es teacher pero no tiene professorProfile, SIEMPRE verificar desde el backend
       if (user.role === "teacher") {
         console.log("🔍 Teacher sin professorProfile, verificando en backend");
 
         try {
-          // Intentar obtener el usuario completo desde el backend
+          // SIEMPRE obtener el usuario completo desde el backend para asegurar datos frescos
           const fullUser = await getUserWithProfileService(
-            JSON.stringify(user.id)
+            user.id.toString(),
+            token
           );
           console.log("🔄 Usuario completo del backend:", fullUser);
 
           // Si encontramos professorProfile en el backend, actualizar el contexto
-          if (fullUser.professorProfile) {
+          // Verificar que sea un objeto y no un booleano false
+          if (fullUser.professorProfile && typeof fullUser.professorProfile === "object") {
             console.log(
               "🔄 Actualizando usuario con professorProfile del backend"
             );
             const updatedUser = {
               ...user,
               professorProfile: fullUser.professorProfile,
-              hasCompletedProfile: fullUser.hasCompletedProfile,
+              hasCompletedProfile: fullUser.hasCompletedProfile ?? true, // Marcar como completado si tiene profile
             };
             setUser(updatedUser);
 
@@ -79,22 +86,40 @@ export const useTeacherValidation = () => {
             return;
           }
 
-          // Si no hay professorProfile, usar el servicio de validación
-          const status = await getTeacherValidationStatus(
-            JSON.stringify(user.id),
-            token
-          );
-          setValidationStatus(status);
-        } catch {
-          console.log(
-            "🔍 Error obteniendo usuario del backend, usando servicio de validación"
-          );
-          // Fallback al servicio de validación
-          const status = await getTeacherValidationStatus(
-            JSON.stringify(user.id),
-            token
-          );
-          setValidationStatus(status);
+          // IMPORTANTE: Si el backend no tiene professorProfile pero el usuario local sí,
+          // NO sobrescribir. Esto evita perder datos por respuestas inconsistentes del backend
+          if (!fullUser.professorProfile && user.professorProfile && typeof user.professorProfile === "object") {
+            console.log("⚠️ Backend sin professorProfile pero usuario local sí tiene. Manteniendo datos locales.");
+            const newValidationStatus = {
+              isValidated: true,
+              status: "approved" as const,
+              hasCompletedProfile: true,
+              canCreateCourses: true,
+              message: "¡Tu perfil está completo! Ya puedes crear cursos",
+            };
+            setValidationStatus(newValidationStatus);
+            return;
+          }
+
+          // Si no hay professorProfile en el backend, establecer estado not-submitted
+          console.log("❌ No se encontró professorProfile válido en el backend. Valor recibido:", fullUser.professorProfile);
+          setValidationStatus({
+            isValidated: false,
+            status: "not-submitted",
+            hasCompletedProfile: false,
+            canCreateCourses: false,
+            message: "Debes completar tu perfil profesional para poder crear cursos",
+          });
+        } catch (backendError) {
+          console.error("🔍 Error obteniendo usuario del backend:", backendError);
+          // Si hay error de backend, establecer estado de error
+          setValidationStatus({
+            isValidated: false,
+            status: "not-submitted",
+            hasCompletedProfile: false,
+            canCreateCourses: false,
+            message: "Error al cargar estado de validación. Intenta refrescar la página.",
+          });
         }
       } else {
         // No es teacher, no necesita validación
@@ -189,16 +214,25 @@ export const useTeacherValidation = () => {
     }
   };
 
-  // Cargar estado inicial
+  // Cargar estado inicial con un pequeño delay para permitir que UserContext se actualice
   useEffect(() => {
-    loadValidationStatus();
+    // Solo cargar si no tenemos validationStatus todavía
+    if (!validationStatus) {
+      // Pequeño delay para permitir que UserContext termine de cargar datos frescos
+      const timer = setTimeout(() => {
+        loadValidationStatus();
+      }, 200); // 200ms de delay
+
+      return () => clearTimeout(timer);
+    }
   }, [user?.id, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Recargar cuando el usuario cambie (especialmente professorProfile) CAMBIO MIO
+  // Recargar cuando el usuario cambie (especialmente professorProfile)
   useEffect(() => {
     console.log("🔍 Usuario cambió - verificando si necesita recargar:", {
       hasCompletedProfile: user?.hasCompletedProfile,
-      hasProfessorProfile: !!user?.professorProfile,
+      hasProfessorProfile: !!(user?.professorProfile && typeof user.professorProfile === "object"),
+      professorProfileValue: user?.professorProfile,
       currentValidationStatus: validationStatus?.status,
       userRole: user?.role,
     });
@@ -210,10 +244,11 @@ export const useTeacherValidation = () => {
       return;
     }
 
-    // Si es teacher y acaba de completar el perfil
+    // Si es teacher y acaba de completar el perfil, recargar
     if (
       user?.role === "teacher" &&
       user?.professorProfile &&
+      typeof user.professorProfile === "object" &&
       validationStatus?.status === "not-submitted"
     ) {
       console.log(
@@ -221,8 +256,33 @@ export const useTeacherValidation = () => {
       );
       loadValidationStatus();
     }
-    
-  }, [user?.professorProfile?.id, user?.role]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user?.professorProfile && typeof user.professorProfile === "object" ? user.professorProfile.id : null, user?.role]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Efecto específico para detectar cambios en professorProfile
+  useEffect(() => {
+    if (user?.role === "teacher" && user?.professorProfile && typeof user.professorProfile === "object" && validationStatus?.status !== "approved") {
+      console.log("🔄 ProfessorProfile detectado, actualizando estado inmediatamente");
+      const newValidationStatus = {
+        isValidated: true,
+        status: "approved" as const,
+        hasCompletedProfile: true,
+        canCreateCourses: true,
+        message: "¡Tu perfil está completo! Ya puedes crear cursos",
+      };
+      setValidationStatus(newValidationStatus);
+    }
+    // Si el usuario NO tiene professorProfile válido Y el estado actual dice que está aprobado, corregir
+    else if (user?.role === "teacher" && (!user?.professorProfile || typeof user.professorProfile !== "object") && validationStatus?.status === "approved") {
+      console.log("⚠️ Estado inconsistente detectado: no hay professorProfile pero estado dice aprobado");
+      setValidationStatus({
+        isValidated: false,
+        status: "not-submitted",
+        hasCompletedProfile: false,
+        canCreateCourses: false,
+        message: "Debes completar tu perfil profesional para poder crear cursos",
+      });
+    }
+  }, [user?.professorProfile, validationStatus?.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Funciones de utilidad
   const canCreateCourses = validationStatus?.canCreateCourses ?? false;

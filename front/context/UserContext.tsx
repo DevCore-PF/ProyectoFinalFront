@@ -30,15 +30,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const userToken = sessionStorage.getItem("token");
     const userData = sessionStorage.getItem("user");
+    const userTimestamp = sessionStorage.getItem("userTimestamp");
+    
     if (userToken) {
       setTokenState(userToken);
     }
     if (userData) {
       try {
-        setUserState(JSON.parse(userData));
+        const parsedUser = JSON.parse(userData);
+        setUserState(parsedUser);
+        
+        // Si los datos del usuario son muy antiguos (más de 30 segundos), marcar para refrescar
+        const now = Date.now();
+        if (!userTimestamp || now - parseInt(userTimestamp) > 30000) {
+          console.log("Datos de usuario antiguos, se refrescarán automáticamente");
+        }
       } catch (error) {
         console.error("Error al parsear usuario:", error);
         sessionStorage.removeItem("user");
+        sessionStorage.removeItem("userTimestamp");
       }
     }
     setIsLoading(false);
@@ -50,28 +60,52 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userTimestamp = sessionStorage.getItem("userTimestamp");
         const now = Date.now();
 
-        if (userTimestamp && now - parseInt(userTimestamp) < 30000) {
+        // Reducir el tiempo de caché para datos más frescos, especialmente para profesores
+        const cacheTime = user.role === "teacher" ? 10000 : 15000; // 10 segundos para teachers, 15 para otros
+        
+        if (userTimestamp && now - parseInt(userTimestamp) < cacheTime) {
           console.log("Usuario recién guardado, saltando refresco");
           return;
         }
 
         try {
+          console.log("🔄 Refrescando datos del usuario desde el backend...");
           const freshUserData = await getCurrentUserService(token, user.id);
-          setUserState(freshUserData);
-          sessionStorage.setItem("user", JSON.stringify(freshUserData));
-          // sessionStorage.setItem("userTimestamp", now.toString());
+          console.log("✅ Datos frescos obtenidos:", freshUserData);
+          
+          // IMPORTANTE: Preservar datos importantes si el backend responde con undefined
+          const mergedUserData = {
+            ...freshUserData,
+            // Si el backend responde con professorProfile undefined pero el usuario actual lo tiene, preservarlo
+            professorProfile: freshUserData.professorProfile || user.professorProfile,
+            // Preservar otros campos importantes
+            hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
+          };
+          
+          console.log("🔄 Usuario fusionado (preservando datos importantes):", mergedUserData);
+          setUserState(mergedUserData);
+          sessionStorage.setItem("user", JSON.stringify(mergedUserData));
+          sessionStorage.setItem("userTimestamp", now.toString());
         } catch (error) {
           console.error("Error al refrescar usuario:", error);
-          if (error instanceof Error && error.message.includes("401")) {
+          // Solo hacer logout si es un error 401/403 (no autorizado)
+          if (error instanceof Error && (error.message.includes("401") || error.message.includes("403"))) {
+            console.log("Token inválido, haciendo logout");
             logout();
+          } else {
+            // Para otros errores, simplemente logueamos y mantenemos el usuario actual
+            console.log("Error temporal, manteniendo usuario actual");
           }
         }
       }
     };
 
-    fetchUser();
+    // Solo ejecutar si tenemos token y user
+    if (token && user?.id) {
+      fetchUser();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, user?.id]); // Agregamos user?.id como dependencia para forzar refresh
   const setToken = (newToken: string | null) => {
     if (newToken) {
       sessionStorage.setItem("token", newToken);

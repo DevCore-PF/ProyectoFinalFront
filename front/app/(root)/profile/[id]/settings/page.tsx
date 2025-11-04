@@ -18,6 +18,13 @@ const ProfileSettings = () => {
   } = useAuth();
   const userId = params.id;
 
+  console.log("🔍 ProfileSettings component loaded with:", {
+    userId,
+    contextUser: contextUser?.id,
+    token: !!token,
+    isLoading
+  });
+
   const [user, setUser] = useState<UserProfile | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -32,10 +39,23 @@ const ProfileSettings = () => {
       return;
     }
 
-    if (contextUser.id !== Number(userId)) {
+    // Comparar IDs como strings ya que pueden ser UUIDs
+    const userIdString = String(userId);
+    const contextUserIdString = String(contextUser.id);
+    
+    console.log("🔍 Comparing IDs:", {
+      userId: userIdString,
+      contextUserId: contextUserIdString,
+      match: userIdString === contextUserIdString
+    });
+
+    if (contextUserIdString !== userIdString) {
+      console.log("❌ User ID mismatch, redirecting to dashboard");
       router.push("/dashboard");
       return;
     }
+
+    console.log("✅ User ID match, proceeding with profile settings");
 
     const userProfile: UserProfile = {
       id: JSON.stringify(contextUser.id),

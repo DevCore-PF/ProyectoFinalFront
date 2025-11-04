@@ -3,6 +3,7 @@ import { HiChevronDown, HiCog } from "react-icons/hi";
 import { teacherManagementOptions } from "@/helpers/moks";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/UserContext";
 import ProfileImage from "@/components/ui/ProfileImage";
 
 const TeacherWelcomeCard = ({ 
@@ -16,13 +17,42 @@ const TeacherWelcomeCard = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
+
   const handleProfileSettings = () => {
-    const userData = sessionStorage.getItem("user");
-    if (userData) {
-      const user = JSON.parse(userData);
-      router.push(`/profile/${user.id}/settings`);
-    } else {
-      router.push("/login");
+    try {
+      console.log("🔍 Current user from context:", user);
+      
+      if (user?.id) {
+        const targetUrl = `/profile/${user.id}/settings`;
+        console.log("🎯 Navigating to:", targetUrl);
+        router.push(targetUrl);
+        return;
+      }
+
+      // Fallback a sessionStorage si el contexto no tiene el usuario
+      const userData = sessionStorage.getItem("user");
+      console.log("🔍 Fallback - UserData from sessionStorage:", userData);
+      
+      if (userData) {
+        const sessionUser = JSON.parse(userData);
+        console.log("👤 Parsed session user:", sessionUser);
+        
+        if (sessionUser.id) {
+          const targetUrl = `/profile/${sessionUser.id}/settings`;
+          console.log("🎯 Navigating to (fallback):", targetUrl);
+          router.push(targetUrl);
+          return;
+        }
+      }
+
+      // Si no hay user ID, ir a la página de perfil general
+      console.log("⚠️ No user ID found, redirecting to profile");
+      router.push("/profile");
+      
+    } catch (error) {
+      console.error("❌ Error handling profile settings:", error);
+      router.push("/profile");
     }
   };
   const currentDate = new Date().toLocaleDateString("es-ES", {

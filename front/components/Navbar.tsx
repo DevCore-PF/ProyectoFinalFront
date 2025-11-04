@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
-import CartDropdown from "@/components/CartDropdown"; // 👈 Importar el componente
+import CartDropdown from "@/components/CartDropdown"; 
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);

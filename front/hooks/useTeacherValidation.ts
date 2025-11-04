@@ -51,8 +51,7 @@ export const useTeacherValidation = () => {
         try {
           // Intentar obtener el usuario completo desde el backend
           const fullUser = await getUserWithProfileService(
-            JSON.stringify(user.id),
-            token
+            JSON.stringify(user.id)
           );
           console.log("🔄 Usuario completo del backend:", fullUser);
 
@@ -195,7 +194,7 @@ export const useTeacherValidation = () => {
     loadValidationStatus();
   }, [user?.id, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Recargar cuando el usuario cambie (especialmente professorProfile)
+  // Recargar cuando el usuario cambie (especialmente professorProfile) CAMBIO MIO
   useEffect(() => {
     console.log("🔍 Usuario cambió - verificando si necesita recargar:", {
       hasCompletedProfile: user?.hasCompletedProfile,
@@ -211,7 +210,7 @@ export const useTeacherValidation = () => {
       return;
     }
 
-    // Si es teacher y acaba de completar el perfil, recargar
+    // Si es teacher y acaba de completar el perfil
     if (
       user?.role === "teacher" &&
       user?.professorProfile &&
@@ -222,6 +221,7 @@ export const useTeacherValidation = () => {
       );
       loadValidationStatus();
     }
+    
   }, [user?.professorProfile?.id, user?.role]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Funciones de utilidad

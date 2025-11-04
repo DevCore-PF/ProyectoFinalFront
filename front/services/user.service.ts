@@ -67,7 +67,7 @@ export const getCurrentUserService = async (token: string, id: number | string) 
     if (!response.ok) {
       throw new Error("Error obteniendo usuario");
     }
-    console.log("Respuesta de user.service: ", response);
+    console.log("Respuesta de getCurrentUserService ", response);
 
     return response.json();
   } catch (error) {

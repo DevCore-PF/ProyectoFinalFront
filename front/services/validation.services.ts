@@ -9,13 +9,12 @@ import { TeacherValidationStatus } from "@/types/validation.types";
  */
 export const getUserWithProfileService = async (
   userId: string,
-  token: string
 ): Promise<User> => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -42,7 +41,7 @@ export const getTeacherValidationStatus = async (
   token: string
 ): Promise<TeacherValidationStatus> => {
   try {
-    const user = await getUserWithProfileService(userId, token);
+    const user = await getUserWithProfileService(userId);
 
     // Si no es profesor
     if (user.role !== "teacher") {
@@ -165,7 +164,7 @@ export const getProfessorProfileService = async (
   token: string
 ): Promise<ProfessorProfileResponse | null> => {
   try {
-    const user = await getUserWithProfileService(userId, token);
+    const user = await getUserWithProfileService(userId);
     return user.professorProfile || null;
   } catch (error) {
     console.error("Error al obtener perfil de profesor:", error);

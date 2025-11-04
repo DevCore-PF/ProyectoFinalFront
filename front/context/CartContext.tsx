@@ -85,7 +85,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = async () => {
-    if (!token) return;
+    if (!token) {
+      console.log("no hay token");
+
+      return;
+    }
 
     try {
       await clearCartService(token);

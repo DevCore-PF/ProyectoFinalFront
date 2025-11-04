@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userTimestamp = sessionStorage.getItem("userTimestamp");
         const now = Date.now();
 
-        if (userTimestamp && now - parseInt(userTimestamp) < 5000) {
+        if (userTimestamp && now - parseInt(userTimestamp) < 30000) {
           console.log("Usuario recién guardado, saltando refresco");
           return;
         }
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const freshUserData = await getCurrentUserService(token, user.id);
           setUserState(freshUserData);
           sessionStorage.setItem("user", JSON.stringify(freshUserData));
-          sessionStorage.setItem("userTimestamp", now.toString());
+          // sessionStorage.setItem("userTimestamp", now.toString());
         } catch (error) {
           console.error("Error al refrescar usuario:", error);
           if (error instanceof Error && error.message.includes("401")) {

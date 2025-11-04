@@ -14,8 +14,12 @@ import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useTeacherValidation } from "@/hooks/useTeacherValidation";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
+import { courses } from "../../../helpers/moks";
+import { Course } from "@/types/course.types";
+import TeacherCoursesGrid from "@/components/TeacherGrid";
 
 const TeacherDashboardPage = () => {
+  const [coursesList, setCoursesList] = useState<Course[]>([]);
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const {
@@ -62,19 +66,6 @@ const TeacherDashboardPage = () => {
     setShowForm(false);
   };
 
-  // Debug logs detallados
-  console.log("🎯 Dashboard - Estado completo:", {
-    validationStatus,
-    needsValidation,
-    canCreateCourses,
-    isPending,
-    isApproved,
-    isRejected,
-    userHasCompletedProfile: user?.hasCompletedProfile,
-    userProfessorProfile: user?.professorProfile,
-    showForm,
-  });
-
   if (isLoading || validationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -102,7 +93,7 @@ const TeacherDashboardPage = () => {
             onActionClick={handleShowValidationForm}
           />
         </div>
-        // {/* // )} */}
+        {/* // )} */}
 
         {/* Mostrar formulario si es necesario */}
         {(needsValidation || isRejected) && !showForm && (
@@ -134,9 +125,10 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
+        {/* {canCreateCourses && <TeacherCoursesGrid />} */}
 
         {/* Sección de cursos */}
-        <div
+        {/* <div
           className={`bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300 ${
             !canCreateCourses ? "opacity-50" : ""
           }`}
@@ -190,7 +182,7 @@ const TeacherDashboardPage = () => {
               </p>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Estadísticas - solo si puede crear cursos */}
         {canCreateCourses && (

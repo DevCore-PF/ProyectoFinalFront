@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
 import { createCheckoutSession } from "@/services/payments.service";
-import { getAllCoursesService } from "@/services/course.service";
-import { Course } from "@/types/courses.types";
 import { HiShoppingCart, HiArrowLeft, HiCheckCircle } from "react-icons/hi";
 import { useCart } from "@/context/CartContext";
 import { courses } from "../../../helpers/moks";
@@ -28,8 +26,8 @@ export default function CheckoutPage() {
     try {
       if (cart.length > 0) {
         const courseIds = cart.map((course) => course.id);
-        const { url } = await createCheckoutSession(token, courseIds);
         clearCart();
+        const { url } = await createCheckoutSession(token, courseIds);
         window.location.href = url;
       }
     } catch (err: any) {

@@ -74,9 +74,9 @@ const LoginForm = () => {
         >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
           {showEmailNotVerified ? (
-            <p className="text-red-400 text-center mb-6">
-              Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
-              entrada.
+            <p className="text-amber-300/80 text-center mb-6">
+              {`Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
+              entrada en ${user?.email}.`}
             </p>
           ) : (
             <p className="text-gray-400 text-center mb-6">

@@ -1,10 +1,9 @@
 "use client";
 import TeacherWelcomeCard from "@/components/dashboard/TeacherWelcomeCard";
-import CourseCard from "@/components/dashboard/CourseCard";
+import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import {
-  teacherCourses,
   teacherFeaturedCourses,
   teacherRecentActivity,
 } from "@/helpers/moks";
@@ -13,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useTeacherValidation } from "@/hooks/useTeacherValidation";
+import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 
 const TeacherDashboardPage = () => {
@@ -23,12 +23,18 @@ const TeacherDashboardPage = () => {
     isLoading: validationLoading,
     canCreateCourses,
     needsValidation,
-    isPending,
-    isApproved,
     isRejected,
     submitValidation,
     isSubmitting,
   } = useTeacherValidation();
+
+  const {
+    courses: professorCourses,
+    isLoading: coursesLoading,
+    error: coursesError,
+    refreshCourses,
+    hasCourses,
+  } = useProfessorCourses();
 
   const [showForm, setShowForm] = useState(false);
 
@@ -40,8 +46,10 @@ const TeacherDashboardPage = () => {
     }
   }, [user, isLoading, router]);
 
-  const handleViewCourseDetails = (courseId: number | string) => {
+  const handleViewCourseDetails = (courseId: string) => {
     console.log(`Ver detalles del curso: ${courseId}`);
+    // Aquí puedes agregar navegación al detalle del curso
+    // router.push(`/teacher-dashboard/courses/${courseId}`);
   };
 
   const handleSubmitValidation = async (formData: FormData) => {
@@ -61,19 +69,6 @@ const TeacherDashboardPage = () => {
   const handleHideValidationForm = () => {
     setShowForm(false);
   };
-
-  // Debug logs detallados
-  console.log("🎯 Dashboard - Estado completo:", {
-    validationStatus,
-    needsValidation,
-    canCreateCourses,
-    isPending,
-    isApproved,
-    isRejected,
-    userHasCompletedProfile: user?.hasCompletedProfile,
-    userProfessorProfile: user?.professorProfile,
-    showForm,
-  });
 
   if (isLoading || validationLoading) {
     return (
@@ -102,7 +97,7 @@ const TeacherDashboardPage = () => {
             onActionClick={handleShowValidationForm}
           />
         </div>
-        // {/* // )} */}
+        {/* // )} */}
 
         {/* Mostrar formulario si es necesario */}
         {(needsValidation || isRejected) && !showForm && (
@@ -134,7 +129,6 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
-
         {/* Sección de cursos */}
         <div
           className={`bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300 ${
@@ -159,23 +153,47 @@ const TeacherDashboardPage = () => {
 
           {canCreateCourses ? (
             <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {teacherCourses.map((course) => (
-                  <CourseCard
-                    key={course.id}
-                    course={course}
-                    viewDetails={handleViewCourseDetails}
-                  />
-                ))}
-              </div>
-
-              {teacherCourses.length === 0 && (
+              {coursesLoading ? (
+                <div className="text-center py-16 text-slate-400">
+                  <div className="animate-spin w-8 h-8 border-2 border-accent-light border-t-transparent rounded-full mx-auto mb-4"></div>
+                  <p>Cargando cursos...</p>
+                </div>
+              ) : coursesError ? (
+                <div className="text-center py-16 text-red-400 bg-red-900/20 rounded-xl border border-red-700/20">
+                  <p className="text-lg font-semibold text-red-300 mb-2">
+                    Error al cargar cursos
+                  </p>
+                  <p className="text-sm mb-4">{coursesError}</p>
+                  <button
+                    onClick={refreshCourses}
+                    className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-300 rounded-lg transition-colors"
+                  >
+                    Reintentar
+                  </button>
+                </div>
+              ) : hasCourses ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {professorCourses.map((course) => (
+                    <TeacherCourseCard
+                      key={course.id}
+                      course={course}
+                      viewDetails={handleViewCourseDetails}
+                    />
+                  ))}
+                </div>
+              ) : (
                 <div className="text-center py-16 text-slate-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
                   <HiBookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
                   <p className="text-lg font-semibold text-slate-300 mb-2">
                     No tienes cursos creados aún
                   </p>
-                  <p className="text-sm">¡Comienza creando tu primer curso!</p>
+                  <p className="text-sm mb-4">¡Comienza creando tu primer curso!</p>
+                  <button
+                    onClick={() => router.push('/teacher-dashboard/create-course')}
+                    className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
+                  >
+                    Crear mi primer curso
+                  </button>
                 </div>
               )}
             </>

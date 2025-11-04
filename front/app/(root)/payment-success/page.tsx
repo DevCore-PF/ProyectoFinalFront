@@ -56,13 +56,13 @@ export default function PaymentSuccess() {
               </div>
 
               <div className="space-y-3 md:space-y-4">
-                <Link
+                {/* <Link
                   href={"/dashboard"}
                   className="group w-full cursor-pointer bg-button hover:bg-button/80 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
                 >
                   <span>Ver mis cursos</span>
                   <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
+                </Link> */}
 
                 <button
                   onClick={() => router.push("/")}

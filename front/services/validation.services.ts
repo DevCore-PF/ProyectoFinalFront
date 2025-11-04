@@ -55,8 +55,8 @@ export const getTeacherValidationStatus = async (
       };
     }
 
-    // Si no ha completado el perfil
-    if (!user.professorProfile) {
+    // Si no ha completado el perfil o professorProfile es false
+    if (!user.professorProfile || typeof user.professorProfile !== "object") {
       return {
         isValidated: false,
         status: "not-submitted",
@@ -166,7 +166,7 @@ export const getProfessorProfileService = async (
 ): Promise<ProfessorProfileResponse | null> => {
   try {
     const user = await getUserWithProfileService(userId, token);
-    return user.professorProfile || null;
+    return (user.professorProfile && typeof user.professorProfile === "object") ? user.professorProfile : null;
   } catch (error) {
     console.error("Error al obtener perfil de profesor:", error);
     throw error;

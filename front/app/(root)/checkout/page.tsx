@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
 import { createCheckoutSession } from "@/services/payments.service";
-import { getAllCoursesService } from "@/services/course.service";
-import { Course } from "@/types/courses.types";
 import { HiShoppingCart, HiArrowLeft, HiCheckCircle } from "react-icons/hi";
 import { useCart } from "@/context/CartContext";
 import { courses } from "../../../helpers/moks";
@@ -15,7 +13,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart ,getTotal} = useCart();
 
   const handleCheckout = async () => {
     if (!token) {
@@ -28,8 +26,8 @@ export default function CheckoutPage() {
     try {
       if (cart.length > 0) {
         const courseIds = cart.map((course) => course.id);
-        const { url } = await createCheckoutSession(token, courseIds);
         clearCart();
+        const { url } = await createCheckoutSession(token, courseIds);
         window.location.href = url;
       }
     } catch (err: any) {
@@ -84,9 +82,9 @@ export default function CheckoutPage() {
                         {course.title}
                       </span>
                     </div>
-                    {/* <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
-                      ${course.price.toFixed(2)}
-                    </span> */}
+                    <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
+                      ${Number(course.price).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -98,9 +96,7 @@ export default function CheckoutPage() {
                   </span>
                   <span className="text-slate-200 text-xl md:text-2xl font-bold tabular-nums">
                     $
-                    {/* {courses
-                      .reduce((sum, course) => sum + course.price, 0)
-                      .toFixed(2)} */}
+                   ${getTotal().toFixed(2)}
                   </span>
                 </div>
               </div>

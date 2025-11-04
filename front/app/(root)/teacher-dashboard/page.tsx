@@ -45,8 +45,6 @@ const TeacherDashboardPage = () => {
   };
 
   const handleSubmitValidation = async (formData: FormData) => {
-    
-    
     try {
       await submitValidation(formData);
       toastSuccess("Perfil enviado para revisión exitosamente");
@@ -97,14 +95,14 @@ const TeacherDashboardPage = () => {
         </div>
 
         {/* Mensaje de validación - Solo mostrar si NO está aprobado */}
-        {validationStatus && !isApproved && (
-          <div className="mb-6">
-            <ValidationMessage
-              status={validationStatus.status}
-              onActionClick={handleShowValidationForm}
-            />
-          </div>
-        )}
+        {/* {validationStatus && !isApproved && ( */}
+        <div className="mb-6">
+          <ValidationMessage
+            status={validationStatus?.status}
+            onActionClick={handleShowValidationForm}
+          />
+        </div>
+        // {/* // )} */}
 
         {/* Mostrar formulario si es necesario */}
         {(needsValidation || isRejected) && !showForm && (

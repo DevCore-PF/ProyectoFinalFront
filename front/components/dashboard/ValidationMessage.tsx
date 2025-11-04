@@ -8,7 +8,7 @@ import {
 } from 'react-icons/hi';
 
 interface ValidationMessageProps {
-  status: 'approved' | 'pending' | 'rejected' | 'not-submitted';
+  status: 'approved' | 'pending' | 'rejected' | 'not-submitted' | undefined;
   className?: string;
   onActionClick?: () => void;
 }

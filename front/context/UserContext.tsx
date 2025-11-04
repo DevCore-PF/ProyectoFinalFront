@@ -1,5 +1,7 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
+import { getCurrentUserService } from "@/services/user.service";
+import { User } from "@/types/auth.types";
 import {
   createContext,
   useContext,
@@ -8,16 +10,6 @@ import {
   ReactNode,
 } from "react";
 
-interface User {
-  email: string;
-  hasCompletedProfile: boolean;
-  isEmailVerified: boolean;
-  id: string;
-  name: string;
-  role: "student" | "teacher" | "admin" | null;
-  // image:string
-}
-
 interface AuthContextType {
   token: string | null;
   setToken: (token: string | null) => void;
@@ -25,6 +17,7 @@ interface AuthContextType {
   logout: () => void;
   user: User | null;
   setUser: (user: User | null) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,16 +30,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const userToken = sessionStorage.getItem("token");
     const userData = sessionStorage.getItem("user");
-
-    setTokenState(userToken);
-
-    if (userData) {
-      setUserState(JSON.parse(userData));
+    if (userToken) {
+      setTokenState(userToken);
     }
-
+    if (userData) {
+      try {
+        setUserState(JSON.parse(userData));
+      } catch (error) {
+        console.error("Error al parsear usuario:", error);
+        sessionStorage.removeItem("user");
+      }
+    }
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token && user?.id) {
+        const userTimestamp = sessionStorage.getItem("userTimestamp");
+        const now = Date.now();
+
+        if (userTimestamp && now - parseInt(userTimestamp) < 5000) {
+          console.log("Usuario recién guardado, saltando refresco");
+          return;
+        }
+
+        try {
+          const freshUserData = await getCurrentUserService(token, user.id);
+          setUserState(freshUserData);
+          sessionStorage.setItem("user", JSON.stringify(freshUserData));
+          sessionStorage.setItem("userTimestamp", now.toString());
+        } catch (error) {
+          console.error("Error al refrescar usuario:", error);
+          if (error instanceof Error && error.message.includes("401")) {
+            logout();
+          }
+        }
+      }
+    };
+
+    fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
   const setToken = (newToken: string | null) => {
     if (newToken) {
       sessionStorage.setItem("token", newToken);
@@ -59,12 +84,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setUser = (newUser: User | null) => {
     if (newUser) {
       sessionStorage.setItem("user", JSON.stringify(newUser));
+      sessionStorage.setItem("userTimestamp", Date.now().toString()); // Guardar timestamp
     } else {
       sessionStorage.removeItem("user");
+      sessionStorage.removeItem("userTimestamp");
     }
     setUserState(newUser);
   };
+  const refreshUser = async () => {
+    if (!token || !user?.id) {
+      console.warn("No hay token o user para refrescar");
+      return;
+    }
 
+    try {
+      const freshUserData = await getCurrentUserService(token, user.id);
+      setUser(freshUserData);
+    } catch (error) {
+      console.error("Error al refrescar usuario:", error);
+      throw error;
+    }
+  };
   const logout = () => {
     clearSession();
     setTokenState(null);
@@ -81,6 +121,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         user,
         setUser,
+
+        refreshUser,
       }}
     >
       {children}

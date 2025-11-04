@@ -17,6 +17,7 @@ import {
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { IoFolderOutline } from "react-icons/io5";
 import { FiUploadCloud } from "react-icons/fi";
+import { FaExclamation } from "react-icons/fa6";
 
 //Helpers
 import {
@@ -42,7 +43,6 @@ const RegisterProfesor = () => {
         "Enviar formulario",
         async () => {
           try {
-            // llamado a la api
             toastSuccess("Registro enviado!");
             formik.resetForm();
           } catch (error) {
@@ -94,14 +94,17 @@ const RegisterProfesor = () => {
                     {...formik.getFieldProps("fullName")}
                     className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                       formik.touched.fullName && formik.errors.fullName
-                        ? "border border-red-500"
+                        ? "border border-amber-400/50"
                         : ""
                     }`}
                   />
                   {formik.errors.fullName && formik.touched.fullName && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {formik.errors.fullName}
-                    </p>
+                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                        <FaExclamation className="shrink-0" size={16} />
+                        <span>{formik.errors.fullName}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
 
@@ -116,14 +119,17 @@ const RegisterProfesor = () => {
                     {...formik.getFieldProps("email")}
                     className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                       formik.touched.email && formik.errors.email
-                        ? "border border-red-500"
+                        ? "border border-amber-400/50"
                         : ""
                     }`}
                   />
                   {formik.errors.email && formik.touched.email && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {formik.errors.email}
-                    </p>
+                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                        <FaExclamation className="shrink-0" size={16} />
+                        <span>{formik.errors.email}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
 
@@ -159,7 +165,7 @@ const RegisterProfesor = () => {
                     htmlFor="picture"
                     className={`flex  items-center justify-between w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
                       formik.touched.picture && formik.errors.picture
-                        ? "border-red-500"
+                        ? "border-amber-400/50"
                         : "border-accent-medium/70"
                     }`}
                   >
@@ -175,9 +181,12 @@ const RegisterProfesor = () => {
                   </label>
 
                   {formik.errors.picture && formik.touched.picture && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {formik.errors.picture}
-                    </p>
+                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                        <FaExclamation className="shrink-0" size={16} />
+                        <span>{formik.errors.picture}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -200,14 +209,17 @@ const RegisterProfesor = () => {
                     {...formik.getFieldProps("profession")}
                     className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                       formik.touched.profession && formik.errors.profession
-                        ? "border border-red-500"
+                        ? "border border-amber-400/50"
                         : ""
                     }`}
                   />
                   {formik.errors.profession && formik.touched.profession && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {formik.errors.profession}
-                    </p>
+                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                        <FaExclamation className="shrink-0" size={16} />
+                        <span>{formik.errors.profession}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
 
@@ -222,14 +234,17 @@ const RegisterProfesor = () => {
                     {...formik.getFieldProps("area")}
                     className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                       formik.touched.area && formik.errors.area
-                        ? "border border-red-500"
+                        ? "border border-amber-400/50"
                         : ""
                     }`}
                   />
                   {formik.errors.area && formik.touched.area && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {formik.errors.area}
-                    </p>
+                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                        <FaExclamation className="shrink-0" size={16} />
+                        <span>{formik.errors.area}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
 
@@ -255,7 +270,7 @@ const RegisterProfesor = () => {
                           className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer  border-2 border-dashed ${
                             formik.touched.certificates &&
                             formik.errors.certificates
-                              ? "border-red-500"
+                              ? "border-amber-400/50"
                               : "border-accent-medium/70"
                           }`}
                         >
@@ -292,22 +307,28 @@ const RegisterProfesor = () => {
                       + Agregar certificado
                     </button>
                   ) : null}
+
                   {formik.touched.certificates &&
                     formik.errors.certificates && (
-                      <p className="text-red-400 text-sm text-center mt-2">
-                        {typeof formik.errors.certificates === "string"
-                          ? formik.errors.certificates
-                          : Array.isArray(formik.errors.certificates)
-                          ? formik.errors.certificates
-                              .map((err) =>
-                                typeof err === "string"
-                                  ? err
-                                  : "Archivo inválido"
-                              )
-                              .filter(Boolean)
-                              .join(", ")
-                          : "Archivo inválido"}
-                      </p>
+                      <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                        <p className="text-amber-300 text-sm flex items-center gap-2">
+                          <FaExclamation className="shrink-0" size={16} />
+                          <span>
+                            {typeof formik.errors.certificates === "string"
+                              ? formik.errors.certificates
+                              : Array.isArray(formik.errors.certificates)
+                              ? formik.errors.certificates
+                                  .map((err) =>
+                                    typeof err === "string"
+                                      ? err
+                                      : "Archivo inválido"
+                                  )
+                                  .filter(Boolean)
+                                  .join(", ")
+                              : "Archivo inválido"}
+                          </span>
+                        </p>
+                      </div>
                     )}
                 </div>
 
@@ -329,7 +350,7 @@ const RegisterProfesor = () => {
                         onBlur={() => formik.setFieldTouched("links", true)}
                         className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                           formik.touched.links && formik.errors.links
-                            ? "border border-red-500"
+                            ? "border border-amber-400/50"
                             : ""
                         }`}
                       />
@@ -345,18 +366,6 @@ const RegisterProfesor = () => {
                       )}
                     </div>
                   ))}
-
-                  {formik.touched.links && formik.errors.links && (
-                    <p className="text-red-400 text-sm text-center mt-2">
-                      {Array.isArray(formik.errors.links)
-                        ? formik.errors.links
-                            .map((err) =>
-                              typeof err === "string" ? err : "Link inválido"
-                            )
-                            .join(", ")
-                        : (formik.errors.links as string)}
-                    </p>
-                  )}
                 </div>
                 {formik.values.links && formik.values.links?.length < 5 ? (
                   <button
@@ -386,21 +395,24 @@ const RegisterProfesor = () => {
               placeholder="Contanos tu experiencia y enfoque de enseñanza..."
               className={`w-full h-28 rounded-md bg-background2 p-3  text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                 formik.touched.bio && formik.errors.bio
-                  ? "border border-red-500"
+                  ? "border border-amber-400/50"
                   : ""
               }`}
             />
             {formik.errors.bio && formik.touched.bio && (
-              <p className="text-red-400 text-sm text-center mt-2">
-                {formik.errors.bio}
-              </p>
+              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                <p className="text-amber-300 text-sm flex items-center gap-2">
+                  <FaExclamation className="shrink-0" size={16} />
+                  <span>{formik.errors.bio}</span>
+                </p>
+              </div>
             )}
             <p
               className={`text-sm flex justify-end mr-2 ${
                 formik.values.bio.length === 250
-                  ? "text-red-400"
+                  ? "text-orange-400"
                   : formik.values.bio.length >= 230
-                  ? "text-yellow-400"
+                  ? "text-yellow-200"
                   : "text-font-light/50"
               }`}
             >
@@ -453,9 +465,12 @@ const RegisterProfesor = () => {
                 </label>
 
                 {formik.errors.checkboxInfo && formik.touched.checkboxInfo && (
-                  <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                    {formik.errors.checkboxInfo}
-                  </p>
+                  <div className="flex justify-center ">
+                    <p className="text-amber-300 text-sm flex items-center ">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.checkboxInfo}</span>
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -508,9 +523,12 @@ const RegisterProfesor = () => {
                 </span>
               </label>
               {formik.errors.checkboxTerms && formik.touched.checkboxTerms && (
-                <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                  {formik.errors.checkboxTerms}
-                </p>
+                <div className=" flex justify-center ">
+                  <p className="text-amber-300 text-sm flex items-center ">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.checkboxTerms}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -560,9 +578,12 @@ const RegisterProfesor = () => {
               </label>
               {formik.errors.checkboxSupervision &&
                 formik.touched.checkboxSupervision && (
-                  <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                    {formik.errors.checkboxSupervision}
-                  </p>
+                  <div className=" flex justify-center">
+                    <p className="text-amber-300 text-sm flex items-center ">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.checkboxSupervision}</span>
+                    </p>
+                  </div>
                 )}
             </div>
           </div>

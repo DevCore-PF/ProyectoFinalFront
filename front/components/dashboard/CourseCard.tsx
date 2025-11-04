@@ -1,7 +1,8 @@
 import { HiEye, HiEyeOff, HiStar, HiUsers } from "react-icons/hi";
+import { Course, CourseCardProps } from "../../types/courses.types";
 
-const CourseCard = ({ course, onViewDetails }) => {
-  const getStatusColor = (status) => {
+const CourseCard = ({ course, viewDetails }: CourseCardProps) => {
+  const getStatusColor = (status: Course["status"]) => {
     switch (status) {
       case "Publicado":
         return "text-green-600 border-green-500/30";
@@ -16,25 +17,23 @@ const CourseCard = ({ course, onViewDetails }) => {
 
   return (
     <div className="group bg-slate-900/50 backdrop-blur-xs border border-slate-700/30 rounded-xl p-4 sm:p-5">
-    
       <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
         <div className="flex-1">
           <h3 className="text-base sm:text-lg font-bold text-slate-200 mb-2">
             {course.title}
           </h3>
-          
+
           <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-400">
             <div className="flex items-center gap-1.5">
               <HiUsers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="font-medium">{course.students} alumnos</span>
             </div>
-            |            <span className="hidden xs:inline">|</span>
+            | <span className="hidden xs:inline">|</span>
             <div className="flex items-center gap-1.5">
               <HiStar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
               <span className="font-medium">{course.rating.toFixed(1)}</span>
             </div>
-            |
-            <span className="hidden xs:inline">|</span>
+            |<span className="hidden xs:inline">|</span>
             <div className="flex gap-1">
               <span className="font-bold text-slate-400">
                 ${course.price.toFixed(2)}
@@ -52,7 +51,7 @@ const CourseCard = ({ course, onViewDetails }) => {
         </div>
       </div>
 
-      <div className="items-center flex justify-between items-center gap-3 sm:gap-4 mb-4 text-xs sm:text-sm pb-4 border-b border-slate-700/30">
+      <div className=" flex justify-between items-center gap-3 sm:gap-4 mb-4 text-xs sm:text-sm pb-4 border-b border-slate-700/30">
         <div>
           <span className="text-slate-500 text-xs font-medium block mb-1">
             Creado:
@@ -91,7 +90,7 @@ const CourseCard = ({ course, onViewDetails }) => {
       </div>
 
       <button
-        onClick={() => onViewDetails(course.id)}
+        onClick={() => viewDetails(course.id)}
         className="w-full bg-button/30 hover:bg-button/40 active:bg-button/50 cursor-pointer text-purple-100 py-2.5 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40"
       >
         Ver detalles

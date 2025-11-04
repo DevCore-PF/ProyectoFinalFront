@@ -1,6 +1,7 @@
-const API_URL = "/api";
+// const API_URL = "/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Types
-import { RegisterResponse } from "@/types/api.types";
+import { RegisterResponse, LoginResponse, UpdateRoleResponse } from "@/types/api.types";
 import { RegisterFormData, LoginFormData } from "@/types/auth.types";
 import { UploadImageResponse, UserUpdateResponse } from "@/types/user.types";
 
@@ -21,9 +22,8 @@ export const registerUserService = async (
       throw new Error(error.message || "Error en el registro");
     }
 
-    console.log("esta es data", data);
     const response = await data.json();
-    console.log("esta es response", response);
+    console.log("Esta es mi data desde registerService", response);
 
     return response;
   } catch (error) {
@@ -32,7 +32,7 @@ export const registerUserService = async (
   }
 };
 
-export const loginUserService = async (values: LoginFormData) => {
+export const loginUserService = async (values: LoginFormData): Promise<LoginResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
@@ -48,14 +48,35 @@ export const loginUserService = async (values: LoginFormData) => {
     }
 
     const response = await data.json();
+    console.log("esta es mi data desde loginServcie: ", response);
+
     return response;
   } catch (error) {
     console.error("Error al loguearse: ", error);
     throw error;
   }
 };
+export const getCurrentUserService = async (token: string, id: number | string) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-export const updateRoleService = async (role: string, token: string) => {
+    if (!response.ok) {
+      throw new Error("Error obteniendo usuario");
+    }
+    console.log("Respuesta de user.service: ", response);
+
+    return response.json();
+  } catch (error) {
+    console.error("Error al conseguir el servicio atual: ", error);
+    throw error;
+  }
+};
+
+export const updateRoleService = async (role: string, token: string): Promise<UpdateRoleResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/select-role`, {
       method: "PATCH",
@@ -71,13 +92,13 @@ export const updateRoleService = async (role: string, token: string) => {
       throw new Error(error.message || "Error al seleccionar el rol");
     }
     const response = await data.json();
+
     return response;
   } catch (error) {
     console.error("Error al registrar:", error);
     throw error;
   }
 };
-
 
 export const uploadProfileImageService = async (
   userId: string,
@@ -179,4 +200,26 @@ export const getUserProfileService = async (
     throw error;
   }
 };
+
+// Servicio para obtener usuario actual (usado en OAuth callbacks)
+// export const getCurrentUserService = async (token: string, id: string) => {
+//   try {
+//     const response = await fetch(`${API_URL}/users/${id}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Error obteniendo usuario");
+//     }
+    
+//     const userData = await response.json();
+//     // Si el backend devuelve userReturn en lugar de directamente el user
+//     return userData.userReturn || userData;
+//   } catch (error) {
+//     console.error("Error al conseguir el usuario actual: ", error);
+//     throw error;
+//   }
+// };
 

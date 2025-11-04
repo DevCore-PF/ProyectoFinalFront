@@ -75,10 +75,7 @@ const Footer = () => {
               >
                 Beneficios
               </Link>
-              <Link
-                href="/our-courses"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
+              <Link href="/courses" className="hover:text-white">
                 Nuestros Cursos
               </Link>
               <Link

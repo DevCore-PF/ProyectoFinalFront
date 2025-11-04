@@ -1,10 +1,16 @@
+"use client";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/UserContext";
 //Next
 import { courses } from "@/helpers/moks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 //Incos
 import { IoArrowForward } from "react-icons/io5";
 
 const CoursesGrid = () => {
+
+ 
   return (
     <div className="min-h-screen p-20" id="courses">
       <div className="max-w-7xl mx-auto">
@@ -61,8 +67,9 @@ const CoursesGrid = () => {
                     ))}
                   </div>
                 )}
-
+                {/* <button onClick={}>agegar</button> */}
                 <div className="flex justify-end mt-auto">
+                  {/* <button onClick={handleBuyCourse}>Comprar</button> */}
                   <Link
                     href={`/courses/${course.id}`}
                     className="bg-slate-600/90 p-3 rounded-lg  transition-all duration-300 hover:shadow-slate-800 hover:shadow-md hover:bg-slate-600/40"

@@ -2,8 +2,9 @@
 
 :root {
   /* --background: #242645; */
-    --background: #1f213c;
+  --background: #1f213c;
   --foreground: #171717;
+  --color: #c64f06;
 }
 
 @theme {

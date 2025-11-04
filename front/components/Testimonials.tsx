@@ -21,7 +21,7 @@ const Testimonials = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-slate-900/50 backdrop-blur-xs border-transparent border hover:border-slate-400/50  rounded-2xl overflow-hidden ">
+          <div className="bg-slate-900/50 backdrop-blur-xs border-transparent border hover:border-button/50   rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
                 <div className="absolute bg-black/30  inset-0"></div>
@@ -52,7 +52,7 @@ const Testimonials = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50  hover:border-slate-400/50 rounded-2xl overflow-hidden ">
+          <div className="bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50  hover:border-button/50  rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
                 <div className="absolute bg-black/40  inset-0"></div>
@@ -82,7 +82,7 @@ const Testimonials = () => {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-2 bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50 hover:border-slate-400/50 rounded-2xl overflow-hidden ">
+          <div className="lg:col-span-2 bg-slate-900/50 backdrop-blur-xs  border border-slate-700/50 hover:border-button/50  rounded-2xl overflow-hidden ">
             <div className="flex h-full">
               <div className="relative w-32 sm:w-40 shrink-0">
                 <div className="absolute bg-black/25  inset-0"></div>

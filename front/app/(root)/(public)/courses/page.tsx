@@ -317,8 +317,17 @@ import {
 import { getAllCoursesService } from "@/services/course.service";
 import { getProfessorCoursesService } from "@/services/course.services";
 
+// Tipo para la configuración de categorías
+interface CategoryConfig {
+  icon: React.ComponentType<{ className?: string }>;
+  gradient: string;
+  iconGradient: string;
+  badgeColor: string;
+  textColor: string;
+}
+
 // Configuración de categorías
-const categoryConfig: Record<string, any> = {
+const categoryConfig: Record<string, CategoryConfig> = {
   "Frontend Development": {
     icon: FaCode,
     gradient: "from-blue-500/20 to-cyan-500/20",
@@ -419,7 +428,6 @@ const CoursesPage = () => {
   const { handleAddToCart } = useAddToCart();
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [myCourses, setMyCourses] = useState<Course[]>([]);
   const [showMyCoursesOnly, setShowMyCoursesOnly] = useState(false);
 
   // Fetch de todos los cursos al cargar
@@ -439,15 +447,27 @@ const CoursesPage = () => {
   const handleToggle = async (showMine: boolean) => {
     setShowMyCoursesOnly(showMine);
 
-    if (showMine && user?.professorProfile?.id && token) {
+    if (showMine && user?.professorProfile && typeof user.professorProfile === "object" && user.professorProfile.id && token) {
       try {
+        console.log("🔍 Fetching professor courses for ID:", user.professorProfile.id);
         const data = await getProfessorCoursesService(
           user.professorProfile.id,
           token
         );
-        setMyCourses(data);
+        console.log("📚 Professor courses fetched:", data);
+        setCourses(data);
       } catch (error) {
         console.error("Error fetching professor courses:", error);
+      }
+    } else {
+      // Si no está mostrando "mis cursos", cargar todos los cursos
+      try {
+        console.log("🔍 Fetching all courses");
+        const data = await getAllCoursesService();
+        console.log("📚 All courses fetched:", data);
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching all courses:", error);
       }
     }
   };
@@ -497,6 +517,21 @@ const CoursesPage = () => {
           {courses.map((course) => {
             const config = categoryConfig[course.category] || defaultConfig;
             const Icon = config.icon;
+            
+            // Verificar si este curso pertenece al profesor actual
+            const isOwnCourse = user?.professorProfile && 
+                               typeof user.professorProfile === "object" &&
+                               course.professor?.id === user.professorProfile.id;
+            
+            // Debug log para verificar la lógica
+            if (user?.professorProfile && typeof user.professorProfile === "object") {
+              console.log(`🔍 Curso "${course.title}":`, {
+                courseId: course.id,
+                courseProfessorId: course.professor?.id,
+                currentProfessorId: user.professorProfile.id,
+                isOwnCourse: isOwnCourse
+              });
+            }
 
             return (
               <div
@@ -520,12 +555,19 @@ const CoursesPage = () => {
                         <h3 className="text-white text-2xl font-bold flex-1">
                           {course.title}
                         </h3>
-                        <button
-                          onClick={() => handleAddToCart(course)}
-                          className="bg-slate-700/50 hover:bg-slate-600/50 px-4 py-2 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300"
-                        >
-                          Agregar a carrito
-                        </button>
+                        {/* Mostrar botón "Agregar a carrito" solo si no es el curso del profesor actual */}
+                        {!isOwnCourse ? (
+                          <button
+                            onClick={() => handleAddToCart(course)}
+                            className="bg-slate-700/50 hover:bg-slate-600/50 px-4 py-2 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300"
+                          >
+                            Agregar a carrito
+                          </button>
+                        ) : (
+                          <div className="px-4 py-2 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold">
+                            Tu curso
+                          </div>
+                        )}
                         <button className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30">
                           Ver Curso
                         </button>

@@ -1,6 +1,8 @@
+import { Course } from "@/types/course.types";
+
 // const API_URL = "/api";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-export const getAllCoursesService = async () => {
+export const getAllCoursesService = async (): Promise<Course[]> => {
   try {
     const data = await fetch(`${API_URL}/courses`, {
       method: "GET",
@@ -10,13 +12,10 @@ export const getAllCoursesService = async () => {
     });
 
     if (!data.ok) {
-      const errorText = await data.text(); // Cambia a .text() primero
-      console.error("Response error:", errorText);
       throw new Error("Hubo un problema al obtener los cursos");
     }
 
     const response = await data.json();
-    console.log("esta es mi data de cursos", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos: ", error);
@@ -24,6 +23,24 @@ export const getAllCoursesService = async () => {
   }
 };
 
+export const getTeacherCoursesService = async (
+  professorId: string
+): Promise<Course[]> => {
+  try {
+    // Obtener todos los cursos
+    const allCourses = await getAllCoursesService();
+
+    // Filtrar solo los cursos del profesor
+    const teacherCourses = allCourses.filter(
+      (course) => course.professor?.id === professorId
+    );
+
+    return teacherCourses;
+  } catch (error) {
+    console.error("Error in getTeacherCoursesService:", error);
+    throw error;
+  }
+};
 
 export const enrollmentService = {
   getMyEnrollments: async (token: string) => {
@@ -31,32 +48,29 @@ export const enrollmentService = {
       `${API_URL}/enrollments/my-enrollments`, // Ajusta la ruta según tu backend
       {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
     if (!response.ok) {
-      throw new Error('Error al obtener cursos');
+      throw new Error("Error al obtener cursos");
     }
 
     return response.json();
   },
 
   hasEnrollment: async (token: string, courseId: string) => {
-    const response = await fetch(
-      `${API_URL}/enrollments/check/${courseId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-    );
+    const response = await fetch(`${API_URL}/enrollments/check/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
-      throw new Error('Error al verificar curso');
+      throw new Error("Error al verificar curso");
     }
 
     return response.json();
-  }
+  },
 };

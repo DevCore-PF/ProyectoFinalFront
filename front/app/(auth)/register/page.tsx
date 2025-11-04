@@ -2,6 +2,7 @@
 //Icons
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { FaExclamation } from "react-icons/fa6";
 //Helpers
 import {
   toastConfirm,
@@ -17,7 +18,7 @@ import { useFormik } from "formik";
 //Next / React
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
@@ -30,7 +31,7 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
 
 const page = () => {
-  const { setToken, setUser } = useAuth();
+  const { setToken, setUser, user } = useAuth();
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
@@ -47,43 +48,27 @@ const page = () => {
     validateOnMount: false,
 
     onSubmit: () => {
-      toastConfirm(
-        "Enviar formulario",
-        async () => {
-          try {
-            const data: RegisterResponse = await registerUserService(
-              formik.values
-            );
-            setToken(data.access_token);
-            setUser(data.user);
-            toastSuccess("Registro enviado!");
+      toastConfirm("Enviar formulario", async () => {
+        try {
+          const data: RegisterResponse = await registerUserService(
+            formik.values
+          );
 
-            formik.resetForm();
-            router.replace("/role");
-          } catch (error) {
-            if (error instanceof Error) {
-              if (error.message === "El correo electrónico ya está en uso") {
-                toastError(error.message);
-              } else if (
-                error.message === "Debe aceptar lo terminos y condiciones"
-              ) {
-                toastError(error.message);
-              } else if (
-                error.message.includes("Por favor, inicia sesión con Google.")
-              ) {
-                toastError(error.message);
-              }
-            } else {
-              toastError("Error desconocido");
-            }
-          } finally {
-            formik.setSubmitting(false);
+          setToken(data.access_token);
+          setUser(data.userReturn);
+          toastSuccess("Registro enviado!");
+          formik.resetForm();
+          window.location.href = "/role";
+        } catch (error) {
+          if (error instanceof Error) {
+            toastError(error.message);
+          } else {
+            toastError("Error desconocido");
           }
-        },
-        () => {
+        } finally {
           formik.setSubmitting(false);
         }
-      );
+      });
     },
   });
 
@@ -117,14 +102,17 @@ const page = () => {
                 placeholder="Ingresa tu nombre"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.name && formik.errors.name
-                    ? "border border-red-500"
+                    ? "border border-amber-400/50"
                     : ""
                 }`}
               />
               {formik.errors.name && formik.touched.name && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.name}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.name}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -139,14 +127,17 @@ const page = () => {
                 placeholder="Ingresa tu email"
                 className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.email && formik.errors.email
-                    ? "border border-red-500"
+                    ? "border border-amber-400/50"
                     : ""
                 }`}
               />
               {formik.errors.email && formik.touched.email && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.email}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.email}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -162,7 +153,7 @@ const page = () => {
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.password && formik.errors.password
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
@@ -175,9 +166,12 @@ const page = () => {
                 </button>
               </div>
               {formik.errors.password && formik.touched.password && (
-                <p className="text-red-400 text-sm text-center mt-2">
-                  {formik.errors.password}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.password}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -192,8 +186,9 @@ const page = () => {
                   placeholder="Confirma tu contraseña"
                   {...formik.getFieldProps("confirmPassword")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
-                    formik.touched.password && formik.errors.password
-                      ? "border border-red-500"
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
@@ -207,9 +202,12 @@ const page = () => {
               </div>
               {formik.errors.confirmPassword &&
                 formik.touched.confirmPassword && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.confirmPassword}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.confirmPassword}</span>
+                    </p>
+                  </div>
                 )}
             </div>
 
@@ -268,9 +266,12 @@ const page = () => {
                 </span>
               </label>
               {formik.errors.checkBoxTerms && formik.touched.checkBoxTerms && (
-                <p className="text-red-400 flex items-center justify-center text-sm text-center">
-                  {formik.errors.checkBoxTerms}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.checkBoxTerms}</span>
+                  </p>
+                </div>
               )}
             </div>
             <button
@@ -285,9 +286,16 @@ const page = () => {
                 });
               }}
               disabled={formik.isSubmitting}
-              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90"
+              className="bg-button/90 hover:bg-button cursor-pointer transition rounded-md py-2 mt-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-button/90 flex items-center justify-center gap-2"
             >
-              Registrarme
+              {formik.isSubmitting ? (
+                <>
+                  {/* <Spinner size="sm" /> */}
+                  <span>Registrando...</span>
+                </>
+              ) : (
+                "Registrarme"
+              )}
             </button>
 
             <div className="flex items-center my-2">

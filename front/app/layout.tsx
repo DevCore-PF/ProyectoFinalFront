@@ -3,8 +3,7 @@ import "./globals.css";
 import { Kodchasan, Be_Vietnam_Pro, Fira_Code } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/UserContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 
 const fontFira_Code = Fira_Code({
   variable: "--font-mono",
@@ -54,7 +53,7 @@ export default function RootLayout({
           }}
         />{" "}
         <AuthProvider>
-          {children}
+          <CartProvider>{children}</CartProvider>
         </AuthProvider>
       </body>
     </html>

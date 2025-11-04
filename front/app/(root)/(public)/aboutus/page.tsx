@@ -1,6 +1,7 @@
+//Next/React
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
+//Icons
 import { FaGraduationCap, FaHandsHelping, FaLightbulb } from "react-icons/fa";
 
 const AboutUs = () => {
@@ -40,7 +41,7 @@ const AboutUs = () => {
             <div className="order-1 md:order-2">
               <Image
                 alt="Image of developers collaborating"
-                src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761496786/imagen1_kb3voz.webp" // Reemplaza con una imagen adecuada
+                src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761782525/aboutsImage_xw35hg.webp"
                 width={600}
                 height={400}
                 className="w-full h-auto object-cover rounded-xl shadow-lg"
@@ -109,13 +110,13 @@ const AboutUs = () => {
           <div className="flex justify-center space-x-4">
             <Link
               href="/courses"
-              className="bg-gray-medium-light text-navbar font-bold rounded-md px-6 py-3 text-md "
+              className="bg-gray-medium-light text-font-light font-bold rounded-md px-6 py-3 text-md  hover:bg-button "
             >
               Explorar Cursos
             </Link>
             <Link
               href="/contact"
-              className="bg-button text-gray-light font-bold rounded-md px-6 py-3 text-md "
+              className="text-gray-light font-bold rounded-md px-6 py-3 text-md hover:bg-button"
             >
               Contáctanos
             </Link>

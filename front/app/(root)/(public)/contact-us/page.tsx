@@ -10,11 +10,10 @@ import {
 //Icons
 import { IoMail } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa6";
-import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot, FaExclamation } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
-
 //Next
 import Link from "next/link";
 //Types
@@ -48,14 +47,17 @@ const ContactPage = () => {
                   placeholder="Ingresa tu nombre"
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.name && formik.errors.name
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
                 {formik.errors.name && formik.touched.name && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.name}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.name}</span>
+                    </p>
+                  </div>
                 )}
               </div>
               <div>
@@ -69,14 +71,17 @@ const ContactPage = () => {
                   placeholder="Ingresa tu Email"
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.email && formik.errors.email
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
                 {formik.errors.email && formik.touched.email && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.email}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.email}</span>
+                    </p>
+                  </div>
                 )}
               </div>
               <div>
@@ -90,14 +95,17 @@ const ContactPage = () => {
                   placeholder="Ingresa el nomtivo"
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.subject && formik.errors.subject
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
                 {formik.errors.subject && formik.touched.subject && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.subject}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.subject}</span>
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -114,21 +122,24 @@ const ContactPage = () => {
                   placeholder="Escribe tu mensaje"
                   className={`w-full h-28 rounded-md bg-background2 p-3  text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.message && formik.errors.message
-                      ? "border border-red-500"
+                      ? "border border-amber-400/50"
                       : ""
                   }`}
                 />
                 {formik.errors.message && formik.touched.message && (
-                  <p className="text-red-400 text-sm text-center mt-2">
-                    {formik.errors.message}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.message}</span>
+                    </p>
+                  </div>
                 )}
                 <p
                   className={`text-sm flex justify-end mr-2 ${
                     formik.values.message.length === 300
-                      ? "text-red-400"
+                      ? "text-orange-400"
                       : formik.values.message.length >= 250
-                      ? "text-yellow-400"
+                      ? "text-yellow-200"
                       : "text-font-light/50"
                   }`}
                 >

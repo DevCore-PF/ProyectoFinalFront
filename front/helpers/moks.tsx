@@ -130,6 +130,9 @@ export const teacherCourses = [
   {
     id: "1",
     title: "Desarrollo Front-end",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 32,
     rating: 4.1,
     price: 52.0,
@@ -142,6 +145,9 @@ export const teacherCourses = [
   {
     id: "2",
     title: "HTML Avanzado",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 0,
     rating: 0.0,
     price: 16.0,
@@ -154,6 +160,9 @@ export const teacherCourses = [
   {
     id: "3",
     title: "CSS y Sass Profesional",
+    description: "Descrpcion del curso",
+    difficulty: "Intermedio",
+    duration: "7 hs",
     students: 18,
     rating: 4.7,
     price: 35.0,
@@ -169,7 +178,10 @@ export const teacherManagementOptions = [
     id: "create-course",
     title: "Crear nuevo curso",
     icon: <HiPlus className="w-4 h-4" />,
-    onClick: () => console.log("Crear nuevo curso"),
+    onClick: () => {
+      console.log("Navegando a crear curso...");
+      // Esta función será sobrescrita en el componente
+    },
   },
   {
     id: "upload-resources",
@@ -364,27 +376,81 @@ export const teacherFeaturedCourses = [
   { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
 ];
 
-  export const teacherRecentActivity = [
-    {
-      id: 1,
-      type: "review",
-      text: "Nueva reseña 5★ en 'Introducción a React'",
-      time: "Hace 2 horas",
-    },
-    {
-      id: 2,
-      type: "enrollment",
-      text: "15 nuevos estudiantes esta semana",
-      time: "Hace 5 horas",
-    },
-    {
-      id: 3,
-      type: "update",
-      text: "Actualización completada en 'JavaScript Avanzado'",
-      time: "Hace 1 día",
-    },
-  ];
-  export const teacherData = {
-    userName: "Carolina",
-    userEmail: "carolinaperez@gmail.com",
-  };
+export const teacherRecentActivity = [
+  {
+    id: 1,
+    type: "review",
+    text: "Nueva reseña 5★ en 'Introducción a React'",
+    time: "Hace 2 horas",
+  },
+  {
+    id: 2,
+    type: "enrollment",
+    text: "15 nuevos estudiantes esta semana",
+    time: "Hace 5 horas",
+  },
+  {
+    id: 3,
+    type: "update",
+    text: "Actualización completada en 'JavaScript Avanzado'",
+    time: "Hace 1 día",
+  },
+];
+export const teacherData = {
+  userName: "Carolina",
+  userEmail: "carolinaperez@gmail.com",
+};
+
+export const memberships = [
+  {
+    name: "Mensual",
+    price: 29,
+    period: "/mes",
+    duration: "1 mes",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+    ],
+    popular: false,
+  },
+  {
+    name: "Trimestral",
+    price: 69,
+    period: "/3 meses",
+    duration: "3 meses",
+    savings: "Ahorra 20%",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+      "Proyectos prácticos guiados",
+    ],
+    popular: true,
+  },
+  {
+    name: "Anual",
+    price: 199,
+    period: "/año",
+    duration: "12 meses",
+    savings: "Ahorra 43%",
+    features: [
+      "Acceso ilimitado a todos los cursos",
+      "Nuevos cursos cada semana",
+      "Certificados de finalización",
+      "Soporte prioritario VIP",
+      "Descarga de recursos",
+      "Comunidad exclusiva",
+      "Proyectos prácticos guiados",
+      "Mentoría 1 a 1 mensual",
+      "Acceso anticipado a contenido",
+    ],
+    popular: false,
+  },
+];

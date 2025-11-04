@@ -41,22 +41,25 @@ const page = () => {
 
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
-
           if (data.access_token) {
             setToken(data.access_token);
           }
-          setUser(data.user);
+          setUser(data.userReturn);
 
           const rol = formik.values.role === "student" ? "alumn@" : "profesor";
 
-          if (data.user.isEmailVerified) {
+          if (
+            data.userReturn.isEmailVerified ||
+            data.userReturn.isGoogleAccount 
+          ) {
             toastSuccess("Login exitoso!");
-            router.push("/");
+            // <ModalTerms/>
+            window.location.href = "/";
           } else {
             toastSuccess(
               `Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`
             );
-            router.push("/login");
+            window.location.href = "/login";
           }
         }
       } catch (error) {

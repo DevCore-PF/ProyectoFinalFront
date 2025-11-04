@@ -50,8 +50,7 @@ const page = () => {
 
           if (
             data.userReturn.isEmailVerified ||
-            data.userReturn.isGoogleAccount ||
-            data.userReturn.role
+            data.userReturn.isGoogleAccount 
           ) {
             toastSuccess("Login exitoso!");
             // <ModalTerms/>

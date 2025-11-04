@@ -69,20 +69,29 @@ const CreateCoursePage = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      if (!user?.professorProfile?.id || !token) {
+
+      ///////////?ESTO AGREGUE
+      const professorProfile = user?.professorProfile;
+
+      if (!professorProfile || !professorProfile.id || !token) {
         toastError("Error: No se encontró el perfil de profesor");
         return;
       }
-      console.log(
-        "Este es mi profesor profile id desde create curso",
-        user.professorProfile.id
-      );
+      /////ESTO COMENTE
+      // if (!user?.professorProfile?.id || !token) {
+      //   toastError("Error: No se encontró el perfil de profesor");
+      //   return;
+      // }
+      // console.log(
+      //   "Este es mi profesor profile id desde create curso",
+      //   user.professorProfile.id
+      // );
 
       try {
         setIsSubmitting(true);
-
         const courseResponse = await createCourseService(
-          user.professorProfile.id,
+         /////////////ESTO CORREGI
+          professorProfile.id,
           values,
           token
         );

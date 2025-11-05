@@ -23,7 +23,7 @@ export interface JwtPayload {
 export interface User {
   email: string;
   hasCompletedProfile: boolean;
-  id: string | number;
+  id: string ;
   name: string;
   role: "student" | "teacher" | "admin" | null;
   isEmailVerified: false;

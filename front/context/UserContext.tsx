@@ -100,12 +100,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    // Solo ejecutar si tenemos token y user
     if (token && user?.id) {
       fetchUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, user?.id]); // Agregamos user?.id como dependencia para forzar refresh
+  }, [token, user?.id]); 
   const setToken = (newToken: string | null) => {
     if (newToken) {
       sessionStorage.setItem("token", newToken);
@@ -118,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setUser = (newUser: User | null) => {
     if (newUser) {
       sessionStorage.setItem("user", JSON.stringify(newUser));
-      sessionStorage.setItem("userTimestamp", Date.now().toString()); // Guardar timestamp
+      sessionStorage.setItem("userTimestamp", Date.now().toString()); 
     } else {
       sessionStorage.removeItem("user");
       sessionStorage.removeItem("userTimestamp");

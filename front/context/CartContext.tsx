@@ -16,6 +16,8 @@ import {
   removeFromCartService,
 } from "@/services/cart.service";
 import { Course } from "@/types/course.types";
+import { jwtDecode } from "jwt-decode";
+import { JwtPayload } from "@/types/auth.types";
 
 interface CartContextType {
   cart: Course[];
@@ -32,7 +34,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user, token } = useAuth();
+  const { user, token, setToken } = useAuth();
 
   useEffect(() => {
     if (user && token) {
@@ -85,14 +87,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = async () => {
-    if (!token) {
+    if (token) {
+      const decoded = jwtDecode<JwtPayload>(token);
+      setToken(decoded.sub);
+    } else {
       console.log("no hay token");
-
       return;
     }
 
     try {
-      await clearCartService(token);
+      if (user?.id) {
+        await clearCartService(token);
+      }
       setCart([]);
     } catch (error) {
       console.error("Error al limpiar el carrito:", error);

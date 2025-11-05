@@ -37,9 +37,10 @@ export const addToCartService = async (token: string, courseId: string) => {
   }
 };
 
-
-
-export const removeFromCartService = async (token: string, courseId: string) => {
+export const removeFromCartService = async (
+  token: string,
+  courseId: string
+) => {
   const response = await fetch(`${API_URL}/cart/remove/${courseId}`, {
     method: "DELETE",
     headers: {
@@ -70,4 +71,3 @@ export const clearCartService = async (token: string) => {
 
   return response.json();
 };
-

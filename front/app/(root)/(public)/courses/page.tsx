@@ -460,7 +460,6 @@ const CoursesPage = () => {
         console.error("Error fetching professor courses:", error);
       }
     } else {
-      // Si no está mostrando "mis cursos", cargar todos los cursos
       try {
         console.log("🔍 Fetching all courses");
         const data = await getAllCoursesService();

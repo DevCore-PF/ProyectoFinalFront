@@ -3,10 +3,7 @@ import TeacherWelcomeCard from "@/components/dashboard/TeacherWelcomeCard";
 import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
-import {
-  teacherFeaturedCourses,
-  teacherRecentActivity,
-} from "@/helpers/moks";
+import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
 import { HiBookOpen, HiTrendingUp, HiChartBar } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
@@ -26,6 +23,7 @@ const TeacherDashboardPage = () => {
     isRejected,
     submitValidation,
     isSubmitting,
+    isApproved,
   } = useTeacherValidation();
 
   const {
@@ -77,6 +75,8 @@ const TeacherDashboardPage = () => {
       </div>
     );
   }
+  console.log("este es paroved: ", isApproved);
+  console.log("este es status", validationStatus);
 
   return (
     <div className="min-h-screen p-10">
@@ -90,14 +90,14 @@ const TeacherDashboardPage = () => {
         </div>
 
         {/* Mensaje de validación - Solo mostrar si NO está aprobado */}
-        {/* {validationStatus && !isApproved && ( */}
-        <div className="mb-6">
-          <ValidationMessage
-            status={validationStatus?.status}
-            onActionClick={handleShowValidationForm}
-          />
-        </div>
-        {/* // )} */}
+        {validationStatus && !isApproved && (
+          <div className="mb-6">
+            <ValidationMessage
+              status={validationStatus?.status}
+              onActionClick={handleShowValidationForm}
+            />
+          </div>
+        )}
 
         {/* Mostrar formulario si es necesario */}
         {(needsValidation || isRejected) && !showForm && (
@@ -187,9 +187,13 @@ const TeacherDashboardPage = () => {
                   <p className="text-lg font-semibold text-slate-300 mb-2">
                     No tienes cursos creados aún
                   </p>
-                  <p className="text-sm mb-4">¡Comienza creando tu primer curso!</p>
+                  <p className="text-sm mb-4">
+                    ¡Comienza creando tu primer curso!
+                  </p>
                   <button
-                    onClick={() => router.push('/teacher-dashboard/create-course')}
+                    onClick={() =>
+                      router.push("/teacher-dashboard/create-course")
+                    }
                     className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
                   >
                     Crear mi primer curso

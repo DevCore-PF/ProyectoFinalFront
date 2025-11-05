@@ -32,7 +32,6 @@ export interface User {
   checkBoxTerms: boolean;
   emailVerificationToken: string;
   googleId: null;
-  image: null;
   isActive: boolean;
   isGoogleAccount: false;
   isGitAcocount: false;

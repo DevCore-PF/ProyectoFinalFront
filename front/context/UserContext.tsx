@@ -64,8 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const cacheTime = user.role === "teacher" ? 10000 : 15000; // 10 segundos para teachers, 15 para otros
         
         if (userTimestamp && now - parseInt(userTimestamp) < cacheTime) {
-          console.log("Usuario recién guardado, saltando refresco");
-          return;
+            return;
         }
 
         try {
@@ -73,27 +72,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const freshUserData = await getCurrentUserService(token, user.id);
           console.log("✅ Datos frescos obtenidos:", freshUserData);
           
-          // IMPORTANTE: Preservar datos importantes si el backend responde con undefined
-          const mergedUserData = {
+           const mergedUserData = {
             ...freshUserData,
-            // Si el backend responde con professorProfile undefined pero el usuario actual lo tiene, preservarlo
-            professorProfile: freshUserData.professorProfile || user.professorProfile,
-            // Preservar otros campos importantes
             hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
           };
           
-          console.log("🔄 Usuario fusionado (preservando datos importantes):", mergedUserData);
-          setUserState(mergedUserData);
+           setUserState(mergedUserData);
           sessionStorage.setItem("user", JSON.stringify(mergedUserData));
           sessionStorage.setItem("userTimestamp", now.toString());
         } catch (error) {
-          console.error("Error al refrescar usuario:", error);
-          // Solo hacer logout si es un error 401/403 (no autorizado)
-          if (error instanceof Error && (error.message.includes("401") || error.message.includes("403"))) {
+            if (error instanceof Error && (error.message.includes("401") || error.message.includes("403"))) {
             console.log("Token inválido, haciendo logout");
             logout();
           } else {
-            // Para otros errores, simplemente logueamos y mantenemos el usuario actual
             console.log("Error temporal, manteniendo usuario actual");
           }
         }

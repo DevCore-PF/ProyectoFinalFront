@@ -26,7 +26,7 @@ interface CartContextType {
   removeFromCart: (courseId: string) => Promise<void>;
   clearCart: () => Promise<void>;
   getTotal: () => number;
-  refreshCart: () => Promise<void>;
+  refreshCart: (token: string | JwtPayload | null) => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,14 +45,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [user, token]);
 
   const refreshCart = async () => {
-    if (!token) return;
+    if (!token) {
+      console.log("no hay token");
+      return;
+    }
 
     setLoading(true);
     try {
       const data = await getCartService(token);
+      console.log("Cart data:", data);
       setCart(data.courses || []);
     } catch (error) {
       console.error("Error al cargar el carrito:", error);
+      setCart([]);
     } finally {
       setLoading(false);
     }
@@ -86,26 +91,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const clearCart = async () => {
-    if (token) {
-      const decoded = jwtDecode<JwtPayload>(token);
-      setToken(decoded.sub);
-    } else {
+    const clearCart = async () => {
+    if (!token) {
       console.log("no hay token");
       return;
     }
 
     try {
-      if (user?.id) {
-        await clearCartService(token);
-      }
+      await clearCartService(token);
       setCart([]);
     } catch (error) {
       console.error("Error al limpiar el carrito:", error);
       throw error;
     }
   };
-
   const getTotal = () => {
     return cart.reduce((sum, course) => sum + Number(course.price), 0);
   };

@@ -42,14 +42,14 @@ const Footer = () => {
         <div className=" flex flex-row justify-between px-20 pt-8 bg-footer flex-wrap gap-10">
           {/* Este es el contenedor q divide la seccion de las columnas en 2  */}
 
-          <div className="flex flex-col text-gray-dark text-[12px] gap-3">
+          <div className="flex flex-col text-gray-dark text-sm gap-3">
             <div className="ml-1 mb-3">
               <Image
                 alt="logoDev"
                 src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
                 width={500}
                 height={500}
-                className="h-8 w-8"
+                className="h-10 w-10"
               />
             </div>
             {/* Contenedor izquierdo */}
@@ -68,78 +68,80 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-row gap-20 flex-wrap">
-            {/* contenedor derecho */}
-            <div className="flex flex-col text-[#ABA5B6] gap-2 text-[12px] font-normal">
-              {/* columna izq-der */}
+          {/* <div className="flex flex-row gap-20 flex-wrap"> */}
+          {/* contenedor derecho */}
+          <div className="flex flex-col text-[#ABA5B6] gap-2  font-normal">
+            {/* columna izq-der */}
 
-              <Link href="/#item" onClick={handleInicioClick}>
-                <p className="text-white font-semibold text-sm hover:text-shadow-xs text-shadow-white">
-                  Inicio
-                </p>
-              </Link>
+            <Link href="/#item" onClick={handleInicioClick}>
+              <p className="text-white font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
+                Inicio
+              </p>
+            </Link>
 
-              <Link
-                href="/benefits"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                Beneficios
-              </Link>
-              <Link href="/courses" className="hover:text-white">
-                Nuestros Cursos
-              </Link>
+            <Link
+              href="/benefits"
+              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+            >
+              Beneficios
+            </Link>
+            <Link href="/courses" className="hover:text-white">
+              Nuestros Cursos
+            </Link>
 
-              <Link
-                href="/faq"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                Preguntas Frecuentes
-              </Link>
-            </div>
-            <div className="flex flex-col text-gray-dark gap-2 text-[12px] font-normal">
-              {/* columna cntr-der */}
-              <Link href="/company">
-                <p className="text-white font-semibold text-sm hover:text-shadow-xs text-shadow-white">
-                  Sobre Nosotros
-                </p>
-              </Link>
+            <Link
+              href="/faq"
+              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+            >
+              Preguntas Frecuentes
+            </Link>
+          </div>
+          <div className="flex flex-col text-gray-dark gap-2  font-normal">
+            {/* columna cntr-der */}
+            <Link href="/company">
+              <p className="text-white font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
+                Sobre Nosotros
+              </p>
+            </Link>
 
-              <Link
-                href="/company"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                La Empresa
+            <Link
+              href="/company"
+              className="text-[#ABA5B6] text-sm  hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+            >
+              La Empresa
+            </Link>
+            <Link
+              href="/achievements"
+              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+            >
+              Logros
+            </Link>
+            <Link
+              href="/our-goals"
+              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+            >
+              Nuestras metas
+            </Link>
+          </div>
+          <div>
+            {/* columna der-der */}
+            <p className="text-white font-semibold text-md mb-2">
+              Redes Sociales
+            </p>
+            <div className="flex flex-row justify-around pt-3">
+              <Link target="_blank" href="https://www.facebook.com">
+                <BsFacebook />
               </Link>
-              <Link
-                href="/achievements"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                Logros
+              <Link target="_blank" href="https://www.x.com">
+                <BsTwitterX />
               </Link>
-              <Link
-                href="/our-goals"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                Nuestras metas
+              <Link target="_blank" href="https://www.linkedin.com">
+                <FaLinkedin />
               </Link>
-            </div>
-            <div>
-              {/* columna der-der */}
-              <p className="text-white font-semibold text-sm">Redes Sociales</p>
-              <div className="flex flex-row justify-around pt-3">
-                <Link target="_blank" href="https://www.facebook.com">
-                  <BsFacebook />
-                </Link>
-                <Link target="_blank" href="https://www.x.com">
-                  <BsTwitterX />
-                </Link>
-                <Link target="_blank" href="https://www.linkedin.com">
-                  <FaLinkedin />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
+        {/* </div> */}
         <div className="pb-10 pt-8 px-20">
           <hr className="border border-t-0 h-px border-gray-dark" />
         </div>

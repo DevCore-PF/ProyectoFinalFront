@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { HiPlus, HiUpload, HiPencil, HiVideoCamera, HiChartBar, HiCurrencyDollar, HiEye } from 'react-icons/hi';
+import { HiPlus, HiPencil, HiChartBar, HiCurrencyDollar } from 'react-icons/hi';
 
 interface ManagementOption {
   id: string;
@@ -30,20 +30,12 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       }
     },
     {
-      id: 'upload-resources',
-      title: 'Subir recursos',
-      description: 'Adjunta PDFs, archivos de apoyo etc.',
-      icon: <HiUpload className="text-xl" />,
-      onClick: () => console.log('Subir recursos')
-    },
-    {
       id: 'edit-course',
       title: 'Editar curso existente',
-      description: 'Modifica título, descripción o precio.',
+      description: 'Modifica título, descripción, precio o agrega recursos.',
       icon: <HiPencil className="text-xl" />,
       onClick: () => console.log('Editar curso existente')
     },
- 
     {
       id: 'statistics',
       title: 'Ver mis estadísticas',
@@ -57,13 +49,6 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       description: 'Mira el alcance e historial de pagos por curso.',
       icon: <HiCurrencyDollar className="text-xl" />,
       onClick: () => console.log('Consultar ingresos')
-    },
-    {
-      id: 'pending-courses',
-      title: 'Ver cursos en revisión o pendientes',
-      description: 'Revisa el proceso de aprobación de tus cursos.',
-      icon: <HiEye className="text-xl" />,
-      onClick: () => console.log('Ver cursos pendientes')
     }
   ];
 

@@ -12,11 +12,9 @@ import {
 import { GrMysql } from "react-icons/gr";
 import {
   HiPlus,
-  HiUpload,
   HiPencil,
   HiChartBar,
   HiCurrencyDollar,
-  HiEye,
 } from "react-icons/hi";
 import {
   FaUser,
@@ -191,12 +189,6 @@ export const teacherManagementOptions = [
     },
   },
   {
-    id: "upload-resources",
-    title: "Subir recursos",
-    icon: <HiUpload className="w-4 h-4" />,
-    onClick: () => console.log("Subir recursos"),
-  },
-  {
     id: "edit-course",
     title: "Editar curso",
     icon: <HiPencil className="w-4 h-4" />,
@@ -213,12 +205,6 @@ export const teacherManagementOptions = [
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
     onClick: () => console.log("Consultar ingresos"),
-  },
-  {
-    id: "pending-courses",
-    title: "Cursos en revisión",
-    icon: <HiEye className="w-4 h-4" />,
-    onClick: () => console.log("Ver cursos pendientes"),
   },
 ];
 

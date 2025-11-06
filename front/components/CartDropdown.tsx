@@ -13,7 +13,7 @@ import {
   HiAcademicCap,
 } from "react-icons/hi";
 import { toastConfirm } from "@/helpers/alerts.helper";
-
+import { usePathname } from "next/navigation";
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [canScrollUp, setCanScrollUp] = useState(false);
@@ -22,25 +22,7 @@ export default function CartDropdown() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { cart, getTotal, removeFromCart } = useCart();
-
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (
-  //       dropdownRef.current &&
-  //       !dropdownRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsOpen(false);
-  //     }
-  //   };
-
-  //   if (isOpen) {
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //   }
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [isOpen]);
+  const pathname = usePathname();
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
@@ -240,11 +222,15 @@ export default function CartDropdown() {
                   </span>
                 </div>
                 <Link
-                  href="/cart"
+                  href={pathname === "/cart" ? "/courses" : "/cart"}
                   onClick={() => setIsOpen(false)}
                   className="flex cursor-pointer items-center justify-center gap-2 w-full bg-button hover:bg-button/80 py-3 rounded-lg font-semibold transition-all duration-200 text-white hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
                 >
-                  <span>Ver Carrito Completo</span>
+                  {pathname !== "/cart" ? (
+                    <span>Ver Carrito Completo</span>
+                  ) : (
+                    <span>Continuar comprando</span>
+                  )}
                   <HiArrowRight className="w-4 h-4" />
                 </Link>
               </div>

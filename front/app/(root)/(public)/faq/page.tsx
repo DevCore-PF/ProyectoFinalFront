@@ -13,7 +13,7 @@ const FAQPage = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-20 relative overflow-hidden">
+    <div className="min-h-screen pt-15 pb-20 relative overflow-hidden">
  
       <div className="absolute inset-0 opacity-20">
         <div
@@ -28,8 +28,8 @@ const FAQPage = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 lg:px-16">
         <div className="text-center mb-12">
           <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
-            <span className="text-accent-light font-semibold text-sm">
-              Centro de Ayuda
+            <span className="text-font-light font-semibold md:text-lg">
+            Centro de Ayuda
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">

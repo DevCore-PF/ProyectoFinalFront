@@ -12,6 +12,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { BsFacebook } from "react-icons/bs";
 import { BsTwitterX } from "react-icons/bs";
 import { FaLinkedin } from "react-icons/fa6";
+import Image from "next/image";
 
 const Footer = () => {
   const router = useRouter();
@@ -38,10 +39,19 @@ const Footer = () => {
   return (
     <>
       <div className="flex flex-col bg-footer pb-5">
-        <div className=" flex flex-row justify-between px-20 pt-15 bg-footer flex-wrap gap-10">
+        <div className=" flex flex-row justify-between px-20 pt-8 bg-footer flex-wrap gap-10">
           {/* Este es el contenedor q divide la seccion de las columnas en 2  */}
 
           <div className="flex flex-col text-gray-dark text-[12px] gap-3">
+            <div className="ml-1 mb-3">
+              <Image
+                alt="logoDev"
+                src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+                width={500}
+                height={500}
+                className="h-8 w-8"
+              />
+            </div>
             {/* Contenedor izquierdo */}
             <div className="flex flex-row items-center gap-1">
               {" "}
@@ -78,7 +88,7 @@ const Footer = () => {
               <Link href="/courses" className="hover:text-white">
                 Nuestros Cursos
               </Link>
-             
+
               <Link
                 href="/faq"
                 className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
@@ -88,7 +98,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col text-gray-dark gap-2 text-[12px] font-normal">
               {/* columna cntr-der */}
-              <Link href="/about-us">
+              <Link href="/company">
                 <p className="text-white font-semibold text-sm hover:text-shadow-xs text-shadow-white">
                   Sobre Nosotros
                 </p>

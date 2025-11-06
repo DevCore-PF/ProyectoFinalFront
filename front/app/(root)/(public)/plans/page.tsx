@@ -12,8 +12,7 @@ const PlansPage = () => {
   );
 
   return (
-    <div className="min-h-screen pt-20 pb-20 relative overflow-hidden">
-   
+    <div className="min-h-screen pt-15 pb-20 relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
         <div
           className="absolute inset-0"
@@ -25,21 +24,14 @@ const PlansPage = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
-   
-        <div className="text-center mb-5">
+        <div className="text-center mb-3">
           <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
             <span className="text-font-light font-semibold md:text-lg">
-            Planes y Precios
+              Planes y Precios
             </span>
           </div>
-          <h1 className="text-font-light text-4xl md:text-6xl font-bold ">
-            Invierte en tu{" "}
-            <span className="text-accent-medium">futuro profesional</span>
-          </h1>
-        
         </div>
 
-      
         <PricingHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <div className="relative min-h-[600px]">
@@ -105,8 +97,8 @@ const PlansPage = () => {
           </div>
         </div>
 
-        <div className="mt-20 text-center">
-          <div className="bg-gradient-to-r from-button/10 to-purple-500/10 border border-button/30 rounded-2xl p-8 md:p-12">
+        <div className="mt-15 text-center">
+          <div className=" p-8 md:p-12">
             <h2 className="text-font-light text-3xl md:text-4xl font-bold mb-4">
               ¿Aún tienes dudas?
             </h2>
@@ -114,7 +106,10 @@ const PlansPage = () => {
               Nuestro equipo está listo para ayudarte a elegir el mejor plan
               para tus necesidades
             </p>
-            <Link href={'/contact-us'} className="px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30">
+            <Link
+              href={"/contact-us"}
+              className="px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30"
+            >
               Contactar con soporte
             </Link>
           </div>

@@ -26,8 +26,8 @@ export default function CheckoutPage() {
     try {
       if (cart.length > 0) {
         const courseIds = cart.map((course) => course.id);
-        clearCart();
         const { url } = await createCheckoutSession(token, courseIds);
+        clearCart();
         window.location.href = url;
       }
     } catch (err: any) {

@@ -16,7 +16,6 @@ import {
 } from "@/validators/registerSchema";
 import { useFormik } from "formik";
 //Next / React
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -29,9 +28,10 @@ import { useAuth } from "@/context/UserContext";
 import { RegisterResponse } from "../../../types/api.types";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
+import Image from "next/image";
 
 const page = () => {
-  const { setToken, setUser, user } = useAuth();
+  const { setToken, setUser } = useAuth();
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
@@ -74,10 +74,21 @@ const page = () => {
 
   return (
     <div className="min-h-screen text-font-light flex flex-col">
-      <header className="p-4">
-        <Link href="/">
-          <span className="font-semibold">LOGO</span>
-        </Link>
+      <header className="p-6">
+        <div className="flex  gap-2 items-center text-[1.5rem] font-medium  ">
+          <Link
+            href={"/"}
+            className="flex items-center space-x-2 cursor-pointer"
+          >
+            <Image
+              alt="logoDev"
+              src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+              width={500}
+              height={500}
+              className="h-9  w-9"
+            />
+          </Link>
+        </div>
       </header>
 
       <section className="flex flex-1 justify-center items-center sm:px-4">

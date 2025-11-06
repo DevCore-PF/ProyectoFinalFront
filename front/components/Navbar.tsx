@@ -32,8 +32,12 @@ export default function Navbar() {
                   height={500}
                   className="h-8 w-8"
                 />
+                <span
+                  className={`hidden lg:block font-logo`}
+                >
+                  DevCore
+                </span>
               </Link>
-              <span className="hidden lg:block ">DevCore</span>
             </div>
 
             <button
@@ -59,7 +63,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/aboutus"
+                href="/about-us"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -103,7 +107,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/aboutus", label: "Sobre nosotros" },
+                { href: "/about-us", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
                 { href: "/contact-us", label: "Contacto" },
               ].map((link) => (
@@ -169,7 +173,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/aboutus"
+                href="/about-us"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -223,7 +227,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/aboutus", label: "Sobre nosotros" },
+                { href: "/about-us", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
                 { href: "/contact-us", label: "Contacto" },
               ].map((link) => (

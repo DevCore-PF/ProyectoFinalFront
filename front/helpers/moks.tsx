@@ -18,7 +18,13 @@ import {
   HiCurrencyDollar,
   HiEye,
 } from "react-icons/hi";
-
+import {
+  FaUser,
+  FaChalkboardTeacher,
+  FaCreditCard,
+  FaShieldAlt,
+  FaGraduationCap,
+} from "react-icons/fa";
 import { HiBookOpen, HiCheckCircle } from "react-icons/hi";
 export const courses = [
   {
@@ -454,3 +460,159 @@ export const memberships = [
     popular: false,
   },
 ];
+export   const faqCategories = [
+    { id: "estudiantes", label: "Para Estudiantes", icon: FaGraduationCap },
+    { id: "instructores", label: "Para Instructores", icon: FaChalkboardTeacher },
+    { id: "pagos", label: "Pagos y Reembolsos", icon: FaCreditCard },
+    { id: "cuenta", label: "Cuenta y Perfil", icon: FaUser },
+    { id: "seguridad", label: "Seguridad", icon: FaShieldAlt },
+  ];
+
+  
+export const faqsByCategory = {
+  estudiantes: [
+    {
+      question: "¿Cómo me inscribo en un curso?",
+      answer:
+        "Para inscribirte en un curso, navega por nuestro catálogo, selecciona el curso que te interesa y haz clic en 'Inscribirse ahora'. Completa el proceso de pago y tendrás acceso inmediato al contenido del curso.",
+    },
+    {
+      question: "¿Puedo acceder a los cursos desde mi móvil?",
+      answer:
+        "Sí, nuestra plataforma es totalmente responsive y está optimizada para dispositivos móviles. Puedes acceder a tus cursos desde cualquier navegador móvil o tablet.",
+    },
+    {
+      question: "¿Los cursos tienen fecha de vencimiento?",
+      answer:
+        "No, una vez que compras un curso tienes acceso de por vida al contenido. Puedes volver a ver las lecciones tantas veces como quieras, a tu propio ritmo.",
+    },
+    {
+      question: "¿Recibiré un certificado al completar un curso?",
+      answer:
+        "Sí, al completar exitosamente un curso recibirás un certificado digital verificable que puedes compartir en LinkedIn o incluir en tu CV profesional.",
+    },
+    {
+      question: "¿Puedo descargar los videos de las clases?",
+      answer:
+        "La descarga de videos depende del instructor. Algunos cursos permiten descargar el contenido para verlo offline, mientras que otros solo están disponibles en streaming.",
+    },
+    {
+      question: "¿Hay algún requisito previo para tomar los cursos?",
+      answer:
+        "Los requisitos varían según el curso. Cada curso tiene una sección de 'Requisitos' donde el instructor detalla el conocimiento previo necesario. Muchos cursos están diseñados para principiantes.",
+    },
+  ],
+  instructores: [
+    {
+      question: "¿Cómo puedo empezar a vender cursos en la plataforma?",
+      answer:
+        "Regístrate como instructor, completa tu perfil profesional y envía tu solicitud. Una vez aprobado, podrás crear tu primer curso usando nuestras herramientas de creación de contenido.",
+    },
+    {
+      question: "¿Qué porcentaje de las ventas recibo como instructor?",
+      answer:
+        "Los instructores reciben el 70% de las ventas directas de sus cursos. Si el estudiante llega a través de nuestros canales de marketing, la comisión es del 50%.",
+    },
+    {
+      question: "¿Cuánto tiempo toma que mi curso sea aprobado?",
+      answer:
+        "El proceso de revisión usualmente toma entre 2 a 5 días hábiles. Nuestro equipo revisa el contenido para asegurar que cumpla con nuestros estándares de calidad.",
+    },
+    {
+      question: "¿Qué formato de video debo usar para mis clases?",
+      answer:
+        "Recomendamos videos en formato MP4 con resolución mínima de 720p (HD). La plataforma soporta también formatos MOV y AVI. El tamaño máximo por video es de 4GB.",
+    },
+    {
+      question: "¿Cómo recibo mis pagos?",
+      answer:
+        "Los pagos se procesan mensualmente a través de transferencia bancaria o PayPal. Debes alcanzar un mínimo de $50 USD en ganancias para solicitar un retiro.",
+    },
+    {
+      question: "¿Puedo actualizar mi curso después de publicarlo?",
+      answer:
+        "Sí, puedes actualizar tu curso en cualquier momento. Puedes añadir nuevas lecciones, actualizar contenido existente o mejorar los materiales complementarios.",
+    },
+    {
+      question: "¿Necesito equipo profesional para grabar mis cursos?",
+      answer:
+        "No necesariamente. Con un micrófono decente, buena iluminación y una cámara HD (incluso de smartphone) puedes crear contenido de calidad. Lo más importante es el valor educativo.",
+    },
+    {
+      question: "¿Puedo ofrecer cupones de descuento para mis cursos?",
+      answer:
+        "Sí, tienes total control para crear cupones de descuento personalizados, establecer fechas de vencimiento y límites de uso para tus cursos.",
+    },
+  ],
+  pagos: [
+    {
+      question: "¿Qué métodos de pago aceptan?",
+      answer:
+        "Aceptamos tarjetas de crédito y débito (Visa, Mastercard, American Express), PayPal, y transferencias bancarias locales según tu país.",
+    },
+    {
+      question: "¿Puedo obtener un reembolso?",
+      answer:
+        "Sí, ofrecemos una garantía de reembolso de 30 días. Si no estás satisfecho con un curso, puedes solicitar un reembolso completo dentro de los primeros 30 días de la compra.",
+    },
+    {
+      question: "¿Los precios incluyen impuestos?",
+      answer:
+        "Los precios mostrados pueden no incluir impuestos locales como IVA o sales tax, que se calcularán durante el checkout según tu ubicación.",
+    },
+    {
+      question: "¿Puedo comprar cursos como regalo?",
+      answer:
+        "Sí, puedes comprar cualquier curso como regalo. Durante el checkout, selecciona la opción 'Regalar este curso' y enviaremos un código al destinatario.",
+    },
+    {
+      question: "¿Ofrecen planes de suscripción?",
+      answer:
+        "Actualmente ofrecemos compras individuales de cursos. Estamos trabajando en un plan de suscripción que dará acceso a múltiples cursos por una tarifa mensual.",
+    },
+  ],
+  cuenta: [
+    {
+      question: "¿Cómo cambio mi contraseña?",
+      answer:
+        "Ve a Configuración > Seguridad > Cambiar Contraseña. Ingresa tu contraseña actual y la nueva contraseña. Te recomendamos usar una contraseña fuerte con al menos 8 caracteres.",
+    },
+    {
+      question: "¿Puedo cambiar mi correo electrónico asociado?",
+      answer:
+        "Sí, puedes actualizar tu correo electrónico desde la sección de Configuración de Cuenta. Necesitarás verificar el nuevo correo electrónico para completar el cambio.",
+    },
+    {
+      question: "¿Cómo elimino mi cuenta?",
+      answer:
+        "Puedes solicitar la eliminación de tu cuenta desde Configuración > Privacidad > Eliminar Cuenta. Ten en cuenta que esta acción es irreversible y perderás acceso a todos tus cursos.",
+    },
+    {
+      question: "¿Puedo tener múltiples perfiles en una cuenta?",
+      answer:
+        "No, cada cuenta está asociada a un único usuario. Si necesitas cuentas separadas para uso personal y profesional, deberás crear cuentas diferentes.",
+    },
+  ],
+  seguridad: [
+    {
+      question: "¿Mis datos de pago están seguros?",
+      answer:
+        "Sí, utilizamos encriptación SSL de nivel bancario y no almacenamos información completa de tarjetas de crédito. Todos los pagos son procesados por procesadores certificados PCI-DSS.",
+    },
+    {
+      question: "¿Ofrecen autenticación de dos factores?",
+      answer:
+        "Sí, recomendamos encarecidamente activar la autenticación de dos factores (2FA) desde la configuración de seguridad para proteger tu cuenta.",
+    },
+    {
+      question: "¿Qué hago si creo que mi cuenta fue comprometida?",
+      answer:
+        "Cambia tu contraseña inmediatamente y contacta a nuestro equipo de soporte en security@devcore.com. Revisaremos tu cuenta y tomaremos las medidas necesarias.",
+    },
+    {
+      question: "¿Comparten mi información personal con terceros?",
+      answer:
+        "No vendemos tu información personal. Solo compartimos datos necesarios con procesadores de pago y servicios esenciales para el funcionamiento de la plataforma, siempre bajo estrictos acuerdos de confidencialidad.",
+    },
+  ],
+};

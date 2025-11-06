@@ -28,7 +28,7 @@ const PlansPage = () => {
    
         <div className="text-center mb-5">
           <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
-            <span className="text-accent-light font-semibold text-sm">
+            <span className="text-font-light font-semibold md:text-lg">
             Planes y Precios
             </span>
           </div>

@@ -5,6 +5,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { AuthProvider } from "../../context/UserContext";
+import { EB_Garamond } from "next/font/google";
+
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-eb-garamond",
+});
 
 const kodchasan = Kodchasan({
   variable: "--font-title",
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${beVietnam.variable} ${kodchasan.variable} antialiased`}
+        className={`${beVietnam.variable} ${kodchasan.variable} ${ebGaramond.variable} antialiased`}
       >
         <div>
           <Toaster

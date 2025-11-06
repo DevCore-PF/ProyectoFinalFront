@@ -27,6 +27,7 @@
   --font-body: "Be Vietnam Pro", sans-serif;
 
   --font-mono: var(--font-mono);
+  --font-logo: var(--font-eb-garamond);
 }
 
 body {

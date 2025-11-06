@@ -159,7 +159,7 @@ const ModalTerms = () => {
             </label>
 
             {formik.errors.checkBoxTerms && formik.touched.checkBoxTerms && (
-              <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg mt-3">
+              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-3">
                 <p className="text-amber-300 text-sm flex items-center gap-2">
                   <FaExclamation className="shrink-0" size={16} />
                   <span>{formik.errors.checkBoxTerms}</span>

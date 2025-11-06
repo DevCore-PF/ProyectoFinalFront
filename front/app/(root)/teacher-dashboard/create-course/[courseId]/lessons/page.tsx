@@ -15,6 +15,7 @@ import {
   HiCheckCircle,
   HiSparkles
 } from 'react-icons/hi';
+import { FaExclamation } from 'react-icons/fa6';
 
 // Esquema de validación
 const validationSchema = Yup.object({
@@ -177,7 +178,12 @@ const CreateLessonPage = () => {
                 }`}
               />
               {formik.touched.title && formik.errors.title && (
-                <p className="text-red-400 text-sm mt-1">{formik.errors.title}</p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.title}</span>
+                  </p>
+                </div>
               )}
             </div>
 

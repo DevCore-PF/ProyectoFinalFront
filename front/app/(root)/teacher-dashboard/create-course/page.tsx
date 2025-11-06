@@ -13,6 +13,7 @@ import {
   CourseType,
 } from "@/types/course.types";
 import { categoryOptions, getCategoryConfig } from "@/helpers/course.helpers";
+import { FaExclamation } from "react-icons/fa6";
 import { HiArrowLeft, HiBookOpen, HiSparkles } from "react-icons/hi";
 
 // Esquema de validación
@@ -166,9 +167,12 @@ const CreateCoursePage = () => {
                 }`}
               />
               {formik.touched.title && formik.errors.title && (
-                <p className="text-red-400 text-sm mt-1">
-                  {formik.errors.title}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.title}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -193,14 +197,17 @@ const CreateCoursePage = () => {
               />
               <div className="flex justify-between mt-1">
                 {formik.touched.description && formik.errors.description && (
-                  <p className="text-red-400 text-sm">
-                    {formik.errors.description}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2 w-full">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.description}</span>
+                    </p>
+                  </div>
                 )}
-                <p className="text-slate-500 text-sm ml-auto">
-                  {formik.values.description.length}/500
-                </p>
               </div>
+              <p className="text-slate-500 text-sm text-right mt-1">
+                {formik.values.description.length}/500
+              </p>
             </div>
 
             {/* Fila de campos */}
@@ -233,9 +240,12 @@ const CreateCoursePage = () => {
                   />
                 </div>
                 {formik.touched.price && formik.errors.price && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {formik.errors.price}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.price}</span>
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -259,9 +269,12 @@ const CreateCoursePage = () => {
                   }`}
                 />
                 {formik.touched.duration && formik.errors.duration && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {formik.errors.duration}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.duration}</span>
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -321,9 +334,12 @@ const CreateCoursePage = () => {
                 </div>
               </div>
               {formik.touched.category && formik.errors.category && (
-                <p className="text-red-400 text-sm mt-1">
-                  {formik.errors.category}
-                </p>
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.category}</span>
+                  </p>
+                </div>
               )}
             </div>
 
@@ -355,9 +371,12 @@ const CreateCoursePage = () => {
                   <option value={CourseDifficulty.ADVANCED}>Avanzado</option>
                 </select>
                 {formik.touched.difficulty && formik.errors.difficulty && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {formik.errors.difficulty}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.difficulty}</span>
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -382,9 +401,12 @@ const CreateCoursePage = () => {
                   <option value={CourseType.CAREER}>Carrera</option>
                 </select>
                 {formik.touched.type && formik.errors.type && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {formik.errors.type}
-                  </p>
+                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <FaExclamation className="shrink-0" size={16} />
+                      <span>{formik.errors.type}</span>
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

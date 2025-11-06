@@ -84,6 +84,25 @@ const CourseDetailPage: React.FC = () => {
     [CourseType.CAREER]: 'Carrera'
   };
 
+  // Función para obtener colores de dificultad
+  const getDifficultyColors = (difficulty: CourseDifficulty) => {
+    const difficultyText = difficultyMap[difficulty] || difficulty;
+    switch (difficultyText?.toLowerCase()) {
+      case 'principiante':
+      case 'beginner':
+      case 'básico':
+        return 'bg-green-500/10 border border-green-500/30 text-green-400';
+      case 'intermedio':
+      case 'intermediate':
+        return 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-400';
+      case 'avanzado':
+      case 'advanced':
+        return 'bg-red-500/10 border border-red-500/30 text-red-400';
+      default:
+        return 'bg-slate-700/50 text-slate-300';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1b3e] to-[#0f1020] p-8">
       <div className="max-w-6xl mx-auto">
@@ -125,7 +144,7 @@ const CourseDetailPage: React.FC = () => {
                   <HiClock className="w-4 h-4" />
                   <span className="text-sm font-medium">{course.duration}</span>
                 </div>
-                <div className="flex items-center gap-2 bg-slate-700/50 text-slate-300 px-4 py-2 rounded-lg">
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${getDifficultyColors(course.difficulty)}`}>
                   <HiAcademicCap className="w-4 h-4" />
                   <span className="text-sm font-medium">{difficultyMap[course.difficulty]}</span>
                 </div>

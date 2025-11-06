@@ -1,134 +1,35 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Course } from "@/types/course.types";
+import { Course, CourseCategory } from "@/types/course.types";
 import { useAuth } from "@/context/UserContext";
 import { useAddToCart } from "@/hooks/useAddToCart";
-import {
-  FaCode,
-  FaDatabase,
-  FaMobileAlt,
-  FaCloud,
-  FaShieldAlt,
-  FaGamepad,
-  FaPaintBrush,
-  FaServer,
-  FaChartBar,
-  FaRobot,
-} from "react-icons/fa";
+import { categoryConfig } from "@/helpers/course.helpers";
 import { getAllCoursesService } from "@/services/course.service";
 import { getProfessorCoursesService } from "@/services/course.services";
-
-// Tipo para la configuración de categorías
-interface CategoryConfig {
-  icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
-  iconGradient: string;
-  badgeColor: string;
-  textColor: string;
-}
-
-// Configuración de categorías
-const categoryConfig: Record<string, CategoryConfig> = {
-  "Frontend Development": {
-    icon: FaCode,
-    gradient: "from-blue-500/20 to-cyan-500/20",
-    iconGradient: "from-blue-500 to-cyan-500",
-    badgeColor: "bg-blue-500/10 border-blue-500/30",
-    textColor: "text-blue-400",
-  },
-  "Backend Development": {
-    icon: FaServer,
-    gradient: "from-green-500/20 to-emerald-500/20",
-    iconGradient: "from-green-500 to-emerald-500",
-    badgeColor: "bg-green-500/10 border-green-500/30",
-    textColor: "text-green-400",
-  },
-  Backend: {
-    icon: FaServer,
-    gradient: "from-green-500/20 to-emerald-500/20",
-    iconGradient: "from-green-500 to-emerald-500",
-    badgeColor: "bg-green-500/10 border-green-500/30",
-    textColor: "text-green-400",
-  },
-  Frontend: {
-    icon: FaCode,
-    gradient: "from-blue-500/20 to-cyan-500/20",
-    iconGradient: "from-blue-500 to-cyan-500",
-    badgeColor: "bg-blue-500/10 border-blue-500/30",
-    textColor: "text-blue-400",
-  },
-  "Mobile Development": {
-    icon: FaMobileAlt,
-    gradient: "from-purple-500/20 to-pink-500/20",
-    iconGradient: "from-purple-500 to-pink-500",
-    badgeColor: "bg-purple-500/10 border-purple-500/30",
-    textColor: "text-purple-400",
-  },
-  "Data Science": {
-    icon: FaChartBar,
-    gradient: "from-orange-500/20 to-red-500/20",
-    iconGradient: "from-orange-500 to-red-500",
-    badgeColor: "bg-orange-500/10 border-orange-500/30",
-    textColor: "text-orange-400",
-  },
-  Database: {
-    icon: FaDatabase,
-    gradient: "from-teal-500/20 to-cyan-500/20",
-    iconGradient: "from-teal-500 to-cyan-500",
-    badgeColor: "bg-teal-500/10 border-teal-500/30",
-    textColor: "text-teal-400",
-  },
-  "Cloud Computing": {
-    icon: FaCloud,
-    gradient: "from-indigo-500/20 to-blue-500/20",
-    iconGradient: "from-indigo-500 to-blue-500",
-    badgeColor: "bg-indigo-500/10 border-indigo-500/30",
-    textColor: "text-indigo-400",
-  },
-  "Artificial Intelligence": {
-    icon: FaRobot,
-    gradient: "from-pink-500/20 to-rose-500/20",
-    iconGradient: "from-pink-500 to-rose-500",
-    badgeColor: "bg-pink-500/10 border-pink-500/30",
-    textColor: "text-pink-400",
-  },
-  Cybersecurity: {
-    icon: FaShieldAlt,
-    gradient: "from-red-500/20 to-pink-500/20",
-    iconGradient: "from-red-500 to-pink-500",
-    badgeColor: "bg-red-500/10 border-red-500/30",
-    textColor: "text-red-400",
-  },
-  "Game Development": {
-    icon: FaGamepad,
-    gradient: "from-violet-500/20 to-purple-500/20",
-    iconGradient: "from-violet-500 to-purple-500",
-    badgeColor: "bg-violet-500/10 border-violet-500/30",
-    textColor: "text-violet-400",
-  },
-  "UI/UX Design": {
-    icon: FaPaintBrush,
-    gradient: "from-yellow-500/20 to-orange-500/20",
-    iconGradient: "from-yellow-500 to-orange-500",
-    badgeColor: "bg-yellow-500/10 border-yellow-500/30",
-    textColor: "text-yellow-400",
-  },
-};
-
-// Config por defecto si no encuentra la categoría
-const defaultConfig = {
-  icon: FaCode,
-  gradient: "from-gray-500/20 to-slate-500/20",
-  iconGradient: "from-gray-500 to-slate-500",
-  badgeColor: "bg-gray-500/10 border-gray-500/30",
-  textColor: "text-gray-400",
-};
 
 const CoursesPage = () => {
   const { user, token } = useAuth();
   const { handleAddToCart } = useAddToCart();
   const router = useRouter();
+
+  // Función para obtener colores de dificultad
+  const getDifficultyColors = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case 'principiante':
+      case 'beginner':
+      case 'básico':
+        return 'bg-green-500/10 border border-green-500/30 text-green-400';
+      case 'intermedio':
+      case 'intermediate':
+        return 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-400';
+      case 'avanzado':
+      case 'advanced':
+        return 'bg-red-500/10 border border-red-500/30 text-red-400';
+      default:
+        return 'bg-slate-700/50 text-slate-300';
+    }
+  };
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [showMyCoursesOnly, setShowMyCoursesOnly] = useState(false);
@@ -206,7 +107,7 @@ const CoursesPage = () => {
         {/* Grid de cursos */}
         <div className="space-y-8">
           {courses.map((course) => {
-            const config = categoryConfig[course.category] || defaultConfig;
+            const config = categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
             const Icon = config.icon;
 
             // Verificar si este curso pertenece al profesor actual
@@ -280,7 +181,7 @@ const CoursesPage = () => {
                       <span className="bg-slate-700/50 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
                         {course.duration}
                       </span>
-                      <span className="bg-slate-700/50 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
+                      <span className={`text-xs px-3 py-1.5 rounded-lg font-semibold ${getDifficultyColors(course.difficulty)}`}>
                         {course.difficulty}
                       </span>
                       <span

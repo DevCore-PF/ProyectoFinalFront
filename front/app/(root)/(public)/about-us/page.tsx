@@ -6,11 +6,20 @@ import { FaGraduationCap, FaHandsHelping, FaLightbulb } from "react-icons/fa";
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen  text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-light mb-4">
-            Somos DevCore: transformamos la mentalidad, impulsamos Carreras
+          <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6
+          
+          
+          ">
+            <span className="text-font-light font-semibold md:text-lg">
+              Somos DevCore
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-light mb-4">
+            Transformamos la mentalidad. <br />
+            <span className="text-accent-medium">Impulsamo carreras.</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto">
             El código es nuestra herramienta, pero la{" "}

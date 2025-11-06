@@ -472,7 +472,7 @@ const CoursesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a1b3e] to-[#0f1020] p-8 md:p-20">
+    <div className="min-h-screen  p-8 md:p-20">
       <div className="max-w-6xl mx-auto">
         <div className="mb-12">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">

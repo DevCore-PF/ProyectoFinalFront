@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Course } from "@/types/course.types";
 import { useAuth } from "@/context/UserContext";
 import { useAddToCart } from "@/hooks/useAddToCart";
@@ -127,6 +128,7 @@ const defaultConfig = {
 const CoursesPage = () => {
   const { user, token } = useAuth();
   const { handleAddToCart } = useAddToCart();
+  const router = useRouter();
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [showMyCoursesOnly, setShowMyCoursesOnly] = useState(false);
@@ -261,7 +263,10 @@ const CoursesPage = () => {
                             Tu curso
                           </div>
                         )}
-                        <button className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30">
+                        <button 
+                          onClick={() => router.push(`/course/${course.id}`)}
+                          className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer"
+                        >
                           Ver Curso
                         </button>
                       </div>
@@ -293,15 +298,15 @@ const CoursesPage = () => {
                       <div className="flex items-center justify-between">
                         <div className="text-slate-400 text-xs">
                           <span className="text-slate-500">Instructor: </span>
-                          {/* <span className="text-slate-300 font-semibold">
-                            {course.professor.user.name}
-                          </span> */}
+                          <span className="text-slate-300 font-semibold">
+                            {course.professor?.user?.name || 'No disponible'}
+                          </span>
                         </div>
                         <div className="text-slate-400 text-xs">
                           <span className="text-slate-500">Especialidad: </span>
-                          {/* <span className="text-slate-300 font-semibold">
-                            {course.professor.speciality}
-                          </span> */}
+                          <span className="text-slate-300 font-semibold">
+                            {course.professor?.speciality || 'No disponible'}
+                          </span>
                         </div>
                       </div>
                     </div>

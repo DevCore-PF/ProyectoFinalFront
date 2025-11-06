@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
 import CartDropdown from "@/components/CartDropdown";
@@ -9,11 +9,9 @@ import Image from "next/image";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    setIsAuthenticated(!!user?.role);
-  }, [user]);
+  
+  // aca
+  const isAuthenticated = !!user?.role;
 
   return (
     <>
@@ -147,7 +145,14 @@ export default function Navbar() {
               href={"/"}
               className="flex items-center space-x-2 cursor-pointer"
             >
-              <span className="font-bold text-lg">DevCore</span>
+              <Image
+                alt="logoDev"
+                src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+                width={500}
+                height={500}
+                className="h-8 w-8"
+              />
+              <span className="font-bold text-lg font-logo">DevCore</span>
             </Link>
 
             <button

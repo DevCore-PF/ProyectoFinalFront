@@ -1,4 +1,6 @@
+"use client";
 //Next/React
+import { useAuth } from "@/context/UserContext";
 import Link from "next/link";
 
 //Icons
@@ -45,6 +47,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
 };
 
 const OurGoalsPage = () => {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-background2 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
@@ -211,7 +214,7 @@ const OurGoalsPage = () => {
               Conviértete en Suscriptor
             </Link>
             <Link
-              href="/become-a-teacher"
+              href={`${user ? "/teacher-dashboard" : "/register"}`}
               className="border border-font-light/10  bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button transition-colors duration-100"
             >
               Únete como Profesor

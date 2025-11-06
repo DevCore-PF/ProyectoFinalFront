@@ -16,7 +16,6 @@ import {
   removeFromCartService,
 } from "@/services/cart.service";
 import { Course } from "@/types/course.types";
-import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@/types/auth.types";
 
 interface CartContextType {
@@ -26,7 +25,7 @@ interface CartContextType {
   removeFromCart: (courseId: string) => Promise<void>;
   clearCart: () => Promise<void>;
   getTotal: () => number;
-  refreshCart: (token: string | JwtPayload | null) => Promise<void>;
+  refreshCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -91,7 +90,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-    const clearCart = async () => {
+  const clearCart = async () => {
     if (!token) {
       console.log("no hay token");
       return;

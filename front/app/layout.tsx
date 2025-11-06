@@ -4,6 +4,13 @@ import { Kodchasan, Be_Vietnam_Pro, Fira_Code } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/UserContext";
 import { CartProvider } from "@/context/CartContext";
+import { EB_Garamond } from "next/font/google";
+
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], 
+  variable: "--font-eb-garamond", 
+});
 
 const fontFira_Code = Fira_Code({
   variable: "--font-mono",
@@ -36,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${beVietnam.variable} ${kodchasan.variable} ${fontFira_Code.variable}  antialiased`}
+        className={`${beVietnam.variable} ${kodchasan.variable} ${fontFira_Code.variable} ${ebGaramond.variable}  antialiased`}
       >
         <Toaster
           position="top-center"

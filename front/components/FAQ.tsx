@@ -1,7 +1,8 @@
 "use client";
 
 import { faqs } from "@/helpers/moks";
-import React, { useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 
 const FAQ = () => {
@@ -70,9 +71,12 @@ const FAQ = () => {
         </div>
 
         <div className="text-center">
-          <button className="px-6 py-3 cursor-pointer  text-font-light border border-border-light hover:bg-button/30   font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 hover:scale-105 active:scale-95">
+          <Link
+            href="/faq"
+            className="px-6 py-3 cursor-pointer  text-font-light  bg-button/80  hover:bg-button/90   font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 hover:scale-105 active:scale-95"
+          >
             Más preguntas frecuentes
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 "use client";
+import { ValidationMessageProps } from '@/types/professionalValidation.types';
 import React from 'react';
 import { 
   HiCheckCircle, 
@@ -7,11 +8,7 @@ import {
   HiDocumentAdd 
 } from 'react-icons/hi';
 
-interface ValidationMessageProps {
-  status: 'approved' | 'pending' | 'rejected' | 'not-submitted' | undefined;
-  className?: string;
-  onActionClick?: () => void;
-}
+
 
 const ValidationMessage: React.FC<ValidationMessageProps> = ({ 
   status, 

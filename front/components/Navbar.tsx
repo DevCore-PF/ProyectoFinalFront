@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
-import CartDropdown from "@/components/CartDropdown"; 
+import CartDropdown from "@/components/CartDropdown";
+import Image from "next/image";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -19,12 +20,21 @@ export default function Navbar() {
       {!isAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <Link
-              href={"/"}
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <span className="font-bold text-lg">DevCore</span>
-            </Link>
+            <div className="flex gap-2 items-center text-[1.5rem] font-medium  ">
+              <Link
+                href={"/"}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <Image
+                  alt="logoDev"
+                  src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+                  width={500}
+                  height={500}
+                  className="h-8 w-8"
+                />
+              </Link>
+              <span className="hidden lg:block ">DevCore</span>
+            </div>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -179,9 +189,7 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center space-x-1">
-           
-                <CartDropdown />
-            
+              <CartDropdown />
 
               {user?.role && (
                 <Link

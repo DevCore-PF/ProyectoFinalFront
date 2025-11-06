@@ -2,7 +2,7 @@
 
 export interface TeacherValidationStatus {
   isValidated: boolean;
-  status: 'pending' | 'approved' | 'rejected' | 'not-submitted';
+  status: "pending" | "approved" | "rejected" | "not-submitted";
   hasCompletedProfile: boolean;
   canCreateCourses: boolean;
   message: string;
@@ -17,7 +17,7 @@ export interface ValidationContextState {
 
 // Tipos para mensajes de validación
 export interface ValidationMessage {
-  type: 'success' | 'warning' | 'error' | 'info';
+  type: "success" | "warning" | "error" | "info";
   title: string;
   description: string;
   actionButton?: {
@@ -28,8 +28,9 @@ export interface ValidationMessage {
 
 // Props para componentes de validación
 export interface ValidationMessageProps {
-  status: 'pending' | 'approved' | 'rejected' | 'not-submitted';
+  status: "approved" | "pending" | "rejected" | "not-submitted";
   className?: string;
+  onActionClick?: () => void;
 }
 
 export interface ValidationFormProps {
@@ -44,7 +45,7 @@ export interface ProfessionalFormData {
   profession: string;
   speciality: string;
   biography: string;
-  certificates: File[];
+  certificates: (File | null)[];
   professionalLinks: string[];
   agreedToTerms: boolean;
   agreedToInfo: boolean;

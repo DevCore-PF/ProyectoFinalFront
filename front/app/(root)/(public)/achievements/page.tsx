@@ -19,7 +19,7 @@ import {
 
 const AchievementsPage = () => {
   return (
-    <div className="min-h-screen bg-background2 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen bg-background2/50 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-yellow-light mb-3">

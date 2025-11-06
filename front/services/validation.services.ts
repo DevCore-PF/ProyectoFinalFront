@@ -2,7 +2,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 import { ProfessorProfileResponse } from "@/types/api.types";
 import { User } from "@/types/auth.types";
-import { TeacherValidationStatus } from "@/types/validation.types";
+import { TeacherValidationStatus } from "@/types/professionalValidation.types";
 
 /**
  * Obtiene el perfil completo del usuario incluyendo professorProfile
@@ -27,7 +27,10 @@ export const getUserWithProfileService = async (
       );
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log("data de getuserwithprofileserivce", data);
+
+    return data;
   } catch (error) {
     console.error("Error al obtener perfil del usuario:", error);
     throw error;
@@ -166,7 +169,9 @@ export const getProfessorProfileService = async (
 ): Promise<ProfessorProfileResponse | null> => {
   try {
     const user = await getUserWithProfileService(userId, token);
-    return (user.professorProfile && typeof user.professorProfile === "object") ? user.professorProfile : null;
+    return user.professorProfile && typeof user.professorProfile === "object"
+      ? user.professorProfile
+      : null;
   } catch (error) {
     console.error("Error al obtener perfil de profesor:", error);
     throw error;

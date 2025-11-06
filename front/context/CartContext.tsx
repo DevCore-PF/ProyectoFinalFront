@@ -16,6 +16,7 @@ import {
   removeFromCartService,
 } from "@/services/cart.service";
 import { Course } from "@/types/course.types";
+import { JwtPayload } from "@/types/auth.types";
 
 interface CartContextType {
   cart: Course[];
@@ -32,7 +33,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user, token } = useAuth();
+  const { user, token, setToken } = useAuth();
 
   useEffect(() => {
     if (user && token) {
@@ -43,14 +44,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [user, token]);
 
   const refreshCart = async () => {
-    if (!token) return;
+    if (!token) {
+      console.log("no hay token");
+      return;
+    }
 
     setLoading(true);
     try {
       const data = await getCartService(token);
+      console.log("Cart data:", data);
       setCart(data.courses || []);
     } catch (error) {
       console.error("Error al cargar el carrito:", error);
+      setCart([]);
     } finally {
       setLoading(false);
     }
@@ -87,7 +93,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = async () => {
     if (!token) {
       console.log("no hay token");
-
       return;
     }
 
@@ -99,7 +104,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       throw error;
     }
   };
-
   const getTotal = () => {
     return cart.reduce((sum, course) => sum + Number(course.price), 0);
   };

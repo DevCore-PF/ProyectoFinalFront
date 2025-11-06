@@ -61,11 +61,23 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen text-font-light flex flex-col">
-      <header className="p-4">
-        <Link href="/">
-          <span className="font-semibold">LOGO</span>
-        </Link>
+     <header className="p-6">
+        <div className="flex  gap-2 items-center text-[1.5rem] font-medium  ">
+          <Link
+            href={"/"}
+            className="flex items-center space-x-2 cursor-pointer"
+          >
+            <Image
+              alt="logoDev"
+              src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+              width={500}
+              height={500}
+              className="h-9  w-9"
+            />
+          </Link>
+        </div>
       </header>
+
 
       <section className="flex flex-1 justify-center items-center px-4">
         <form

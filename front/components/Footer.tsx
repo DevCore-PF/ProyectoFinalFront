@@ -78,12 +78,7 @@ const Footer = () => {
               <Link href="/courses" className="hover:text-white">
                 Nuestros Cursos
               </Link>
-              <Link
-                href="/testimonials"
-                className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
-              >
-                Testimonios
-              </Link>
+             
               <Link
                 href="/faq"
                 className="text-[#ABA5B6] hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"

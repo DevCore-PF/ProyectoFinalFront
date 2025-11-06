@@ -49,16 +49,21 @@ const GoalCard: React.FC<GoalCardProps> = ({
 const OurGoalsPage = () => {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen bg-background2 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen text-font-light py-16 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-16">
+          <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
+            <span className="text-font-light font-semibold md:text-lg">
+              Nuestros Objetivos
+            </span>
+          </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-font-light mb-3">
-            Nuestros Objetivos de Crecimiento
+            Definimos nuestro futuro con
+            <span className="text-accent-medium"> metas claras.</span>
           </h1>
           <p className="text-base text-gray-300 max-w-4xl mx-auto">
-            Definimos nuestro futuro con metas claras. Estos son los compromisos
-            de DevCore para el próximo año fiscal y cómo planeamos alcanzarlos
-            junto a nuestra comunidad.
+            Estos son los compromisos de DevCore para el próximo año fiscal y
+            cómo planeamos alcanzarlos junto a nuestra comunidad.
           </p>
         </header>
 

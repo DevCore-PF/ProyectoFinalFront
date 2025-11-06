@@ -20,7 +20,7 @@ export default function Navbar() {
       {!isAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
-            <div className="flex gap-2 items-center text-[1.5rem] font-medium  ">
+            <div className="flex gap-2 items-center text-[1.3rem]  font-medium  ">
               <Link
                 href={"/"}
                 className="flex items-center space-x-2 cursor-pointer"
@@ -63,7 +63,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/about-us"
+                href="/company"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -107,7 +107,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/about-us", label: "Sobre nosotros" },
+                { href: "/company", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
                 { href: "/contact-us", label: "Contacto" },
               ].map((link) => (
@@ -173,7 +173,7 @@ export default function Navbar() {
                 Cursos
               </Link>
               <Link
-                href="/about-us"
+                href="/company"
                 className="hover:bg-background hover:text-font-light p-3 rounded-md transition-colors duration-200"
               >
                 Sobre nosotros
@@ -227,7 +227,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
-                { href: "/about-us", label: "Sobre nosotros" },
+                { href: "/company", label: "Sobre nosotros" },
                 { href: "/plans", label: "Planes" },
                 { href: "/contact-us", label: "Contacto" },
               ].map((link) => (

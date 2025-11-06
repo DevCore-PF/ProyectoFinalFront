@@ -19,21 +19,26 @@ import {
 
 const AchievementsPage = () => {
   return (
-    <div className="min-h-screen bg-background2/50 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen   py-16 text-font-light px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-yellow-light mb-3">
-            Nuestro Récord Inicial: Cifras que Impulsan DevCore
+          <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
+            <span className="text-font-light font-semibold md:text-lg">
+              Nuestro Récord
+            </span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold  mb-3">
+            Cifras que impulsan{" "}
+            <span className="text-accent-medium"> DevCore.</span>
           </h1>
           <p className="text-lg text-gray-300 max-w-4xl mx-auto">
             DevCore no es solo una plataforma, es un ecosistema de crecimiento
-            comprobado para educadores y estudiantes. **A pesar de ser nuevos,
-            nuestros logros hablan por sí mismos** y marcan el futuro de la
+            comprobado para educadores y estudiantes. A pesar de ser nuevos,
+            nuestros logros hablan por sí mismos y marcan el futuro de la
             educación en desarrollo.
           </p>
         </header>
 
-        {/* --- */}
 
         <section className="mb-20">
           <h2 className="text-3xl font-bold mb-10 text-center text-gray-100">

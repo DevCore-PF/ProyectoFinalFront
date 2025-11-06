@@ -29,9 +29,12 @@ const ContactPage = () => {
   });
 
   return (
-    <div className="min-h-screen text-white flex flex-col items-center justify-center px-4 py-8">
-      <h1 className="text-4xl md:text-5xl font-bold mb-12">Contáctanos</h1>
-
+    <div className="min-h-screen text-white pb-4 flex flex-col items-center justify-center px-4 ">
+      <div className="inline-flex px-4 py-2  bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-8">
+        <span className="text-font-light font-semibold md:text-lg">
+          Contáctanos
+        </span>
+      </div>
       <div className=" w-full max-w-6xl flex ">
         <div className=" border-border border w-full rounded-l-2xl p-8 shadow-xl">
           <div>

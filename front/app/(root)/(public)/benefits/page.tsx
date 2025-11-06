@@ -49,11 +49,17 @@ const BenefitCard: React.FC<BenefitCardProps> = ({
 const BenefitsPage = () => {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen bg-background2/50 text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen  text-gray-100 py-16 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-16">
+          <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
+            <span className="text-font-light font-semibold md:text-lg">
+              Valor y Beneficios
+            </span>
+          </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-font-light mb-3">
-            Valor y Beneficios de Ser Parte de DevCore
+            Sé parte de 
+            <span className="text-accent-medium"> DevCore.</span>
           </h1>
           <p className="text-base text-gray-300 max-w-4xl mx-auto">
             Descubre por qué DevCore es la mejor plataforma para impulsar tu
@@ -193,13 +199,13 @@ const BenefitsPage = () => {
           <div className="flex justify-center space-x-4">
             <Link
               href="/plans"
-              className="border border-font-light/10 bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button transition-colors duration-100"
+              className="border border-font-light/10 bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button/90 transition-colors duration-250 "
             >
               Quiero Aprender
             </Link>
             <Link
               href={`${user ? "/teacher-dashboard" : "/register"}`}
-              className="border border-font-light/10  bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button transition-colors duration-100"
+              className="border border-font-light/10  bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button/90 transition-colors duration-250"
             >
               Quiero Enseñar
             </Link>

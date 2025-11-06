@@ -27,7 +27,9 @@ const LoginForm = () => {
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
 
   const { setToken, setUser, user } = useAuth();
-  // const searchParams = useSearchParams();
+  const handleAuthError = (error: string) => {
+    toastError(error);
+  };
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -61,7 +63,7 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen text-font-light flex flex-col">
-     <header className="p-6">
+      <header className="p-6">
         <div className="flex  gap-2 items-center text-[1.5rem] font-medium  ">
           <Link
             href={"/"}
@@ -77,7 +79,6 @@ const LoginForm = () => {
           </Link>
         </div>
       </header>
-
 
       <section className="flex flex-1 justify-center items-center px-4">
         <form
@@ -175,8 +176,8 @@ const LoginForm = () => {
               <div className="flex-1 h-px bg-border/80"></div>
             </div>
             <div className="flex gap-4 justify-center ">
-              <GoogleAuthButton />
-              <GitHubAuthButton />
+              <GoogleAuthButton onError={handleAuthError} isLoginPage={true} />
+              <GitHubAuthButton onError={handleAuthError} isLoginPage={true} />
             </div>
 
             <p className="text-center text-gray-400 text-sm mt-2">

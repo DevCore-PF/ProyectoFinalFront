@@ -26,6 +26,7 @@ import {
   FaGraduationCap,
 } from "react-icons/fa";
 import { HiBookOpen, HiCheckCircle } from "react-icons/hi";
+import { HiShoppingCart } from "react-icons/hi";
 export const courses = [
   {
     id: 1,
@@ -219,6 +220,47 @@ export const teacherManagementOptions = [
     icon: <HiEye className="w-4 h-4" />,
     onClick: () => console.log("Ver cursos pendientes"),
   },
+];
+
+export const studentManagementOptions = [
+  {
+    id: "purchase-history",
+    title: "Historial de compras",
+    icon: <HiShoppingCart className="w-4 h-4" />,
+    onClick: () => {
+      console.log("Navegando a hitorial de compras");
+    },
+  },
+  // {
+  //   id: "upload-resources",
+  //   title: "???????",
+  //   icon: <HiUpload className="w-4 h-4" />,
+  //   onClick: () => console.log("Subir recursos"),
+  // },
+  // {
+  //   id: "edit-course",
+  //   title: "Editar curso",
+  //   icon: <HiPencil className="w-4 h-4" />,
+  //   onClick: () => console.log("Editar curso"),
+  // },
+  // {
+  //   id: "statistics",
+  //   title: "Ver estadísticas",
+  //   icon: <HiChartBar className="w-4 h-4" />,
+  //   onClick: () => console.log("Ver estadísticas"),
+  // },
+  // {
+  //   id: "income",
+  //   title: "Consultar ingresos",
+  //   icon: <HiCurrencyDollar className="w-4 h-4" />,
+  //   onClick: () => console.log("Consultar ingresos"),
+  // },
+  // {
+  //   id: "pending-courses",
+  //   title: "Cursos en revisión",
+  //   icon: <HiEye className="w-4 h-4" />,
+  //   onClick: () => console.log("Ver cursos pendientes"),
+  // },
 ];
 
 export const testimonials = [
@@ -460,15 +502,14 @@ export const memberships = [
     popular: false,
   },
 ];
-export   const faqCategories = [
-    { id: "estudiantes", label: "Para Estudiantes", icon: FaGraduationCap },
-    { id: "instructores", label: "Para Instructores", icon: FaChalkboardTeacher },
-    { id: "pagos", label: "Pagos y Reembolsos", icon: FaCreditCard },
-    { id: "cuenta", label: "Cuenta y Perfil", icon: FaUser },
-    { id: "seguridad", label: "Seguridad", icon: FaShieldAlt },
-  ];
+export const faqCategories = [
+  { id: "estudiantes", label: "Para Estudiantes", icon: FaGraduationCap },
+  { id: "instructores", label: "Para Instructores", icon: FaChalkboardTeacher },
+  { id: "pagos", label: "Pagos y Reembolsos", icon: FaCreditCard },
+  { id: "cuenta", label: "Cuenta y Perfil", icon: FaUser },
+  { id: "seguridad", label: "Seguridad", icon: FaShieldAlt },
+];
 
-  
 export const faqsByCategory = {
   estudiantes: [
     {

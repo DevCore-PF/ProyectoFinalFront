@@ -1,16 +1,20 @@
-// src/app/cart/page.tsx
 "use client";
-
-import React, { useEffect } from "react";
+//Next/React
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+//Context
 import { useCart } from "@/context/CartContext";
+//Icons
 import {
   HiShoppingCart,
   HiTrash,
   HiArrowRight,
   HiCreditCard,
 } from "react-icons/hi";
+import { FaInfinity } from "react-icons/fa";
+//Helpers
 import { toastConfirm } from "@/helpers/alerts.helper";
+import Link from "next/link";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart, getTotal, refreshCart } = useCart();
@@ -71,6 +75,28 @@ export default function CartPage() {
           <p className="text-slate-300 text-sm md:text-base">
             {cart.length} {cart.length === 1 ? "curso" : "cursos"} en tu carrito
           </p>
+          {cart.length >= 3 && (
+            <div className="mt-4 p-4 bg-button/20 rounded-lg">
+              <p className="text-slate-200 text-sm md:text-base flex items-center gap-2">
+                <span>
+                  ¿Sabías que con una{" "}
+                  <Link
+                    href="/plans"
+                    className="text-accent-medium hover:text-accent-light hover:underline "
+                  >
+                    membresía
+                  </Link>{" "}
+                  tendrías acceso ilimitado a estos y más de 100 cursos?{" "}
+                  <Link
+                    href="/plans"
+                    className="text-accent-medium hover:text-accent-light hover:underline "
+                  >
+                    Conoce más
+                  </Link>
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

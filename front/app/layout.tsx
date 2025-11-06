@@ -7,9 +7,9 @@ import { CartProvider } from "@/context/CartContext";
 import { EB_Garamond } from "next/font/google";
 
 const ebGaramond = EB_Garamond({
+  variable: "--font-logo",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], 
-  variable: "--font-eb-garamond", 
+  weight: ["400", "500", "600", "700"],
 });
 
 const fontFira_Code = Fira_Code({

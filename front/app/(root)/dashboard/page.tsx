@@ -28,8 +28,8 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen p-10">
       <div className="max-w-7xl mx-auto p-4 md:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-10">
-          <div className="lg:col-span-2">
+        <div className="mb-10" >
+          <div className=" relative z-10">
             <WelcomeCard
               userName={user?.name}
               userEmail={user?.email}
@@ -39,9 +39,9 @@ const DashboardPage = () => {
               currentHours={studentData.currentHours}
             />
           </div>
-          <div>
+          {/* <div>
             <Calendar />
-          </div>
+          </div> */}
         </div>
 
         <div className="mb-4 md:mb-10">

@@ -89,15 +89,7 @@ const TeacherDashboardPage = () => {
           />
         </div>
 
-        {/* Mensaje de validación - Solo mostrar si NO está aprobado */}
-        {/* {validationStatus && !isApproved && (
-          <div className="mb-6">
-            <ValidationMessage
-              status={validationStatus?.status}
-              onActionClick={handleShowValidationForm}
-            />
-          </div>
-        )} */}
+      
         {validationStatus && (
           <div className="mb-6">
             <ValidationMessage

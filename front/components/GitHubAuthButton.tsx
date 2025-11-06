@@ -4,17 +4,31 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const GitHubAuthButton = () => {
+const GitHubAuthButton = ({
+  isLoginPage = false,
+  onError,
+}: {
+  isLoginPage?: boolean;
+  onError?: (error: string) => void;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const handleGitHubAuth = () => {
-    setIsLoading(true);
-    window.location.href = `${API_URL}/auth/github`;
-    setTimeout(() => {
+    try {
+      setIsLoading(true);
+
+      const authEndpoint = isLoginPage
+        ? `${API_URL}/auth/github/login`
+        : `${API_URL}/auth/github/register`;
+
+      window.location.href = authEndpoint;
+    } catch (error) {
       setIsLoading(false);
-    }, 5000);
+      onError?.("Error al iniciar autenticación con Github");
+    }
   };
 
-  const pathname = usePathname();
 
   return (
     <button
@@ -24,10 +38,12 @@ const GitHubAuthButton = () => {
       className="flex items-center cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 justify-center gap-2 bg-slate-900 text-font-light py-2 rounded-md hover:bg-slate-900/40 transition text-xs sm:text-sm px-10 sm:px-4"
     >
       <FaGithub size={30} />
-      <span
-        className={`hidden sm:block text-ellipsis overflow-hidden text-center`}
-      >
-        {pathname === "/login" ? "Ingresa con GitHub" : "Registro con GitHub"}
+      <span className="hidden sm:block text-ellipsis overflow-hidden text-center">
+        {isLoading
+          ? "Redirigiendo..."
+          : isLoginPage
+          ? "Ingresa con GitHub"
+          : "Registro con GitHub"}
       </span>
     </button>
   );

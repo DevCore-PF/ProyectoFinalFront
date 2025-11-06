@@ -41,6 +41,10 @@ const page = () => {
   const handleShowRPass = () => {
     setShowR(!showR);
   };
+  const handleAuthError = (error: string) => {
+    
+    toastError(error);
+  };
 
   const formik = useFormik<RegisterFormData>({
     validationSchema: registerValidations,
@@ -315,8 +319,8 @@ const page = () => {
               <div className="flex-1 h-px bg-border/80"></div>
             </div>
             <div className="flex gap-4 justify-evenly sm:justify-center ">
-              <GoogleAuthButton />
-              <GitHubAuthButton />
+              <GoogleAuthButton onError={handleAuthError} isLoginPage={false}  />
+              <GitHubAuthButton onError={handleAuthError} isLoginPage={false} />
             </div>
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Ya tienes una cuenta?{" "}

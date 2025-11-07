@@ -1,6 +1,6 @@
 "use client";
 //Next/React
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 //Context
 import { useCart } from "@/context/CartContext";
@@ -15,14 +15,17 @@ import { FaInfinity } from "react-icons/fa";
 //Helpers
 import { toastConfirm } from "@/helpers/alerts.helper";
 import Link from "next/link";
+import Loader from "@/components/Loaders/Loader";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, getTotal, refreshCart } = useCart();
-
+  const { cart, removeFromCart, clearCart, getTotal, refreshCart, loading } =
+    useCart();
   useEffect(() => {
     refreshCart();
   }, []);
+  const [loadingClear, setLoadingClear] = useState(false);
   const router = useRouter();
+
   const handleRemove = (id: string) => {
     toastConfirm("Eliminar", async () => {
       try {
@@ -34,8 +37,19 @@ export default function CartPage() {
     });
   };
   const handleClear = () => {
-    toastConfirm("Eliminar carrito", () => clearCart());
+    toastConfirm("Eliminar carrito", async () => {
+      try {
+        setLoadingClear(true);
+        await clearCart();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      } finally {
+        setLoadingClear(false);
+      }
+    });
   };
+  if (loading) return <Loader />;
   if (cart.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
@@ -116,11 +130,11 @@ export default function CartPage() {
                       <h3 className="font-semibold text-lg md:text-xl text-slate-200 mb-2 line-clamp-2">
                         {course.title}
                       </h3>
-                      {/* {course.instructor && (
+                      {course.professor && (
                         <p className="text-slate-400 text-sm mb-3">
-                          Por {course.instructor}
+                          Por {course.professor.user.name}
                         </p>
-                      )} */}
+                      )}
                       <div className="flex items-center gap-4 flex-wrap">
                         <span className="font-bold text-xl md:text-2xl text-slate-200 tabular-nums">
                           ${Number(course.price).toFixed(2)}

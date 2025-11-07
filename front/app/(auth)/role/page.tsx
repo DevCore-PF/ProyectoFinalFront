@@ -3,14 +3,10 @@
 //Icons
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
-import { CiCircleCheck } from "react-icons/ci";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { FaCheck } from "react-icons/fa";
-import { FaCheckDouble } from "react-icons/fa6";
-
 // Next/React
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 //Services
 import { updateRoleService } from "@/services/user.service";
@@ -23,13 +19,13 @@ import { RoleData } from "@/types/forms.types";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
+import Loader from "@/components/Loaders/Loader";
 
 const page = () => {
   const router = useRouter();
   const { token, isLoading, setToken, setUser, user } = useAuth();
   const isSubmittingRole = useRef(false);
-  let rol = "";
-
+  const [loading, setLoading] = useState(false);
   const formik = useFormik<RoleData>({
     initialValues: {
       role: "",
@@ -37,6 +33,7 @@ const page = () => {
     validationSchema: roleValidation,
     onSubmit: async () => {
       try {
+        setLoading(true);
         isSubmittingRole.current = true;
 
         if (token) {
@@ -50,7 +47,7 @@ const page = () => {
 
           if (
             data.userReturn.isEmailVerified ||
-            data.userReturn.isGoogleAccount 
+            data.userReturn.isGoogleAccount
           ) {
             toastSuccess("Login exitoso!");
             // <ModalTerms/>
@@ -71,6 +68,7 @@ const page = () => {
         isSubmittingRole.current = false;
       } finally {
         formik.setSubmitting(false);
+        setLoading(false);
       }
     },
   });
@@ -100,12 +98,8 @@ const page = () => {
     formik.setFieldValue("role", role);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Cargando...</p>
-      </div>
-    );
+  if (loading) {
+    return <Loader />;
   }
 
   if (!token) {

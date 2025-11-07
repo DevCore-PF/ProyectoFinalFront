@@ -3,11 +3,12 @@ import { Course } from "@/types/course.types";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/UserContext";
+import { useState } from "react";
 
 export const useAddToCart = () => {
   const { addToCart, cart } = useCart();
   const { token, isLoading } = useAuth();
-
+  const [loadingAddToCart, setLoadingAddToCart] = useState<string | null>(null);
   const handleAddToCart = async (course: Course) => {
     if (isLoading) {
       toastError("Cargando sesión...");
@@ -24,6 +25,7 @@ export const useAddToCart = () => {
     }
 
     try {
+      setLoadingAddToCart(course.id);
       await addToCart(course);
       toastSuccess("Curso agregado!");
     } catch (error) {
@@ -34,8 +36,10 @@ export const useAddToCart = () => {
         console.error("Error desconocido:", error);
         toastError("Error desconocido");
       }
+    } finally {
+      setLoadingAddToCart(null);
     }
   };
 
-  return { handleAddToCart };
+  return { handleAddToCart, loadingAddToCart };
 };

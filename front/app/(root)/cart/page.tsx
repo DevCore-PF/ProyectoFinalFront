@@ -49,7 +49,13 @@ export default function CartPage() {
       }
     });
   };
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <div className="flex flex-col min-h-screen justify-center items-center">
+        <Loader size="medium" />
+        <p className="text-slate-400">Cargando...</p>
+      </div>
+    );
   if (cart.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">

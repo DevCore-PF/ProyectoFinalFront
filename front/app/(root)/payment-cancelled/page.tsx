@@ -33,18 +33,16 @@ export default function PaymentCancelled() {
           <div className="bg-slate-800/50 border border-slate-700/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
             <div className="flex items-center justify-center gap-3 mb-2">
               <HiShoppingCart className="w-6 h-6 text-slate-400" />
-              <p className="text-slate-300 font-semibold text-sm md:text-base">
-                Tus cursos siguen en el carrito
-              </p>
+              
             </div>
             <p className="text-slate-400 text-sm">
-              Completa tu compra cuando lo desees
+              Realiza otra compra cuando lo desees
             </p>
           </div>
 
           <div className="space-y-3 md:space-y-4">
             <button
-              onClick={() => router.push("/checkout")}
+              onClick={() => router.push("/courses")}
               className="group cursor-pointer w-full bg-button hover:bg-button/80 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
             >
               <HiRefresh className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />

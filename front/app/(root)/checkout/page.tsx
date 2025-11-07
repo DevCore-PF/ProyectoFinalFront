@@ -51,13 +51,7 @@ export default function CheckoutPage() {
     };
     getCart();
   }, []);
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setLoadingCart(false);
-  //   }, 1000);
 
-  //   return () => clearTimeout(timer);
-  // }, [cart]);
   return (
     <div className="min-h-screen p-4 sm:p-8 lg:p-20">
       <div className="max-w-4xl mx-auto">
@@ -91,8 +85,9 @@ export default function CheckoutPage() {
 
               <div className="space-y-3 mb-6">
                 {loadingCart ? (
-                  <div className="py-8">
+                  <div className="flex flex-col justify-center items-center">
                     <Loader size="medium" />
+                    <p className="text-slate-400">Cargando...</p>
                   </div>
                 ) : (
                   <>

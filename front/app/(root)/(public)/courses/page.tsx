@@ -45,7 +45,10 @@ const CoursesPage = () => {
     window.location.reload();
     setLoadingCourses(false);
   };
-  if (loadingCourses) return <Loader />;
+  if (loadingCourses) return(<div className="flex flex-col min-h-screen justify-center items-center">
+      <Loader size="medium" />
+      <p className="text-slate-400">Cargando...</p>
+    </div>)
   return (
     <div className="min-h-screen">
       {courses.length ? (

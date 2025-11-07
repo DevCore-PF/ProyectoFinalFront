@@ -32,7 +32,7 @@ const ModalTerms = () => {
         const updatedUser = await updateCheckboxService(token, user.id);
 
         setUser(updatedUser);
-        toastSuccess("¡Bienvenido a DevCore!");
+        toastSuccess("Bienvenid@ a DevCore!");
       } catch (error) {
         if (error instanceof Error) {
           toastError(error.message);

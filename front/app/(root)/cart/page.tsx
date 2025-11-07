@@ -16,6 +16,9 @@ import { FaInfinity } from "react-icons/fa";
 import { toastConfirm } from "@/helpers/alerts.helper";
 import Link from "next/link";
 import Loader from "@/components/Loaders/Loader";
+import { useRemoveFromCart } from "@/hooks/useRemoveFromCart";
+import { Course } from "@/types/course.types";
+import TinyLoader from "@/components/Loaders/TinyLoader";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart, getTotal, refreshCart, loading } =
@@ -24,18 +27,15 @@ export default function CartPage() {
     refreshCart();
   }, []);
   const [loadingClear, setLoadingClear] = useState(false);
+  const { loadingRemove, handleRemoveFromCart } = useRemoveFromCart();
   const router = useRouter();
 
-  const handleRemove = (id: string) => {
-    toastConfirm("Eliminar", async () => {
-      try {
-        await removeFromCart(id);
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+  const handleRemove = (course: Course) => {
+    toastConfirm("¿Eliminar este curso?", async () => {
+      await handleRemoveFromCart(course);
     });
   };
+
   const handleClear = () => {
     toastConfirm("Eliminar carrito", async () => {
       try {
@@ -115,43 +115,60 @@ export default function CartPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            {cart.map((course, index) => (
-              <div
-                key={course.id}
-                className="group bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600/50 transition-all duration-300 shadow-xl"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-4 flex-1 min-w-0">
-                    <div className="flex items-center justify-center w-12 h-12 shrink-0 rounded-xl bg-button/20 border border-button/30 text-button font-bold text-lg">
-                      {index + 1}
-                    </div>
+            {loadingClear ? (
+              <Loader size="medium" />
+            ) : (
+              <>
+                {cart.map((course, index) => (
+                  <div
+                    key={course.id}
+                    className="group bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600/50 transition-all duration-300 shadow-xl"
+                  >
+                    {loadingRemove === course.id && (
+                      <div className="absolute inset-0 bg-background/80 border border-slate-700/50 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                        <div className="flex flex-col items-center gap-2">
+                          <TinyLoader />
+                          <span className="text-font-light text-sm">
+                            Eliminando...
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg md:text-xl text-slate-200 mb-2 line-clamp-2">
-                        {course.title}
-                      </h3>
-                      {course.professor && (
-                        <p className="text-slate-400 text-sm mb-3">
-                          Por {course.professor.user.name}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 flex-wrap">
-                        <span className="font-bold text-xl md:text-2xl text-slate-200 tabular-nums">
-                          ${Number(course.price).toFixed(2)}
-                        </span>
-                        <button
-                          onClick={() => handleRemove(course.id)}
-                          className="group/btn cursor-pointer flex items-center gap-2 text-red-300 hover:text-red-200 text-sm font-medium transition-colors duration-200"
-                        >
-                          <HiTrash className=" w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-                          <span className="hidden sm:inline">Eliminar</span>
-                        </button>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-4 flex-1 min-w-0">
+                        <div className="flex items-center justify-center w-12 h-12 shrink-0 rounded-xl bg-button/20 border border-button/30 text-button font-bold text-lg">
+                          {index + 1}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-lg md:text-xl text-slate-200 mb-2 line-clamp-2">
+                            {course.title}
+                          </h3>
+                          {course.professor && (
+                            <p className="text-slate-400 text-sm mb-3">
+                              Por {course.professor.user.name}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-4 flex-wrap">
+                            <span className="font-bold text-xl md:text-2xl text-slate-200 tabular-nums">
+                              ${Number(course.price).toFixed(2)}
+                            </span>
+                            <button
+                              onClick={() => handleRemove(course)}
+                              className="group/btn cursor-pointer flex items-center gap-2 text-red-300 hover:text-red-200 text-sm font-medium transition-colors duration-200"
+                            >
+                              <HiTrash className=" w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                              <span className="hidden sm:inline">Eliminar</span>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </div>
 
           <div className="lg:col-span-1">

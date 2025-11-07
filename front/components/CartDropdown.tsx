@@ -73,16 +73,7 @@ export default function CartDropdown() {
       scrollRef.current.scrollBy({ top: scrollAmount, behavior: "smooth" });
     }
   };
-  // const handleRemove = (course: Course) => {
-  //   toastConfirm("Eliminar", async () => {
-  //     try {
-  //       await handleRemoveFromCart(course);
-  //     } catch (error) {
-  //       console.log(error);
-  //       throw error;
-  //     }
-  //   });
-  // };
+
   const handleRemove = (course: Course) => {
     toastConfirm("¿Eliminar este curso?", async () => {
       await handleRemoveFromCart(course);
@@ -163,7 +154,7 @@ export default function CartDropdown() {
                           : "hover:bg-background/80"
                       }`}
                     >
-                      {/* Overlay de loading */}
+                      
                       {loadingRemove === course.id && (
                         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
                           <div className="flex flex-col items-center gap-2">

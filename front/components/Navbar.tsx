@@ -180,7 +180,7 @@ export default function Navbar() {
               )}
               <button
                 onClick={logout}
-                className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200"
+                className="hover:bg-button px-3 py-2 cursor-pointer rounded-md transition-colors duration-200"
               >
                 Log out
               </button>
@@ -236,7 +236,7 @@ export default function Navbar() {
               )}
               <button
                 onClick={logout}
-                className="hover:bg-button p-2 rounded-md transition-colors duration-200"
+                className="hover:bg-button p-2 cursor-pointer rounded-md transition-colors duration-200"
               >
                 Log out
               </button>

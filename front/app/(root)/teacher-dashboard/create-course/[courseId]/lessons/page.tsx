@@ -1,4 +1,3 @@
-
 "use client";
 //Next/React
 import React, { useState, useRef } from "react";
@@ -12,18 +11,11 @@ import { createLessonService } from "@/services/course.services";
 //Helpers
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import { CreateLessonFormData } from "@/types/course.types";
-import {
-  HiArrowLeft,
-  HiX,
-  HiPlay,
-  HiDocument,
-  HiCheckCircle,
-  HiPlus,
-} from "react-icons/hi";
+import { HiArrowLeft, HiX, HiPlay, HiDocument, HiPlus } from "react-icons/hi";
 //Icons
 import { FaExclamation } from "react-icons/fa6";
 import { lessonSchema } from "@/validators/createCourseSchema";
-
+import {  HiCheckCircle } from "react-icons/hi";
 
 interface LessonFormData extends CreateLessonFormData {
   id: string;

@@ -5,11 +5,11 @@ import * as Yup from "yup";
 import { FaExclamation } from "react-icons/fa6";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { useAuth } from "@/context/UserContext";
+import { updateCheckboxService } from "@/services/user.service";
 
 const ModalTerms = () => {
   const { user, setUser, token } = useAuth();
 
-  // Solo mostrar el modal si el usuario está verificado y NO ha aceptado los términos
   if (!user || user.checkBoxTerms || !user.isEmailVerified) {
     return null;
   }
@@ -27,22 +27,9 @@ const ModalTerms = () => {
         .required("Debes aceptar los términos y condiciones para continuar"),
     }),
     onSubmit: async (values) => {
+      if (!token) return toastError("No hay token");
       try {
-        // Aca va el llamado al service
-        const response = await fetch("/api/users/accept-terms", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ checkBoxTerms: values.checkBoxTerms }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Error al actualizar los términos");
-        }
-
-        const updatedUser = await response.json();
+        const updatedUser = await updateCheckboxService(token, user.id);
 
         setUser(updatedUser);
         toastSuccess("¡Bienvenido a DevCore!");
@@ -175,8 +162,8 @@ const ModalTerms = () => {
                 checkBoxTerms: true,
               });
             }}
-            disabled={formik.isSubmitting}
-            className="w-full bg-button/90 hover:bg-button transition rounded-md py-3 font-semibold text-font-light disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={formik.isSubmitting }
+            className="w-full bg-button/90 disabled:hover:bg-button/20 disabled:cursor-not-allowed cursor-pointer hover:bg-button transition rounded-md py-3 font-semibold text-font-light disabled:opacity-50"
           >
             {formik.isSubmitting ? "Procesando..." : "Aceptar y continuar"}
           </button>

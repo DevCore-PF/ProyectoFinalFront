@@ -1,7 +1,11 @@
 // const API_URL = "/api";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Types
-import { RegisterResponse, LoginResponse, UpdateRoleResponse } from "@/types/api.types";
+import {
+  RegisterResponse,
+  LoginResponse,
+  UpdateRoleResponse,
+} from "@/types/api.types";
 import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
 import { UploadImageResponse, UserUpdateResponse } from "@/types/user.types";
 
@@ -32,7 +36,9 @@ export const registerUserService = async (
   }
 };
 
-export const loginUserService = async (values: LoginFormData): Promise<LoginResponse> => {
+export const loginUserService = async (
+  values: LoginFormData
+): Promise<LoginResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
@@ -56,7 +62,10 @@ export const loginUserService = async (values: LoginFormData): Promise<LoginResp
     throw error;
   }
 };
-export const getCurrentUserService = async (token: string, id: number | string) => {
+export const getCurrentUserService = async (
+  token: string,
+  id: number | string
+) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, {
       headers: {
@@ -76,7 +85,32 @@ export const getCurrentUserService = async (token: string, id: number | string) 
   }
 };
 
-export const updateRoleService = async (role: string, token: string): Promise<UpdateRoleResponse> => {
+export const updateCheckboxService = async (token: string, id: string) => {
+  try {
+    const data = await fetch(`${API_URL}/users/checkbox/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "applicaction/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!data.ok) {
+      const error = await data.json();
+      throw new Error(error.message || "Error al seleccionar el rol");
+    }
+    const response = await data.json();
+
+    return response;
+  } catch (error) {
+    console.error("Error al acutalizar checkbox:", error);
+    throw error;
+  }
+};
+
+export const updateRoleService = async (
+  role: string,
+  token: string
+): Promise<UpdateRoleResponse> => {
   try {
     const data = await fetch(`${API_URL}/auth/select-role`, {
       method: "PATCH",
@@ -95,7 +129,7 @@ export const updateRoleService = async (role: string, token: string): Promise<Up
 
     return response;
   } catch (error) {
-    console.error("Error al registrar:", error);
+    console.error("Error al actualizar rol:", error);
     throw error;
   }
 };
@@ -151,19 +185,28 @@ export const uploadProfileImageService = async (
 
     // Si no se encuentra la URL en la respuesta, obtener datos actualizados del usuario
     if (!imageUrl) {
-      console.log("⚠️ No se encontró URL en la respuesta, obteniendo datos actualizados del usuario...");
+      console.log(
+        "⚠️ No se encontró URL en la respuesta, obteniendo datos actualizados del usuario..."
+      );
       try {
         const updatedUserData = await getCurrentUserService(token, userId);
         console.log("✅ Datos actualizados del usuario:", updatedUserData);
-        
+
         // Buscar la imagen en los datos actualizados
-        const updatedUserWithImage = updatedUserData as User & { image?: string; profileImageUrl?: string };
-        imageUrl = updatedUserData.profileImage || 
-                   updatedUserWithImage.image || 
-                   updatedUserWithImage.profileImageUrl;
-        
+        const updatedUserWithImage = updatedUserData as User & {
+          image?: string;
+          profileImageUrl?: string;
+        };
+        imageUrl =
+          updatedUserData.profileImage ||
+          updatedUserWithImage.image ||
+          updatedUserWithImage.profileImageUrl;
+
         if (imageUrl) {
-          console.log("✅ URL de imagen encontrada en datos actualizados:", imageUrl);
+          console.log(
+            "✅ URL de imagen encontrada en datos actualizados:",
+            imageUrl
+          );
         }
       } catch (fetchError) {
         console.error("Error obteniendo datos actualizados:", fetchError);
@@ -172,7 +215,9 @@ export const uploadProfileImageService = async (
 
     // Si aún no tenemos URL, usar un placeholder temporal
     if (!imageUrl) {
-      console.warn("⚠️ No se pudo obtener URL de imagen, usando timestamp como indicador");
+      console.warn(
+        "⚠️ No se pudo obtener URL de imagen, usando timestamp como indicador"
+      );
       // Usar un indicador para que el frontend sepa que debe refrescar los datos del usuario
       imageUrl = `refresh_user_data_${Date.now()}`;
     }
@@ -235,7 +280,7 @@ export const getUserProfileService = async (
 //     if (!response.ok) {
 //       throw new Error("Error obteniendo usuario");
 //     }
-    
+
 //     const userData = await response.json();
 //     // Si el backend devuelve userReturn en lugar de directamente el user
 //     return userData.userReturn || userData;
@@ -244,4 +289,3 @@ export const getUserProfileService = async (
 //     throw error;
 //   }
 // };
-

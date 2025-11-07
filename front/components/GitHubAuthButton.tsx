@@ -26,10 +26,10 @@ const GitHubAuthButton = ({
     } catch (error) {
       setIsLoading(false);
       onError?.("Error al iniciar autenticación con Github");
-    }finally {
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
+    }
   };
-
 
   return (
     <button

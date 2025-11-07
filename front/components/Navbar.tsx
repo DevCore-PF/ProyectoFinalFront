@@ -15,7 +15,7 @@ export default function Navbar() {
     <>
       {!isAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm font-bold">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm  ">
             <div className="flex gap-2 items-center text-[1.3rem]  font-medium  ">
               <Link
                 href={"/"}
@@ -84,7 +84,7 @@ export default function Navbar() {
               menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex flex-col items-center space-y-3 pb-4 text-sm font-bold border-t border-gray-200 pt-4">
+            <div className="flex flex-col items-center space-y-3 pb-4 text-sm   border-t border-gray-200 pt-4">
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
@@ -124,7 +124,7 @@ export default function Navbar() {
       ) : (
         // Navbar autenticada
         <nav className="w-full bg-navbar shadow-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-2 text-sm font-bold">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-2 text-sm  ">
             <Link href="/" className="flex items-center space-x-2">
               <Image
                 alt="logoDev"
@@ -133,7 +133,7 @@ export default function Navbar() {
                 height={500}
                 className="h-8 w-8"
               />
-              <span className="font-bold text-lg font-logo">DevCore</span>
+              <span className="  text-lg font-logo">DevCore</span>
             </Link>
 
             {/* Botón hamburguesa */}
@@ -196,7 +196,7 @@ export default function Navbar() {
               menuOpen ? "max-h-105 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex flex-col items-center space-y-3 pb-4 text-sm font-bold border-t border-gray-200 pt-4">
+            <div className="flex flex-col items-center space-y-3 pb-4 text-sm   border-t border-gray-200 pt-4">
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },

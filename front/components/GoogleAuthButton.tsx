@@ -23,6 +23,8 @@ const GoogleAuthButton = ({
     } catch (error) {
       setIsLoading(false);
       onError?.("Error al iniciar autenticación con Google");
+    } finally {
+      setIsLoading(false);
     }
   };
 

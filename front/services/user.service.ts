@@ -13,7 +13,7 @@ export const registerUserService = async (
   values: RegisterFormData
 ): Promise<RegisterResponse> => {
   try {
-    const data = await fetch(`${API_URL}/auth/register`, {
+    const data = await fetch(`${API_URL}auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

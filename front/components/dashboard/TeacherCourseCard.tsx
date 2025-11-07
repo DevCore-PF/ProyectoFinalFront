@@ -1,20 +1,23 @@
-import { HiEye, HiEyeOff, HiStar, HiUsers } from "react-icons/hi";
-import { Course } from "@/types/course.types";
+import { HiEye, HiEyeOff, HiBookOpen, HiClock, HiTag, HiAcademicCap } from "react-icons/hi";
+import { Course, CourseCategory } from "@/types/course.types";
+import { categoryConfig } from "@/helpers/course.helpers";
+import { useRouter } from "next/navigation";
 
 interface TeacherCourseCardProps {
   course: Course;
-  viewDetails: (id: string) => void;
+  viewDetails?: (id: string) => void; 
 }
 
-const TeacherCourseCard = ({ course, viewDetails }: TeacherCourseCardProps) => {
+const TeacherCourseCard = ({ course }: TeacherCourseCardProps) => {
+  const router = useRouter();
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PUBLICADO":
-        return "text-green-600 border-green-500/30";
+        return "bg-green-500/10 text-green-400 border-green-500/30";
       case "EN REVISION":
-        return "text-yellow-600 border-yellow-500/30";
+        return "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
       default:
-        return "bg-slate-500/20 text-slate-400 border-slate-500/30";
+        return "bg-slate-500/10 text-slate-400 border-slate-500/30";
     }
   };
 
@@ -51,107 +54,113 @@ const TeacherCourseCard = ({ course, viewDetails }: TeacherCourseCardProps) => {
     }
   };
 
-  // Mock data for demo - valores determinísticos basados en el ID del curso
-  const seedFromId = course.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const mockStudents = (seedFromId % 50) + 1;
-  const mockRating = ((seedFromId % 20) / 10 + 3).toFixed(1); // Entre 3.0 y 5.0
+  // Función para obtener colores de dificultad
+  const getDifficultyColors = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case 'principiante':
+      case 'beginner':
+      case 'básico':
+        return 'bg-green-400/10 border border-green-400/30 text-green-400';
+      case 'intermedio':
+      case 'intermediate':
+        return 'bg-yellow-400/10 border border-yellow-400/30 text-yellow-400';
+      case 'avanzado':
+      case 'advanced':
+        return 'bg-red-400/10 border border-red-400/30 text-red-400';
+      default:
+        return 'bg-slate-700/50 text-slate-300';
+    }
+  };
+
+  // Obtener configuración de categoría para iconos y colores
+  const config = categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
+  const Icon = config.icon;
+  
   const isPublic = course.status === "PUBLICADO";
+  const lessonsCount = course.lessons?.length || 0;
 
   return (
-    <div className="group bg-slate-900/50 backdrop-blur-xs border border-slate-700/30 rounded-xl p-4 sm:p-5">
-      <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
-        <div className="flex-1">
-          <h3 className="text-base sm:text-lg font-bold text-slate-200 mb-2">
-            {course.title || "Título no disponible"}
-          </h3>
-
-          <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-400">
-            <div className="flex items-center gap-1.5">
-              <HiUsers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="font-medium">{mockStudents} alumnos</span>
-            </div>
-            | <span className="hidden xs:inline">|</span>
-            <div className="flex items-center gap-1.5">
-              <HiStar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
-              <span className="font-medium">{mockRating}</span>
-            </div>
-            |<span className="hidden xs:inline">|</span>
-            <div className="flex gap-1">
-              <span className="font-bold text-slate-400">
-                ${formatPrice(course.price)}
-              </span>
-            </div>
+    <div className="group bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#3f4273]/30">
+      {/* Header con ícono y estado */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className={`bg-gradient-to-br ${config.iconGradient} p-3 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center`}>
+            <Icon className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">
+              {course.title || "Título no disponible"}
+            </h3>
+            <p className="text-slate-300 text-sm line-clamp-2">
+              {course.description || "Sin descripción"}
+            </p>
           </div>
         </div>
-
-        <div
-          className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs flex justify-center items-center border whitespace-nowrap self-start ${getStatusColor(
-            course.status
-          )}`}
-        >
+        <div className={`px-3 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap ${getStatusColor(course.status)}`}>
           {getStatusDisplay(course.status)}
         </div>
       </div>
 
-      <div className=" flex justify-between items-center gap-3 sm:gap-4 mb-4 text-xs sm:text-sm pb-4 border-b border-slate-700/30">
-        <div>
-          <span className="text-slate-500 text-xs font-medium block mb-1">
-            Creado:
-          </span>
-          <p className=" text-slate-300 font-semibold">{formatDate(course.createdAt)}</p>
+      {/* Tags informativos */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex items-center gap-2 bg-slate-700/50 text-slate-300 px-3 py-1.5 rounded-lg text-xs">
+          <HiClock className="w-3 h-3" />
+          <span className="font-medium">{course.duration || "No especificado"}</span>
         </div>
-        <div>
-          <span className="text-slate-500 text-xs font-medium block mb-1">
-            Actualizado:
-          </span>
-          <p className="text-slate-300 font-semibold">{formatDate(course.updatedAt)}</p>
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${getDifficultyColors(course.difficulty)}`}>
+          <HiAcademicCap className="w-3 h-3" />
+          <span className="font-medium">{course.difficulty || "No especificado"}</span>
+        </div>
+        <div className={`flex items-center gap-2 ${config.badgeColor} border px-3 py-1.5 rounded-lg text-xs font-semibold`}>
+          <HiTag className="w-3 h-3" />
+          <span className={config.textColor}>{course.category || "Sin categoría"}</span>
+        </div>
+        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-lg text-xs font-semibold">
+          <span>${formatPrice(course.price)}</span>
         </div>
       </div>
 
-      <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 mb-4">
-        <div className="text-xs sm:text-sm">
-          <span className="text-slate-500 font-medium">Duración: </span>
-          <span className="text-slate-300 font-bold">
-            {course.duration || "No especificado"}
+      {/* Información de lecciones y estado */}
+      <div className="flex items-center justify-between mb-4 p-3 bg-slate-800/30 rounded-lg">
+        <div className="flex items-center gap-2">
+          <HiBookOpen className="w-4 h-4 text-blue-400" />
+          <span className="text-sm font-medium text-slate-300">
+            {lessonsCount} {lessonsCount === 1 ? 'lección' : 'lecciones'}
           </span>
         </div>
-
-        <div className="flex items-center gap-2 text-xs sm:text-sm">
+        <div className="flex items-center gap-2 text-sm">
           {isPublic ? (
             <>
-              <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
-              <span className="text-green-600">Público</span>
+              <HiEye className="w-4 h-4 text-green-400" />
+              <span className="text-green-400 font-medium">Visible</span>
             </>
           ) : (
             <>
-              <HiEyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
-              <span className="text-slate-400">En revisión</span>
+              <HiEyeOff className="w-4 h-4 text-yellow-400" />
+              <span className="text-yellow-400 font-medium">En proceso</span>
             </>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col xs:flex-row gap-2 mb-4">
-        <div className="text-xs sm:text-sm flex-1">
-          <span className="text-slate-500 font-medium">Categoría: </span>
-          <span className="text-slate-300 font-semibold">{course.category || "Sin categoría"}</span>
+      {/* Fechas */}
+      <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
+        <div className="bg-slate-800/30 rounded-lg p-3">
+          <span className="text-slate-500 font-medium block mb-1">Creado:</span>
+          <p className="text-slate-300 font-semibold">{formatDate(course.createdAt)}</p>
         </div>
-        <div className="text-xs sm:text-sm">
-          <span className="text-slate-500 font-medium">Dificultad: </span>
-          <span className="text-slate-300 font-semibold">{course.difficulty || "No especificado"}</span>
+        <div className="bg-slate-800/30 rounded-lg p-3">
+          <span className="text-slate-500 font-medium block mb-1">Actualizado:</span>
+          <p className="text-slate-300 font-semibold">{formatDate(course.updatedAt)}</p>
         </div>
       </div>
 
-      <div className="text-xs sm:text-sm mb-4">
-        <span className="text-slate-500 font-medium">Lecciones: </span>
-        <span className="text-slate-300 font-semibold">{course.lessons?.length || 0}</span>
-      </div>
-
+      {/* Botón de acción */}
       <button
-        onClick={() => viewDetails(course.id)}
-        className="w-full bg-button/30 hover:bg-button/40 active:bg-button/50 cursor-pointer text-purple-100 py-2.5 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40"
+        onClick={() => router.push(`/course/${course.id}`)}
+        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-white py-3 rounded-lg font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
       >
-        Ver detalles
+        Ver detalles del curso
       </button>
     </div>
   );

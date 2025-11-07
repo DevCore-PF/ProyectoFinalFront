@@ -3,7 +3,16 @@ import { UserUpdateResponse } from "@/types/user.types";
 
 export const updateUserInSession = (updatedUser: UserUpdateResponse): void => {
   try {
-    sessionStorage.setItem("user", JSON.stringify(updatedUser));
+    // Normalizar la imagen de perfil antes de guardar
+    const userWithImage = updatedUser as UserUpdateResponse & { image?: string };
+    const normalizedUser = {
+      ...updatedUser,
+      profileImage: updatedUser.profileImage || userWithImage.image
+    };
+    
+    sessionStorage.setItem("user", JSON.stringify(normalizedUser));
+    sessionStorage.setItem("userTimestamp", Date.now().toString());
+    console.log("✅ Usuario actualizado en sessionStorage con imagen normalizada");
   } catch (error) {
     console.error("Error al actualizar SessionStorage:", error);
   }
@@ -41,39 +50,3 @@ export const clearSession = (): void => {
     console.error("Error al limpiar sesión:", error);
   }
 };
-// ////////////////////////////////////////////////////////////
-
-// export const saveUserToSession = (user): void => {
-//   try {
-//     sessionStorage.setItem("user", JSON.stringify(user));
-//   } catch (error) {
-//     console.error("Error al guardar usuario en sesión:", error);
-//   }
-// };
-
-// export const getUserFromSession = () => {
-//   try {
-//     const userData = sessionStorage.getItem("user");
-//     return userData ? JSON.parse(userData) : null;
-//   } catch (error) {
-//     console.error("Error al obtener usuario de sesión:", error);
-//     return null;
-//   }
-// };
-
-// export const saveTokenToSession = (token: string): void => {
-//   try {
-//     sessionStorage.setItem("token", token);
-//   } catch (error) {
-//     console.error("Error al guardar token:", error);
-//   }
-// };
-
-// export const getTokenFromSession = (): string | null => {
-//   try {
-//     return sessionStorage.getItem("token");
-//   } catch (error) {
-//     console.error("Error al obtener token:", error);
-//     return null;
-//   }
-// };

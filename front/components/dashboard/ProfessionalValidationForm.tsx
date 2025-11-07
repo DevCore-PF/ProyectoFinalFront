@@ -412,8 +412,8 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </span>
             </label>
             {formik.errors.agreedToInfo && formik.touched.agreedToInfo && (
-              <div className="flex justify-center">
-                <p className="text-amber-300 text-sm flex items-center">
+              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                <p className="text-amber-300 text-sm flex items-center gap-2">
                   <FaExclamation className="shrink-0" size={16} />
                   <span>{formik.errors.agreedToInfo}</span>
                 </p>
@@ -469,8 +469,8 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </span>
             </label>
             {formik.errors.agreedToTerms && formik.touched.agreedToTerms && (
-              <div className="flex justify-center">
-                <p className="text-amber-300 text-sm flex items-center">
+              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                <p className="text-amber-300 text-sm flex items-center gap-2">
                   <FaExclamation className="shrink-0" size={16} />
                   <span>{formik.errors.agreedToTerms}</span>
                 </p>
@@ -522,8 +522,8 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
             </label>
             {formik.errors.agreedToAproveed &&
               formik.touched.agreedToAproveed && (
-                <div className="flex justify-center">
-                  <p className="text-amber-300 text-sm flex items-center">
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
                     <FaExclamation className="shrink-0" size={16} />
                     <span>{formik.errors.agreedToAproveed}</span>
                   </p>

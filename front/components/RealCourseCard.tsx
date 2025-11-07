@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Course, CourseCategory, CourseDifficulty, CourseType } from '@/types/course.types';
 import { categoryConfig } from '@/helpers/course.helpers';
 import { useAddToCart } from '@/hooks/useAddToCart';
@@ -8,6 +9,7 @@ interface RealCourseCardProps {
 }
 
 const RealCourseCard: React.FC<RealCourseCardProps> = ({ course }) => {
+  const router = useRouter();
   // Obtener configuración de categoría
   const config = categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
   const Icon = config.icon;
@@ -57,7 +59,10 @@ const RealCourseCard: React.FC<RealCourseCardProps> = ({ course }) => {
               >
                 Agregar a carrito
               </button>
-                <button className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30">
+                <button 
+                  onClick={() => router.push(`/course/${course.id}`)}
+                  className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30"
+                >
                   Ver Curso
                 </button>
               </div>

@@ -38,7 +38,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (userData) {
       try {
         const parsedUser = JSON.parse(userData);
-        setUserState(parsedUser);
+        
+        // Normalizar la propiedad de imagen de perfil
+        // Google OAuth a veces devuelve 'image' en lugar de 'profileImage'
+        const parsedUserWithImage = parsedUser as User & { image?: string };
+        const normalizedUser = {
+          ...parsedUser,
+          profileImage: parsedUser.profileImage || parsedUserWithImage.image
+        };
+        
+        setUserState(normalizedUser);
         
         // Si los datos del usuario son muy antiguos (más de 30 segundos), marcar para refrescar
         const now = Date.now();
@@ -72,13 +81,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const freshUserData = await getCurrentUserService(token, user.id);
           console.log("✅ Datos frescos obtenidos:", freshUserData);
           
-           const mergedUserData = {
+          // Normalizar la propiedad de imagen de perfil
+          // Google OAuth a veces devuelve 'image' en lugar de 'profileImage'
+          const freshUserWithImage = freshUserData as User & { image?: string };
+          const normalizedUserData = {
             ...freshUserData,
             hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
+            // Normalizar profileImage desde image si es necesario
+            profileImage: freshUserData.profileImage || freshUserWithImage.image || user.profileImage
           };
           
-           setUserState(mergedUserData);
-          sessionStorage.setItem("user", JSON.stringify(mergedUserData));
+          setUserState(normalizedUserData);
+          sessionStorage.setItem("user", JSON.stringify(normalizedUserData));
           sessionStorage.setItem("userTimestamp", now.toString());
         } catch (error) {
             if (error instanceof Error && (error.message.includes("401") || error.message.includes("403"))) {
@@ -107,13 +121,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const setUser = (newUser: User | null) => {
     if (newUser) {
-      sessionStorage.setItem("user", JSON.stringify(newUser));
+      // Normalizar la propiedad de imagen de perfil
+      // Google OAuth a veces devuelve 'image' en lugar de 'profileImage'
+      const userWithImage = newUser as User & { image?: string };
+      const normalizedUser = {
+        ...newUser,
+        profileImage: newUser.profileImage || userWithImage.image
+      };
+      
+      sessionStorage.setItem("user", JSON.stringify(normalizedUser));
       sessionStorage.setItem("userTimestamp", Date.now().toString()); 
+      setUserState(normalizedUser);
     } else {
       sessionStorage.removeItem("user");
       sessionStorage.removeItem("userTimestamp");
+      setUserState(null);
     }
-    setUserState(newUser);
   };
   const refreshUser = async () => {
     if (!token || !user?.id) {
@@ -122,8 +145,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
+      console.log("🔄 Refrescando datos del usuario...");
       const freshUserData = await getCurrentUserService(token, user.id);
-      setUser(freshUserData);
+      console.log("✅ Datos frescos obtenidos:", freshUserData);
+      
+      // Normalizar la imagen de perfil
+      const freshUserWithImage = freshUserData as User & { image?: string; profileImageUrl?: string };
+      const normalizedUserData = {
+        ...freshUserData,
+        hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
+        profileImage: freshUserData.profileImage || freshUserWithImage.image || user.profileImage
+      };
+      
+      // Usar setUser que ya maneja la normalización y sessionStorage
+      setUser(normalizedUserData);
+      console.log("✅ Usuario actualizado en contexto y sessionStorage");
     } catch (error) {
       console.error("Error al refrescar usuario:", error);
       throw error;

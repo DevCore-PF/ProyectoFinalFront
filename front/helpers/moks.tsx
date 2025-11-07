@@ -12,11 +12,9 @@ import {
 import { GrMysql } from "react-icons/gr";
 import {
   HiPlus,
-  HiUpload,
   HiPencil,
   HiChartBar,
   HiCurrencyDollar,
-  HiEye,
 } from "react-icons/hi";
 import {
   FaUser,
@@ -191,12 +189,6 @@ export const teacherManagementOptions = [
     },
   },
   {
-    id: "upload-resources",
-    title: "Subir recursos",
-    icon: <HiUpload className="w-4 h-4" />,
-    onClick: () => console.log("Subir recursos"),
-  },
-  {
     id: "edit-course",
     title: "Editar curso",
     icon: <HiPencil className="w-4 h-4" />,
@@ -213,12 +205,6 @@ export const teacherManagementOptions = [
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
     onClick: () => console.log("Consultar ingresos"),
-  },
-  {
-    id: "pending-courses",
-    title: "Cursos en revisión",
-    icon: <HiEye className="w-4 h-4" />,
-    onClick: () => console.log("Ver cursos pendientes"),
   },
 ];
 
@@ -657,3 +643,20 @@ export const faqsByCategory = {
     },
   ],
 };
+
+export   const getDifficultyColors = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case "principiante":
+      case "beginner":
+      case "básico":
+        return "bg-green-400/10 border border-green-400/30 text-green-400";
+      case "intermedio":
+      case "intermediate":
+        return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
+      case "avanzado":
+      case "advanced":
+        return "bg-red-400/10 border border-red-400/30 text-red-400";
+      default:
+        return "bg-slate-700/50 text-slate-300";
+    }
+  };

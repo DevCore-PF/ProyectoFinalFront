@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,6 +6,7 @@ import { toastError } from "@/helpers/alerts.helper";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@/types/auth.types";
 import { getCurrentUserService } from "@/services/user.service";
+import Loader from "./Loaders/Loader";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -55,11 +55,8 @@ export default function AuthCallback() {
   }, [searchParams, setToken, setUser, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-        <p className="text-gray-600">Procesando autenticación...</p>
-      </div>
+    <div>
+      <Loader />
     </div>
   );
 }

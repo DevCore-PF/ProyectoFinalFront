@@ -14,6 +14,9 @@ import {
 } from "react-icons/hi";
 import { toastConfirm } from "@/helpers/alerts.helper";
 import { usePathname } from "next/navigation";
+import { useRemoveFromCart } from "@/hooks/useRemoveFromCart";
+import { Course } from "@/types/course.types";
+import TinyLoader from "./Loaders/TinyLoader";
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [canScrollUp, setCanScrollUp] = useState(false);
@@ -21,9 +24,9 @@ export default function CartDropdown() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { cart, getTotal, removeFromCart } = useCart();
+  const { cart, getTotal } = useCart();
   const pathname = usePathname();
-
+  const { loadingRemove, handleRemoveFromCart } = useRemoveFromCart();
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
@@ -70,14 +73,10 @@ export default function CartDropdown() {
       scrollRef.current.scrollBy({ top: scrollAmount, behavior: "smooth" });
     }
   };
-  const handleRemove = (id: string) => {
-    toastConfirm("Eliminar", async () => {
-      try {
-        await removeFromCart(id);
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+
+  const handleRemove = (course: Course) => {
+    toastConfirm("¿Eliminar este curso?", async () => {
+      await handleRemoveFromCart(course);
     });
   };
   return (
@@ -99,8 +98,8 @@ export default function CartDropdown() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#4e518e] backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-2xl z-50 max-h-[500px] flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-slate-200/50 bg-slate-800/50">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-background2 backdrop-blur-lg border border-slate-200/20 rounded-xl shadow-2xl z-50 max-h-[500px] flex flex-col overflow-hidden">
+          <div className="flex items-center justify-between p-4 border-b border-slate-200/40 bg-slate-900/80">
             <div className="flex items-center gap-2">
               <HiShoppingCart className="w-5 h-5 text-accent-light" />
               <h3 className="font-bold text-lg text-slate-200">Mi Carrito</h3>
@@ -140,7 +139,7 @@ export default function CartDropdown() {
               <div className="relative flex-1 flex">
                 <div
                   ref={scrollRef}
-                  className="overflow-y-auto p-4 space-y-3 max-h-[300px] flex-1 scrollbar-hide"
+                  className="overflow-y-auto p-3 space-y-3 max-h-[300px] flex-1 scrollbar-hide"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
@@ -149,15 +148,35 @@ export default function CartDropdown() {
                   {cart.map((course) => (
                     <div
                       key={course.id}
-                      className="group  flex gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800/70 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-200"
+                      className={`group relative flex gap-3 p-3 bg-background rounded-lg transition-all duration-200 ${
+                        loadingRemove === course.id
+                          ? "opacity-60 pointer-events-none"
+                          : "hover:bg-background/80"
+                      }`}
                     >
+                      
+                      {loadingRemove === course.id && (
+                        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                          <div className="flex flex-col items-center gap-2">
+                            <TinyLoader />
+                            <span className="text-font-light text-sm">
+                              Eliminando...
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between">
                           <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-slate-200 group-hover:text-white transition-colors duration-200">
                             {course.title}
                           </h4>
-                          <button onClick={() => handleRemove(course.id)}>
-                            <HiX className=" w-4 h-4 cursor-pointer hover:scale-110  text-slate-400 hover:text-slate-200 transition-all duration-100" />
+                          <button
+                            disabled={loadingRemove === course.id}
+                            onClick={() => handleRemove(course)}
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <HiX className="w-5.5 h-5.5 cursor-pointer hover:scale-110 hover:bg-background2 p-1 rounded-2xl text-slate-400 hover:text-slate-200 transition-all duration-100" />
                           </button>
                         </div>
 
@@ -180,41 +199,44 @@ export default function CartDropdown() {
                     </div>
                   ))}
                 </div>
+                {cart.length > 2 && (
+                  <div className="flex flex-col justify-center gap-2 pr-2">
+                    <button
+                      onMouseDown={() => startScrolling("up")}
+                      onMouseUp={stopScrolling}
+                      onMouseLeave={stopScrolling}
+                      onClick={() => handleSingleScroll("up")}
+                      disabled={!canScrollUp}
+                      className={`p-2 justify-center flex rounded-lg transition-all duration-200 ${
+                        canScrollUp
+                          ? "bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-font-light cursor-pointer"
+                          : "bg-slate-800/20 text-slate-600 cursor-not-allowed opacity-40"
+                      }`}
+                    >
+                      <HiChevronUp className="w-4 h-4" />
+                    </button>
 
-                <div className="flex flex-col justify-center gap-2 pr-2">
-                  <button
-                    onMouseDown={() => startScrolling("up")}
-                    onMouseUp={stopScrolling}
-                    onMouseLeave={stopScrolling}
-                    onClick={() => handleSingleScroll("up")}
-                    disabled={!canScrollUp}
-                    className={`p-2 justify-center flex rounded-lg transition-all duration-200 ${
-                      canScrollUp
-                        ? "bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-font-light cursor-pointer"
-                        : "bg-slate-800/20 text-slate-600 cursor-not-allowed opacity-40"
-                    }`}
-                  >
-                    <HiChevronUp className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onMouseDown={() => startScrolling("down")}
-                    onMouseUp={stopScrolling}
-                    onMouseLeave={stopScrolling}
-                    onClick={() => handleSingleScroll("down")}
-                    disabled={!canScrollDown}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      canScrollDown
-                        ? "bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-font-light cursor-pointer"
-                        : "bg-slate-800/20 text-slate-600 cursor-not-allowed opacity-40"
-                    }`}
-                  >
-                    <HiChevronDown className="w-4 h-4" />
-                  </button>
-                </div>
+                    <button
+                      onMouseDown={() => startScrolling("down")}
+                      onMouseUp={stopScrolling}
+                      onMouseLeave={stopScrolling}
+                      onClick={() => handleSingleScroll("down")}
+                      disabled={!canScrollDown}
+                      className={`p-2 rounded-lg transition-all duration-200 ${
+                        canScrollDown
+                          ? "bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-font-light cursor-pointer"
+                          : "bg-slate-800/20 text-slate-600 cursor-not-allowed opacity-40"
+                      }`}
+                    >
+                      <HiChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                {/*
+                 */}
               </div>
 
-              <div className="border-t border-slate-200/50 p-4 space-y-3 bg-slate-800/30">
+              <div className="border-t border-slate-200/50 p-4 space-y-3 bg-slate-900/80">
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-slate-300">Total:</span>
                   <span className="font-bold text-xl text-accent-light tabular-nums">

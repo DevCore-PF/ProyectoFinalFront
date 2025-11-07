@@ -1,6 +1,5 @@
 "use client";
 
-import Calendar from "@/components/dashboard/Calendar";
 import ProgressCard from "@/components/dashboard/ProgressCard";
 import QuickAccessCard from "@/components/dashboard/QuickAccessCard";
 import WelcomeCard from "@/components/dashboard/StudentWelcomeCard";
@@ -12,11 +11,14 @@ import {
   studentData,
 } from "@/helpers/moks";
 import { useAuth } from "@/context/UserContext";
-import { useEffect } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getAllCoursesService } from "@/services/course.services";
+import Loader from "@/components/Loaders/Loader";
 
 const DashboardPage = () => {
   const { user, isLoading } = useAuth();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (!isLoading) {
@@ -25,10 +27,25 @@ const DashboardPage = () => {
       }
     }
   }, [user, isLoading, router]);
+  useEffect(() => {
+    const fetchUserCourses = async () => {
+      try {
+        setLoading(true);
+        await getAllCoursesService();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserCourses();
+  }, []);
+  if (loading) return <Loader />;
   return (
     <div className="min-h-screen p-10">
       <div className="max-w-7xl mx-auto p-4 md:p-6">
-        <div className="mb-10" >
+        <div className="mb-10">
           <div className=" relative z-10">
             <WelcomeCard
               userName={user?.name}
@@ -39,9 +56,6 @@ const DashboardPage = () => {
               currentHours={studentData.currentHours}
             />
           </div>
-          {/* <div>
-            <Calendar />
-          </div> */}
         </div>
 
         <div className="mb-4 md:mb-10">

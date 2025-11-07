@@ -16,6 +16,7 @@ export const getAllCoursesService = async (): Promise<Course[]> => {
     }
 
     const response = await data.json();
+    console.log("esta e smi data de todos los cursos: ", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos: ", error);
@@ -27,10 +28,8 @@ export const getTeacherCoursesService = async (
   professorId: string
 ): Promise<Course[]> => {
   try {
-    // Obtener todos los cursos
     const allCourses = await getAllCoursesService();
 
-    // Filtrar solo los cursos del profesor
     const teacherCourses = allCourses.filter(
       (course) => course.professor?.id === professorId
     );

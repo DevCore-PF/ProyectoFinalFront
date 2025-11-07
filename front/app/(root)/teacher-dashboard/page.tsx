@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useTeacherValidation } from "@/hooks/useTeacherValidation";
 import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
+import Loader from "@/components/Loaders/Loader";
 
 const TeacherDashboardPage = () => {
   const { user, isLoading } = useAuth();
@@ -69,11 +70,7 @@ const TeacherDashboardPage = () => {
   };
 
   if (isLoading || validationLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400">Cargando...</div>
-      </div>
-    );
+    return <Loader />;
   }
   console.log("este es paroved: ", isApproved);
   console.log("este es status", validationStatus);
@@ -89,7 +86,6 @@ const TeacherDashboardPage = () => {
           />
         </div>
 
-      
         {validationStatus && (
           <div className="mb-6">
             <ValidationMessage

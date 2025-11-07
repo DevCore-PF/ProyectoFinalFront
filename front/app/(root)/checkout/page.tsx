@@ -1,30 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/UserContext";
 import { createCheckoutSession } from "@/services/payments.service";
 import { HiShoppingCart, HiArrowLeft, HiCheckCircle } from "react-icons/hi";
 import { useCart } from "@/context/CartContext";
 import { courses } from "../../../helpers/moks";
+import Loader from "@/components/Loaders/Loader";
 
 export default function CheckoutPage() {
   const { token } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { cart, clearCart ,getTotal} = useCart();
-
+  const { cart, clearCart, getTotal, refreshCart } = useCart();
+  const [loadingCart, setLoadingCart] = useState(false);
   const handleCheckout = async () => {
     if (!token) {
       setError("No hay sesión activa");
       return;
     }
 
-    setLoading(true);
     setError("");
     try {
       if (cart.length > 0) {
+        setLoading(true);
         const courseIds = cart.map((course) => course.id);
         const { url } = await createCheckoutSession(token, courseIds);
         clearCart();
@@ -36,7 +37,27 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const getCart = async () => {
+      try {
+        setLoadingCart(true);
+        await refreshCart();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      } finally {
+        setLoadingCart(false);
+      }
+    };
+    getCart();
+  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setLoadingCart(false);
+  //   }, 1000);
 
+  //   return () => clearTimeout(timer);
+  // }, [cart]);
   return (
     <div className="min-h-screen p-4 sm:p-8 lg:p-20">
       <div className="max-w-4xl mx-auto">
@@ -53,7 +74,7 @@ export default function CheckoutPage() {
           <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-12 text-center">
             <div className="flex flex-col items-center gap-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-button"></div>
-              <p className="text-slate-300 text-lg">Cargando cursos...</p>
+              <Loader />
             </div>
           </div>
         ) : (
@@ -69,36 +90,51 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-3 mb-6">
-                {cart.map((course, index) => (
-                  <div
-                    key={course.id}
-                    className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-button/20 text-button font-semibold text-sm">
-                        {index + 1}
-                      </div>
-                      <span className="text-slate-200 font-medium text-sm md:text-base">
-                        {course.title}
-                      </span>
-                    </div>
-                    <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
-                      ${Number(course.price).toFixed(2)}
-                    </span>
+                {loadingCart ? (
+                  <div className="py-8">
+                    <Loader size="medium" />
                   </div>
-                ))}
-              </div>
+                ) : (
+                  <>
+                    <div className="space-y-3 mb-6">
+                      {cart.length === 0 ? (
+                        <div className="text-center py-8 text-slate-400">
+                          <p>No se encontraron cursos</p>
+                        </div>
+                      ) : (
+                        cart.map((course, index) => (
+                          <div
+                            key={course.id}
+                            className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-button/20 text-button font-semibold text-sm">
+                                {index + 1}
+                              </div>
+                              <span className="text-slate-200 font-medium text-sm md:text-base">
+                                {course.title}
+                              </span>
+                            </div>
+                            <span className="text-slate-300 font-semibold text-sm md:text-base tabular-nums">
+                              ${Number(course.price).toFixed(2)}
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
 
-              <div className="border-t border-slate-700/50 pt-6">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-button/10 border border-button/30">
-                  <span className="text-slate-200 text-lg md:text-xl font-bold">
-                    Total:
-                  </span>
-                  <span className="text-slate-200 text-xl md:text-2xl font-bold tabular-nums">
-                    $
-                   ${getTotal().toFixed(2)}
-                  </span>
-                </div>
+                    <div className="border-t border-slate-700/50 pt-6">
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-button/10 border border-button/30">
+                        <span className="text-slate-200 text-lg md:text-xl font-bold">
+                          Total:
+                        </span>
+                        <span className="text-slate-200 text-xl md:text-2xl font-bold tabular-nums">
+                          ${getTotal().toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -117,7 +153,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handleCheckout}
                 disabled={loading || courses.length === 0}
-                className="group w-full bg-button hover:bg-button/80 disabled:bg-slate-700 disabled:cursor-not-allowed text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
+                className="group w-full bg-button cursor-pointer disabled:hover:scale-[1] disabled:hover:shadow-none hover:bg-button/80 disabled:bg-slate-700 disabled:cursor-not-allowed text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
               >
                 {loading ? (
                   <>

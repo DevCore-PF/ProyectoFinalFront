@@ -1,57 +1,29 @@
 "use client";
-import React, { useState } from "react";
+//Next/Rect
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+//Formik
 import { useFormik } from "formik";
-import * as Yup from "yup";
+//Context
 import { useAuth } from "@/context/UserContext";
+//Services
 import { createCourseService } from "@/services/course.services";
+//Alerts
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
+//Helpers
 import {
   CreateCourseFormData,
   CourseDifficulty,
-  CourseCategory,
   CourseType,
 } from "@/types/course.types";
+import {
+  createCourseInitialValues,
+  createCourseSchema,
+} from "@/validators/createCourseSchema";
 import { categoryOptions, getCategoryConfig } from "@/helpers/course.helpers";
+//Icons
 import { FaExclamation } from "react-icons/fa6";
-import { HiArrowLeft, HiBookOpen, HiSparkles } from "react-icons/hi";
-
-// Esquema de validación
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .required("El título es requerido")
-    .min(5, "Mínimo 5 caracteres")
-    .max(100, "Máximo 100 caracteres"),
-
-  description: Yup.string()
-    .required("La descripción es requerida")
-    .min(20, "Mínimo 20 caracteres")
-    .max(500, "Máximo 500 caracteres"),
-
-  price: Yup.number()
-    .required("El precio es requerido")
-    .min(0, "El precio debe ser mayor o igual a 0")
-    .max(999, "El precio no puede ser mayor a $999"),
-
-  duration: Yup.string()
-    .required("La duración es requerida")
-    .matches(
-      /^\d+h\s?\d*m?$|^\d+\s?horas?$|^\d+h$/,
-      'Formato: "4h 30m" o "25h" o "2 horas"'
-    ),
-
-  difficulty: Yup.string()
-    .required("La dificultad es requerida")
-    .oneOf(Object.values(CourseDifficulty)),
-
-  category: Yup.string()
-    .required("La categoría es requerida")
-    .oneOf(Object.values(CourseCategory)),
-
-  type: Yup.string()
-    .required("El tipo es requerido")
-    .oneOf(Object.values(CourseType)),
-});
+import { HiArrowLeft, HiBookOpen } from "react-icons/hi";
 
 const CreateCoursePage = () => {
   const router = useRouter();
@@ -59,39 +31,19 @@ const CreateCoursePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formik = useFormik<CreateCourseFormData>({
-    initialValues: {
-      title: "",
-      description: "",
-      price: 0,
-      duration: "",
-      difficulty: CourseDifficulty.BEGINNER,
-      category: CourseCategory.FRONTEND,
-      type: CourseType.COURSE,
-    },
-    validationSchema,
+    initialValues: createCourseInitialValues,
+    validationSchema: createCourseSchema,
     onSubmit: async (values) => {
-
-      ///////////?ESTO AGREGUE
       const professorProfile = user?.professorProfile;
 
       if (!professorProfile || !professorProfile.id || !token) {
         toastError("Error: No se encontró el perfil de profesor");
         return;
       }
-      /////ESTO COMENTE
-      // if (!user?.professorProfile?.id || !token) {
-      //   toastError("Error: No se encontró el perfil de profesor");
-      //   return;
-      // }
-      // console.log(
-      //   "Este es mi profesor profile id desde create curso",
-      //   user.professorProfile.id
-      // );
 
       try {
         setIsSubmitting(true);
         const courseResponse = await createCourseService(
-         /////////////ESTO CORREGI
           professorProfile.id,
           values,
           token
@@ -117,13 +69,13 @@ const CreateCoursePage = () => {
   const selectedCategoryConfig = getCategoryConfig(formik.values.category);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background2 to-background3 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors mb-4"
+            className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors mb-4"
           >
             <HiArrowLeft className="w-5 h-5" />
             Volver al Dashboard
@@ -134,10 +86,10 @@ const CreateCoursePage = () => {
               <HiBookOpen className="w-8 h-8 text-accent-light" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-100">
+              <h1 className="text-3xl sm:text-4xl font-semibold">
                 Crear Nuevo Curso
               </h1>
-              <p className="text-slate-400">
+              <p className="text-gray-400 text-sm sm:text-base">
                 Comparte tu conocimiento con miles de estudiantes
               </p>
             </div>
@@ -145,14 +97,11 @@ const CreateCoursePage = () => {
         </div>
 
         {/* Formulario */}
-        <div className="bg-background2/40 border border-slate-700/50 rounded-2xl p-8">
+        <div className="border border-border p-8 rounded-2xl shadow-lg">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Título */}
             <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-slate-300 mb-2"
-              >
+              <label htmlFor="title" className="block text-sm mb-1">
                 Título del Curso *
               </label>
               <input
@@ -160,10 +109,10 @@ const CreateCoursePage = () => {
                 type="text"
                 placeholder="Ej: Introducción a React y TypeScript"
                 {...formik.getFieldProps("title")}
-                className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                   formik.touched.title && formik.errors.title
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 hover:border-slate-500"
+                    ? "border border-amber-400/50"
+                    : ""
                 }`}
               />
               {formik.touched.title && formik.errors.title && (
@@ -178,34 +127,38 @@ const CreateCoursePage = () => {
 
             {/* Descripción */}
             <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-slate-300 mb-2"
-              >
+              <label htmlFor="description" className="block text-sm mb-1">
                 Descripción *
               </label>
               <textarea
                 id="description"
                 rows={4}
+                maxLength={500}
                 placeholder="Describe qué aprenderán los estudiantes en tu curso..."
                 {...formik.getFieldProps("description")}
-                className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 resize-none ${
+                className={`w-full rounded-md bg-background2 p-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 resize-none ${
                   formik.touched.description && formik.errors.description
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 hover:border-slate-500"
+                    ? "border border-amber-400/50"
+                    : ""
                 }`}
               />
-              <div className="flex justify-between mt-1">
-                {formik.touched.description && formik.errors.description && (
-                  <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2 w-full">
-                    <p className="text-amber-300 text-sm flex items-center gap-2">
-                      <FaExclamation className="shrink-0" size={16} />
-                      <span>{formik.errors.description}</span>
-                    </p>
-                  </div>
-                )}
-              </div>
-              <p className="text-slate-500 text-sm text-right mt-1">
+              {formik.touched.description && formik.errors.description && (
+                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                  <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <FaExclamation className="shrink-0" size={16} />
+                    <span>{formik.errors.description}</span>
+                  </p>
+                </div>
+              )}
+              <p
+                className={`text-sm flex justify-end mr-2 ${
+                  formik.values.description.length === 500
+                    ? "text-orange-400"
+                    : formik.values.description.length >= 450
+                    ? "text-yellow-200"
+                    : "text-font-light/50"
+                }`}
+              >
                 {formik.values.description.length}/500
               </p>
             </div>
@@ -214,14 +167,11 @@ const CreateCoursePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Precio */}
               <div>
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-slate-300 mb-2"
-                >
+                <label htmlFor="price" className="block text-sm mb-1">
                   Precio (USD) *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                     $
                   </span>
                   <input
@@ -232,10 +182,10 @@ const CreateCoursePage = () => {
                     max="999"
                     placeholder="49.99"
                     {...formik.getFieldProps("price")}
-                    className={`w-full pl-8 pr-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                    className={`w-full h-12 pl-8 pr-4 rounded-md bg-background2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                       formik.touched.price && formik.errors.price
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-slate-600 hover:border-slate-500"
+                        ? "border border-amber-400/50"
+                        : ""
                     }`}
                   />
                 </div>
@@ -251,10 +201,7 @@ const CreateCoursePage = () => {
 
               {/* Duración */}
               <div>
-                <label
-                  htmlFor="duration"
-                  className="block text-sm font-medium text-slate-300 mb-2"
-                >
+                <label htmlFor="duration" className="block text-sm mb-1">
                   Duración *
                 </label>
                 <input
@@ -262,10 +209,10 @@ const CreateCoursePage = () => {
                   type="text"
                   placeholder="Ej: 4h 30m, 25h, 2 horas"
                   {...formik.getFieldProps("duration")}
-                  className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                  className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.duration && formik.errors.duration
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-slate-600 hover:border-slate-500"
+                      ? "border border-amber-400/50"
+                      : ""
                   }`}
                 />
                 {formik.touched.duration && formik.errors.duration && (
@@ -281,20 +228,17 @@ const CreateCoursePage = () => {
 
             {/* Categoría con preview */}
             <div>
-              <label
-                htmlFor="category"
-                className="block text-sm font-medium text-slate-300 mb-2"
-              >
+              <label htmlFor="category" className="block text-sm mb-1">
                 Categoría *
               </label>
               <div className="space-y-3">
                 <select
                   id="category"
                   {...formik.getFieldProps("category")}
-                  className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                  className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.category && formik.errors.category
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-slate-600 hover:border-slate-500"
+                      ? "border border-amber-400/50"
+                      : ""
                   }`}
                 >
                   {categoryOptions.map((option) => (
@@ -304,7 +248,6 @@ const CreateCoursePage = () => {
                   ))}
                 </select>
 
-                {/* Preview de la categoría */}
                 <div
                   className={`
                   flex items-center gap-3 p-3 rounded-lg border
@@ -328,7 +271,7 @@ const CreateCoursePage = () => {
                       )?.label
                     }
                   </span>
-                  <span className="text-slate-400 text-sm ml-auto">
+                  <span className="text-gray-400 text-sm ml-auto">
                     Vista previa de la categoría
                   </span>
                 </div>
@@ -347,19 +290,16 @@ const CreateCoursePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Dificultad */}
               <div>
-                <label
-                  htmlFor="difficulty"
-                  className="block text-sm font-medium text-slate-300 mb-2"
-                >
+                <label htmlFor="difficulty" className="block text-sm mb-1">
                   Dificultad *
                 </label>
                 <select
                   id="difficulty"
                   {...formik.getFieldProps("difficulty")}
-                  className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                  className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.difficulty && formik.errors.difficulty
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-slate-600 hover:border-slate-500"
+                      ? "border border-amber-400/50"
+                      : ""
                   }`}
                 >
                   <option value={CourseDifficulty.BEGINNER}>
@@ -382,19 +322,16 @@ const CreateCoursePage = () => {
 
               {/* Tipo */}
               <div>
-                <label
-                  htmlFor="type"
-                  className="block text-sm font-medium text-slate-300 mb-2"
-                >
+                <label htmlFor="type" className="block text-sm mb-1">
                   Tipo *
                 </label>
                 <select
                   id="type"
                   {...formik.getFieldProps("type")}
-                  className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-medium transition-all duration-200 ${
+                  className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
                     formik.touched.type && formik.errors.type
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-slate-slate-600 hover:border-slate-500"
+                      ? "border border-amber-400/50"
+                      : ""
                   }`}
                 >
                   <option value={CourseType.COURSE}>Curso</option>
@@ -412,31 +349,21 @@ const CreateCoursePage = () => {
             </div>
 
             {/* Botones */}
-            <div className="flex items-center justify-between pt-6 border-t border-slate-700/50">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-6 py-3 text-slate-400 hover:text-slate-200 font-medium transition-colors"
+                className="text-gray-400 cursor-pointer hover:text-gray-200 font-medium transition-colors w-full sm:w-auto"
               >
                 Cancelar
               </button>
 
               <button
                 type="submit"
-                disabled={isSubmitting || !formik.isValid}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent-medium to-accent-light text-white font-medium rounded-lg hover:from-accent-light hover:to-accent-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+                className="cursor-pointer bg-button/90 hover:bg-button transition rounded-md py-2 font-semibold w-full sm:w-auto px-6 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Creando...
-                  </>
-                ) : (
-                  <>
-                    <HiSparkles className="w-4 h-4" />
-                    Crear Curso y Continuar
-                  </>
-                )}
+                {isSubmitting ? "Creando..." : "Crear Curso y Continuar"}
               </button>
             </div>
           </form>

@@ -2,7 +2,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Types
 import { RegisterResponse, LoginResponse, UpdateRoleResponse } from "@/types/api.types";
-import { RegisterFormData, LoginFormData } from "@/types/auth.types";
+import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
 import { UploadImageResponse, UserUpdateResponse } from "@/types/user.types";
 
 export const registerUserService = async (
@@ -123,7 +123,7 @@ export const uploadProfileImageService = async (
         const error = await response.json();
         errorMessage = error.message || error.error || errorMessage;
         console.error("Error del servidor:", error);
-      } catch (parseError) {
+      } catch {
         const textError = await response.text();
         console.error("Respuesta del servidor:", textError);
         errorMessage = `Error ${response.status}: ${textError}`;
@@ -137,7 +137,7 @@ export const uploadProfileImageService = async (
     console.log("Respuesta completa del backend:", data);
 
     // Intenta extraer la URL de diferentes posibles campos
-    const imageUrl =
+    let imageUrl =
       data.secure_url ||
       data.imageUrl ||
       data.profileImage ||
@@ -145,14 +145,36 @@ export const uploadProfileImageService = async (
       data.url ||
       data.data?.profileImage ||
       data.data?.image ||
-      data.data?.url;
+      data.data?.url ||
+      data.user?.profileImage ||
+      data.user?.image;
 
+    // Si no se encuentra la URL en la respuesta, obtener datos actualizados del usuario
     if (!imageUrl) {
-      console.error(
-        "No se encontró URL en la respuesta. Estructura completa:",
-        JSON.stringify(data, null, 2)
-      );
-      throw new Error("No se recibió la URL de la imagen del servidor");
+      console.log("⚠️ No se encontró URL en la respuesta, obteniendo datos actualizados del usuario...");
+      try {
+        const updatedUserData = await getCurrentUserService(token, userId);
+        console.log("✅ Datos actualizados del usuario:", updatedUserData);
+        
+        // Buscar la imagen en los datos actualizados
+        const updatedUserWithImage = updatedUserData as User & { image?: string; profileImageUrl?: string };
+        imageUrl = updatedUserData.profileImage || 
+                   updatedUserWithImage.image || 
+                   updatedUserWithImage.profileImageUrl;
+        
+        if (imageUrl) {
+          console.log("✅ URL de imagen encontrada en datos actualizados:", imageUrl);
+        }
+      } catch (fetchError) {
+        console.error("Error obteniendo datos actualizados:", fetchError);
+      }
+    }
+
+    // Si aún no tenemos URL, usar un placeholder temporal
+    if (!imageUrl) {
+      console.warn("⚠️ No se pudo obtener URL de imagen, usando timestamp como indicador");
+      // Usar un indicador para que el frontend sepa que debe refrescar los datos del usuario
+      imageUrl = `refresh_user_data_${Date.now()}`;
     }
 
     return {

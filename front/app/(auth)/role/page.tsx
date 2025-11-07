@@ -99,7 +99,10 @@ const page = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    <div className="flex flex-col min-h-screen justify-center items-center">
+      <Loader size="medium" />
+      <p className="text-slate-400">Redirigiendo...</p>
+    </div>;
   }
 
   if (!token) {

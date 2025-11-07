@@ -25,18 +25,11 @@ export default function AuthCallback() {
       }
 
       try {
-        // Decodificar el JWT para obtener el payload
         const decoded = jwtDecode<JwtPayload>(token);
 
-        console.log("TOKEN DECO AOUTHCALLBACK:", decoded);
-        // Guardar el token primero
         setToken(token);
 
-        // Obtener los datos completos del usuario desde el backend
         const userData = await getCurrentUserService(token, decoded.sub);
-
-        console.log("USER AOUTHCALLBACK:", userData);
-        // Setear el usuario en el context
         setUser(userData);
 
         if (decoded.role === "teacher" || decoded.role === "student") {
@@ -55,8 +48,9 @@ export default function AuthCallback() {
   }, [searchParams, setToken, setUser, router]);
 
   return (
-    <div>
-      <Loader />
+    <div className="flex flex-col min-h-screen justify-center items-center">
+      <Loader size="medium" />
+      <p className="text-slate-400">Redirigiendo...</p>
     </div>
   );
 }

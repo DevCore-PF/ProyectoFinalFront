@@ -11,7 +11,7 @@ const AboutUs = () => {
         <header className="text-center mb-16">
           <div className="inline-flex px-4 py-2 bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-6">
             <span className="text-font-light font-semibold md:text-lg">
-              Somo DevCore
+              Somos DevCore
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-light mb-4">
@@ -116,13 +116,13 @@ const AboutUs = () => {
           <div className="flex justify-center space-x-4">
             <Link
               href="/courses"
-              className="bg-gray-medium-light text-font-light font-bold rounded-md px-6 py-3 text-md  hover:bg-button "
+              className="border border-font-light/10  bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md  hover:bg-button "
             >
               Explorar Cursos
             </Link>
             <Link
               href="/contact-us"
-              className="text-gray-light font-bold rounded-md px-6 py-3 text-md hover:bg-button"
+              className=" border border-font-light/10  bg-navbar text-font-light font-bold rounded-md px-6 py-3 text-md hover:bg-button"
             >
               Contáctanos
             </Link>

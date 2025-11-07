@@ -25,9 +25,9 @@
 
   --font-title: "Kodchasan", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
+  --font-logo: "EB Garamond", serif;
 
   --font-mono: var(--font-mono);
-  --font-logo: var(--font-eb-garamond);
 }
 
 body {

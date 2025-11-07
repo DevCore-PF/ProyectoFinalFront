@@ -99,7 +99,7 @@ const TeacherDashboardPage = () => {
           <div className="mb-6 text-center">
             <button
               onClick={handleShowValidationForm}
-              className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
+              className="px-6 py-3 bg-button/80 cursor-pointer  hover:bg-button text-white font-medium rounded-lg transition-all duration-200"
             >
               {needsValidation
                 ? "Completar Perfil Profesional"
@@ -113,7 +113,7 @@ const TeacherDashboardPage = () => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={handleHideValidationForm}
-                className="text-slate-400 hover:text-slate-200 transition-colors"
+                className="text-slate-400 cursor-pointer hover:text-slate-200 transition-colors"
               >
                 ✕ Cerrar
               </button>

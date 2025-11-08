@@ -122,7 +122,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         <h2 className="text-lg font-medium mb-4">Informacion académica</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-             <div>
+          <div>
             <div className="flex flex-col gap-3">
               <div>
                 <label htmlFor="profession" className="block text-sm mb-1">
@@ -141,7 +141,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                 />
                 {formik.errors.profession && formik.touched.profession && (
                   <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <p className="text-amber-300 text-sm flex items-center  gap-1">
                       <FaExclamation className="shrink-0" size={16} />
                       <span>{formik.errors.profession}</span>
                     </p>
@@ -165,7 +165,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                 />
                 {formik.errors.speciality && formik.touched.speciality && (
                   <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <p className="text-amber-300 text-sm flex items-center  gap-1">
                       <FaExclamation className="shrink-0" size={16} />
                       <span>{formik.errors.speciality}</span>
                     </p>
@@ -186,14 +186,13 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                       onChange={(e) => handleChangeCertificate(e, i)}
                       onBlur={() =>
                         formik.setFieldTouched(`certificates.${i}`, true)
-                      } 
+                      }
                       className="hidden"
                       accept=".pdf,.jpg,.jpeg,.png"
                     />
                     <label
                       htmlFor={`certificate-${i}`}
                       className={`flex items-center justify-center w-full h-12 rounded-md bg-background2 px-3 text-sm cursor-pointer border-2 border-dashed ${
-                       
                         ((formik.touched.certificates as any)?.[i] ||
                           formik.submitCount > 0) &&
                         (formik.errors.certificates as any)?.[i]
@@ -217,7 +216,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                       formik.submitCount > 0) &&
                       (formik.errors.certificates as any)?.[i] && (
                         <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                          <p className="text-amber-300 text-sm flex items-center gap-2">
+                          <p className="text-amber-300 text-sm flex items-center  gap-1">
                             <FaExclamation className="shrink-0" size={16} />
                             <span>
                               {(formik.errors.certificates as any)[i]}
@@ -229,7 +228,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                       <button
                         type="button"
                         onClick={() => closeCertificate(i)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
+                        className="absolute right-2 top-6 -translate-y-1/2 text-accent-medium/70 hover:text-accent-medium cursor-pointer text-sm hover:underline"
                       >
                         <IoCloseCircleOutline size={28} />
                       </button>
@@ -250,14 +249,13 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                   formik.errors.certificates &&
                   typeof formik.errors.certificates === "string" && (
                     <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                      <p className="text-amber-300 text-sm flex items-center gap-2">
+                      <p className="text-amber-300 text-sm flex items-center  gap-1">
                         <FaExclamation className="shrink-0" size={16} />
                         <span>{formik.errors.certificates}</span>
                       </p>
                     </div>
                   )}
               </div>
-             
             </div>
           </div>
           {/* Columna izquierda - Datos Personales */}
@@ -280,7 +278,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                 />
                 {formik.errors.phone && formik.touched.phone && (
                   <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                    <p className="text-amber-300 text-sm flex items-center gap-2">
+                    <p className="text-amber-300 text-sm flex items-center  gap-1">
                       <FaExclamation className="shrink-0" size={16} />
                       <span>{formik.errors.phone}</span>
                     </p>
@@ -308,7 +306,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                       <button
                         type="button"
                         onClick={() => closeLink(i)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium cursor-pointer text-sm hover:underline"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium/70 hover:text-accent-medium cursor-pointer text-sm hover:underline"
                       >
                         <IoCloseCircleOutline size={28} />
                       </button>
@@ -327,8 +325,6 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </div>
             </div>
           </div>
-
-       
         </div>
 
         {/* Biografía */}
@@ -349,7 +345,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
           />
           {formik.errors.biography && formik.touched.biography && (
             <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-              <p className="text-amber-300 text-sm flex items-center gap-2">
+              <p className="text-amber-300 text-sm flex items-center  gap-1">
                 <FaExclamation className="shrink-0" size={16} />
                 <span>{formik.errors.biography}</span>
               </p>
@@ -370,7 +366,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
 
         {/* Checkboxes */}
         <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+          <div className="flex flex-wrap items-start sm:items-center  gap-1 text-xs text-gray-300">
             <label
               htmlFor="agreedToInfo"
               className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto"
@@ -412,16 +408,14 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </span>
             </label>
             {formik.errors.agreedToInfo && formik.touched.agreedToInfo && (
-              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                <p className="text-amber-300 text-sm flex items-center gap-2">
-                  <FaExclamation className="shrink-0" size={16} />
-                  <span>{formik.errors.agreedToInfo}</span>
-                </p>
-              </div>
+              <p className="text-amber-300 text-sm flex items-center  gap-1">
+                <FaExclamation className="shrink-0" size={16} />
+                <span>{formik.errors.agreedToInfo}</span>
+              </p>
             )}
           </div>
 
-          <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+          <div className="flex flex-wrap items-start sm:items-center  gap-1 text-xs text-gray-300">
             <label
               htmlFor="agreedToTerms"
               className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto"
@@ -469,16 +463,14 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </span>
             </label>
             {formik.errors.agreedToTerms && formik.touched.agreedToTerms && (
-              <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                <p className="text-amber-300 text-sm flex items-center gap-2">
-                  <FaExclamation className="shrink-0" size={16} />
-                  <span>{formik.errors.agreedToTerms}</span>
-                </p>
-              </div>
+              <p className="text-amber-300 text-sm flex items-center gap-1">
+                <FaExclamation className="shrink-0" size={16} />
+                <span>{formik.errors.agreedToTerms}</span>
+              </p>
             )}
           </div>
 
-          <div className="flex flex-wrap items-start sm:items-center gap-2 text-xs text-gray-300">
+          <div className="flex flex-wrap items-start sm:items-center  gap-1 text-xs text-gray-300">
             <label
               htmlFor="agreedToAproveed"
               className="inline-flex items-start sm:items-center cursor-pointer w-full sm:w-auto"
@@ -522,12 +514,10 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
             </label>
             {formik.errors.agreedToAproveed &&
               formik.touched.agreedToAproveed && (
-                <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                  <p className="text-amber-300 text-sm flex items-center gap-2">
-                    <FaExclamation className="shrink-0" size={16} />
-                    <span>{formik.errors.agreedToAproveed}</span>
-                  </p>
-                </div>
+                <p className="text-amber-300 text-sm flex items-center  gap-1">
+                  <FaExclamation className="shrink-0" size={16} />
+                  <span>{formik.errors.agreedToAproveed}</span>
+                </p>
               )}
           </div>
         </div>

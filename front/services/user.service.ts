@@ -268,24 +268,28 @@ export const getUserProfileService = async (
   }
 };
 
-// Servicio para obtener usuario actual (usado en OAuth callbacks)
-// export const getCurrentUserService = async (token: string, id: string) => {
-//   try {
-//     const response = await fetch(`${API_URL}/users/${id}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
+export const resendEmailService = async (email: string) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/resend-verification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
 
-//     if (!response.ok) {
-//       throw new Error("Error obteniendo usuario");
-//     }
-
-//     const userData = await response.json();
-//     // Si el backend devuelve userReturn en lugar de directamente el user
-//     return userData.userReturn || userData;
-//   } catch (error) {
-//     console.error("Error al conseguir el usuario actual: ", error);
-//     throw error;
-//   }
-// };
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Error al reenviar el email de verificación"
+      );
+    
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("Error al reenviar verificacion", error);
+    throw error;
+  }
+};

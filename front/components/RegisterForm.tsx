@@ -30,6 +30,7 @@ import GitHubAuthButton from "@/components/GitHubAuthButton";
 import Image from "next/image";
 import Loader from "@/components/Loaders/Loader";
 import { RegisterResponse } from "@/types/api.types";
+
 const RegisterForm = () => {
   const { setToken, setUser } = useAuth();
   const [registerLoading, setRegisterLoading] = useState(false);

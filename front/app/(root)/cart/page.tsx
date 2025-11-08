@@ -19,6 +19,7 @@ import Loader from "@/components/Loaders/Loader";
 import { useRemoveFromCart } from "@/hooks/useRemoveFromCart";
 import { Course } from "@/types/course.types";
 import TinyLoader from "@/components/Loaders/TinyLoader";
+import { useAuth } from "@/context/UserContext";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart, getTotal, refreshCart, loading } =
@@ -29,6 +30,10 @@ export default function CartPage() {
   const [loadingClear, setLoadingClear] = useState(false);
   const { loadingRemove, handleRemoveFromCart } = useRemoveFromCart();
   const router = useRouter();
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) router.push('/')
+  }, [user]);
 
   const handleRemove = (course: Course) => {
     toastConfirm("¿Eliminar este curso?", async () => {
@@ -49,13 +54,14 @@ export default function CartPage() {
       }
     });
   };
-  if (loading)
+  if (!user || loading)
     return (
       <div className="flex flex-col min-h-screen justify-center items-center">
         <Loader size="medium" />
         <p className="text-slate-400">Cargando...</p>
       </div>
     );
+
   if (cart.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">

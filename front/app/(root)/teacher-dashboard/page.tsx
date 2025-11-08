@@ -48,8 +48,6 @@ const TeacherDashboardPage = () => {
 
   const handleViewCourseDetails = (courseId: string) => {
     console.log(`Ver detalles del curso: ${courseId}`);
-    // Aquí puedes agregar navegación al detalle del curso
-    // router.push(`/teacher-dashboard/courses/${courseId}`);
   };
 
   const handleSubmitValidation = async (formData: FormData) => {

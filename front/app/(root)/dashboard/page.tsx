@@ -18,7 +18,6 @@ import Loader from "@/components/Loaders/Loader";
 
 const DashboardPage = () => {
   const { user, isLoading } = useAuth();
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (!isLoading) {
@@ -27,21 +26,11 @@ const DashboardPage = () => {
       }
     }
   }, [user, isLoading, router]);
-  useEffect(() => {
-    const fetchUserCourses = async () => {
-      try {
-        setLoading(true);
-        await getAllCoursesService();
-      } catch (error) {
-        console.log(error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUserCourses();
-  }, []);
-  if (loading) return <Loader />;
+
+  
+if (isLoading ) return <Loader />;
+
+if (!user || user.role !== "student") return <Loader />;
   return (
     <div className="min-h-screen p-10">
       <div className="max-w-7xl mx-auto p-4 md:p-6">

@@ -1,6 +1,3 @@
-
-
-
 "use client";
 import React, { useState } from "react";
 import { useFormik } from "formik";
@@ -36,7 +33,11 @@ const validationSchema = Yup.object({
     .required("Los certificados son requeridos"),
 
   professionalLinks: Yup.array().of(
-    Yup.string().url("Debe ser una URL válida")
+    Yup.string().test(
+      "is-url-or-empty",
+      "Debe ser una URL válida",
+      (value) => !value || value.trim() === "" || /^https?:\/\/.+/.test(value)
+    )
   ),
 
   agreedToTerms: Yup.boolean().oneOf(
@@ -163,7 +164,9 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
   };
 
   return (
-    <div className={`border border-border p-8 rounded-2xl shadow-lg ${className}`}>
+    <div
+      className={`border border-border p-8 rounded-2xl shadow-lg ${className}`}
+    >
       <h1 className="text-3xl sm:text-4xl font-semibold text-center mb-2">
         Perfil Profesional
       </h1>
@@ -261,7 +264,10 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                         Sube tu certificado...
                       </span>
                       <span className="bg-background px-2 py-1 ml-3 rounded-md transition-all duration-200 hover:scale-105">
-                        <IoFolderOutline className="text-accent-medium" size={25} />
+                        <IoFolderOutline
+                          className="text-accent-medium"
+                          size={25}
+                        />
                       </span>
                     </label>
                   </div>
@@ -272,7 +278,9 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                       {formik.values.certificates.map((file, index) => (
                         <div key={index} className="relative">
                           <div className="flex items-center justify-between w-full h-12 rounded-md bg-background2 px-3 text-sm border-2 border-dashed border-accent-medium/70">
-                            <span className="text-font-light/55">{file?.name}</span>
+                            <span className="text-font-light/55">
+                              {file?.name}
+                            </span>
                             <button
                               type="button"
                               onClick={() => removeFile(index)}
@@ -290,24 +298,27 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                     <button
                       type="button"
                       className="text-accent-medium w-full text-sm hover:underline flex items-end justify-end mt-2 cursor-pointer"
-                      onClick={() => document.getElementById('certificates-file')?.click()}
+                      onClick={() =>
+                        document.getElementById("certificates-file")?.click()
+                      }
                     >
                       + Agregar certificado
                     </button>
                   )}
 
-                  {formik.touched.certificates && formik.errors.certificates && (
-                    <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
-                      <p className="text-amber-300 text-sm flex items-center gap-1">
-                        <FaExclamation className="shrink-0" size={16} />
-                        <span>
-                          {typeof formik.errors.certificates === "string"
-                            ? formik.errors.certificates
-                            : "Error en los certificados"}
-                        </span>
-                      </p>
-                    </div>
-                  )}
+                  {formik.touched.certificates &&
+                    formik.errors.certificates && (
+                      <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                        <p className="text-amber-300 text-sm flex items-center gap-1">
+                          <FaExclamation className="shrink-0" size={16} />
+                          <span>
+                            {typeof formik.errors.certificates === "string"
+                              ? formik.errors.certificates
+                              : "Error en los certificados"}
+                          </span>
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -345,28 +356,58 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                 <label htmlFor="links" className="block text-sm mb-1">
                   Links profesionales
                 </label>
-                {formik.values.professionalLinks.map((link, i) => (
-                  <div key={i} className="relative mt-2">
-                    <input
-                      type="text"
-                      value={link}
-                      id={`link-${i}`}
-                      onChange={(e) => updateProfessionalLink(i, e.target.value)}
-                      placeholder="Link a portfolio, LinkedIn o sitio personal"
-                      onBlur={() => formik.setFieldTouched("professionalLinks", true)}
-                      className="w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50"
-                    />
-                    {i > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => removeProfessionalLink(i)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium/70 hover:text-accent-medium cursor-pointer text-sm hover:underline"
-                      >
-                        <IoCloseCircleOutline size={28} />
-                      </button>
-                    )}
-                  </div>
-                ))}
+                {formik.values.professionalLinks.map((link, i) => {
+                  const touchedLinks = formik.touched.professionalLinks as
+                    | boolean[]
+                    | undefined;
+                  const errorLinks = formik.errors.professionalLinks as
+                    | string[]
+                    | undefined;
+
+                  return (
+                    <div key={i} className="mt-2">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={link}
+                          id={`link-${i}`}
+                          onChange={(e) =>
+                            updateProfessionalLink(i, e.target.value)
+                          }
+                          placeholder="Link a portfolio, LinkedIn o sitio personal"
+                          onBlur={() =>
+                            formik.setFieldTouched(
+                              `professionalLinks[${i}]`,
+                              true
+                            )
+                          }
+                          className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
+                            touchedLinks?.[i] && errorLinks?.[i]
+                              ? "border border-amber-400/50"
+                              : ""
+                          }`}
+                        />
+                        {i > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => removeProfessionalLink(i)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-accent-medium/70 hover:text-accent-medium cursor-pointer text-sm hover:underline"
+                          >
+                            <IoCloseCircleOutline size={28} />
+                          </button>
+                        )}
+                      </div>
+                      {touchedLinks?.[i] && errorLinks?.[i] && (
+                        <div className="px-3 py-2 bg-amber-500/10 border flex justify-center border-amber-500/30 rounded-lg mt-2">
+                          <p className="text-amber-300 text-sm flex items-center gap-1">
+                            <FaExclamation className="shrink-0" size={16} />
+                            <span>{errorLinks[i]}</span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
                 {formik.values.professionalLinks.length < 5 && (
                   <button
                     type="button"
@@ -468,7 +509,6 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </p>
             )}
           </div>
-
           <div className="flex flex-wrap items-start sm:items-center gap-1 text-xs text-gray-300">
             <label
               htmlFor="agreedToTerms"
@@ -508,7 +548,10 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </div>
               <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
                 Acepto los{" "}
-                <Link href="/terms" className="text-accent-medium hover:underline">
+                <Link
+                  href="/terms"
+                  className="text-accent-medium hover:underline"
+                >
                   Términos y Condiciones para instructores
                 </Link>
               </span>
@@ -520,7 +563,6 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
               </p>
             )}
           </div>
-
           <div className="flex flex-wrap items-start sm:items-center gap-1 text-xs text-gray-300">
             <label
               htmlFor="agreedToAproveed"
@@ -559,15 +601,17 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
                 </svg>
               </div>
               <span className="ml-2 select-none text-sm leading-snug sm:leading-normal">
-                Entiendo que mi solicitud está sujeta a aprobación del equipo de DevCore
+                Entiendo que mi solicitud está sujeta a aprobación del equipo de
+                DevCore
               </span>
             </label>
-            {formik.errors.agreedToAproveed && formik.touched.agreedToAproveed && (
-              <p className="text-amber-300 text-sm flex items-center gap-1">
-                <FaExclamation className="shrink-0" size={16} />
-                <span>{formik.errors.agreedToAproveed}</span>
-              </p>
-            )}
+            {formik.errors.agreedToAproveed &&
+              formik.touched.agreedToAproveed && (
+                <p className="text-amber-300 text-sm flex items-center gap-1">
+                  <FaExclamation className="shrink-0" size={16} />
+                  <span>{formik.errors.agreedToAproveed}</span>
+                </p>
+              )}
           </div>
         </div>
 
@@ -585,8 +629,6 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
 };
 
 export default ProfessionalValidationForm;
-
-
 
 /////////////////////////////////////////////////////////////SEGUNDO FUNCIONAL commit Diego 65ffa986e2c4d4db8948e19da0f5f0c60e8a0a5d feature terminada gracias a dios y los santos griales dios bendiga america validacion de teacher correcta y contexto actualizado
 // "use client";

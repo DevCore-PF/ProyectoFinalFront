@@ -300,7 +300,7 @@ const RegisterForm = () => {
                       </Link>{" "}
                       y las{" "}
                       <Link
-                        href={"/privacyPolicy"}
+                        href={"/privacy-policy"}
                         className="text-accent-medium hover:underline"
                       >
                         Políticas de Privacidad

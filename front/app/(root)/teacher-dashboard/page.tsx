@@ -2,7 +2,6 @@
 import TeacherWelcomeCard from "@/components/dashboard/TeacherWelcomeCard";
 import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
-import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
 import { HiBookOpen, HiTrendingUp, HiChartBar } from "react-icons/hi";
 import { useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
+import ProfessionalValidationForm from '../../../components/dashboard/ProfessionalValidationForm';
 
 const TeacherDashboardPage = () => {
   const { user, isLoading } = useAuth();

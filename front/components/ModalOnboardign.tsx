@@ -202,7 +202,7 @@ const ModalOnboarding = () => {
                     </Link>{" "}
                     y las{" "}
                     <Link
-                      href="/privacy"
+                      href="/privacy-policy"
                       target="_blank"
                       className="text-accent-medium hover:underline"
                     >

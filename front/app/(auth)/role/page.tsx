@@ -276,7 +276,7 @@ const page = () => {
                   ${
                     formik.isSubmitting
                       ? "cursor-not-allowed opacity-50"
-                      : "px-6 sm:px-8 py-3 bg-button/70 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer hover:scale-105 active:scale-95"
+                      : "px-6 sm:px-8 py-3 bg-button/70 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer  active:scale-95"
                   }
                   bg-button/70
                   disabled:from-gray-500 disabled:to-gray-600 disabled:hover:scale-100 disabled:shadow-none`}

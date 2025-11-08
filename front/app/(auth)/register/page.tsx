@@ -17,8 +17,8 @@ import {
 import { useFormik } from "formik";
 //Next / React
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useEffectEvent, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
 //Services
@@ -36,15 +36,14 @@ const page = () => {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
+  const searchParams = useSearchParams();
   const handleShowPass = () => {
     setShow(!show);
   };
   const handleShowRPass = () => {
     setShowR(!showR);
   };
-  const handleAuthError = (error: string) => {
-    toastError(error);
-  };
+
 
   const formik = useFormik<RegisterFormData>({
     validationSchema: registerValidations,
@@ -83,9 +82,18 @@ const page = () => {
       );
     },
   });
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const error_description = searchParams.get("error_description");
 
+    if (error && error_description) {
+      toastError(decodeURIComponent(error_description));
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [searchParams]);
   return (
     <>
+      <div></div>
       {registerLoading ? (
         <div className="flex flex-col min-h-screen justify-center items-center">
           <Loader size="medium" />
@@ -341,11 +349,9 @@ const page = () => {
                 </div>
                 <div className="flex gap-4 justify-evenly sm:justify-center ">
                   <GoogleAuthButton
-                    onError={handleAuthError}
                     isLoginPage={false}
                   />
                   <GitHubAuthButton
-                    onError={handleAuthError}
                     isLoginPage={false}
                   />
                 </div>

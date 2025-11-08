@@ -6,10 +6,9 @@ import { useState } from "react";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GitHubAuthButton = ({
   isLoginPage = false,
-  onError,
+
 }: {
   isLoginPage?: boolean;
-  onError?: (error: string) => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -25,7 +24,6 @@ const GitHubAuthButton = ({
       window.location.href = authEndpoint;
     } catch (error) {
       setIsLoading(false);
-      onError?.("Error al iniciar autenticación con Github");
     } finally {
       setIsLoading(false);
     }

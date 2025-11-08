@@ -25,18 +25,17 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
 import Loader from "./Loaders/Loader";
 import TinyLoader from "./Loaders/TinyLoader";
+import { useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState<number>(180);
+  // const [timeRemaining, setTimeRemaining] = useState<number>(180);
+  const [timeRemaining, setTimeRemaining] = useState<number>(3600);
   const [canResend, setCanResend] = useState(false);
   const { setToken, setUser, user } = useAuth();
   const [loadingResender, setLoadingResender] = useState(false);
-
-  const handleAuthError = (error: string) => {
-    toastError(error);
-  };
+  const searchParams = useSearchParams();
 
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
@@ -60,31 +59,6 @@ const LoginForm = () => {
       }
     },
   });
-  useEffect(() => {
-    if (user && !user.isEmailVerified) {
-      setShowEmailNotVerified(true);
-    }
-  }, [user]);
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  useEffect(() => {
-    if (showEmailNotVerified && timeRemaining > 0) {
-      const interval = setInterval(() => {
-        setTimeRemaining((prev) => {
-          if (prev <= 1) {
-            setCanResend(true);
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 100);
-
-      return () => clearInterval(interval);
-    }
-  }, [showEmailNotVerified, timeRemaining]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -107,6 +81,43 @@ const LoginForm = () => {
       setLoadingResender(false);
     }
   };
+
+  useEffect(() => {
+    if (user && !user.isEmailVerified) {
+      setShowEmailNotVerified(true);
+    }
+  }, [user]);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  useEffect(() => {
+    if (showEmailNotVerified && timeRemaining > 0) {
+      const interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            setCanResend(true);
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [showEmailNotVerified, timeRemaining]);
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const error_description = searchParams.get("error_description");
+
+    if (error && error_description) {
+      toastError(decodeURIComponent(error_description));
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [searchParams]);
+
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-6">
@@ -262,8 +273,8 @@ const LoginForm = () => {
               <div className="flex-1 h-px bg-border/80"></div>
             </div>
             <div className="flex gap-4 justify-center ">
-              <GoogleAuthButton onError={handleAuthError} isLoginPage={true} />
-              <GitHubAuthButton onError={handleAuthError} isLoginPage={true} />
+              <GoogleAuthButton isLoginPage={true} />
+              <GitHubAuthButton isLoginPage={true} />
             </div>
 
             <p className="text-center text-gray-400 text-sm mt-2">

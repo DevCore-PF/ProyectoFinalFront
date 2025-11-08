@@ -12,6 +12,7 @@ import { useTeacherValidation } from "@/hooks/useTeacherValidation";
 import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
 
 const TeacherDashboardPage = () => {
   const { user, isLoading } = useAuth();
@@ -149,19 +150,19 @@ const TeacherDashboardPage = () => {
           {canCreateCourses ? (
             <>
               {coursesLoading ? (
-                <div className="text-center py-16 text-slate-400">
-                  <div className="animate-spin w-8 h-8 border-2 border-accent-light border-t-transparent rounded-full mx-auto mb-4"></div>
+                <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">
+                  <TinyLoader />
                   <p>Cargando cursos...</p>
                 </div>
               ) : coursesError ? (
-                <div className="text-center py-16 text-red-400 bg-red-900/20 rounded-xl border border-red-700/20">
-                  <p className="text-lg font-semibold text-red-300 mb-2">
+                <div className="text-center py-16 text-amber-400 bg-amber-800/20 rounded-xl border border-amber-700/20">
+                  <p className="text-lg  text-amber-400 mb-2">
                     Error al cargar cursos
                   </p>
                   <p className="text-sm mb-4">{coursesError}</p>
                   <button
                     onClick={refreshCourses}
-                    className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-300 rounded-lg transition-colors"
+                    className="px-4 py-2 bg-amber-500/20 cursor-pointer hover:bg-amber-600/30 text-amber-300 rounded-lg transition-colors"
                   >
                     Reintentar
                   </button>

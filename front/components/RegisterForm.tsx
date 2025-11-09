@@ -62,7 +62,6 @@ const RegisterForm = () => {
             );
             setToken(data.access_token);
             setUser(data.userReturn);
-            toastSuccess("Registro enviado!");
             formik.resetForm();
             window.location.href = "/role";
           } catch (error) {

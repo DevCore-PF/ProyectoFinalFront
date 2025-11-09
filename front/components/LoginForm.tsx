@@ -25,7 +25,7 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
 import Loader from "./Loaders/Loader";
 import TinyLoader from "./Loaders/TinyLoader";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,10 +33,10 @@ const LoginForm = () => {
   // const [timeRemaining, setTimeRemaining] = useState<number>(180);
   const [timeRemaining, setTimeRemaining] = useState<number>(3600);
   const [canResend, setCanResend] = useState(false);
-  const { setToken, setUser, user } = useAuth();
+  const { setToken, setUser, user, isLoading } = useAuth();
   const [loadingResender, setLoadingResender] = useState(false);
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -87,10 +87,11 @@ const LoginForm = () => {
       setShowEmailNotVerified(true);
     }
   }, [user]);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  useEffect(() => {
+    if (!isLoading && user && user.isEmailVerified) {
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
 
   useEffect(() => {
     if (showEmailNotVerified && timeRemaining > 0) {
@@ -118,7 +119,12 @@ const LoginForm = () => {
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, [searchParams]);
-  
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  if (isLoading) return <Loader />;
+  if (user && user.isEmailVerified) return <Loader />;
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-6">

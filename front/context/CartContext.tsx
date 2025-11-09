@@ -97,7 +97,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      await clearCartService(token);
+      // await clearCartService(token);<<<<<<<<<<<<<<<< EN CART CONTEXT =ESTO COMENTALO
       setCart([]);
     } catch (error) {
       console.error("Error al limpiar el carrito:", error);

@@ -1,4 +1,3 @@
-//AGREGAR RESPUESTAS FALTANTES
 
 import { User } from "./auth.types";
 

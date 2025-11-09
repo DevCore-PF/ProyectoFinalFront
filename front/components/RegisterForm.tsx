@@ -17,7 +17,7 @@ import {
 import { useFormik } from "formik";
 //Next / React
 import Link from "next/link";
-import { useEffect, useEffectEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 //Types
 import { RegisterFormData } from "@/types/auth.types";
@@ -32,11 +32,13 @@ import Loader from "@/components/Loaders/Loader";
 import { RegisterResponse } from "@/types/api.types";
 
 const RegisterForm = () => {
-  const { setToken, setUser } = useAuth();
+  const { setToken, setUser, isLoading, user } = useAuth();
   const [registerLoading, setRegisterLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const handleShowPass = () => {
     setShow(!show);
   };
@@ -81,6 +83,15 @@ const RegisterForm = () => {
       );
     },
   });
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (user) {
+        router.push("/");
+      }
+    }
+  }, [user, isLoading, router]);
+
   useEffect(() => {
     const error = searchParams.get("error");
     const error_description = searchParams.get("error_description");
@@ -90,10 +101,13 @@ const RegisterForm = () => {
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, [searchParams]);
+
+  if (isLoading) return <Loader />;
   return (
     <>
-      <div></div>
-      {registerLoading ? (
+      {user ? (
+        <Loader />
+      ) : registerLoading ? (
         <div className="flex flex-col min-h-screen justify-center items-center">
           <Loader size="medium" />
           <p className="text-slate-400">Enviando registro...</p>

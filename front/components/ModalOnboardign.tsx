@@ -1,3 +1,4 @@
+
 "use client";
 import Link from "next/link";
 import { useFormik } from "formik";
@@ -9,23 +10,33 @@ import {
   updateCheckboxService,
   updateRoleService,
 } from "@/services/user.service";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TinyLoader from "./Loaders/TinyLoader";
 import { HiArrowRight } from "react-icons/hi";
-
 import { GoMortarBoard } from "react-icons/go";
 import { HiOutlineComputerDesktop } from "react-icons/hi2";
+
 const ModalOnboarding = () => {
   const { user, setUser, token } = useAuth();
   const [step, setStep] = useState<"terms" | "role">("terms");
 
+  useEffect(() => {
+    if (user) {
+      if (!user.checkBoxTerms) {
+        setStep("terms");
+      } else if (user.role === null) {
+        setStep("role");
+      }
+    }
+  }, [user]);
+
   const formik = useFormik<{
     checkBoxTerms: boolean;
-    role: "student" | "teacher" | "";
+    role: "student" | "teacher" | "admin" | null;
   }>({
     initialValues: {
-      checkBoxTerms: false,
-      role: "",
+      checkBoxTerms: user?.checkBoxTerms || false,
+      role: user?.role || null,
     },
     validationSchema: Yup.object({
       checkBoxTerms:
@@ -38,28 +49,27 @@ const ModalOnboarding = () => {
               .required(
                 "Debes aceptar los términos y condiciones para continuar"
               )
-          : Yup.boolean(),
+          : Yup.boolean().notRequired(),
       role:
         step === "role"
           ? Yup.string()
               .oneOf(["student", "teacher"], "Rol inválido")
               .required("Debes seleccionar un rol para continuar")
-          : Yup.string(),
+          : Yup.string().notRequired(),
     }),
     onSubmit: async (values) => {
       if (!token) return toastError("No hay token");
 
       try {
         if (step === "terms") {
-          // Actualizar términos
           const updatedUser = await updateCheckboxService(token, user!.id);
           setUser(updatedUser);
 
-          // Si ya tiene rol, finalizar. Si no, pasar al siguiente paso
           if (updatedUser.role !== null) {
-            toastSuccess("¡Bienvenid@ a DevCore!");
+            toastSuccess("Bienvenid@ a DevCore!");
           } else {
             setStep("role");
+            formik.setFieldValue("checkBoxTerms", true);
           }
         } else if (step === "role") {
           if (!values.role || values.role === null) {
@@ -275,7 +285,7 @@ const ModalOnboarding = () => {
                     value: "student",
                     label: "Alumn@",
                     description: "Aprende y desarrolla nuevas habilidades",
-                    icon: <HiOutlineComputerDesktop/>,
+                    icon: <HiOutlineComputerDesktop />,
                   },
                 ].map((option) => (
                   <div
@@ -372,7 +382,7 @@ const ModalOnboarding = () => {
 
               <button
                 type="submit"
-                onClick={(e) => {
+                onClick={() => {
                   formik.setTouched({
                     role: true,
                   });

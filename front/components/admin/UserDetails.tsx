@@ -64,13 +64,14 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
       minute: "2-digit",
     });
   };
+  
   useEffect(() => {
     const fetchCourses = async (userId: string) => {
       try {
         if (token) {
           const data = await getUserByIdService(userId);
           setCurrentUser(data);
-          const enrollments = await data.enrollments; ////
+          const enrollments = await data.enrollments; 
           setMyCourses(enrollments);
         }
       } catch (error) {

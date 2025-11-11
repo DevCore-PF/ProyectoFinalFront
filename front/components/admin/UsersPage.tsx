@@ -37,6 +37,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     fetchActiveUser,
     fetchInactiveUser,
     deactivateUser,
+    activateUser,
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -178,13 +179,18 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
       toastSuccess("Usuario baneado");
     } catch (error) {
       console.log(error);
-      if (error instanceof Error) toastError(error.message);
       throw error;
     }
   };
 
-  const handleActivateUser = (userId: string) => {
-    console.log("Activar usuario:", userId);
+  const handleActivateUser = async (userId: string) => {
+    try {
+      await activateUser(userId);
+      toastSuccess("Usuario activado");
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   const handleViewUser = (userId: string) => {

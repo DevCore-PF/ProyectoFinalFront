@@ -100,10 +100,21 @@ export const deactivateUserService = async (userId: string, token: string) => {
   }
 };
 
-export const activateUserService = async () => {
+export const activateUserService = async (token: string, userId: string) => {
   try {
-    // /users/activate/{userId}
+    const response = await fetch(`${API_URL}/users/activate/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messge || "Error al activar usuario");
+    }
   } catch (error) {
-    
+    console.log(error);
+    throw error;
   }
 };

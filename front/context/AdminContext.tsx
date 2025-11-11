@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import {
+  activateUserService,
   deactivateUserService,
   getActiveUsersService,
   getAllUsersService,
@@ -59,11 +60,11 @@ interface AdminContextType {
   fetchUserById: (id: string) => Promise<User>;
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
-  fetchCourseById: (userId: string) => Promise<Course | undefined>;/////////////para el profesor
+  fetchCourseById: (userId: string) => Promise<Course | undefined>; /////////////para el profesor
 
   // User actions
   deactivateUser: (id: string) => Promise<void>;
-  //   activateUser: (userId: string) => Promise<void>;
+  activateUser: (id: string) => Promise<void>;
 
   // Validation actions
   //   approveValidation: (validationId: string) => Promise<void>;
@@ -206,11 +207,24 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const activateUser = async (userId: string) => {
+    try {
+      if (token) {
+        await activateUserService(token, userId);
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, isActive: true } : u))
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   const deactivateUser = async (userId: string) => {
     try {
       if (token) {
-        const response = await deactivateUserService(userId, token);
-
+        await deactivateUserService(userId, token);
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u))
         );
@@ -352,7 +366,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     fetchActiveUser,
     fetchInactiveUser,
     fetchCourseById,
-    // activateUser,
+    activateUser,
     // deleteUser,
     // approveValidation,
     // rejectValidation,

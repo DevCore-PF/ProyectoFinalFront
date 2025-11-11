@@ -19,6 +19,7 @@ import {
   HiMail,
   HiUserCircle,
 } from "react-icons/hi";
+import CourseDetails from "@/components/admin/CourseDetails";
 
 type ValidationType =
   | "professor"
@@ -316,6 +317,7 @@ const AdminDashboard = () => {
             </button>
           </div>
         </div>
+
         {/* ============[ CONTENIDO DE LOS TABS ]============= */}
         <div className="relative overflow-hidden min-h-[600px]">
           {/* ============[ VISTA PRINCIPAL DE TABS ]============= */}
@@ -329,10 +331,12 @@ const AdminDashboard = () => {
             {activeTab === "overview" && <OverviewTab />}
             {activeTab === "admins" && <AdminsTab />}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
-            {activeTab === "courses" && <CoursesPage />}
+            {activeTab === "courses" && (
+              <CoursesPage onViewDetail={openDetail} />
+            )}
           </div>
 
-          {/* ============[ VISTA DE DETALLES CON TRANSICIÓN ]============= */}
+          {/* ============[ VISTA DE DETALLES de USER CON TRANSICIÓN ]============= */}
           <div
             className={`${
               isShowingDetail ? "relative" : "absolute"
@@ -380,6 +384,10 @@ const AdminDashboard = () => {
                   </div>
                 ) : null}
               </>
+            )}
+            {/* ============[ COURSE DETAIL ]============= */}
+            {detailView.tab === "courses" && detailView.id && (
+              <CourseDetails courseId={detailView.id} onBack={closeDetail} />
             )}
           </div>
         </div>

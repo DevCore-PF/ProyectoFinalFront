@@ -20,7 +20,10 @@ import { Course } from "@/types/course.types";
 import { ValidationRequest } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
-import { getCourseByIdService } from "@/services/course.services";
+import {
+  getAllCoursesService,
+  getCourseByIdService,
+} from "@/services/course.services";
 
 interface AdminStats {
   totalUsers: number;
@@ -163,14 +166,13 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Fetch Courses (implementar tu servicio)
+  
   const fetchCourses = async () => {
     setIsLoadingCourses(true);
     setCoursesError(null);
     try {
-      // const data = await getAllCoursesService();
-      // setCourses(data);
-      // calculateStats(users, data, validationRequests);
+      const data = await getAllCoursesService();
+      setCourses(data);
     } catch (error) {
       setCoursesError("Error al cargar cursos");
       console.error("Error fetching courses:", error);

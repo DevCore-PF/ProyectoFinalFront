@@ -29,7 +29,7 @@ export default function CheckoutPage() {
         setLoading(true);
         const courseIds = cart.map((course) => course.id);
         const { url } = await createCheckoutSession(token, courseIds);
-        // clearCart();
+        clearCart();
         window.location.href = url;
       }
     } catch (err: any) {

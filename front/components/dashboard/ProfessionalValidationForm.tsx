@@ -630,7 +630,7 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
 
 export default ProfessionalValidationForm;
 
-/////////////////////////////////////////////////////////////SEGUNDO FUNCIONAL commit Diego 65ffa986e2c4d4db8948e19da0f5f0c60e8a0a5d feature terminada gracias a dios y los santos griales dios bendiga america validacion de teacher correcta y contexto actualizado
+/////////////////////////////////////////////////////////////commit Diego 65ffa986e2c4d4db8948e19da0f5f0c60e8a0a5d feature terminada gracias a dios y los santos griales dios bendiga america validacion de teacher correcta y contexto actualizado
 // "use client";
 // import React, { useState } from "react";
 // import { useFormik } from "formik";

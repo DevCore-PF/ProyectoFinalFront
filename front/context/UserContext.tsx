@@ -1,7 +1,7 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
 import { getCurrentUserService } from "@/services/user.service";
-import { User } from "@/types/auth.types";
+import { User } from "@/types/user.types";
 
 import {
   createContext,
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             profileImage:
               freshUserData.profileImage ||
               freshUserWithImage.image ||
-              user.profileImage,
+              user.image,
           };
 
           setUserState(normalizedUserData);
@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userWithImage = newUser as User & { image?: string };
       const normalizedUser = {
         ...newUser,
-        profileImage: newUser.profileImage || userWithImage.image,
+        profileImage: newUser.image || userWithImage.image,
       };
 
       sessionStorage.setItem("user", JSON.stringify(normalizedUser));
@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         profileImage:
           freshUserData.profileImage ||
           freshUserWithImage.image ||
-          user.profileImage,
+          user.image,
       };
 
       setUser(normalizedUserData);

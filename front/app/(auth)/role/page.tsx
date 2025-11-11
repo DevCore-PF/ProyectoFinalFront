@@ -14,13 +14,13 @@ import { updateRoleService } from "@/services/user.service";
 import { useFormik } from "formik";
 //Validators/Types
 import { roleValidation } from "@/validators/registerSchema";
-import { RoleData } from "@/types/forms.types";
 //Helpers
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
+import { RoleData } from "@/types/forms.types";
 
 const page = () => {
   const router = useRouter();

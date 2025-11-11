@@ -236,8 +236,8 @@ const AdminDashboard = () => {
           </div>
         </div>
         {/* ============[ NAVEGACIÓN DE TABS ]============= */}
-        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-2 mb-6 overflow-x-auto">
-          <div className="flex gap-2 min-w-max">
+        <div className="bg-background2/40 border  border-slate-700/50 rounded-xl p-2 mb-6 overflow-x-auto">
+          <div className="flex gap-2 min-w-max justify-around">
             <button
               onClick={() => setActiveTab("overview")}
               className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${

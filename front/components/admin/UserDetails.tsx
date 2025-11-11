@@ -12,18 +12,20 @@ import {
   HiClock,
   HiStar,
   HiKey,
-  HiGlobe,
   HiRefresh,
 } from "react-icons/hi";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
+
+import { FaCheck } from "react-icons/fa6";
+
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getCurrentUserService } from "@/services/user.service";
 import { useAuth } from "@/context/UserContext";
-import { Course } from "@/types/course.types";
 import { getUserByIdService } from "@/services/admin.services";
 import { useAdmin } from "@/context/AdminContext";
 import { UserEnrollments } from "@/types/admin.types";
-import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+import { toastSuccess } from "@/helpers/alerts.helper";
 
 interface UserDetailsProps {
   user: User;
@@ -31,11 +33,11 @@ interface UserDetailsProps {
 }
 
 const UserDetails = ({ user, onBack }: UserDetailsProps) => {
-  /////////////////////////////////ESTILOS
   const [myCourses, setMyCourses] = useState<UserEnrollments[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User>(user);
   const { token } = useAuth();
-  const { deactivateUser } = useAdmin();
+  const { deactivateUser, activateUser } = useAdmin();
+
   /////////////////ESTILOS
   const getRoleBadge = (role: string) => {
     const config = {
@@ -64,14 +66,14 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
       minute: "2-digit",
     });
   };
-  
+
   useEffect(() => {
     const fetchCourses = async (userId: string) => {
       try {
         if (token) {
           const data = await getUserByIdService(userId);
           setCurrentUser(data);
-          const enrollments = await data.enrollments; 
+          const enrollments = await data.enrollments;
           setMyCourses(enrollments);
         }
       } catch (error) {
@@ -80,27 +82,35 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
       }
     };
     fetchCourses(user.id);
-  }, []);
-
-  const handleBanUser = async (userId: string) => {
-    try {
-      await deactivateUser(userId);
-      toastSuccess("Usuario baneado");
-    } catch (error) {
-      console.log(error);
-      console.log(error);
-      throw error;
-    }
-  };
+  }, [user.id, token]);
 
   const getTotal = () => {
     return myCourses.reduce((total, course) => {
       return total + Number(course.priceAtPurchase || 0);
     }, 0);
   };
-  const roleBadge = getRoleBadge(user.role);
-  console.log(`cursos de ${user.name}`, myCourses);
-  console.log("este es mi user actual", currentUser);
+
+  const roleBadge = getRoleBadge(currentUser.role);
+
+  const handleBanUnban = async () => {
+    try {
+      if (currentUser.isActive) {
+        await deactivateUser(currentUser.id);
+        toastSuccess("Usuario baneado");
+      } else {
+        await activateUser(currentUser.id);
+        toastSuccess("Usuario activado");
+      }
+
+      // Refrescar los datos del usuario desde el backend
+      if (token) {
+        const updatedUser = await getUserByIdService(currentUser.id);
+        setCurrentUser(updatedUser);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
@@ -115,27 +125,47 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
             Volver a usuarios
           </button>
 
+          {/* Banner de usuario baneado */}
+          {!currentUser.isActive && (
+            <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-amber-500/20 rounded-lg">
+                  <HiBan className="w-6 h-6 text-amber-300" />
+                </div>
+                <div>
+                  <p className="text-amber-200 font-semibold text-lg">
+                    Usuario Baneado
+                  </p>
+                  <p className="text-amber-300/80 text-sm">
+                    Este usuario no puede acceder a la plataforma. Puedes
+                    activarlo usando el botón a continuación.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 shadow-xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                {user.image ? (
+                {currentUser.image ? (
                   <img
-                    src={user.image}
-                    alt={user.name}
+                    src={currentUser.image}
+                    alt={currentUser.name}
                     className="w-20 h-20 rounded-full object-cover border-2 border-button/60"
                   />
                 ) : (
                   <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center text-font-light text-3xl font-bold border border-slate-600">
-                    {user.name.charAt(0).toUpperCase()}
+                    {currentUser.name.charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div>
                   <h1 className="text-3xl font-bold text-font-light mb-1">
-                    {user.name}
+                    {currentUser.name}
                   </h1>
                   <p className="text-slate-400 flex items-center gap-2">
                     <HiMail className="w-4 h-4" />
-                    {user.email}
+                    {currentUser.email}
                   </p>
                   <div className="flex items-center gap-2 mt-2">
                     <span
@@ -145,12 +175,12 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                     </span>
                     <span
                       className={`px-3 py-1 rounded-lg text-xs font-medium border ${
-                        user.isActive
+                        currentUser.isActive
                           ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                          : "bg-slate-500/10 text-slate-400 border-slate-500/20"
+                          : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                       }`}
                     >
-                      {user.isActive ? "Activo" : "Inactivo"}
+                      {currentUser.isActive ? "Activo" : "Baneado"}
                     </span>
                   </div>
                 </div>
@@ -158,12 +188,27 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
 
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleBanUser(user.id)}
-                  title="Banear usuario"
-                  className="flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 px-4 py-2 rounded-lg font-medium transition-all"
+                  onClick={() => handleBanUnban()}
+                  title={
+                    currentUser.isActive ? "Banear usuario" : "Activar usuario"
+                  }
+                  className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
+                    currentUser.isActive
+                      ? "border-amber-300/50 text-amber-300"
+                      : "border-emerald-400/50 text-emerald-200"
+                  }`}
                 >
-                  <HiBan className="w-5 h-5" />
-                  {user.isActive ? "Banear" : "Activar"}
+                  {currentUser.isActive ? (
+                    <>
+                      <HiBan className="w-5 h-5" />
+                      Banear
+                    </>
+                  ) : (
+                    <>
+                      <HiCheckCircle className="w-5 h-5" />
+                      Activar
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -184,22 +229,22 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                 <div>
                   <p className="text-slate-400 text-sm mb-1">ID de Usuario</p>
                   <p className="text-font-light font-mono text-sm bg-slate-800/50 px-3 py-2 rounded">
-                    {user.id}
+                    {currentUser.id}
                   </p>
                 </div>
 
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Email</p>
                   <div className="flex items-center gap-2">
-                    <p className="text-font-light">{user.email}</p>
-                    {user.isEmailVerified ? (
-                      <span className="text-emerald-400 text-xs flex items-center gap-1">
-                        <HiCheckCircle className="w-4 h-4" />
+                    <p className="text-font-light">{currentUser.email}</p>
+                    {currentUser.isEmailVerified ? (
+                      <span className="text-emerald-300 text-xs flex items-center gap-1">
+                        <FaCheck className="w-3 h-3" />
                         Verificado
                       </span>
                     ) : (
                       <span className="text-amber-400 text-xs flex items-center gap-1">
-                        <HiXCircle className="w-4 h-4" />
+                        <RxCross2 className="w-4 h-4" />
                         No verificado
                       </span>
                     )}
@@ -209,39 +254,39 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Tipo de cuenta</p>
                   <div className="flex gap-2">
-                    {user.isGoogleAccount && (
+                    {currentUser.isGoogleAccount && (
                       <span className="px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
                         <FaGoogle className="w-3 h-3" />
                         Google
                       </span>
                     )}
-                    {user.isGitAcocount && (
+                    {currentUser.isGitAcocount && (
                       <span className="px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
                         <FaGithub className="w-3 h-3" />
                         GitHub
                       </span>
                     )}
-                    {!user.isGoogleAccount && !user.isGitAcocount && (
-                      <span className="px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
-                        <HiMail className="w-3 h-3" />
-                        Email
-                      </span>
-                    )}
+                    {!currentUser.isGoogleAccount &&
+                      !currentUser.isGitAcocount && (
+                        <span className="px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
+                          <HiMail className="w-3 h-3" />
+                          Email
+                        </span>
+                      )}
                   </div>
                 </div>
 
-                {user.googleId && (
+                {currentUser.googleId && (
                   <div>
                     <p className="text-slate-400 text-sm mb-1">Google ID</p>
                     <p className="text-slate-300 font-mono text-xs bg-slate-800/50 px-3 py-2 rounded truncate">
-                      {user.googleId}
+                      {currentUser.googleId}
                     </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Estado de perfil */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiCheckCircle className="w-6 h-6" />
@@ -250,37 +295,37 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Perfil completado</span>
-                  {user.hasCompletedProfile ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-400" />
+                  {currentUser.hasCompletedProfile ? (
+                    <HiCheckCircle size={22} className=" text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-slate-500" />
+                    <HiXCircle size={22} className=" text-slate-400" />
                   )}
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Email verificado</span>
-                  {user.isEmailVerified ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-400" />
+                  {currentUser.isEmailVerified ? (
+                    <HiCheckCircle size={22} className=" text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-slate-500" />
+                    <HiXCircle size={22} className=" text-slate-400" />
                   )}
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Términos aceptados</span>
-                  {user.checkBoxTerms ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-400" />
+                  {currentUser.checkBoxTerms ? (
+                    <HiCheckCircle size={22} className=" text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-slate-500" />
+                    <HiXCircle size={22} className=" text-slate-400" />
                   )}
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Cuenta activa</span>
-                  {user.isActive ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-400" />
+                  {currentUser.isActive ? (
+                    <HiCheckCircle size={22} className=" text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-slate-500" />
+                    <HiXCircle size={22} className=" text-slate-400" />
                   )}
                 </div>
               </div>
@@ -297,18 +342,18 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                   <p className="text-slate-400 text-sm mb-1">Registro</p>
                   <p className="text-font-light text-sm flex items-center gap-2">
                     <HiClock className="w-4 h-4 text-slate-400" />
-                    {formatDate(user.createdAt)}
+                    {formatDate(currentUser.createdAt)}
                   </p>
                 </div>
 
-                {user.updatedAt && (
+                {currentUser.updatedAt && (
                   <div>
                     <p className="text-slate-400 text-sm mb-1">
                       Última actualización
                     </p>
                     <p className="text-font-light text-sm flex items-center gap-2">
                       <HiRefresh className="w-4 h-4 text-slate-400" />
-                      {formatDate(user.updatedAt)}
+                      {formatDate(currentUser.updatedAt)}
                     </p>
                   </div>
                 )}
@@ -316,44 +361,46 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
             </div>
 
             {/* Tokens y seguridad */}
-            {(user.resetPasswordToken ||
-              user.emailVerificationToken ||
-              user.resetPasswordExpires) && (
+            {(currentUser.resetPasswordToken ||
+              currentUser.emailVerificationToken ||
+              currentUser.resetPasswordExpires) && (
               <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
                 <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                   <HiKey className="w-6 h-6" />
                   Seguridad
                 </h2>
                 <div className="space-y-3">
-                  {user.resetPasswordToken && (
+                  {currentUser.resetPasswordToken && (
                     <div>
                       <p className="text-slate-400 text-sm mb-1">
                         Token de recuperación
                       </p>
                       <p className="text-font-light font-mono text-xs bg-slate-800/50 px-3 py-2 rounded truncate">
-                        {user.resetPasswordToken}
+                        {currentUser.resetPasswordToken}
                       </p>
                     </div>
                   )}
 
-                  {user.resetPasswordExpires && (
+                  {currentUser.resetPasswordExpires && (
                     <div>
                       <p className="text-slate-400 text-sm mb-1">
                         Expira el token
                       </p>
                       <p className="text-font-light text-sm">
-                        {formatDate(user.resetPasswordExpires.toString())}
+                        {formatDate(
+                          currentUser.resetPasswordExpires.toString()
+                        )}
                       </p>
                     </div>
                   )}
 
-                  {user.emailVerificationToken && (
+                  {currentUser.emailVerificationToken && (
                     <div>
                       <p className="text-slate-400 text-sm mb-1">
                         Token de verificación
                       </p>
                       <p className="text-font-light font-mono text-xs bg-slate-800/50 px-3 py-2 rounded truncate">
-                        {user.emailVerificationToken}
+                        {currentUser.emailVerificationToken}
                       </p>
                     </div>
                   )}
@@ -374,7 +421,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                   <div>
                     <p className="text-slate-400 text-sm">Cursos inscritos</p>
                     <p className="text-2xl font-bold text-font-light">
-                      {user.enrollments?.courseList?.length || 0}
+                      {currentUser.enrollments?.courseList?.length || 0}
                     </p>
                   </div>
                 </div>

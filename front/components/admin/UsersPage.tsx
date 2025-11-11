@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
@@ -144,8 +145,8 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   //============[ ESTILOS BADGE STATUS ]=============
   const getStatusBadge = (isActive: boolean) => {
     return isActive
-      ? "bg-/10 text-emerald-400/90 border-emerald-500/20"
-      : "bg-slate-500/10 text-slate-400 border-slate-500/20";
+      ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
+      : "bg-amber-500/10 text-amber-200 border-amber-500/20";
   };
 
   const formatDate = (dateString: string) => {
@@ -213,6 +214,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
 
     toastSuccess("Usuarios baneados");
   };
+  
   const activateMultipleUsers = async (userIds: string[]) => {
     const results = {
       success: [] as string[],
@@ -232,6 +234,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     }
     toastSuccess("Usuarios activados");
   };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -285,7 +288,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-slate-400">
+              <p className="text-2xl font-bold text-red-400">
                 {stats.inactive}
               </p>
             </div>
@@ -424,7 +427,6 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       onClick={() => activateMultipleUsers(selectedUsers)}
                       className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
                     >
-                      {/* "cursor-pointer bg-slate-700/50 hover:bg-slate-700 border-button/50 text-accent-medium" */}
                       Activar seleccionados
                     </button>
                   </div>
@@ -440,16 +442,47 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                   <thead className="bg-slate-800/50 border-b border-slate-700/50">
                     <tr>
                       <th className="px-4 py-4 text-left">
-                        <input
-                          type="checkbox"
-                          checked={
-                            selectedUsers.length ===
-                              filteredAndSortedUsers.length &&
-                            filteredAndSortedUsers.length > 0
-                          }
-                          onChange={handleSelectAll}
-                          className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-button focus:ring-button cursor-pointer"
-                        />
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={
+                              selectedUsers.length ===
+                                filteredAndSortedUsers.length &&
+                              filteredAndSortedUsers.length > 0
+                            }
+                            onChange={handleSelectAll}
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
+                              selectedUsers.length ===
+                                filteredAndSortedUsers.length &&
+                              filteredAndSortedUsers.length > 0
+                                ? " border-font-light"
+                                : "border-slate-600 bg-slate-700/50"
+                            }`}
+                          >
+                            <svg
+                              className={`w-3 h-3 text-font-light transition-opacity ${
+                                selectedUsers.length ===
+                                  filteredAndSortedUsers.length &&
+                                filteredAndSortedUsers.length > 0
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              }`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                        </label>
                       </th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
                         Usuario
@@ -474,67 +507,72 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                     {filteredAndSortedUsers.map((user) => (
                       <tr
                         key={user.id}
-                        className={`transition-colors ${
-                          user.isActive
-                            ? "hover:bg-slate-800/30"
-                            : "opacity-50 bg-slate-900/20"
+                        className={`transition-colors hover:bg-slate-800/30 ${
+                          !user.isActive ? "bg-gray-400/10 hover:bg-gray-400/10!" : ""
                         }`}
                       >
                         <td className="px-4 py-4">
-                          <input
-                            type="checkbox"
-                            checked={selectedUsers.includes(user.id)}
-                            onChange={() => handleSelectUser(user.id)}
-                            disabled={!user.isActive}
-                            className={`w-4 h-4 rounded border-slate-600 focus:ring-button ${
-                              user.isActive
-                                ? "bg-slate-700 text-button cursor-pointer"
-                                : "bg-slate-800 text-slate-600 cursor-not-allowed"
-                            }`}
-                          />
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.includes(user.id)}
+                              onChange={() => handleSelectUser(user.id)}
+                              className="sr-only"
+                            />
+                            <div
+                              className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
+                                selectedUsers.includes(user.id)
+                                  ? " border-font-light"
+                                  : "border-slate-600 bg-slate-700/50"
+                              }`}
+                            >
+                              <svg
+                                className={`w-3 h-3 text-font-light transition-opacity ${
+                                  selectedUsers.includes(user.id)
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                }`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                          </label>
                         </td>
                         <td className="py-4">
                           <div className="flex items-center gap-3">
-                            {user.image && !imageError ? (
-                              <img
-                                src={user.image}
-                                alt={user.name}
-                                onError={() => setImageError(true)}
-                                className={`w-10 h-10 rounded-full object-cover border-2 ${
-                                  user.isActive
-                                    ? "border-button/60"
-                                    : "border-slate-700 grayscale"
-                                }`}
-                              />
-                            ) : (
-                              <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-3xl font-bold border ${
-                                  user.isActive
-                                    ? "bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600"
-                                    : "bg-slate-800 border-slate-700 text-slate-500"
-                                }`}
-                              >
-                                {user.name.charAt(0).toUpperCase()}
-                              </div>
-                            )}
+                            <div className="relative">
+                              {user.image && !imageError ? (
+                                <img
+                                  src={user.image}
+                                  alt={user.name}
+                                  onError={() => setImageError(true)}
+                                  className="w-10 h-10 rounded-full object-cover border-2 border-button/60"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-3xl font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
+                                  {user.name.charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                              {!user.isActive && (
+                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-background rounded-full flex items-center justify-center">
+                                  <HiBan className="w-2.5 h-2.5 text-white" />
+                                </div>
+                              )}
+                            </div>
 
                             <div>
-                              <p
-                                className={`font-medium ${
-                                  user.isActive
-                                    ? "text-font-light"
-                                    : "text-slate-500"
-                                }`}
-                              >
+                              <p className="font-medium text-font-light">
                                 {user.name}
                               </p>
-                              <p
-                                className={`text-sm flex items-center gap-1 ${
-                                  user.isActive
-                                    ? "text-slate-400"
-                                    : "text-slate-600"
-                                }`}
-                              >
+                              <p className="text-sm flex items-center gap-1 text-slate-400">
                                 <HiMail className="w-3 h-3" />
                                 {user.email}
                               </p>
@@ -562,18 +600,12 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                               user.isActive
                             )}`}
                           >
-                            {user.isActive ? "Activo" : "Inactivo"}
+                            {user.isActive ? "Activo" : "Baneado"}
                           </span>
                         </td>
                         <td className="px-4 py-4">
                           <div className="text-sm">
-                            <p
-                              className={`flex items-center gap-1 ${
-                                user.isActive
-                                  ? "text-slate-300"
-                                  : "text-slate-600"
-                              }`}
-                            >
+                            <p className="flex items-center gap-1 text-slate-300">
                               <HiCalendar className="w-3 h-3" />
                               {formatDate(user.createdAt)}
                             </p>
@@ -583,17 +615,8 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => onViewDetail("users", user.id)}
-                              disabled={!user.isActive}
-                              className={`p-2 border rounded-lg transition-all ${
-                                user.isActive
-                                  ? "cursor-pointer bg-slate-700/50 hover:bg-slate-700 border-button/50 text-accent-medium"
-                                  : "cursor-not-allowed bg-slate-800/30 border-slate-700 text-slate-600"
-                              }`}
-                              title={
-                                user.isActive
-                                  ? "Ver perfil"
-                                  : "Usuario inactivo"
-                              }
+                              className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
+                              title="Ver perfil"
                             >
                               <HiEye className="w-4 h-4" />
                             </button>

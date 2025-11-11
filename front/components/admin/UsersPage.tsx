@@ -134,7 +134,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
       student: "bg-blue-400/10 text-blue-300 border-blue-500/20",
       teacher: "bg-button/10 text-purple-300/90 border-button/20",
       admin: "bg-amber-500/10 text-amber-300 border-amber-500/20",
-      null: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+      null: "bg-gray-200/10 text-gray-100 border-gray-200/30",
     };
     if (role === null) {
       return config.null;
@@ -508,7 +508,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       <tr
                         key={user.id}
                         className={`transition-colors hover:bg-slate-800/30 ${
-                          !user.isActive ? "bg-gray-400/10 hover:bg-gray-400/10!" : ""
+                          !user.isActive ? "bg-amber-300/10 hover:bg-amber-300/10! " : ""
                         }`}
                       >
                         <td className="px-4 py-4">

@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import {
+  activateDeactivateCourseService,
   activateUserService,
   deactivateUserService,
   getActiveUsersService,
@@ -64,6 +65,7 @@ interface AdminContextType {
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
   fetchCourseById: (userId: string) => Promise<Course | undefined>; /////////////para el profesor
+  activateDeactivateCourse: (CourseId: string) => Promise<void>;
 
   // User actions
   deactivateUser: (id: string) => Promise<void>;
@@ -166,7 +168,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  
   const fetchCourses = async () => {
     setIsLoadingCourses(true);
     setCoursesError(null);
@@ -237,6 +238,23 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const activateDeactivateCourse = async (courseId: string) => {
+    try {
+      if (token) {
+        await activateDeactivateCourseService(token, courseId);
+        // ESTO ES LO QUE TE FALTABA - Actualizar el estado local
+        setCourses((prev) =>
+          prev.map((c) =>
+            c.id === courseId ? { ...c, isActive: !c.isActive } : c
+          )
+        );
+      }
+    } catch (error) {
+      setCoursesError("Error al cambiar estado de curso");
+      console.error(error);
+      throw error; // Importante para que el componente maneje el error
+    }
+  };
   ///////////////////////////////////// Refresh functions
   const refreshUsers = async () => {
     await fetchUsers();
@@ -369,6 +387,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     fetchInactiveUser,
     fetchCourseById,
     activateUser,
+    activateDeactivateCourse,
     // deleteUser,
     // approveValidation,
     // rejectValidation,

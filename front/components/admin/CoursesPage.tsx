@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { downloadCSV } from "@/helpers/adminHandlers";
-import { toastSuccess } from "@/helpers/alerts.helper";
+import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import {
   HiSearch,
   HiFilter,
@@ -19,6 +19,7 @@ import {
 import { FaPlus } from "react-icons/fa";
 import Loader from "../Loaders/Loader";
 import { TabType } from "@/types/admin.types";
+import TinyLoader from "../Loaders/TinyLoader";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
@@ -74,8 +75,13 @@ export interface Course {
 }
 
 const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
-  const { courses, isLoadingCourses, coursesError, refreshCourses } =
-    useAdmin();
+  const {
+    courses,
+    isLoadingCourses,
+    coursesError,
+    refreshCourses,
+    activateDeactivateCourse,
+  } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] =
@@ -87,6 +93,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [loadingCourseId, setLoadingCourseId] = useState<string | null>(null);
+  const [loadingGroupAction, setLoadingGroupAction] = useState<
+    "activate" | "deactivate" | null
+  >(null);
 
   useEffect(() => {
     refreshCourses();
@@ -256,15 +266,80 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   const deactivateMultipleCourses = async (courseIds: string[]) => {
-    // TODO: Implementar cuando esté el service del backend
-    toastSuccess("Cursos desactivados");
+    setLoadingGroupAction("deactivate"); // Cambio aquí
+    const results = {
+      success: [] as string[],
+      errors: [] as { courseId: string; error: string }[],
+    };
+
+    for (const courseId of courseIds) {
+      try {
+        await activateDeactivateCourse(courseId);
+        results.success.push(courseId);
+      } catch (error) {
+        results.errors.push({
+          courseId,
+          error: error instanceof Error ? error.message : "Error desconocido",
+        });
+      }
+    }
+
+    setLoadingGroupAction(null); // Cambio aquí
+    setSelectedCourses([]);
+
+    if (results.success.length > 0) {
+      toastSuccess(`${results.success.length} cursos desactivados`);
+    }
+    if (results.errors.length > 0) {
+      toastError(`${results.errors.length} cursos fallaron`);
+    }
   };
 
   const activateMultipleCourses = async (courseIds: string[]) => {
-    // TODO: Implementar cuando esté el service del backend
-    toastSuccess("Cursos activados");
+    setLoadingGroupAction("activate"); // Cambio aquí
+    const results = {
+      success: [] as string[],
+      errors: [] as { courseId: string; error: string }[],
+    };
+
+    for (const courseId of courseIds) {
+      try {
+        await activateDeactivateCourse(courseId);
+        results.success.push(courseId);
+      } catch (error) {
+        results.errors.push({
+          courseId,
+          error: error instanceof Error ? error.message : "Error desconocido",
+        });
+      }
+    }
+
+    setLoadingGroupAction(null); // Cambio aquí
+    setSelectedCourses([]);
+
+    if (results.success.length > 0) {
+      toastSuccess(`${results.success.length} cursos activados`);
+    }
+    if (results.errors.length > 0) {
+      toastError(`${results.errors.length} cursos fallaron`);
+    }
   };
 
+  const handleChangeStatus = async (courseId: string) => {
+    setLoadingCourseId(courseId);
+    try {
+      await activateDeactivateCourse(courseId);
+      toastSuccess(
+        courses.find((c) => c.id === courseId)?.isActive
+          ? "Curso desactivado"
+          : "Curso activado"
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingCourseId(null);
+    }
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -277,7 +352,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => downloadCSV(courses)}
+                // onClick={() => downloadCSV(courses)}
                 className="flex cursor-pointer items-center gap-2 bg-slate-700/50 hover:bg-slate-700/80 border border-slate-600 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
               >
                 <HiDownload className="w-5 h-5" />
@@ -473,15 +548,31 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   </span>
                   <button
                     onClick={() => deactivateMultipleCourses(selectedCourses)}
-                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                    disabled={loadingGroupAction !== null}
+                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Desactivar seleccionados
+                    {loadingGroupAction === "deactivate" ? (
+                      <>
+                        <TinyLoader />
+                        Procesando...
+                      </>
+                    ) : (
+                      "Desactivar seleccionados"
+                    )}
                   </button>
                   <button
                     onClick={() => activateMultipleCourses(selectedCourses)}
-                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                    disabled={loadingGroupAction !== null}
+                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Activar seleccionados
+                    {loadingGroupAction === "activate" ? (
+                      <>
+                        <TinyLoader />
+                        Procesando...
+                      </>
+                    ) : (
+                      "Activar seleccionados"
+                    )}
                   </button>
                 </div>
               )}
@@ -570,7 +661,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           key={course.id}
                           className={`transition-colors hover:bg-slate-800/30 ${
                             !course.isActive
-                              ? "bg-gray-400/10 hover:bg-gray-400/10!"
+                              ? "bg-amber-300/10 hover:bg-amber-300/10! "
                               : ""
                           }`}
                         >
@@ -611,10 +702,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-button to-accent-dark rounded-lg flex items-center justify-center">
-                                <HiBookOpen className="w-5 h-5 text-font-light" />
+                              <div className="w-10 h-10 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
+                                <HiBookOpen className="w-5 h-5 text-accent-light" />
                               </div>
-                              <div>
+                              <div className="w-full">
                                 <p className="font-medium text-font-light">
                                   {course.title}
                                 </p>
@@ -641,11 +732,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-2">
                               {renderStars(avgRating)}
-                              {course.feedback && course.feedback.rating > 0 && (
-                                <span className="text-slate-400 text-xs">
-                                  ({course.feedback.rating})
-                                </span>
-                              )}
+                              {course.feedback &&
+                                course.feedback.rating > 0 && (
+                                  <span className="text-slate-400 text-xs">
+                                    ({course.feedback.rating})
+                                  </span>
+                                )}
                             </div>
                           </td>
                           <td className="px-4 py-4">
@@ -658,8 +750,8 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </span>
                           </td>
                           <td className="px-4 py-4">
-                            <p className="text-emerald-300 font-semibold flex items-center gap-1">
-                              $ {course.price}
+                            <p className="text-emerald-200/80 text-sm flex items-center">
+                              ${course.price}
                             </p>
                           </td>
                           <td className="px-4 py-4">
@@ -669,23 +761,35 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                                   onViewDetail("courses", course.id)
                                 }
                                 className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
-                                title="Ver detalles"
+                                title="Ver curso"
                               >
                                 <HiEye className="w-4 h-4" />
                               </button>
                               {course.isActive ? (
                                 <button
-                                  className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all"
+                                  onClick={() => handleChangeStatus(course.id)}
+                                  disabled={loadingCourseId === course.id}
+                                  className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Desactivar curso"
                                 >
-                                  <HiBan className="w-4 h-4" />
+                                  {loadingCourseId === course.id ? (
+                                    <TinyLoader />
+                                  ) : (
+                                    <HiBan className="w-4 h-4" />
+                                  )}
                                 </button>
                               ) : (
                                 <button
-                                  className="p-2 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400/80 rounded-lg transition-all"
+                                  onClick={() => handleChangeStatus(course.id)}
+                                  disabled={loadingCourseId === course.id}
+                                  className="p-2 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400/80 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Activar curso"
                                 >
-                                  <HiCheckCircle className="w-4 h-4" />
+                                  {loadingCourseId === course.id ? (
+                                    <TinyLoader />
+                                  ) : (
+                                    <HiCheckCircle className="w-4 h-4" />
+                                  )}
                                 </button>
                               )}
                             </div>

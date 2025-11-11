@@ -118,3 +118,28 @@ export const activateUserService = async (token: string, userId: string) => {
     throw error;
   }
 };
+
+export const activateDeactivateCourseService = async (
+  token: string,
+  courseId: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/status`, {
+      method:'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al cambiar estado de curso");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

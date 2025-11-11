@@ -193,10 +193,45 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     }
   };
 
-  const handleViewUser = (userId: string) => {
-    console.log("Ver usuario:", userId);
-  };
+  const deactivateMultipleUsers = async (userIds: string[]) => {
+    const results = {
+      success: [] as string[],
+      errors: [] as { userId: string; error: string }[],
+    };
 
+    for (const userId of userIds) {
+      try {
+        await deactivateUser(userId);
+        results.success.push(userId);
+      } catch (error) {
+        results.errors.push({
+          userId,
+          error: error instanceof Error ? error.message : "Error desconocido",
+        });
+      }
+    }
+
+    toastSuccess("Usuarios baneados");
+  };
+  const activateMultipleUsers = async (userIds: string[]) => {
+    const results = {
+      success: [] as string[],
+      errors: [] as { userId: string; error: string }[],
+    };
+
+    for (const userId of userIds) {
+      try {
+        await activateUser(userId);
+        results.success.push(userId);
+      } catch (error) {
+        results.errors.push({
+          userId,
+          error: error instanceof Error ? error.message : "Error desconocido",
+        });
+      }
+    }
+    toastSuccess("Usuarios activados");
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -374,14 +409,26 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
               </p>
 
               {selectedUsers.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400 text-sm">
-                    {selectedUsers.length} seleccionados
-                  </span>
-                  <button className="cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-sm font-medium transition-all">
-                    Bannear seleccionados
-                  </button>
-                </div>
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400 text-sm">
+                      {selectedUsers.length} seleccionados
+                    </span>
+                    <button
+                      onClick={() => deactivateMultipleUsers(selectedUsers)}
+                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200  px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                    >
+                      Banear seleccionados
+                    </button>
+                    <button
+                      onClick={() => activateMultipleUsers(selectedUsers)}
+                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                    >
+                      {/* "cursor-pointer bg-slate-700/50 hover:bg-slate-700 border-button/50 text-accent-medium" */}
+                      Activar seleccionados
+                    </button>
+                  </div>
+                </>
               )}
             </div>
 

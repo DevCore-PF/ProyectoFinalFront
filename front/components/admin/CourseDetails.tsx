@@ -236,7 +236,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   <div className="flex items-center gap-2">
                     <HiAcademicCap className="w-4 h-4 text-slate-400" />
                     <p className="text-font-light">
-                      {course.professor || "Sin asignar"}
+                      {course.professor?.user?.name || "Sin asignar"}
                     </p>
                   </div>
                 </div>

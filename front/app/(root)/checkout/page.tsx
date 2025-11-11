@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
   const { cart, clearCart, getTotal, refreshCart } = useCart();
   const [loadingCart, setLoadingCart] = useState(false);
+
   const handleCheckout = async () => {
     if (!token) {
       setError("No hay sesión activa");
@@ -37,6 +38,7 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const getCart = async () => {
       try {

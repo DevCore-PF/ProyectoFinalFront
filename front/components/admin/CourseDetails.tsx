@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
@@ -12,14 +11,18 @@ import {
   HiClock,
   HiCalendar,
   HiCurrencyDollar,
-  HiUserCircle,
   HiAcademicCap,
   HiChevronDown,
   HiChevronUp,
   HiPlay,
   HiDocumentText,
 } from "react-icons/hi";
+import { HiLockClosed, HiLockOpen } from "react-icons/hi";
 import Loader from "../Loaders/Loader";
+import { changeVisivilityService } from "@/services/admin.services";
+import { useAuth } from "@/context/UserContext";
+import { Visibility } from "@/types/course.types";
+import TinyLoader from "../Loaders/TinyLoader";
 
 interface CourseDetailsProps {
   courseId: string;
@@ -27,7 +30,15 @@ interface CourseDetailsProps {
 }
 
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
-  const { courses, activateDeactivateCourse } = useAdmin();
+  const {
+    courses,
+    activateDeactivateCourse,
+    changeVisibility,
+    fetchFeedback,
+    feedbacks,
+    isLoadingFeedbacks,
+    feedbacksError,
+  } = useAdmin();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
@@ -87,7 +98,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             key={star}
             className={`w-5 h-5 ${
               star <= rating
-                ? "text-yellow-400 fill-yellow-400"
+                ? "text-yellow-300 fill-yellow-300"
                 : "text-slate-600"
             }`}
           />
@@ -95,7 +106,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       </div>
     );
   };
-
   const getAverageRating = () => {
     if (!course?.feedback || course.feedback.length === 0) return 0;
     const sum = course.feedback.reduce(
@@ -138,6 +148,32 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     return config[category as keyof typeof config] || config.Backend;
   };
 
+  const handleChangeVisibility = async (courseId: string) => {
+    try {
+      // Guardar el estado actual ANTES del cambio
+      const currentCourse = courses.find((c) => c.id === courseId);
+      const wasPublic = currentCourse?.visibility === Visibility.PUBLICO;
+
+      await changeVisibility(courseId);
+
+      toastSuccess(
+        wasPublic ? "Curso cambiado a privado" : "Curso cambiado a público"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const averageRating =
+    feedbacks.length > 0
+      ? (
+          feedbacks.reduce((acc, f) => acc + f.rating, 0) / feedbacks.length
+        ).toFixed(1)
+      : "0.0";
+  useEffect(() => {
+    fetchFeedback(courseId);
+  }, [courseId]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -151,7 +187,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <HiBookOpen className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-font-light mb-2">
             Curso no encontrado
           </h2>
           <p className="text-slate-400 mb-6">
@@ -204,7 +240,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
           <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 shadow-xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-4 flex-1">
-                <div className="w-20 h-20 bg-gradient-to-br from-button to-accent-dark rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-20 h-20 bg-button/40 border border-accent-light/40 rounded-xl flex items-center justify-center flex-shrink-0">
                   <HiBookOpen className="w-10 h-10 text-font-light" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -226,7 +262,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     <span
                       className={`px-3 py-1 rounded-lg text-xs font-medium border ${
                         course.isActive
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          ? "bg-emerald-500/10 text-emerald-200 border-emerald-500/20"
                           : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                       }`}
                     >
@@ -247,7 +283,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               >
                 {loadingAction ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                    <TinyLoader />
                     Procesando...
                   </>
                 ) : course.isActive ? (
@@ -300,9 +336,8 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Precio</p>
                   <div className="flex items-center gap-2">
-                    <HiCurrencyDollar className="w-5 h-5 text-emerald-400" />
-                    <p className="text-emerald-400 text-xl font-bold">
-                      ${course.price}
+                    <p className="text-emerald-300 text-xl ">
+                      $ {course.price}
                     </p>
                   </div>
                 </div>
@@ -323,6 +358,19 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   </p>
                   <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
                     {course.status}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-slate-400 text-sm mb-1">Visibilidad</p>
+                  {/*  */}
+                  <span
+                    className={`px-3 py-1 rounded-lg text-xs font-medium border ${
+                      course.visibility === "PRIVADO"
+                        ? "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                        : "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                    }`}
+                  >
+                    {course.visibility}
                   </span>
                 </div>
               </div>
@@ -387,13 +435,43 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
           <div className="lg:col-span-2 space-y-6">
             {/* Lecciones con acordeón */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
-                <HiBookOpen className="w-6 h-6" />
-                Contenido del Curso
-                <span className="text-sm font-normal text-slate-400">
-                  ({course.lessons?.length || 0} lecciones)
-                </span>
-              </h2>
+              <div className="flex items-center mb-4 justify-between">
+                <h2 className="text-xl font-bold text-font-light flex items-center gap-2">
+                  <HiBookOpen className="w-6 h-6" />
+                  Contenido del Curso
+                  <span className="text-sm font-normal text-slate-400">
+                    ({course.lessons?.length || 0} lecciones)
+                  </span>
+                </h2>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-slate-300">
+                    {course.visibility === "PRIVADO" ? "Privado" : "Público"}
+                  </span>
+                  <button
+                    onClick={() => handleChangeVisibility(course.id)}
+                    className={`relative inline-flex h-7 w-14 border cursor-pointer items-center rounded-full transition-colors duration-300 ${
+                      course.visibility === Visibility.PRIVADO
+                        ? "bg-amber-500/80 border-amber-300"
+                        : "bg-emerald-400/80 border-emerald-300"
+                    }`}
+                  >
+                    <span
+                      className={`inline-flex h-6 w-6 items-center justify-center transform rounded-full bg-font-light shadow-md transition-transform duration-300 ${
+                        course.visibility === Visibility.PUBLICO
+                          ? "translate-x-[30px]"
+                          : "translate-x-[2px]"
+                      }`}
+                    >
+                      {course.visibility === Visibility.PRIVADO ? (
+                        <HiLockClosed className="w-4 h-4 text-amber-800" />
+                      ) : (
+                        <HiLockOpen className="w-4 h-4 text-emerald-800" />
+                      )}
+                    </span>
+                  </button>
+                </div>
+              </div>
 
               {course.lessons && course.lessons.length > 0 ? (
                 <div className="space-y-3">
@@ -524,48 +602,21 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   ({course.feedback?.length || 0})
                 </span>
               </h2>
-
-              {course.feedback && course.feedback.length > 0 ? (
-                <div className="space-y-4">
-                  {course.feedback.map((review: any) => (
-                    <div
-                      key={review.id}
-                      className="p-4 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all"
-                    >
-                      <div className="flex items-start gap-3">
-                        {review.user.image ? (
-                          <img
-                            src={review.user.image}
-                            alt={review.user.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-button/60"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600 flex-shrink-0">
-                            {review.user.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-2 gap-2">
-                            <div className="min-w-0">
-                              <p className="text-font-light font-semibold truncate">
-                                {review.user.name}
-                              </p>
-                              <p className="text-slate-400 text-xs">
-                                {formatDate(review.createdAt)}
-                              </p>
-                            </div>
-                            <div className="flex-shrink-0">
-                              {renderStars(review.rating)}
-                            </div>
-                          </div>
-                          <p className="text-slate-300 text-sm">
-                            {review.feedback}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {/* export interface CourseReview {
+  id: string;
+  rating: number; /////del 1 al 5 porque son estrellitas
+  feedback: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+} */}
+              {/* {feedbacks.length > 0 ? (
+                feedbacks.map((f) => {
+                  return <p>{f.user.name} </p>;
+                })
               ) : (
                 <div className="text-center py-12">
                   <HiStar className="w-16 h-16 text-slate-600 mx-auto mb-4" />
@@ -573,7 +624,115 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     Este curso no tiene reviews todavía
                   </p>
                 </div>
-              )}
+              )} */}
+              <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-font-light flex items-center gap-2">
+                    <HiStar className="w-6 h-6 text-yellow-400" />
+                    Reviews y Feedback
+                    <span className="text-sm font-normal text-slate-400">
+                      (2)
+                    </span>
+                  </h2>
+
+                  {/* Promedio de ratings */}
+                  <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg">
+                    <HiStar className="w-5 h-5 fill-yellow-300" />
+                    <span className="text-xl font-bold text-yellow-300">
+                      4.5
+                      {/* aca va el promedio */}
+                    </span>
+                    <span className="text-slate-400 text-sm">/ 5.0</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Review 1 */}
+                  <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
+                    <div className="flex items-start gap-4">
+                      {/* Avatar */}
+                      <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
+                        <span className="text-font-light font-bold text-lg">
+                          MP
+                        </span>
+                      </div>
+
+                      <div className="flex-1">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h4 className="font-semibold text-font-light">
+                              María Pérez
+                            </h4>
+                            <p className="text-slate-400 text-xs">
+                              {new Date(
+                                "2024-10-15T14:30:00"
+                              ).toLocaleDateString("es-ES", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
+                          {renderStars(5)}
+                        </div>
+
+                        {/* Feedback */}
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          Excelente curso, muy bien explicado y con ejemplos
+                          prácticos. El profesor tiene mucha experiencia y se
+                          nota. Los materiales están muy completos y las
+                          lecciones son fáciles de seguir. Totalmente
+                          recomendado para quien quiera aprender sobre este
+                          tema.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Review 2 */}
+                  <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
+                    <div className="flex items-start gap-4">
+                      {/* Avatar */}
+                      <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
+                        <span className="text-font-light font-bold text-lg">
+                          CG
+                        </span>
+                      </div>
+
+                      <div className="flex-1">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h4 className="font-semibold text-font-light">
+                              Carlos González
+                            </h4>
+                            <p className="text-slate-400 text-xs">
+                              {new Date(
+                                "2024-11-02T09:15:00"
+                              ).toLocaleDateString("es-ES", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
+                          {renderStars(4)}
+                        </div>
+
+                        {/* Feedback */}
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          Muy buen contenido y estructura del curso. Me hubiera
+                          gustado que algunos temas tuvieran más ejemplos
+                          avanzados, pero en general cumple muy bien con lo
+                          prometido. La calidad de los videos es excelente y el
+                          material de apoyo es útil.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

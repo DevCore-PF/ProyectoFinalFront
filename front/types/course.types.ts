@@ -14,15 +14,15 @@ export enum CourseCategory {
   MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
-export enum CourseType {
-  COURSE = "Curso",
-  CAREER = "Carrera",
-}
 
 export enum CourseStatus {
   REJECTED = "RECHAZADO",
   IN_REVIEW = "EN REVISION",
   PUBLISHED = "PUBLICADO",
+}
+export enum CourseType {
+  COURSE = "Curso",
+  CAREER = "Carrera",
 }
 
 // Main Interfaces
@@ -42,15 +42,15 @@ export interface Course {
   lessons: Lesson[];
   isActive: boolean;
   feedback: CourseReview;
-  visiblity: Visibility;
+  visibility: Visibility;
   // Datos adicionales para admin
   sales?: number;
   revenue?: number;
   rating?: number;
 }
 export enum Visibility {
-  PUBLIC = "PUBLICO",
-  PRIVATE = "PRIVADO",
+  PUBLICO = "PUBLICO",
+  PRIVADO = "PRIVADO",
 }
 export interface CourseReview {
   id: string;

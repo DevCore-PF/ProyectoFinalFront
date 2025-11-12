@@ -366,7 +366,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           </div>
 
           {/* ============[ STATS CARDS ]============= */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Total</p>
               <p className="text-2xl font-bold text-font-light">
@@ -385,18 +385,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                 {stats.inactive}
               </p>
             </div>
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
-              <p className="text-slate-400 text-xs mb-1">Backend</p>
-              <p className="text-2xl font-bold text-blue-300">
-                {stats.backend}
-              </p>
-            </div>
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
-              <p className="text-slate-400 text-xs mb-1">Frontend</p>
-              <p className="text-2xl font-bold text-purple-300">
-                {stats.frontend}
-              </p>
-            </div>
+            
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Ingresos</p>
               <p className="text-2xl font-bold text-green-300">

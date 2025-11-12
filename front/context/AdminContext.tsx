@@ -10,17 +10,18 @@ import {
 import {
   activateDeactivateCourseService,
   activateUserService,
+  changeVisivilityService,
   deactivateUserService,
   getActiveUsersService,
   getAllUsersService,
+  getCourseFeedbackService,
   getInactiveUsersService,
   getUserByIdService,
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
-import { Course } from "@/types/course.types";
+import { Course, CourseReview, Visibility } from "@/types/course.types";
 import { ValidationRequest } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
-import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import {
   getAllCoursesService,
   getCourseByIdService,
@@ -41,6 +42,7 @@ interface AdminContextType {
   courses: Course[];
   validationRequests: ValidationRequest[];
   stats: AdminStats | null;
+  feedbacks: CourseReview[];
 
   // Loading states
   isLoadingUsers: boolean;
@@ -48,6 +50,7 @@ interface AdminContextType {
   isLoadingValidations: boolean;
   isLoadingInactive: boolean;
   isLoadingActive: boolean;
+  isLoadingFeedbacks: boolean;
 
   // Errors
   usersError: string | null;
@@ -55,6 +58,7 @@ interface AdminContextType {
   validationsError: string | null;
   activeError: string | null;
   inactiveError: string | null;
+  feedbacksError: string | null;
 
   // Actions
   refreshUsers: () => Promise<void>;
@@ -66,18 +70,15 @@ interface AdminContextType {
   fetchInactiveUser: () => Promise<User[]>;
   fetchCourseById: (userId: string) => Promise<Course | undefined>; /////////////para el profesor
   activateDeactivateCourse: (CourseId: string) => Promise<void>;
+  fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
 
   // User actions
   deactivateUser: (id: string) => Promise<void>;
   activateUser: (id: string) => Promise<void>;
-
+  changeVisibility: (id: string) => Promise<void>;
   // Validation actions
   //   approveValidation: (validationId: string) => Promise<void>;
   //   rejectValidation: (validationId: string, reason?: string) => Promise<void>;
-
-  // Course actions
-  //   deactivateCourse: (courseId: string) => Promise<void>;
-  //   activateCourse: (courseId: string) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -90,6 +91,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     ValidationRequest[]
   >([]);
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [feedbacks, setFeedbacks] = useState<CourseReview[]>([]);
 
   // Loading states
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
@@ -97,6 +99,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [isLoadingValidations, setIsLoadingValidations] = useState(false);
   const [isLoadingActive, setIsLoadingActive] = useState(false);
   const [isLoadingInactive, setIsLoadingInactive] = useState(false);
+  const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(false);
 
   // Error states
   const [usersError, setUsersError] = useState<string | null>(null);
@@ -104,6 +107,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [validationsError, setValidationsError] = useState<string | null>(null);
   const [activeError, setActiveError] = useState<string | null>(null);
   const [inactiveError, setInactiveError] = useState<string | null>(null);
+  const [feedbacksError, setFeedbacksError] = useState<string | null>(null);
 
   //Context
   const { token } = useAuth();
@@ -194,6 +198,23 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchFeedback = async (courseId: string) => {
+    setIsLoadingFeedbacks(true);
+    setFeedbacksError(null);
+    try {
+      if (token) {
+        const data = await getCourseFeedbackService(token, courseId);
+        setFeedbacks(data); // Aquí seteas el estado
+        return data;
+      }
+    } catch (error) {
+      setFeedbacksError("Error al cargar feedback");
+      console.log(error);
+      throw error;
+    } finally {
+      setIsLoadingFeedbacks(false);
+    }
+  };
   // Fetch Validations (implementar tu servicio)
   const fetchValidations = async () => {
     setIsLoadingValidations(true);
@@ -255,6 +276,31 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       throw error; // Importante para que el componente maneje el error
     }
   };
+
+  const changeVisibility = async (courseId: string) => {
+    try {
+      if (token) {
+        await changeVisivilityService(token, courseId);
+        setCourses((prev) =>
+          prev.map((c) =>
+            c.id === courseId
+              ? {
+                  ...c,
+                  visibility:
+                    c.visibility === Visibility.PUBLICO
+                      ? Visibility.PRIVADO
+                      : Visibility.PUBLICO,
+                }
+              : c
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   ///////////////////////////////////// Refresh functions
   const refreshUsers = async () => {
     await fetchUsers();
@@ -388,6 +434,11 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     fetchCourseById,
     activateUser,
     activateDeactivateCourse,
+    changeVisibility,
+    feedbacks,
+    isLoadingFeedbacks,
+    feedbacksError,
+    fetchFeedback,
     // deleteUser,
     // approveValidation,
     // rejectValidation,

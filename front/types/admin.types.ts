@@ -141,11 +141,43 @@ export interface UserDetailsProps {
 }
 
 export interface UserEnrollments {
+  course: {
+    title: string;
+    duration: string;
+    professor: string;
+  };
   completed: boolean;
-  completedAt: string| null;
+  completedAt: string | null;
   diplomaUrl: string;
   id: string;
   inscripcionDate: string;
   priceAtPurchase: string;
   progress: string;
+}
+
+export interface CourseReview {
+  id: string;
+  rating?: number; /////del 1 al 5 porque son estrellitas
+  feedback: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+}
+export interface CourseFilters {
+  title?: string;
+  category?: string;
+  difficulty?: string;
+}
+export interface CourseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  title?: string;
+}
+export interface CreateCourseFormProps {
+  onSuccess?: (courseId: string) => void
+  onCancel?: () => void;
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
 import CartDropdown from "@/components/CartDropdown";
@@ -174,7 +174,7 @@ export default function Navbar() {
                     ? "/dashboard"
                     : user.role === "teacher"
                     ? "/teacher-dashboard"
-                    : "/admin-dashboard"
+                    : "/admin"
                 }
                 className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200"
               >

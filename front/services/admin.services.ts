@@ -1,3 +1,5 @@
+import { CourseFilters } from "@/types/admin.types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getAllUsersService = async () => {
@@ -117,4 +119,104 @@ export const activateUserService = async (token: string, userId: string) => {
     console.log(error);
     throw error;
   }
+};
+
+export const activateDeactivateCourseService = async (
+  token: string,
+  courseId: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/status`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al cambiar estado de curso");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const changeVisivilityService = async (
+  token: string,
+  courseId: string
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/courses/change/visibility/${courseId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al cambiar estado de curso");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getCourseFeedbackService = async (
+  token: string,
+  courseId: string
+) => {
+  // /course-feedback/{courseId}/feedbacks
+  try {
+    const response = await fetch(
+      `${API_URL}/course-feedback/${courseId}/feedbacks`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener feedback");
+    }
+    const data = await response.json();
+    console.log("esta es la respuesta de mi feedback", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const filterCoursesService = async (filters: CourseFilters = {}) => {
+  const { title, category, difficulty } = filters;
+
+  const params = new URLSearchParams();
+
+  if (title) params.append("title", title);
+  if (category) params.append("category", category);
+  if (difficulty) params.append("difficulty", difficulty);
+
+  const query = params.toString();
+  const url = query ? `/api/courses?${query}` : `/api/courses`;
+
+  const response = await fetch(url, { method: "GET" });
+  if (!response.ok) throw new Error("Error al obtener los cursos");
+
+  return await response.json();
 };

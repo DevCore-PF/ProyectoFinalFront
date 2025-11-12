@@ -1,4 +1,3 @@
-
 // Enums
 export enum CourseDifficulty {
   BEGINNER = "PRINCIPIANTE",
@@ -15,15 +14,15 @@ export enum CourseCategory {
   MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
-export enum CourseType {
-  COURSE = "Curso",
-  CAREER = "Carrera",
-}
 
 export enum CourseStatus {
   REJECTED = "RECHAZADO",
   IN_REVIEW = "EN REVISION",
   PUBLISHED = "PUBLICADO",
+}
+export enum CourseType {
+  COURSE = "Curso",
+  CAREER = "Carrera",
 }
 
 // Main Interfaces
@@ -31,7 +30,7 @@ export interface Course {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: string;
   duration: string;
   difficulty: CourseDifficulty;
   category: CourseCategory;
@@ -41,12 +40,29 @@ export interface Course {
   updatedAt: string;
   professor: ProfessorInfo;
   lessons: Lesson[];
+  isActive: boolean;
+  feedback: CourseReview;
+  visibility: Visibility;
   // Datos adicionales para admin
   sales?: number;
   revenue?: number;
   rating?: number;
 }
-
+export enum Visibility {
+  PUBLICO = "PUBLICO",
+  PRIVADO = "PRIVADO",
+}
+export interface CourseReview {
+  id: string;
+  rating: number; /////del 1 al 5 porque son estrellitas
+  feedback: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+}
 export interface ProfessorInfo {
   id: string;
   profession: string;

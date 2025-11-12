@@ -111,6 +111,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
       console.error(error);
     }
   };
+  console.log("este es mi current COURSE ", myCourses);
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
@@ -421,7 +422,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                   <div>
                     <p className="text-slate-400 text-sm">Cursos inscritos</p>
                     <p className="text-2xl font-bold text-font-light">
-                      {currentUser.enrollments?.courseList?.length || 0}
+                      {myCourses.length || 0}
                     </p>
                   </div>
                 </div>
@@ -472,24 +473,15 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-font-light font-semibold mb-1">
-                            {course.id}
+                            {course.course.title}
                           </h3>
-                          <span className="text-slate-400 text-sm flex gap-2">
+                           <span className="text-slate-300 text-sm flex gap-2">
                             <p className="text-font-light">
-                              Fecha de inscripción:
+                              Duración:
                             </p>
-                            <span>{formatDate(course.inscripcionDate)}</span>
+                            <span>{course.course.duration}</span>
                           </span>
-                          <span className="text-slate-400 text-sm flex gap-2">
-                            <p className="text-font-light">
-                              Fecha de finalización:
-                            </p>
-                            <span>
-                              {course.completedAt
-                                ? formatDate(course.completedAt)
-                                : `No hay fecha de finalización`}
-                            </span>
-                          </span>
+                      
                           <div className="flex items-center gap-4 mt-3">
                             <span className="text-slate-400 text-xs flex items-center gap-1">
                               <HiCalendar className="w-3 h-3" />

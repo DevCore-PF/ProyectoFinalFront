@@ -23,6 +23,7 @@ import { changeVisivilityService } from "@/services/admin.services";
 import { useAuth } from "@/context/UserContext";
 import { Visibility } from "@/types/course.types";
 import TinyLoader from "../Loaders/TinyLoader";
+import Image from "next/image";
 
 interface CourseDetailsProps {
   courseId: string;
@@ -45,6 +46,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     new Set()
   );
   const [loadingAction, setLoadingAction] = useState(false);
+  const [showId, setShowId] = useState(false);
 
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
@@ -106,14 +108,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       </div>
     );
   };
-  const getAverageRating = () => {
-    if (!course?.feedback || course.feedback.length === 0) return 0;
-    const sum = course.feedback.reduce(
-      (acc: number, f: any) => acc + f.rating,
-      0
-    );
-    return (sum / course.feedback.length).toFixed(1);
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
@@ -150,15 +144,12 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
 
   const handleChangeVisibility = async (courseId: string) => {
     try {
-      // Guardar el estado actual ANTES del cambio
       const currentCourse = courses.find((c) => c.id === courseId);
       const wasPublic = currentCourse?.visibility === Visibility.PUBLICO;
 
       await changeVisibility(courseId);
 
-      toastSuccess(
-        wasPublic ? "Curso cambiado a privado" : "Curso cambiado a público"
-      );
+      toastSuccess(wasPublic ? "Curso privado" : "Curso público");
     } catch (error) {
       console.error(error);
     }
@@ -170,6 +161,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
           feedbacks.reduce((acc, f) => acc + f.rating, 0) / feedbacks.length
         ).toFixed(1)
       : "0.0";
+
   useEffect(() => {
     fetchFeedback(courseId);
   }, [courseId]);
@@ -228,8 +220,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   <p className="text-amber-200 font-semibold text-lg">
                     Curso Inactivo
                   </p>
-                  <p className="text-amber-300/80 text-sm">
-                    Este curso no está visible para los estudiantes.
+                  <p className="text-amber-200/80 text-sm">
+                    Este curso está desactivado. Los usuarios ya no podrán verlo
+                    ni acceder a su contenido.
                   </p>
                 </div>
               </div>
@@ -273,6 +266,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               </div>
 
               <button
+                title={course.isActive ? "Dar de baja" : "Dar de alta"}
                 onClick={handleToggleActive}
                 disabled={loadingAction}
                 className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 flex-shrink-0 ${
@@ -417,21 +411,21 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400 text-sm">Rating</span>
-                  <span className="text-yellow-400 font-bold">
-                    {getAverageRating() || "N/A"}
+                  <span className="text-yellow-200 font-bold">
+                    {averageRating || "N/A"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-sm">Reviews</span>
+                  <span className="text-slate-400 text-sm">Reseñas</span>
                   <span className="text-font-light font-bold">
-                    {course.feedback?.length || 0}
+                    {feedbacks.length || 0}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Columna derecha - Lecciones y Feedback */}
+          {/*Lecciones y Feedback */}
           <div className="lg:col-span-2 space-y-6">
             {/* Lecciones con acordeón */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
@@ -449,11 +443,16 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     {course.visibility === "PRIVADO" ? "Privado" : "Público"}
                   </span>
                   <button
-                    onClick={() => handleChangeVisibility(course.id)}
-                    className={`relative inline-flex h-7 w-14 border cursor-pointer items-center rounded-full transition-colors duration-300 ${
+                    title={
                       course.visibility === Visibility.PRIVADO
-                        ? "bg-amber-500/80 border-amber-300"
-                        : "bg-emerald-400/80 border-emerald-300"
+                        ? "Cambiar a público"
+                        : "Cambiar a privado"
+                    }
+                    onClick={() => handleChangeVisibility(course.id)}
+                    className={`relative inline-flex h-7 w-14 cursor-pointer items-center rounded-full transition-colors duration-300 ${
+                      course.visibility === Visibility.PRIVADO
+                        ? "bg-amber-500/80 "
+                        : "bg-emerald-400/80"
                     }`}
                   >
                     <span
@@ -595,27 +594,68 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
 
             {/* Feedback */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
-                <HiStar className="w-6 h-6" />
-                Reviews y Feedback
-                <span className="text-sm font-normal text-slate-400">
-                  ({course.feedback?.length || 0})
-                </span>
-              </h2>
-              {/* export interface CourseReview {
-  id: string;
-  rating: number; /////del 1 al 5 porque son estrellitas
-  feedback: string;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
-} */}
-              {/* {feedbacks.length > 0 ? (
+              <div className="flex  items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-font-light  flex items-center gap-2">
+                  <HiStar className="w-6 h-6 text-yellow-200" />
+                  Comentarios y reseñas
+                  <span className="text-sm font-normal text-slate-400">
+                    ({feedbacks?.length || 0})
+                  </span>
+                </h2>
+                <p className="flex items-center  gap-1 text-lg font-bold text-slate-200 mr-3.5">
+                  {averageRating}/5.0
+                </p>
+              </div>
+
+              {feedbacks.length > 0 ? (
                 feedbacks.map((f) => {
-                  return <p>{f.user.name} </p>;
+                  return (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
+                          <span className="text-font-light font-bold text-lg">
+                            {f.user.image ? (
+                              <Image
+                                alt="Foto de pefil del usuario"
+                                src={f.user.image}
+                                width={100}
+                                height={100}
+                              ></Image>
+                            ) : (
+                              `${f.user.name[0].toUpperCase()}`
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="">
+                              <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
+                                {f.user.name}
+                                <button
+                                  onClick={() => setShowId(!showId)}
+                                  title="Ver id completo"
+                                  className="text-slate-400 bg-background py-1 px-2 rounded-md text-xs font-light cursor-pointer select-text"
+                                >
+                                  #{showId ? f.user.id : f.user.id.slice(0, 7)}
+                                  ...
+                                </button>
+                              </h4>
+
+                              <p className="text-slate-400 text-xs">
+                                {formatDate(f.createdAt)}
+                              </p>
+                            </div>
+                            {renderStars(f.rating)}
+                          </div>
+
+                          {/* Feedback */}
+                          <p className="text-slate-300 text-sm leading-relaxed">
+                            {f.feedback}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
                 })
               ) : (
                 <div className="text-center py-12">
@@ -624,115 +664,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     Este curso no tiene reviews todavía
                   </p>
                 </div>
-              )} */}
-              <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-font-light flex items-center gap-2">
-                    <HiStar className="w-6 h-6 text-yellow-400" />
-                    Reviews y Feedback
-                    <span className="text-sm font-normal text-slate-400">
-                      (2)
-                    </span>
-                  </h2>
-
-                  {/* Promedio de ratings */}
-                  <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg">
-                    <HiStar className="w-5 h-5 fill-yellow-300" />
-                    <span className="text-xl font-bold text-yellow-300">
-                      4.5
-                      {/* aca va el promedio */}
-                    </span>
-                    <span className="text-slate-400 text-sm">/ 5.0</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {/* Review 1 */}
-                  <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
-                    <div className="flex items-start gap-4">
-                      {/* Avatar */}
-                      <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
-                        <span className="text-font-light font-bold text-lg">
-                          MP
-                        </span>
-                      </div>
-
-                      <div className="flex-1">
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-semibold text-font-light">
-                              María Pérez
-                            </h4>
-                            <p className="text-slate-400 text-xs">
-                              {new Date(
-                                "2024-10-15T14:30:00"
-                              ).toLocaleDateString("es-ES", {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </p>
-                          </div>
-                          {renderStars(5)}
-                        </div>
-
-                        {/* Feedback */}
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          Excelente curso, muy bien explicado y con ejemplos
-                          prácticos. El profesor tiene mucha experiencia y se
-                          nota. Los materiales están muy completos y las
-                          lecciones son fáciles de seguir. Totalmente
-                          recomendado para quien quiera aprender sobre este
-                          tema.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Review 2 */}
-                  <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
-                    <div className="flex items-start gap-4">
-                      {/* Avatar */}
-                      <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
-                        <span className="text-font-light font-bold text-lg">
-                          CG
-                        </span>
-                      </div>
-
-                      <div className="flex-1">
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-semibold text-font-light">
-                              Carlos González
-                            </h4>
-                            <p className="text-slate-400 text-xs">
-                              {new Date(
-                                "2024-11-02T09:15:00"
-                              ).toLocaleDateString("es-ES", {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </p>
-                          </div>
-                          {renderStars(4)}
-                        </div>
-
-                        {/* Feedback */}
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          Muy buen contenido y estructura del curso. Me hubiera
-                          gustado que algunos temas tuvieran más ejemplos
-                          avanzados, pero en general cumple muy bien con lo
-                          prometido. La calidad de los videos es excelente y el
-                          material de apoyo es útil.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

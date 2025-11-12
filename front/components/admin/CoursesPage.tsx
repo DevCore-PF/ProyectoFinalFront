@@ -149,12 +149,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         bValue = parseFloat(bValue);
       } else if (sortBy === "rating") {
         // Calcular rating promedio
-        aValue = a.feedback?.length
-          ? a.feedback.reduce((sum, f) => sum + f.rating, 0) / a.feedback.length
-          : 0;
-        bValue = b.feedback?.length
-          ? b.feedback.reduce((sum, f) => sum + f.rating, 0) / b.feedback.length
-          : 0;
+        // aValue = a.feedback?.length
+        //   ? a.feedback.reduce((sum, f) => sum + f.rating, 0) / a.feedback.length
+        //   : 0;
+        // bValue = b.feedback?.length
+        //   ? b.feedback.reduce((sum, f) => sum + f.rating, 0) / b.feedback.length
+        //   : 0;
       }
 
       if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
@@ -385,7 +385,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                 {stats.inactive}
               </p>
             </div>
-            
+
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Ingresos</p>
               <p className="text-2xl font-bold text-green-300">
@@ -644,7 +644,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
                     {filteredAndSortedCourses.map((course) => {
-                      const avgRating = getAverageRating(course.feedback);
+                      // const avgRating = getAverageRating(course.feedback);
                       return (
                         <tr
                           key={course.id}
@@ -720,7 +720,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-2">
-                              {renderStars(avgRating)}
+                              {/* {renderStars(avgRating)} */}
                               {course.feedback &&
                                 course.feedback.rating > 0 && (
                                   <span className="text-slate-400 text-xs">

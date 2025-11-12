@@ -157,7 +157,7 @@ export interface UserEnrollments {
 
 export interface CourseReview {
   id: string;
-  rating: number; /////del 1 al 5 porque son estrellitas
+  rating?: number; /////del 1 al 5 porque son estrellitas
   feedback: string;
   createdAt: string;
   user: {
@@ -165,4 +165,9 @@ export interface CourseReview {
     name: string;
     image: string | null;
   };
+}
+export interface CourseFilters {
+  title?: string;
+  category?: string;
+  difficulty?: string;
 }

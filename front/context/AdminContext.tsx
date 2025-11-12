@@ -12,6 +12,7 @@ import {
   activateUserService,
   changeVisivilityService,
   deactivateUserService,
+  filterCoursesService,
   getActiveUsersService,
   getAllUsersService,
   getCourseFeedbackService,
@@ -20,7 +21,7 @@ import {
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
 import { Course, CourseReview, Visibility } from "@/types/course.types";
-import { ValidationRequest } from "@/types/admin.types";
+import { CourseFilters, ValidationRequest } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
 import {
   getAllCoursesService,
@@ -176,7 +177,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     setIsLoadingCourses(true);
     setCoursesError(null);
     try {
-      const data = await getAllCoursesService();
+      const data = await filterCoursesService();
       setCourses(data);
     } catch (error) {
       setCoursesError("Error al cargar cursos");
@@ -204,7 +205,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     try {
       if (token) {
         const data = await getCourseFeedbackService(token, courseId);
-        setFeedbacks(data); // Aquí seteas el estado
+        setFeedbacks(data);
         return data;
       }
     } catch (error) {

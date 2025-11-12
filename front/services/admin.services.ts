@@ -1,3 +1,5 @@
+import { CourseFilters } from "@/types/admin.types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getAllUsersService = async () => {
@@ -177,9 +179,10 @@ export const getCourseFeedbackService = async (
   token: string,
   courseId: string
 ) => {
+  // /course-feedback/{courseId}/feedbacks
   try {
     const response = await fetch(
-      `${API_URL}/courses/${courseId}/user-feedback`,
+      `${API_URL}/course-feedback/${courseId}/feedbacks`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -198,4 +201,22 @@ export const getCourseFeedbackService = async (
     console.log(error);
     throw error;
   }
+};
+
+export const filterCoursesService = async (filters: CourseFilters = {}) => {
+  const { title, category, difficulty } = filters;
+
+  const params = new URLSearchParams();
+
+  if (title) params.append("title", title);
+  if (category) params.append("category", category);
+  if (difficulty) params.append("difficulty", difficulty);
+
+  const query = params.toString();
+  const url = query ? `/api/courses?${query}` : `/api/courses`;
+
+  const response = await fetch(url, { method: "GET" });
+  if (!response.ok) throw new Error("Error al obtener los cursos");
+
+  return await response.json();
 };

@@ -11,19 +11,6 @@ export default function Navbar() {
   const isFullyAuthenticated =
     !!user && user.isEmailVerified && user.checkBoxTerms && user.role !== null;
 
-  useEffect(() => {
-    console.log("🔍 NAVBAR RE-RENDER", {
-      timestamp: new Date().toISOString(),
-      userFromContext: user,
-      sessionStorageUser: sessionStorage.getItem("user"),
-      sessionStorageToken: sessionStorage.getItem("token"),
-      isFullyAuthenticated:
-        !!user &&
-        user.isEmailVerified &&
-        user.checkBoxTerms &&
-        user.role !== null,
-    });
-  }, [user]);
   return (
     <>
       {!isFullyAuthenticated ? (

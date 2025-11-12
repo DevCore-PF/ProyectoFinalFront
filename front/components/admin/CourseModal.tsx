@@ -25,7 +25,7 @@ const CourseModal = ({
             <h2 className="text-xl font-semibold text-font-light">{title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-400 cursor-pointer hover:text-gray-200"
             >
               ✕
             </button>

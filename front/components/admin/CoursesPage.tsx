@@ -2,7 +2,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { downloadCSV } from "@/helpers/adminHandlers";
-import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
 import {
   HiSearch,
   HiFilter,
@@ -103,6 +107,8 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showLessonsModal, setShowLessonsModal] = useState(false);
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
+  const [attemptingToCloseLessons, setAttemptingToCloseLessons] =
+    useState(false);
   useEffect(() => {
     refreshCourses();
   }, []);
@@ -327,7 +333,42 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       toastError(`${results.errors.length} cursos fallaron`);
     }
   };
+  const handleCloseLessonsModal = () => {
+    toastConfirm(
+      "El curso se creó pero sin lecciones.",
+      () => {
+        setShowLessonsModal(false);
+        setCreatedCourseId(null);
+        refreshCourses();
+      },
+      () => {}
+    );
+  };
 
+  const handleCancelLessons = () => {
+    toastConfirm(
+      "El curso se creará sin lecciones.",
+      () => {
+        // onConfirm
+        setShowLessonsModal(false);
+        setCreatedCourseId(null);
+        refreshCourses();
+      },
+      () => {}
+    );
+  };
+  const handleCancelCourse = () => {
+    toastConfirm(
+      "Perderás los datos ingresados.",
+      () => {
+        // onConfirm - cerrar el modal
+        setShowCreateModal(false);
+      },
+      () => {
+        // onCancel - no hacer nada, mantener el modal abierto
+      }
+    );
+  };
   const handleChangeStatus = async (courseId: string) => {
     setLoadingCourseId(courseId);
     try {
@@ -832,32 +873,22 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       </div>
       <CourseModal
         isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
+        onClose={handleCancelCourse} 
         title="Crear Nuevo Curso"
       >
         <CreateCourseAdmin
           onSuccess={(courseId) => {
             setCreatedCourseId(courseId);
             setShowCreateModal(false);
-            setShowLessonsModal(true); // Abrir el modal de lecciones
+            setShowLessonsModal(true);
           }}
-          onCancel={() => setShowCreateModal(false)}
+          onCancel={handleCancelCourse} 
         />
       </CourseModal>
 
       <CourseModal
         isOpen={showLessonsModal}
-        onClose={() => {
-          if (
-            window.confirm(
-              "¿Estás seguro? El curso se creó pero sin lecciones."
-            )
-          ) {
-            setShowLessonsModal(false);
-            setCreatedCourseId(null);
-            refreshCourses();
-          }
-        }}
+        onClose={handleCloseLessonsModal}
         title="Crear Lecciones del Curso"
       >
         {createdCourseId && (
@@ -868,17 +899,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               setCreatedCourseId(null);
               refreshCourses();
             }}
-            onCancel={() => {
-              if (
-                window.confirm(
-                  "¿Estás seguro? El curso se creó pero sin lecciones."
-                )
-              ) {
-                setShowLessonsModal(false);
-                setCreatedCourseId(null);
-                refreshCourses();
-              }
-            }}
+            onCancel={handleCancelLessons}
           />
         )}
       </CourseModal>

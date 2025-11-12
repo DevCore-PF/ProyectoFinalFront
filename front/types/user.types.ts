@@ -61,6 +61,7 @@
 // }
 import { Course } from "./course.types";
 import Image from "next/image";
+import { ProfessorProfile } from "./professor.types";
 export type UserRole = "student" | "teacher" | "admin";
 export interface User {
   id: string;
@@ -83,6 +84,7 @@ export interface User {
   enrollments: {
     courseList: [];
   };
+  professorProfile: ProfessorProfile;
 }
 
 export interface UserProfile {

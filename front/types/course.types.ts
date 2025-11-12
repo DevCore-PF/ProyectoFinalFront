@@ -6,7 +6,7 @@ export enum CourseDifficulty {
 }
 
 export enum CourseCategory {
-  FRONTEND = "Frontend",
+  FRONTEND = "Front End",
   BACKEND = "Backend",
   DATA_SCIENCE = "Data Science",
   DATABASE = "Database",

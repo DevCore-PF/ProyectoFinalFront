@@ -20,6 +20,9 @@ import { FaPlus } from "react-icons/fa";
 import Loader from "../Loaders/Loader";
 import { TabType } from "@/types/admin.types";
 import TinyLoader from "../Loaders/TinyLoader";
+import CourseModal from "./CourseModal";
+import CreateCourseAdmin from "./CreateCourseAdmin";
+import CreateLessonAdmin from "./CreateLessonAdmin";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
@@ -97,7 +100,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [loadingGroupAction, setLoadingGroupAction] = useState<
     "activate" | "deactivate" | null
   >(null);
-
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showLessonsModal, setShowLessonsModal] = useState(false);
+  const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
   useEffect(() => {
     refreshCourses();
   }, []);
@@ -181,8 +186,6 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       total: courses.length,
       active: courses.filter((c) => c.isActive).length,
       inactive: courses.filter((c) => !c.isActive).length,
-      backend: courses.filter((c) => c.category === "Backend").length,
-      frontend: courses.filter((c) => c.category === "Frontend").length,
       totalRevenue: courses.reduce((sum, c) => sum + parseFloat(c.price), 0),
     };
   }, [courses]);
@@ -358,7 +361,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                 <HiDownload className="w-5 h-5" />
                 Exportar cursos
               </button>
-              <button className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all">
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+              >
                 <FaPlus className="w-5 h-5" />
                 Crear Curso
               </button>
@@ -418,7 +424,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             >
               <option value="all">Todas las categorías</option>
               <option value="Backend">Backend</option>
-              <option value="Frontend">Frontend</option>
+              <option value="Front End">Frontend</option>
               <option value="FullStack">FullStack</option>
               <option value="DevOps">DevOps</option>
             </select>
@@ -824,6 +830,58 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           </>
         )}
       </div>
+      <CourseModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Crear Nuevo Curso"
+      >
+        <CreateCourseAdmin
+          onSuccess={(courseId) => {
+            setCreatedCourseId(courseId);
+            setShowCreateModal(false);
+            setShowLessonsModal(true); // Abrir el modal de lecciones
+          }}
+          onCancel={() => setShowCreateModal(false)}
+        />
+      </CourseModal>
+
+      <CourseModal
+        isOpen={showLessonsModal}
+        onClose={() => {
+          if (
+            window.confirm(
+              "¿Estás seguro? El curso se creó pero sin lecciones."
+            )
+          ) {
+            setShowLessonsModal(false);
+            setCreatedCourseId(null);
+            refreshCourses();
+          }
+        }}
+        title="Crear Lecciones del Curso"
+      >
+        {createdCourseId && (
+          <CreateLessonAdmin
+            courseId={createdCourseId}
+            onSuccess={() => {
+              setShowLessonsModal(false);
+              setCreatedCourseId(null);
+              refreshCourses();
+            }}
+            onCancel={() => {
+              if (
+                window.confirm(
+                  "¿Estás seguro? El curso se creó pero sin lecciones."
+                )
+              ) {
+                setShowLessonsModal(false);
+                setCreatedCourseId(null);
+                refreshCourses();
+              }
+            }}
+          />
+        )}
+      </CourseModal>
     </div>
   );
 };

@@ -171,3 +171,13 @@ export interface CourseFilters {
   category?: string;
   difficulty?: string;
 }
+export interface CourseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  title?: string;
+}
+export interface CreateCourseFormProps {
+  onSuccess?: (courseId: string) => void
+  onCancel?: () => void;
+}

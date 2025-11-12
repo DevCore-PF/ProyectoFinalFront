@@ -7,7 +7,7 @@ import {
   UpdateRoleResponse,
 } from "@/types/api.types";
 import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
-import { UploadImageResponse, UserUpdateResponse } from "@/types/user.types";
+import { UploadImageResponse, UserUpdateResponse, UpdateUserFormData } from "@/types/user.types";
 
 export const registerUserService = async (
   values: RegisterFormData
@@ -289,3 +289,33 @@ export const getUserProfileService = async (
 //     throw error;
 //   }
 // };
+
+/**
+ * Servicio para actualizar el perfil del usuario
+ */
+export const updateUserProfileService = async (
+  data: UpdateUserFormData,
+  token: string
+): Promise<UserUpdateResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/users/update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al actualizar el perfil");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al actualizar perfil:", error);
+    throw error;
+  }
+};

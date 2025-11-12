@@ -37,4 +37,11 @@ export interface User {
   isGitAcocount: false;
   professorProfile?: ProfessorProfile | false;
   profileImage?: string;
+  // Nuevos campos opcionales
+  ciudad?: string;
+  direccion?: string;
+  dni?: string;
+  telefono?: string;
+  fechaNacimiento?: string | Date;
+  genero?: "masculino" | "femenino" | "otro";
 }

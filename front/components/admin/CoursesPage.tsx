@@ -785,7 +785,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               {/* {renderStars(avgRating)} */}
                               {feedbacks ? (
                                 <span className="text-slate-400 text-xs">
-                                  ({feedbacks.rating})
+                                  {/* ({feedbacks.rating}) */}
                                 </span>
                               ) : (
                                 <span className="text-slate-400 text-xs">

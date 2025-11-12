@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             profileImage:
               freshUserData.profileImage ||
               freshUserWithImage.image ||
-              user.image,
+              user.profileImage,
           };
 
           setUserState(normalizedUserData);
@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userWithImage = newUser as User & { image?: string };
       const normalizedUser = {
         ...newUser,
-        profileImage: newUser.image || userWithImage.image,
+        profileImage: newUser.profileImage || userWithImage.image,
       };
 
       sessionStorage.setItem("user", JSON.stringify(normalizedUser));
@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         profileImage:
           freshUserData.profileImage ||
           freshUserWithImage.image ||
-          user.image,
+          user.profileImage,
       };
 
       setUser(normalizedUserData);

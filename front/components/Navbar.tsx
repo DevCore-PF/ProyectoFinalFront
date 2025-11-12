@@ -174,7 +174,7 @@ export default function Navbar() {
                     ? "/dashboard"
                     : user.role === "teacher"
                     ? "/teacher-dashboard"
-                    : "/admin-dashboard"
+                    : "/admin"
                 }
                 className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200"
               >

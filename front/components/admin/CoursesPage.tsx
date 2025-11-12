@@ -88,6 +88,8 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     coursesError,
     refreshCourses,
     activateDeactivateCourse,
+    fetchFeedback,
+    feedbacks,
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,6 +111,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
   const [attemptingToCloseLessons, setAttemptingToCloseLessons] =
     useState(false);
+
+  const [feedbackByCourse, setFeedbackBycourse] = useState<
+    CourseReview[] | undefined
+  >(undefined);
   useEffect(() => {
     refreshCourses();
   }, []);
@@ -361,12 +367,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     toastConfirm(
       "Perderás los datos ingresados.",
       () => {
-        // onConfirm - cerrar el modal
         setShowCreateModal(false);
       },
-      () => {
-        // onCancel - no hacer nada, mantener el modal abierto
-      }
+      () => {}
     );
   };
   const handleChangeStatus = async (courseId: string) => {
@@ -384,6 +387,17 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       setLoadingCourseId(null);
     }
   };
+
+  useEffect(() => {
+    const loadAllFeedbacks = async () => {
+      if (courses && courses.length > 0) {
+        await Promise.all(courses.map((course) => fetchFeedback(course.id)));
+      }
+    };
+
+    loadAllFeedbacks();
+  }, [courses]);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -619,9 +633,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   {/* ============[ HEAD ]============= */}
-                  <thead className="bg-slate-800/50 border-b border-slate-700/50">
+                  <thead className="bg-slate-800/50 border-b  border-slate-700/50">
                     <tr>
-                      <th className="px-4 py-4 text-left">
+                      <th className="px-4 py-4 text-left w-12 ">
                         <label className="inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
@@ -664,25 +678,25 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </div>
                         </label>
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">
                         Curso
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-38">
                         Profesor
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-32">
                         Categoría
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-29">
                         Rating
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-20">
                         Estado
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-20">
                         Precio
                       </th>
-                      <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold">
+                      <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold w-15">
                         Acciones
                       </th>
                     </tr>
@@ -692,6 +706,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   <tbody className="divide-y divide-slate-700/50">
                     {filteredAndSortedCourses.map((course) => {
                       // const avgRating = getAverageRating(course.feedback);
+                      // const courseFeedback: CourseReview = feedbacks[course.id];
                       return (
                         <tr
                           key={course.id}
@@ -752,7 +767,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </div>
                           </td>
                           <td className="px-4 py-4">
-                            <p className="text-slate-300">
+                            <p className="text-slate-300 font-light">
                               {course.professor?.user?.name || "Sin asignar"}
                             </p>
                           </td>
@@ -768,12 +783,15 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-2">
                               {/* {renderStars(avgRating)} */}
-                              {course.feedback &&
-                                course.feedback.rating > 0 && (
-                                  <span className="text-slate-400 text-xs">
-                                    ({course.feedback.rating})
-                                  </span>
-                                )}
+                              {feedbacks ? (
+                                <span className="text-slate-400 text-xs">
+                                  ({feedbacks.rating})
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 text-xs">
+                                  No hay feedbacks
+                                </span>
+                              )}
                             </div>
                           </td>
                           <td className="px-4 py-4">

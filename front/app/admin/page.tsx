@@ -20,6 +20,7 @@ import {
   HiUserCircle,
 } from "react-icons/hi";
 import CourseDetails from "@/components/admin/CourseDetails";
+import { useAuth } from "@/context/UserContext";
 
 type ValidationType =
   | "professor"
@@ -35,6 +36,7 @@ const AdminDashboard = () => {
   const [selectedValidation, setSelectedValidation] =
     useState<ValidationRequest | null>(null);
 
+  const { user } = useAuth();
   const [detailView, setDetailView] = useState<{
     tab: TabType | null;
     id: string | null;
@@ -225,11 +227,18 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">
-                Panel de Administración
+                Panel de Gestón
               </h1>
+
               <p className="text-slate-400">
                 Gestiona todos los aspectos de tu plataforma
               </p>
+              <div className="flex items-center gap-2 text-slate-400 mt-1 text-sm font-light">
+                <p>{user?.email}</p>
+                <span className="text-amber-200 border border-amber-300 bg-amber-700/40 px-2 rounded-lg">
+                  {user?.role && `Administrador`}
+                </span>
+              </div>
             </div>
             <div className="p-4 bg-slate-700/30 rounded-xl">
               <HiShieldCheck className="w-10 h-10 text-slate-300" />

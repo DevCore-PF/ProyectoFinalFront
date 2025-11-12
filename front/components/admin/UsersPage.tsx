@@ -441,7 +441,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                   {/* ============[ HEAD ]============= */}
                   <thead className="bg-slate-800/50 border-b border-slate-700/50">
                     <tr>
-                      <th className="px-4 py-4 text-left">
+                      <th className="px-4 py-4 text-left w-12">
                         <label className="inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"

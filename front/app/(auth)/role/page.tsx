@@ -14,12 +14,13 @@ import { updateRoleService } from "@/services/user.service";
 import { useFormik } from "formik";
 //Validators/Types
 import { roleValidation } from "@/validators/registerSchema";
-import { RoleData } from "@/types/forms.types";
 //Helpers
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
 import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
+import { RoleData } from "@/types/forms.types";
 
 const page = () => {
   const router = useRouter();
@@ -50,7 +51,6 @@ const page = () => {
             data.userReturn.isGoogleAccount
           ) {
             toastSuccess("Login exitoso!");
-            // <ModalTerms/>
             window.location.href = "/";
           } else {
             toastSuccess(
@@ -76,7 +76,7 @@ const page = () => {
   useEffect(() => {
     // Solo redirigir si NO estamos en proceso de submit
     if (user && user.role && !isSubmittingRole.current) {
-      toastSuccess("Login exitoso!");
+      // toastSuccess("Login exitoso!");
       router.push("/");
     }
   }, [user, router]);
@@ -108,6 +108,7 @@ const page = () => {
   if (!token) {
     return null;
   }
+  if (user && user.role) return <Loader />;
 
   return (
     <form onSubmit={formik.handleSubmit} className="min-h-screen ">
@@ -275,7 +276,7 @@ const page = () => {
                   ${
                     formik.isSubmitting
                       ? "cursor-not-allowed opacity-50"
-                      : "px-6 sm:px-8 py-3 bg-button/90 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer hover:scale-105 active:scale-95"
+                      : "px-6 sm:px-8 py-3 bg-button/70 hover:bg-button text-font-ligh font-semibold rounded-lg transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-purple-500/25 cursor-pointer  active:scale-95"
                   }
                   bg-button/70
                   disabled:from-gray-500 disabled:to-gray-600 disabled:hover:scale-100 disabled:shadow-none`}
@@ -283,8 +284,7 @@ const page = () => {
                 <span className="relative z-10 flex items-center gap-3">
                   {formik.isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 rounded-full "></div>
-                      Procesando...
+                      Procesando <TinyLoader />
                     </>
                   ) : (
                     <>

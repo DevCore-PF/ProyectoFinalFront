@@ -3,8 +3,10 @@
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaExclamation } from "react-icons/fa6";
+import { FaArrowRotateRight } from "react-icons/fa6";
+
 //Types & Validators
-import { LoginFormData } from "@/types/auth.types";
+import { LoginFormData, User } from "@/types/auth.types";
 import { loginInitialValues, loginValidations } from "@/validators/loginSchema";
 //Formik
 import { useFormik } from "formik";
@@ -14,22 +16,27 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 // import { useSearchParams } from "next/navigation";
 //Services
-import { loginUserService } from "@/services/user.service";
+import { loginUserService, resendEmailService } from "@/services/user.service";
 //Helpers
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
+import Loader from "./Loaders/Loader";
+import TinyLoader from "./Loaders/TinyLoader";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
-
-  const { setToken, setUser, user } = useAuth();
-  const handleAuthError = (error: string) => {
-    toastError(error);
-  };
+  // const [timeRemaining, setTimeRemaining] = useState<number>(180);
+  const [timeRemaining, setTimeRemaining] = useState<number>(3600);
+  const [canResend, setCanResend] = useState(false);
+  const { setToken, setUser, user, isLoading } = useAuth();
+  const [loadingResender, setLoadingResender] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -52,15 +59,72 @@ const LoginForm = () => {
       }
     },
   });
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleResendEmail = async (user: User) => {
+    try {
+      setLoadingResender(true);
+      await resendEmailService(user.email);
+      toastSuccess("Email de verificación reenviado!");
+      setTimeRemaining(180);
+      setCanResend(false);
+    } catch (error) {
+      toastError("Error al reenviar el email");
+    } finally {
+      setLoadingResender(false);
+    }
+  };
+
   useEffect(() => {
     if (user && !user.isEmailVerified) {
       setShowEmailNotVerified(true);
     }
   }, [user]);
+  useEffect(() => {
+    if (!isLoading && user && user.isEmailVerified) {
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
+
+  useEffect(() => {
+    if (showEmailNotVerified && timeRemaining > 0) {
+      const interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            setCanResend(true);
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [showEmailNotVerified, timeRemaining]);
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const error_description = searchParams.get("error_description");
+
+    if (error && error_description) {
+      toastError(decodeURIComponent(error_description));
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [searchParams]);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  if (isLoading) return <Loader />;
+  if (user && user.isEmailVerified) return <Loader />;
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-6">
@@ -87,10 +151,50 @@ const LoginForm = () => {
         >
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>
           {showEmailNotVerified ? (
-            <p className="text-amber-300/80 text-center mb-6">
-              {`Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
+            <>
+              <p className="text-amber-300/80 text-center mb-4">
+                {`Debes confirmar tu email para iniciar sesión. Revisa tu bandeja de
               entrada en ${user?.email}.`}
-            </p>
+              </p>
+              <div className="flex flex-col items-center gap-3 mb-6">
+                <div className="text-center">
+                  {canResend ? (
+                    <p className="text-green-300/70 text-sm ">
+                      Ya puedes reenviar el código
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-sm ">
+                      Podrás reenviar el código en:{" "}
+                      <span className="font-mono font-bold text-amber-300/80">
+                        {formatTime(timeRemaining)}
+                      </span>
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    user && handleResendEmail(user);
+                  }}
+                  disabled={!canResend}
+                  className=" cursor-pointer text-slate-300/80 hover:text-slate-300 transition flex items-center gap-2 disabled:opacity-50 disabled:hover:text-slate-300/80  disabled:cursor-not-allowed "
+                >
+                  {loadingResender ? (
+                    <div className="flex items-center gap-3 text-slate-300/80">
+                      Reenviando email
+                      <TinyLoader />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 ">
+                      <p>Reenviar código</p>
+                      <span>
+                        <FaArrowRotateRight />
+                      </span>
+                    </div>
+                  )}
+                </button>
+              </div>
+            </>
           ) : (
             <p className="text-gray-400 text-center mb-6">
               Iniciá sesión para ingresar a tu cuenta.
@@ -176,8 +280,8 @@ const LoginForm = () => {
               <div className="flex-1 h-px bg-border/80"></div>
             </div>
             <div className="flex gap-4 justify-center ">
-              <GoogleAuthButton onError={handleAuthError} isLoginPage={true} />
-              <GitHubAuthButton onError={handleAuthError} isLoginPage={true} />
+              <GoogleAuthButton isLoginPage={true} />
+              <GitHubAuthButton isLoginPage={true} />
             </div>
 
             <p className="text-center text-gray-400 text-sm mt-2">

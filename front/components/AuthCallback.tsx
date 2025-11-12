@@ -16,7 +16,6 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuth = async () => {
       const token = searchParams.get("token");
-      console.log("TOKEN AOUTHCALLBACK:", token);
 
       if (!token) {
         toastError("Error en la autenticación");

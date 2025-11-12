@@ -1,4 +1,4 @@
-// Enums que coinciden con el backend
+// Enums
 export enum CourseDifficulty {
   BEGINNER = "PRINCIPIANTE",
   INTERMEDIATE = "INTERMEDIO",
@@ -14,10 +14,6 @@ export enum CourseCategory {
   MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
-export enum CourseType {
-  COURSE = "Curso",
-  CAREER = "Carrera",
-}
 
 export enum CourseStatus {
   DRAFT = "EN REVISION",
@@ -28,9 +24,77 @@ export enum CourseStatus {
 export enum CourseVisibility {
   PUBLIC = "PUBLICO",
   PRIVATE = "PRIVADO",
+  REJECTED = "RECHAZADO",
+  IN_REVIEW = "EN REVISION",
+  PUBLISHED = "PUBLICADO",
 }
 
-// Interfaces para formularios
+export enum CourseType {
+  COURSE = "Curso",
+  CAREER = "Carrera",
+}
+
+// Main Interfaces
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  duration: string;
+  difficulty: CourseDifficulty;
+  category: CourseCategory;
+  type: CourseType;
+  status: CourseStatus;
+  visibility: CourseVisibility;
+  createdAt: string;
+  updatedAt: string;
+  professor: ProfessorInfo;
+  lessons: Lesson[];
+  isActive: boolean;
+  feedback: CourseReview;
+  visibility: Visibility;
+  // Datos adicionales para admin
+  sales?: number;
+  revenue?: number;
+  rating?: number;
+}
+export enum Visibility {
+  PUBLICO = "PUBLICO",
+  PRIVADO = "PRIVADO",
+}
+export interface CourseReview {
+  id: string;
+  rating: number; /////del 1 al 5 porque son estrellitas
+  feedback: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+}
+export interface ProfessorInfo {
+  id: string;
+  profession: string;
+  speciality: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  urlVideos: string[];
+  urlPdfs: string[];
+  aditionalData?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Form Data
 export interface CreateCourseFormData {
   title: string;
   description: string;
@@ -47,44 +111,7 @@ export interface CreateLessonFormData {
   pdfs: File[];
 }
 
-// Interfaces para respuestas del backend
-export interface Course {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  duration: string;
-  difficulty: CourseDifficulty;
-  category: CourseCategory;
-  type: CourseType;
-  status: CourseStatus;
-  visibility: CourseVisibility;
-  createdAt: string;
-  updatedAt: string;
-  professor: {
-    id: string;
-    profession: string;
-    speciality: string;
-    user: {
-      id: string;
-      name: string;
-      email: string;
-    };
-  };
-  lessons: Lesson[];
-}
-
-export interface Lesson {
-  id: string;
-  title: string;
-  urlVideos: string[];
-  urlPdfs: string[];
-  aditionalData?: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Respuestas de la API
+// API Responses
 export interface CreateCourseResponse {
   id: string;
   title: string;

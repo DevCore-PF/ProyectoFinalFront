@@ -133,7 +133,6 @@ const WelcomeCard = ({
           </button>
         </div>
 
-        {/* Sección derecha - Panel de gestión */}
         <div className="relative w-full md:w-auto">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}

@@ -52,7 +52,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const data = await getCartService(token);
-      console.log("Cart data:", data);
       setCart(data.courses || []);
     } catch (error) {
       console.error("Error al cargar el carrito:", error);

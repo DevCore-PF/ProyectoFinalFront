@@ -3,10 +3,8 @@ import { useState } from "react";
 
 const GoogleAuthButton = ({
   isLoginPage = false,
-  onError,
 }: {
   isLoginPage?: boolean;
-  onError?: (error: string) => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -14,7 +12,6 @@ const GoogleAuthButton = ({
   const handleGoogleAuth = () => {
     try {
       setIsLoading(true);
-
       const authEndpoint = isLoginPage
         ? `${API_URL}/auth/google/login`
         : `${API_URL}/auth/google/register`;
@@ -22,7 +19,7 @@ const GoogleAuthButton = ({
       window.location.href = authEndpoint;
     } catch (error) {
       setIsLoading(false);
-      onError?.("Error al iniciar autenticación con Google");
+      throw error;
     } finally {
       setIsLoading(false);
     }

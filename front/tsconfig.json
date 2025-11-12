@@ -37,7 +37,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "components/Plans/PricingHeader.tsx"  ],
+, "components/Plans/PricingHeader.tsx", "components/admin/UsersPage.tsx"  ],
   "exclude": [
     "node_modules"
   ]

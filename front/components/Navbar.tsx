@@ -1,6 +1,5 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/UserContext";
 import CartDropdown from "@/components/CartDropdown";
@@ -9,14 +8,15 @@ import Image from "next/image";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-  const isAuthenticated = !!user?.role;
+  const isFullyAuthenticated =
+    !!user && user.isEmailVerified && user.checkBoxTerms && user.role !== null;
 
   return (
     <>
-      {!isAuthenticated ? (
+      {!isFullyAuthenticated ? (
         <nav className="w-full bg-navbar shadow-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm  ">
-            <div className="flex gap-2 items-center text-[1.3rem]  font-medium  ">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-2 text-sm">
+            <div className="flex gap-2 items-center text-[1.3rem] font-medium">
               <Link
                 href={"/"}
                 className="flex items-center space-x-2 cursor-pointer"
@@ -84,7 +84,7 @@ export default function Navbar() {
               menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex flex-col items-center space-y-3 pb-4 text-sm   border-t border-gray-200 pt-4">
+            <div className="flex flex-col items-center space-y-3 pb-4 text-sm border-t border-gray-200 pt-4">
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
@@ -122,9 +122,9 @@ export default function Navbar() {
           </div>
         </nav>
       ) : (
-        // Navbar autenticada
+        // Navbar AUTENTICADA
         <nav className="w-full bg-navbar shadow-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-2 text-sm  ">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-2 text-sm">
             <Link href="/" className="flex items-center space-x-2">
               <Image
                 alt="logoDev"
@@ -133,7 +133,7 @@ export default function Navbar() {
                 height={500}
                 className="h-8 w-8"
               />
-              <span className="  text-lg font-logo">DevCore</span>
+              <span className="text-lg font-logo">DevCore</span>
             </Link>
 
             {/* Botón hamburguesa */}
@@ -168,20 +168,18 @@ export default function Navbar() {
             {/* Acciones desktop */}
             <div className="hidden lg:flex items-center space-x-2">
               <CartDropdown />
-              {user?.role && (
-                <Link
-                  href={
-                    user.role === "student"
-                      ? "/dashboard"
-                      : user.role === "teacher"
-                      ? "/teacher-dashboard"
-                      : "/admin-dashboard"
-                  }
-                  className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200"
-                >
-                  Dashboard
-                </Link>
-              )}
+              <Link
+                href={
+                  user.role === "student"
+                    ? "/dashboard"
+                    : user.role === "teacher"
+                    ? "/teacher-dashboard"
+                    : "/admin"
+                }
+                className="hover:bg-button px-3 py-2 rounded-md transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
               <button
                 onClick={logout}
                 className="hover:bg-button px-3 py-2 cursor-pointer rounded-md transition-colors duration-200"
@@ -191,12 +189,13 @@ export default function Navbar() {
             </div>
           </div>
 
+          {/* Menú móvil autenticado */}
           <div
             className={`lg:hidden overflow-hidden transition-all duration-500 ease-in-out ${
               menuOpen ? "max-h-105 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex flex-col items-center space-y-3 pb-4 text-sm   border-t border-gray-200 pt-4">
+            <div className="flex flex-col items-center space-y-3 pb-4 text-sm border-t border-gray-200 pt-4">
               {[
                 { href: "/", label: "Inicio" },
                 { href: "/courses", label: "Cursos" },
@@ -224,20 +223,20 @@ export default function Navbar() {
                 Carrito
               </Link>
 
-              {user?.role && (
-                <Link
-                  href={
-                    user.role === "student"
-                      ? "/dashboard"
-                      : user.role === "teacher"
-                      ? "/teacher-dashboard"
-                      : "/admin-dashboard"
-                  }
-                  className="hover:bg-button p-2 rounded-md transition-colors duration-200"
-                >
-                  Dashboard
-                </Link>
-              )}
+              <Link
+                href={
+                  user.role === "student"
+                    ? "/dashboard"
+                    : user.role === "teacher"
+                    ? "/teacher-dashboard"
+                    : "/admin-dashboard"
+                }
+                onClick={() => setMenuOpen(false)}
+                className="hover:bg-button p-2 rounded-md transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
+
               <button
                 onClick={logout}
                 className="hover:bg-button p-2 cursor-pointer rounded-md transition-colors duration-200"

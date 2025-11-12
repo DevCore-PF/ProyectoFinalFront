@@ -1,13 +1,21 @@
-// const API_URL = "/api";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 //Types
+
 import {
+  RegisterFormData,
+  LoginFormData,
   RegisterResponse,
   LoginResponse,
+} from "@/types/auth.types";
+import {
   UpdateRoleResponse,
 } from "@/types/api.types";
 import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
 import { UploadImageResponse, UserUpdateResponse, UpdateUserFormData } from "@/types/user.types";
+  UploadImageResponse,
+  User,
+  UserUpdateResponse,
+} from "@/types/user.types";
 
 export const registerUserService = async (
   values: RegisterFormData
@@ -62,6 +70,7 @@ export const loginUserService = async (
     throw error;
   }
 };
+
 export const getCurrentUserService = async (
   token: string,
   id: number | string
@@ -76,9 +85,9 @@ export const getCurrentUserService = async (
     if (!response.ok) {
       throw new Error("Error obteniendo usuario");
     }
-    console.log("Respuesta de getCurrentUserService ", response);
-
-    return response.json();
+    const data = await response.json();
+    console.log("Respuesta de getCurrentUserService ", data)
+    return data;
   } catch (error) {
     console.error("Error al conseguir el servicio atual: ", error);
     throw error;
@@ -316,6 +325,46 @@ export const updateUserProfileService = async (
     return result;
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
+export const resendEmailService = async (email: string) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/resend-verification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Error al reenviar el email de verificación"
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("Error al reenviar verificacion", error);
+    throw error;
+  }
+};
+// /
+export const getCoursesByIdServices = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/users/me/purchased-courses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al recibir los cursos comprados");
+    }
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log("Error al reenviar verificacion", error);
     throw error;
   }
 };

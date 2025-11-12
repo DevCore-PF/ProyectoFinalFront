@@ -12,15 +12,17 @@ import { useAddToCart } from "@/hooks/useAddToCart";
 import { categoryConfig } from "@/helpers/course.helpers";
 import { getDifficultyColors } from "@/helpers/moks";
 //Services
-import { getAllCoursesService } from "@/services/course.service";
+import { getAllPublicCoursesService } from "@/services/course.service";
+import { purchasedCoursesService, PurchasedCourse } from "@/services/purchased-courses.service";
 //Components
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
 
 const CoursesPage = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
+  const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>([]);
   const [showMyCoursesOnly, setShowMyCoursesOnly] = useState(false);
   const [loadingCourses, setLoadingCourses] = useState(false);
   const { handleAddToCart, loadingAddToCart } = useAddToCart();
@@ -29,16 +31,34 @@ const CoursesPage = () => {
     const fetchAllCourses = async () => {
       try {
         setLoadingCourses(true);
-        const data = await getAllCoursesService();
+        const data = await getAllPublicCoursesService();
         setCourses(data);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching public courses:", error);
       } finally {
         setLoadingCourses(false);
       }
     };
     fetchAllCourses();
   }, []);
+
+  // Cargar cursos comprados si el usuario está logueado
+  useEffect(() => {
+    const fetchPurchasedCourses = async () => {
+      if (user && token) {
+        try {
+          const purchasedData = await purchasedCoursesService.getMyPurchasedCourses(token);
+          setPurchasedCourses(purchasedData);
+        } catch (error) {
+          console.error("Error fetching purchased courses:", error);
+          // No mostramos error al usuario, simplemente no cargamos los cursos comprados
+        }
+      } else {
+        setPurchasedCourses([]);
+      }
+    };
+    fetchPurchasedCourses();
+  }, [user, token]);
 
   const handleReload = () => {
     setLoadingCourses(true);
@@ -83,6 +103,10 @@ const CoursesPage = () => {
                   typeof user.professorProfile === "object" &&
                   course.professor?.id === user.professorProfile.id;
 
+                const isPurchasedCourse = purchasedCourses.some(
+                  (purchasedCourse) => purchasedCourse.id === course.id
+                );
+
                 return (
                   <div
                     key={course.id}
@@ -104,7 +128,7 @@ const CoursesPage = () => {
                             <h3 className="text-white text-2xl font-bold flex-1">
                               {course.title}
                             </h3>
-                            {!isOwnCourse ? (
+                            {!isOwnCourse && !isPurchasedCourse ? (
                               <button
                                 disabled={loadingAddToCart ? true : false}
                                 onClick={() => handleAddToCart(course)}
@@ -119,11 +143,15 @@ const CoursesPage = () => {
                                   "Agregar al carrito"
                                 )}
                               </button>
-                            ) : (
+                            ) : isOwnCourse ? (
                               <div className="px-4 py-2 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold">
                                 Tu curso
                               </div>
-                            )}
+                            ) : isPurchasedCourse ? (
+                              <div className="px-4 py-2 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold">
+                                Curso comprado
+                              </div>
+                            ) : null}
                             <button
                               onClick={() =>
                                 router.push(`/course/${course.id}`)

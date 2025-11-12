@@ -1,7 +1,31 @@
 import { Course } from "@/types/course.types";
 
-// const API_URL = "/api";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// Obtener todos los cursos públicos (para la página /courses)
+export const getAllPublicCoursesService = async (): Promise<Course[]> => {
+  try {
+    const data = await fetch(`${API_URL}/courses/public`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!data.ok) {
+      throw new Error("Hubo un problema al obtener los cursos públicos");
+    }
+
+    const response = await data.json();
+    console.log("Cursos públicos obtenidos: ", response);
+    return response;
+  } catch (error) {
+    console.error("Error con la lista de cursos públicos: ", error);
+    throw error;
+  }
+};
+
+// Obtener todos los cursos (para admin/teacher dashboard)
 export const getAllCoursesService = async (): Promise<Course[]> => {
   try {
     const data = await fetch(`${API_URL}/courses`, {
@@ -16,7 +40,7 @@ export const getAllCoursesService = async (): Promise<Course[]> => {
     }
 
     const response = await data.json();
-    console.log("esta e smi data de todos los cursos: ", response);
+    console.log("Todos los cursos obtenidos: ", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos: ", error);

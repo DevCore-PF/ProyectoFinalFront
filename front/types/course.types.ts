@@ -21,7 +21,13 @@ export enum CourseType {
 
 export enum CourseStatus {
   DRAFT = "EN REVISION",
-  PUBLISHED = "PUBLICADO",
+  PUBLISHED = "PUBLICADO", 
+  REJECT = "RECHAZADO",
+}
+
+export enum CourseVisibility {
+  PUBLIC = "PUBLICO",
+  PRIVATE = "PRIVADO",
 }
 
 // Interfaces para formularios
@@ -52,6 +58,7 @@ export interface Course {
   category: CourseCategory;
   type: CourseType;
   status: CourseStatus;
+  visibility: CourseVisibility;
   createdAt: string;
   updatedAt: string;
   professor: {
@@ -72,6 +79,7 @@ export interface Lesson {
   title: string;
   urlVideos: string[];
   urlPdfs: string[];
+  aditionalData?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -96,6 +104,7 @@ export interface CreateLessonResponse {
   title: string;
   urlVideos: string[];
   urlPdfs: string[];
+  aditionalData?: string[];
   createdAt: string;
   updatedAt: string;
 }

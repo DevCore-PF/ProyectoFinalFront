@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { HiPlus, HiPencil, HiChartBar, HiCurrencyDollar } from 'react-icons/hi';
+import { HiPlus, HiLink, HiChartBar, HiCurrencyDollar } from 'react-icons/hi';
+import AdditionalContentModal from './AdditionalContentModal';
 
 interface ManagementOption {
   id: string;
@@ -17,6 +18,7 @@ interface TeacherManagementPanelProps {
 
 const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ className = '' }) => {
   const router = useRouter();
+  const [showAdditionalContentModal, setShowAdditionalContentModal] = useState(false);
   
   const managementOptions: ManagementOption[] = [
     {
@@ -30,11 +32,11 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       }
     },
     {
-      id: 'edit-course',
-      title: 'Editar curso existente',
-      description: 'Modifica título, descripción, precio o agrega recursos.',
-      icon: <HiPencil className="text-xl" />,
-      onClick: () => console.log('Editar curso existente')
+      id: 'additional-content',
+      title: 'Agregar contenido adicional',
+      description: 'Añade URLs y recursos extras a tus lecciones existentes.',
+      icon: <HiLink className="text-xl" />,
+      onClick: () => setShowAdditionalContentModal(true)
     },
     {
       id: 'statistics',
@@ -91,6 +93,14 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
           </div>
         ))}
       </div>
+
+      {/* Modal para Agregar Contenido Adicional */}
+      {showAdditionalContentModal && (
+        <AdditionalContentModal
+          isOpen={showAdditionalContentModal}
+          onClose={() => setShowAdditionalContentModal(false)}
+        />
+      )}
     </div>
   );
 };

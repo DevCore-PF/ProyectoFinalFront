@@ -4,6 +4,7 @@ import { teacherManagementOptions } from "@/helpers/moks";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileImage from "@/components/ui/ProfileImage";
+import AdditionalContentModal from "./AdditionalContentModal";
 
 const TeacherWelcomeCard = ({ 
   userName = "", 
@@ -15,6 +16,7 @@ const TeacherWelcomeCard = ({
   profileImage?: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showAdditionalContentModal, setShowAdditionalContentModal] = useState(false);
   const router = useRouter();
   const handleProfileSettings = () => {
     const userData = sessionStorage.getItem("user");
@@ -86,6 +88,8 @@ const TeacherWelcomeCard = ({
                       onClick={() => {
                         if (option.id === 'create-course') {
                           router.push('/teacher-dashboard/create-course');
+                        } else if (option.id === 'additional-content') {
+                          setShowAdditionalContentModal(true);
                         } else {
                           console.log(option.title);
                         }
@@ -107,6 +111,12 @@ const TeacherWelcomeCard = ({
           )}
         </div>
       </div>
+
+      {/* Modal para Agregar Contenido Adicional */}
+      <AdditionalContentModal
+        isOpen={showAdditionalContentModal}
+        onClose={() => setShowAdditionalContentModal(false)}
+      />
     </div>
   );
 };

@@ -69,6 +69,30 @@ export interface JwtPayload {
   iat: number;
   exp: number;
 }
+export interface User {
+  email: string;
+  hasCompletedProfile: boolean;
+  id: string ;
+  name: string;
+  role: "student" | "teacher" | "admin" | null;
+  isEmailVerified: false;
+  resetPasswordToken: null;
+  resetPasswordExpires: null;
+  checkBoxTerms: boolean;
+  emailVerificationToken: string;
+  googleId: null;
+  isActive: boolean;
+  isGoogleAccount: false;
+  isGitAcocount: false;
+  professorProfile?: ProfessorProfile | false;
+  profileImage?: string;
+  // Nuevos campos opcionales
+  ciudad?: string;
+  direccion?: string;
+  dni?: string;
+  telefono?: string;
+  fechaNacimiento?: string | Date;
+  genero?: "masculino" | "femenino" | "otro";
 
 export interface LoginResponse {
   access_token: string;

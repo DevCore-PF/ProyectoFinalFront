@@ -16,10 +16,19 @@ export enum CourseCategory {
 
 
 export enum CourseStatus {
+  DRAFT = "EN REVISION",
+  PUBLISHED = "PUBLICADO", 
+  REJECT = "RECHAZADO",
+}
+
+export enum CourseVisibility {
+  PUBLIC = "PUBLICO",
+  PRIVATE = "PRIVADO",
   REJECTED = "RECHAZADO",
   IN_REVIEW = "EN REVISION",
   PUBLISHED = "PUBLICADO",
 }
+
 export enum CourseType {
   COURSE = "Curso",
   CAREER = "Carrera",
@@ -36,6 +45,7 @@ export interface Course {
   category: CourseCategory;
   type: CourseType;
   status: CourseStatus;
+  visibility: CourseVisibility;
   createdAt: string;
   updatedAt: string;
   professor: ProfessorInfo;
@@ -79,6 +89,7 @@ export interface Lesson {
   title: string;
   urlVideos: string[];
   urlPdfs: string[];
+  aditionalData?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -120,6 +131,7 @@ export interface CreateLessonResponse {
   title: string;
   urlVideos: string[];
   urlPdfs: string[];
+  aditionalData?: string[];
   createdAt: string;
   updatedAt: string;
 }

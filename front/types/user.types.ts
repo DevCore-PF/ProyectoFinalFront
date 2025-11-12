@@ -67,6 +67,15 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  role: string;
+  profileImage?: string;
+  // Campos adicionales del perfil
+  ciudad?: string;
+  direccion?: string;
+  dni?: string;
+  telefono?: string;
+  fechaNacimiento?: string | Date;
+  genero?: "masculino" | "femenino" | "otro";
   role: UserRole;
   isActive: boolean;
   isEmailVerified: boolean;
@@ -95,6 +104,22 @@ export interface UserProfile {
   profileImage?: string;
   phone?: string;
   address?: string;
+  // Nuevos campos opcionales
+  ciudad?: string;
+  direccion?: string;
+  dni?: string;
+  telefono?: string;
+  fechaNacimiento?: string | Date;
+  genero?: "masculino" | "femenino" | "otro";
+}
+
+export interface UpdateUserFormData {
+  ciudad?: string;
+  direccion?: string;
+  dni?: string;
+  telefono?: string;
+  fechaNacimiento?: string;
+  genero?: "masculino" | "femenino" | "otro";
 }
 
 export interface UserUpdateResponse {

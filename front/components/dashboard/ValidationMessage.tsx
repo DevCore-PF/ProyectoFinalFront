@@ -95,9 +95,9 @@ const ValidationMessage: React.FC<ValidationMessageProps> = ({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-slate-200 mb-2">
+          <h2 className="text-lg font-semibold text-slate-200 mb-2">
             {config.title}
-          </h3>
+          </h2>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
             {config.description}
           </p>

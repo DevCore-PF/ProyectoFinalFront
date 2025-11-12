@@ -9,6 +9,9 @@ import {
 } from "@/types/auth.types";
 import {
   UpdateRoleResponse,
+} from "@/types/api.types";
+import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
+import { UploadImageResponse, UserUpdateResponse, UpdateUserFormData } from "@/types/user.types";
   UploadImageResponse,
   User,
   UserUpdateResponse,
@@ -274,6 +277,54 @@ export const getUserProfileService = async (
   }
 };
 
+// Servicio para obtener usuario actual (usado en OAuth callbacks)
+// export const getCurrentUserService = async (token: string, id: string) => {
+//   try {
+//     const response = await fetch(`${API_URL}/users/${id}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Error obteniendo usuario");
+//     }
+
+//     const userData = await response.json();
+//     // Si el backend devuelve userReturn en lugar de directamente el user
+//     return userData.userReturn || userData;
+//   } catch (error) {
+//     console.error("Error al conseguir el usuario actual: ", error);
+//     throw error;
+//   }
+// };
+
+/**
+ * Servicio para actualizar el perfil del usuario
+ */
+export const updateUserProfileService = async (
+  data: UpdateUserFormData,
+  token: string
+): Promise<UserUpdateResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/users/update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al actualizar el perfil");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al actualizar perfil:", error);
 export const resendEmailService = async (email: string) => {
   try {
     const response = await fetch(`${API_URL}/auth/resend-verification`, {

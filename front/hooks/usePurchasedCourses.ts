@@ -1,0 +1,104 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/UserContext';
+import { purchasedCoursesService, PurchasedCourse } from '@/services/purchased-courses.service';
+
+export const usePurchasedCourses = () => {
+  const { token } = useAuth();
+  const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Función para obtener información detallada de lecciones de un curso
+  const getCourseWithLessonsDetail = async (course: PurchasedCourse): Promise<PurchasedCourse> => {
+    if (!token) return course;
+    
+    try {
+      // Obtener todas las lecciones del curso
+      const allLessons = await purchasedCoursesService.getCourseLessons(token, course.id);
+      
+      // Obtener lecciones completadas
+      const completedLessonsData = await purchasedCoursesService.getCompletedLessons(token, course.id);
+      
+      // Crear un set de IDs de lecciones completadas para búsqueda rápida
+      const completedLessonIds = new Set(completedLessonsData.lessons.map(lesson => lesson.id));
+      
+      // Marcar qué lecciones están completadas
+      const lessonsWithProgress = allLessons.map(lesson => ({
+        ...lesson,
+        completed: completedLessonIds.has(lesson.id),
+        completedAt: completedLessonsData.lessons.find(completedLesson => 
+          completedLesson.id === lesson.id
+        )?.completedAt || null
+      }));
+
+      return {
+        ...course,
+        lessons: lessonsWithProgress,
+        totalLessons: allLessons.length,
+        completedLessons: completedLessonsData.totalCompleted,
+        // Recalcular el progreso basado en lecciones completadas vs totales
+        progress: allLessons.length > 0 ? (completedLessonsData.totalCompleted / allLessons.length) * 100 : 0
+      };
+    } catch (err) {
+      console.error(`Error obteniendo detalles de lecciones para curso ${course.id}:`, err);
+      return course; // Devolver el curso sin detalles de lecciones si hay error
+    }
+  };
+
+  useEffect(() => {
+    const fetchPurchasedCourses = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Obtener cursos comprados básicos
+        const courses = await purchasedCoursesService.getMyPurchasedCourses(token);
+        
+        // Obtener detalles de lecciones para cada curso
+        const coursesWithDetails = await Promise.all(
+          courses.map(course => getCourseWithLessonsDetail(course))
+        );
+        
+        setPurchasedCourses(coursesWithDetails);
+      } catch (err) {
+        console.error('Error fetching purchased courses:', err);
+        setError(err instanceof Error ? err.message : 'Error al cargar cursos comprados');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPurchasedCourses();
+  }, [token]);
+
+  const refetch = async () => {
+    if (!token) return;
+    
+    try {
+      setError(null);
+      const courses = await purchasedCoursesService.getMyPurchasedCourses(token);
+      const coursesWithDetails = await Promise.all(
+        courses.map(course => getCourseWithLessonsDetail(course))
+      );
+      setPurchasedCourses(coursesWithDetails);
+    } catch (err) {
+      console.error('Error refetching purchased courses:', err);
+      setError(err instanceof Error ? err.message : 'Error al actualizar cursos comprados');
+    }
+  };
+
+  return {
+    purchasedCourses,
+    loading,
+    error,
+    refetch,
+    setError,
+  };
+};

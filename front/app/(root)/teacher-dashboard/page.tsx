@@ -2,8 +2,10 @@
 import TeacherWelcomeCard from "@/components/dashboard/TeacherWelcomeCard";
 import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
+import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
+import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
-import { HiBookOpen, HiTrendingUp, HiChartBar } from "react-icons/hi";
+import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -37,6 +39,7 @@ const TeacherDashboardPage = () => {
   } = useProfessorCourses();
 
   const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<'created' | 'purchased'>('created');
 
   useEffect(() => {
     if (!isLoading) {
@@ -48,6 +51,8 @@ const TeacherDashboardPage = () => {
 
   const handleViewCourseDetails = (courseId: string) => {
     console.log(`Ver detalles del curso: ${courseId}`);
+    // desde aca se puede agregar navegación al detalle del curso
+    // router.push(`/teacher-dashboard/courses/${courseId}`);
   };
 
   const handleSubmitValidation = async (formData: FormData) => {
@@ -93,7 +98,7 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
-        {/* Mostrar formulario si es necesario */}
+        
         {(needsValidation || isRejected) && !showForm && (
           <div className="mb-6 text-center">
             <button
@@ -123,23 +128,23 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
-        {/* Sección de cursos */}
+        
         <div
           className={`bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300 ${
             !canCreateCourses ? "opacity-50" : ""
           }`}
         >
-          <div className="flex items-center gap-3 mb-10">
+          <div className="flex items-center gap-3 mb-6">
             <div className="p-2.5 bg-purple-500/10 rounded-lg">
               <HiBookOpen className="w-6 h-6 text-accent-light" />
             </div>
-            <div>
+            <div className="flex-1">
               <h2 className="text-xl md:text-2xl font-bold text-slate-200">
-                MIS CURSOS
+                GESTIÓN DE CURSOS
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
                 {canCreateCourses
-                  ? "Gestiona y monitorea todos tus cursos creados"
+                  ? "Gestiona tus cursos creados y los que has comprado"
                   : "Completa tu validación profesional para crear cursos"}
               </p>
             </div>
@@ -147,52 +152,89 @@ const TeacherDashboardPage = () => {
 
           {canCreateCourses ? (
             <>
-              {coursesLoading ? (
-                <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">
-                  <TinyLoader />
-                  <p>Cargando cursos...</p>
-                </div>
-              ) : coursesError ? (
-                <div className="text-center py-16 text-amber-400 bg-amber-800/20 rounded-xl border border-amber-700/20">
-                  <p className="text-lg  text-amber-400 mb-2">
-                    Error al cargar cursos
-                  </p>
-                  <p className="text-sm mb-4">{coursesError}</p>
-                  <button
-                    onClick={refreshCourses}
-                    className="px-4 py-2 bg-amber-500/20 cursor-pointer hover:bg-amber-600/30 text-amber-300 rounded-lg transition-colors"
-                  >
-                    Reintentar
-                  </button>
-                </div>
-              ) : hasCourses ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {professorCourses.map((course) => (
-                    <TeacherCourseCard
-                      key={course.id}
-                      course={course}
-                      viewDetails={handleViewCourseDetails}
-                    />
-                  ))}
-                </div>
+              {/* Tabs */}
+              <div className="flex border-b border-slate-700/50 mb-6">
+                <button
+                  onClick={() => setActiveTab('created')}
+                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                    activeTab === 'created'
+                      ? 'text-blue-400 border-blue-400'
+                      : 'text-slate-400 border-transparent hover:text-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <HiBookOpen className="w-4 h-4" />
+                    Cursos Creados
+                  </div>
+                </button>
+                <button
+                  onClick={() => setActiveTab('purchased')}
+                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                    activeTab === 'purchased'
+                      ? 'text-green-400 border-green-400'
+                      : 'text-slate-400 border-transparent hover:text-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <HiShoppingCart className="w-4 h-4" />
+                    Cursos Comprados
+                  </div>
+                </button>
+              </div>
+
+              {/* Contenido de tabs */}
+              {activeTab === 'created' ? (
+                <>
+                  {coursesLoading ? (
+                    <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">
+                      <TinyLoader />
+                      <p>Cargando cursos...</p>
+                    </div>
+                  ) : coursesError ? (
+                    <div className="text-center py-16 text-amber-400 bg-amber-800/20 rounded-xl border border-amber-700/20">
+                      <p className="text-lg  text-amber-400 mb-2">
+                        Error al cargar cursos
+                      </p>
+                      <p className="text-sm mb-4">{coursesError}</p>
+                      <button
+                        onClick={refreshCourses}
+                        className="px-4 py-2 bg-amber-500/20 cursor-pointer hover:bg-amber-600/30 text-amber-300 rounded-lg transition-colors"
+                      >
+                        Reintentar
+                      </button>
+                    </div>
+                  ) : hasCourses ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {professorCourses.map((course) => (
+                        <TeacherCourseCard
+                          key={course.id}
+                          course={course}
+                          viewDetails={handleViewCourseDetails}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-16 text-slate-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
+                      <HiBookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                      <p className="text-lg font-semibold text-slate-300 mb-2">
+                        No tienes cursos creados aún
+                      </p>
+                      <p className="text-sm mb-4">
+                        ¡Comienza creando tu primer curso!
+                      </p>
+                      <button
+                        onClick={() =>
+                          router.push("/teacher-dashboard/create-course")
+                        }
+                        className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
+                      >
+                        Crear mi primer curso
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
-                <div className="text-center py-16 text-slate-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
-                  <HiBookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                  <p className="text-lg font-semibold text-slate-300 mb-2">
-                    No tienes cursos creados aún
-                  </p>
-                  <p className="text-sm mb-4">
-                    ¡Comienza creando tu primer curso!
-                  </p>
-                  <button
-                    onClick={() =>
-                      router.push("/teacher-dashboard/create-course")
-                    }
-                    className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
-                  >
-                    Crear mi primer curso
-                  </button>
-                </div>
+                <PurchasedCoursesGrid />
               )}
             </>
           ) : (

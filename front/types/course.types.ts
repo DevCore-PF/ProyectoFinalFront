@@ -52,16 +52,15 @@ export interface Course {
   lessons: Lesson[];
   isActive: boolean;
   feedback: CourseReview;
-  visibility: Visibility;
   // Datos adicionales para admin
   sales?: number;
   revenue?: number;
   rating?: number;
 }
-export enum Visibility {
-  PUBLICO = "PUBLICO",
-  PRIVADO = "PRIVADO",
-}
+// export enum Visibility {
+//   PUBLICO = "PUBLICO",
+//   PRIVADO = "PRIVADO",
+// }
 export interface CourseReview {
   id: string;
   rating: number; /////del 1 al 5 porque son estrellitas

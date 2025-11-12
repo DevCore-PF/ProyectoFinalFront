@@ -20,7 +20,7 @@ import {
   getUserByIdService,
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
-import { Course, CourseReview, Visibility } from "@/types/course.types";
+import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
 import { CourseFilters, ValidationRequest } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
 import {
@@ -288,9 +288,9 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
               ? {
                   ...c,
                   visibility:
-                    c.visibility === Visibility.PUBLICO
-                      ? Visibility.PRIVADO
-                      : Visibility.PUBLICO,
+                    c.visibility === CourseVisibility.PUBLIC
+                      ? CourseVisibility.PRIVATE
+                      : CourseVisibility.PUBLIC,
                 }
               : c
           )

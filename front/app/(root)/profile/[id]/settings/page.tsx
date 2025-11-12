@@ -44,6 +44,7 @@ const ProfileSettings = () => {
   useEffect(() => {
     if (contextUser?.profileImage && !imagePreview) {
       setImagePreview(contextUser.profileImage);
+      
     }
   }, [contextUser?.profileImage, imagePreview]);
 

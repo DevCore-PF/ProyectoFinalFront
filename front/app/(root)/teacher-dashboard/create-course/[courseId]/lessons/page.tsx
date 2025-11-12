@@ -124,7 +124,7 @@ const CreateLessonPage = () => {
         }
       }
 
-      toastSuccess("¡Curso creado exitosamente con todas las lecciones!");
+      toastSuccess("Curso creado exitosamente!");
 
       // Redirigir al dashboard del profesor
       router.push("/teacher-dashboard");

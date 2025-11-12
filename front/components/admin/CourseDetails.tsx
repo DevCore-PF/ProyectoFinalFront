@@ -21,7 +21,7 @@ import { HiLockClosed, HiLockOpen } from "react-icons/hi";
 import Loader from "../Loaders/Loader";
 import { changeVisivilityService } from "@/services/admin.services";
 import { useAuth } from "@/context/UserContext";
-import { Visibility } from "@/types/course.types";
+import { CourseVisibility } from "@/types/course.types";
 import TinyLoader from "../Loaders/TinyLoader";
 import Image from "next/image";
 
@@ -145,7 +145,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   const handleChangeVisibility = async (courseId: string) => {
     try {
       const currentCourse = courses.find((c) => c.id === courseId);
-      const wasPublic = currentCourse?.visibility === Visibility.PUBLICO;
+      const wasPublic = currentCourse?.visibility === CourseVisibility.PUBLIC;
 
       await changeVisibility(courseId);
 
@@ -444,25 +444,25 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   </span>
                   <button
                     title={
-                      course.visibility === Visibility.PRIVADO
+                      course.visibility === CourseVisibility.PRIVATE
                         ? "Cambiar a público"
                         : "Cambiar a privado"
                     }
                     onClick={() => handleChangeVisibility(course.id)}
                     className={`relative inline-flex h-7 w-14 cursor-pointer items-center rounded-full transition-colors duration-300 ${
-                      course.visibility === Visibility.PRIVADO
+                      course.visibility === CourseVisibility.PRIVATE
                         ? "bg-amber-500/80 "
                         : "bg-emerald-400/80"
                     }`}
                   >
                     <span
                       className={`inline-flex h-6 w-6 items-center justify-center transform rounded-full bg-font-light shadow-md transition-transform duration-300 ${
-                        course.visibility === Visibility.PUBLICO
+                        course.visibility === CourseVisibility.PUBLIC
                           ? "translate-x-[30px]"
                           : "translate-x-[2px]"
                       }`}
                     >
-                      {course.visibility === Visibility.PRIVADO ? (
+                      {course.visibility === CourseVisibility.PRIVATE ? (
                         <HiLockClosed className="w-4 h-4 text-amber-800" />
                       ) : (
                         <HiLockOpen className="w-4 h-4 text-emerald-800" />

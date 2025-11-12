@@ -14,7 +14,6 @@ import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
-import ProfessionalValidationForm from "../../../components/dashboard/ProfessionalValidationForm";
 
 const TeacherDashboardPage = () => {
   const { user, isLoading } = useAuth();
@@ -86,7 +85,7 @@ const TeacherDashboardPage = () => {
           <TeacherWelcomeCard
             userName={user?.name}
             userEmail={user?.email}
-            profileImage={user?.image}
+            profileImage={user?.profileImage}
           />
         </div>
 

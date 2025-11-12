@@ -1,6 +1,8 @@
+
 "use client";
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
+import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import {
   HiArrowLeft,
   HiBookOpen,
@@ -12,6 +14,10 @@ import {
   HiCurrencyDollar,
   HiUserCircle,
   HiAcademicCap,
+  HiChevronDown,
+  HiChevronUp,
+  HiPlay,
+  HiDocumentText,
 } from "react-icons/hi";
 import Loader from "../Loaders/Loader";
 
@@ -21,9 +27,13 @@ interface CourseDetailsProps {
 }
 
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
-  const { courses } = useAdmin();
+  const { courses, activateDeactivateCourse } = useAdmin();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
+    new Set()
+  );
+  const [loadingAction, setLoadingAction] = useState(false);
 
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
@@ -33,7 +43,42 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     setIsLoading(false);
   }, [courseId, courses]);
 
-  {/* ============[ RENDER STARS ]============= */}
+  const toggleLesson = (lessonId: string) => {
+    const newExpanded = new Set(expandedLessons);
+    if (newExpanded.has(lessonId)) {
+      newExpanded.delete(lessonId);
+    } else {
+      newExpanded.add(lessonId);
+    }
+    setExpandedLessons(newExpanded);
+  };
+
+  const getFileNameFromUrl = (url: string): string => {
+    try {
+      const urlParts = url.split("/");
+      const fileNameWithExtension = urlParts[urlParts.length - 1];
+      const fileName = fileNameWithExtension.split("?")[0];
+      return decodeURIComponent(fileName);
+    } catch (error) {
+      return "Archivo";
+    }
+  };
+
+  const getCleanFileName = (url: string): string => {
+    const fullName = getFileNameFromUrl(url);
+    const nameWithoutExtension = fullName.replace(/\.[^/.]+$/, "");
+
+    if (nameWithoutExtension.length > 50) {
+      return (
+        nameWithoutExtension.substring(0, 25) +
+        "..." +
+        nameWithoutExtension.substring(nameWithoutExtension.length - 20)
+      );
+    }
+
+    return nameWithoutExtension;
+  };
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex gap-0.5">
@@ -41,7 +86,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
           <HiStar
             key={star}
             className={`w-5 h-5 ${
-              star <= rating ? "text-yellow-400 fill-yellow-400" : "text-slate-600"
+              star <= rating
+                ? "text-yellow-400 fill-yellow-400"
+                : "text-slate-600"
             }`}
           />
         ))}
@@ -49,10 +96,12 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     );
   };
 
-  {/* ============[ CALCULAR RATING PROMEDIO ]============= */}
   const getAverageRating = () => {
     if (!course?.feedback || course.feedback.length === 0) return 0;
-    const sum = course.feedback.reduce((acc: number, f: any) => acc + f.rating, 0);
+    const sum = course.feedback.reduce(
+      (acc: number, f: any) => acc + f.rating,
+      0
+    );
     return (sum / course.feedback.length).toFixed(1);
   };
 
@@ -66,9 +115,27 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     });
   };
 
-  const handleToggleActive = () => {
-    // TODO: Implementar cuando esté el service del backend
-    console.log("Toggle active para curso:", courseId);
+  const handleToggleActive = async () => {
+    setLoadingAction(true);
+    try {
+      await activateDeactivateCourse(courseId);
+      toastSuccess(course.isActive ? "Curso desactivado" : "Curso activado");
+    } catch (error) {
+      console.log(error);
+      toastError("Error al cambiar estado del curso");
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  const getCategoryBadge = (category: string) => {
+    const config = {
+      Backend: "bg-blue-400/10 text-blue-300 border-blue-500/20",
+      Frontend: "bg-purple-400/10 text-purple-300 border-purple-500/20",
+      FullStack: "bg-green-400/10 text-green-300 border-green-500/20",
+      DevOps: "bg-orange-400/10 text-orange-300 border-orange-500/20",
+    };
+    return config[category as keyof typeof config] || config.Backend;
   };
 
   if (isLoading) {
@@ -84,7 +151,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <HiBookOpen className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Curso no encontrado</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">
+            Curso no encontrado
+          </h2>
           <p className="text-slate-400 mb-6">
             No se pudo cargar la información del curso
           </p>
@@ -102,7 +171,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
-        {/* ============[ HEADER CON NAVEGACIÓN ]============= */}
+        {/* Header con navegación */}
         <div className="mb-6">
           <button
             onClick={onBack}
@@ -112,7 +181,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             Volver a cursos
           </button>
 
-          {/* ============[ BANNER SI ESTÁ INACTIVO ]============= */}
+          {/* Banner si está inactivo */}
           {!course.isActive && (
             <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
               <div className="flex items-center gap-3">
@@ -124,28 +193,31 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     Curso Inactivo
                   </p>
                   <p className="text-amber-300/80 text-sm">
-                    Este curso no está visible para los estudiantes. Puedes activarlo usando
-                    el botón a continuación.
+                    Este curso no está visible para los estudiantes.
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* ============[ HEADER PRINCIPAL ]============= */}
+          {/* Header principal */}
           <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 shadow-xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-gradient-to-br from-button to-accent-dark rounded-xl flex items-center justify-center">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-20 h-20 bg-gradient-to-br from-button to-accent-dark rounded-xl flex items-center justify-center flex-shrink-0">
                   <HiBookOpen className="w-10 h-10 text-font-light" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h1 className="text-3xl font-bold text-font-light mb-1">
                     {course.title}
                   </h1>
-                  <p className="text-slate-400">{course.description}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="px-3 py-1 bg-purple-400/10 border border-purple-500/20 text-purple-300 rounded-lg text-xs font-medium">
+                  <p className="text-slate-400 mb-3">{course.description}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`px-3 py-1 rounded-lg text-xs font-medium border ${getCategoryBadge(
+                        course.category
+                      )}`}
+                    >
                       {course.category}
                     </span>
                     <span className="px-3 py-1 bg-blue-400/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
@@ -164,37 +236,41 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={handleToggleActive}
-                  className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
-                    course.isActive
-                      ? "border-amber-300/50 text-amber-300"
-                      : "border-emerald-400/50 text-emerald-200"
-                  }`}
-                >
-                  {course.isActive ? (
-                    <>
-                      <HiBan className="w-5 h-5" />
-                      Desactivar
-                    </>
-                  ) : (
-                    <>
-                      <HiCheckCircle className="w-5 h-5" />
-                      Activar
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                onClick={handleToggleActive}
+                disabled={loadingAction}
+                className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 flex-shrink-0 ${
+                  course.isActive
+                    ? "border-amber-300/50 text-amber-300"
+                    : "border-emerald-400/50 text-emerald-200"
+                }`}
+              >
+                {loadingAction ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                    Procesando...
+                  </>
+                ) : course.isActive ? (
+                  <>
+                    <HiBan className="w-5 h-5" />
+                    Desactivar
+                  </>
+                ) : (
+                  <>
+                    <HiCheckCircle className="w-5 h-5" />
+                    Activar
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* ============[ GRID DE INFORMACIÓN ]============= */}
+        {/* Grid de información */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* ============[ COLUMNA IZQUIERDA - INFO GENERAL ]============= */}
+          {/* Columna izquierda - Info general */}
           <div className="lg:col-span-1 space-y-6">
-            {/* ============[ INFORMACIÓN BÁSICA ]============= */}
+            {/* Información básica */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiBookOpen className="w-6 h-6" />
@@ -242,7 +318,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Estado de revisión</p>
+                  <p className="text-slate-400 text-sm mb-1">
+                    Estado de revisión
+                  </p>
                   <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
                     {course.status}
                   </span>
@@ -250,7 +328,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               </div>
             </div>
 
-            {/* ============[ FECHAS ]============= */}
+            {/* Fechas */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiCalendar className="w-6 h-6" />
@@ -259,73 +337,61 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               <div className="space-y-3">
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Creación</p>
-                  <p className="text-font-light text-sm">{formatDate(course.createdAt)}</p>
+                  <p className="text-font-light text-sm">
+                    {formatDate(course.createdAt)}
+                  </p>
                 </div>
 
                 {course.updatedAt && (
                   <div>
-                    <p className="text-slate-400 text-sm mb-1">Última actualización</p>
-                    <p className="text-font-light text-sm">{formatDate(course.updatedAt)}</p>
+                    <p className="text-slate-400 text-sm mb-1">
+                      Última actualización
+                    </p>
+                    <p className="text-font-light text-sm">
+                      {formatDate(course.updatedAt)}
+                    </p>
                   </div>
                 )}
               </div>
             </div>
-          </div>
 
-          {/* ============[ COLUMNA DERECHA - LECCIONES Y FEEDBACK ]============= */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* ============[ ESTADÍSTICAS RÁPIDAS ]============= */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-purple-500/10 rounded-lg">
-                    <HiBookOpen className="w-6 h-6 text-accent-light" />
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Lecciones</p>
-                    <p className="text-2xl font-bold text-font-light">
-                      {course.lessons?.length || 0}
-                    </p>
-                  </div>
+            {/* Estadísticas */}
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-font-light mb-4">
+                Estadísticas
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-sm">Lecciones</span>
+                  <span className="text-font-light font-bold">
+                    {course.lessons?.length || 0}
+                  </span>
                 </div>
-              </div>
-
-              <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-yellow-500/10 rounded-lg">
-                    <HiStar className="w-6 h-6 text-yellow-300" />
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Rating promedio</p>
-                    <p className="text-2xl font-bold text-font-light">
-                      {getAverageRating() || "N/A"}
-                    </p>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-sm">Rating</span>
+                  <span className="text-yellow-400 font-bold">
+                    {getAverageRating() || "N/A"}
+                  </span>
                 </div>
-              </div>
-
-              <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-blue-500/10 rounded-lg">
-                    <HiUserCircle className="w-6 h-6 text-blue-300" />
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Reviews</p>
-                    <p className="text-2xl font-bold text-font-light">
-                      {course.feedback?.length || 0}
-                    </p>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-sm">Reviews</span>
+                  <span className="text-font-light font-bold">
+                    {course.feedback?.length || 0}
+                  </span>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* ============[ LECCIONES ]============= */}
+          {/* Columna derecha - Lecciones y Feedback */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Lecciones con acordeón */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiBookOpen className="w-6 h-6" />
-                Lecciones
+                Contenido del Curso
                 <span className="text-sm font-normal text-slate-400">
-                  ({course.lessons?.length || 0})
+                  ({course.lessons?.length || 0} lecciones)
                 </span>
               </h2>
 
@@ -334,55 +400,122 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   {course.lessons.map((lesson: any, index: number) => (
                     <div
                       key={lesson.id}
-                      className="p-4 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all"
+                      className="border border-slate-600/50 rounded-lg overflow-hidden transition-all"
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-slate-400 font-mono text-sm">
-                              #{index + 1}
-                            </span>
-                            <h3 className="text-font-light font-semibold">
-                              {lesson.title}
-                            </h3>
-                          </div>
-                          <div className="flex items-center gap-4 text-xs">
-                            <span
-                              className={`px-2 py-1 rounded ${
-                                lesson.isActive
-                                  ? "bg-emerald-500/10 text-emerald-400"
-                                  : "bg-slate-500/10 text-slate-400"
-                              }`}
-                            >
-                              {lesson.isActive ? "Activa" : "Inactiva"}
-                            </span>
-                            <span
-                              className={`px-2 py-1 rounded ${
-                                lesson.esPreview
-                                  ? "bg-blue-500/10 text-blue-400"
-                                  : "bg-slate-500/10 text-slate-400"
-                              }`}
-                            >
-                              {lesson.esPreview ? "Preview" : "Privada"}
-                            </span>
-                            <span className="text-slate-400">
-                              {formatDate(lesson.createdAt)}
-                            </span>
-                          </div>
+                      {/* Header de la lección */}
+                      <button
+                        onClick={() => toggleLesson(lesson.id)}
+                        className="w-full p-4 bg-slate-800/30 hover:bg-slate-800/50 transition-colors flex items-center justify-between text-left"
+                      >
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <span className="text-slate-400 font-bold text-sm flex-shrink-0">
+                            #{String(index + 1).padStart(2, "0")}
+                          </span>
+                          <h3 className="font-semibold text-font-light truncate">
+                            {lesson.title}
+                          </h3>
                         </div>
-                      </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-slate-400 text-sm">
+                            {lesson.urlVideos.length + lesson.urlPdfs.length}{" "}
+                            recursos
+                          </span>
+                          {expandedLessons.has(lesson.id) ? (
+                            <HiChevronUp className="w-5 h-5 text-slate-400" />
+                          ) : (
+                            <HiChevronDown className="w-5 h-5 text-slate-400" />
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Contenido expandible */}
+                      {expandedLessons.has(lesson.id) && (
+                        <div className="p-4 bg-slate-900/20 border-t border-slate-600/30">
+                          {/* Videos */}
+                          {lesson.urlVideos.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
+                                <HiPlay className="w-4 h-4" />
+                                Videos ({lesson.urlVideos.length})
+                              </h4>
+                              <div className="space-y-2">
+                                {/* {lesson.urlVideos.map(
+                                  (videoUrl: string, videoIndex: number) => {
+                                    const fileName = getCleanFileName(videoUrl);
+                                    return (
+                                      
+                                        key={videoIndex}
+                                        href={videoUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-3 p-3 bg-slate-800/30 hover:bg-slate-800/50 rounded-lg transition-colors group"
+                                      >
+                                        <HiPlay className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                                        <span className="text-slate-300 group-hover:text-font-light transition-colors truncate">
+                                          {fileName}
+                                        </span>
+                                      </a>
+                                    );
+                                  }
+                                )} */}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* PDFs */}
+                          {lesson.urlPdfs.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
+                                <HiDocumentText className="w-4 h-4" />
+                                Documentos ({lesson.urlPdfs.length})
+                              </h4>
+                              <div className="space-y-2">
+                                {/* {lesson.urlPdfs.map(
+                                  (pdfUrl: string, pdfIndex: number) => {
+                                    const fileName = getCleanFileName(pdfUrl);
+                                    return (
+                                      
+                                        key={pdfIndex}
+                                        href={pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-3 p-3 bg-slate-800/30 hover:bg-slate-800/50 rounded-lg transition-colors group"
+                                      >
+                                        <HiDocumentText className="w-4 h-4 text-red-400 flex-shrink-0" />
+                                        <span className="text-slate-300 group-hover:text-font-light transition-colors truncate">
+                                          {fileName}
+                                        </span>
+                                      </a>
+                                    );
+                                  }
+                                )} */}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Sin recursos */}
+                          {lesson.urlVideos.length === 0 &&
+                            lesson.urlPdfs.length === 0 && (
+                              <p className="text-slate-500 text-sm">
+                                No hay recursos disponibles para esta lección.
+                              </p>
+                            )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-12">
                   <HiBookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400">Este curso no tiene lecciones todavía</p>
+                  <p className="text-slate-400">
+                    Este curso no tiene lecciones todavía
+                  </p>
                 </div>
               )}
             </div>
 
-            {/* ============[ FEEDBACK ]============= */}
+            {/* Feedback */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiStar className="w-6 h-6" />
@@ -407,23 +540,27 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                             className="w-10 h-10 rounded-full object-cover border-2 border-button/60"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600 flex-shrink-0">
                             {review.user.name.charAt(0).toUpperCase()}
                           </div>
                         )}
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div>
-                              <p className="text-font-light font-semibold">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-2 gap-2">
+                            <div className="min-w-0">
+                              <p className="text-font-light font-semibold truncate">
                                 {review.user.name}
                               </p>
                               <p className="text-slate-400 text-xs">
                                 {formatDate(review.createdAt)}
                               </p>
                             </div>
-                            {renderStars(review.rating)}
+                            <div className="flex-shrink-0">
+                              {renderStars(review.rating)}
+                            </div>
                           </div>
-                          <p className="text-slate-300 text-sm">{review.feedback}</p>
+                          <p className="text-slate-300 text-sm">
+                            {review.feedback}
+                          </p>
                         </div>
                       </div>
                     </div>

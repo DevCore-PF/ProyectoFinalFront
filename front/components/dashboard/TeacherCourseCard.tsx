@@ -1,15 +1,54 @@
-import { HiEye, HiEyeOff, HiBookOpen, HiClock, HiTag, HiAcademicCap } from "react-icons/hi";
-import { Course, CourseCategory } from "@/types/course.types";
+import { HiBookOpen, HiClock, HiTag, HiAcademicCap } from "react-icons/hi";
+import { Course, CourseCategory, CourseVisibility, CourseStatus } from "@/types/course.types";
 import { categoryConfig } from "@/helpers/course.helpers";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import VisibilityToggle from "./VisibilityToggle";
 
 interface TeacherCourseCardProps {
   course: Course;
   viewDetails?: (id: string) => void; 
+  onVisibilityChange?: (courseId: string, newVisibility: CourseVisibility) => void;
 }
 
-const TeacherCourseCard = ({ course }: TeacherCourseCardProps) => {
+const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProps) => {
   const router = useRouter();
+  
+  // Función para calcular la visibilidad inicial correcta basándose en el status
+  const getInitialVisibility = (): CourseVisibility => {
+    // Si el curso está aprobado/publicado, debería ser público automáticamente
+    const statusStr = course.status as string;
+    if (statusStr === "PUBLICADO" || statusStr === CourseStatus.PUBLISHED) {
+      return CourseVisibility.PUBLIC;
+    }
+    // Si está rechazado, en revisión o borrador, siempre privado
+    return CourseVisibility.PRIVATE;
+  };
+
+  const [currentVisibility, setCurrentVisibility] = useState<CourseVisibility>(
+    getInitialVisibility()
+  );
+
+  // Detectar cambios en el status del curso para actualizar la visibilidad
+  useEffect(() => {
+    const newVisibility = getInitialVisibility();
+    console.log(`🔍 Curso ${course.id}:`);
+    console.log(`   Status: "${course.status}"`);
+    console.log(`   Visibilidad actual: ${currentVisibility}`);
+    console.log(`   Nueva visibilidad: ${newVisibility}`);
+    
+    if (newVisibility !== currentVisibility) {
+      setCurrentVisibility(newVisibility);
+      console.log(`✅ Visibilidad actualizada de ${currentVisibility} a ${newVisibility}`);
+    } else {
+      console.log(`ℹ️  No hay cambios en la visibilidad`);
+    }
+  }, [course.status, course.id, course.updatedAt]);
+
+  const handleVisibilityChange = (newVisibility: CourseVisibility) => {
+    setCurrentVisibility(newVisibility);
+    onVisibilityChange?.(course.id, newVisibility);
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PUBLICADO":
@@ -113,7 +152,7 @@ const TeacherCourseCard = ({ course }: TeacherCourseCardProps) => {
         </div>
         <div className={`flex items-center gap-2 ${config.badgeColor} border px-3 py-1.5 rounded-lg text-xs font-semibold`}>
           <HiTag className="w-3 h-3" />
-          <span className={config.textColor}>{course.category || "Sin categoría"}</span>
+          <span className="text-slate-100">{course.category || "Sin categoría"}</span>
         </div>
         <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-lg text-xs font-semibold">
           <span>${formatPrice(course.price)}</span>
@@ -128,30 +167,25 @@ const TeacherCourseCard = ({ course }: TeacherCourseCardProps) => {
             {lessonsCount} {lessonsCount === 1 ? 'lección' : 'lecciones'}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          {isPublic ? (
-            <>
-              <HiEye className="w-4 h-4 text-green-400" />
-              <span className="text-green-400 font-medium">Visible</span>
-            </>
-          ) : (
-            <>
-              <HiEyeOff className="w-4 h-4 text-yellow-400" />
-              <span className="text-yellow-400 font-medium">En proceso</span>
-            </>
-          )}
-        </div>
+        
+        {/* Visibility Toggle */}
+        <VisibilityToggle
+          courseId={course.id}
+          courseStatus={course.status}
+          currentVisibility={currentVisibility}
+          onVisibilityChange={handleVisibilityChange}
+        />
       </div>
 
       {/* Fechas */}
       <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
         <div className="bg-slate-800/30 rounded-lg p-3">
-          <span className="text-slate-500 font-medium block mb-1">Creado:</span>
-          <p className="text-slate-300 font-semibold">{formatDate(course.createdAt)}</p>
+          <span className="text-slate-300 font-medium block mb-1">Creado:</span>
+          <p className="text-slate-100 font-semibold">{formatDate(course.createdAt)}</p>
         </div>
         <div className="bg-slate-800/30 rounded-lg p-3">
-          <span className="text-slate-500 font-medium block mb-1">Actualizado:</span>
-          <p className="text-slate-300 font-semibold">{formatDate(course.updatedAt)}</p>
+          <span className="text-slate-300 font-medium block mb-1">Actualizado:</span>
+          <p className="text-slate-100 font-semibold">{formatDate(course.updatedAt)}</p>
         </div>
       </div>
 

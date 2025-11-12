@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 //Types
-import { RegisterFormData } from "@/types/auth.types";
+import { RegisterFormData, RegisterResponse } from "@/types/auth.types";
 //Services
 import { registerUserService } from "@/services/user.service";
 //Context
@@ -29,7 +29,6 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
 import Image from "next/image";
 import Loader from "@/components/Loaders/Loader";
-import { RegisterResponse } from "@/types/api.types";
 
 const RegisterForm = () => {
   const { setToken, setUser, isLoading, user } = useAuth();
@@ -62,7 +61,6 @@ const RegisterForm = () => {
             );
             setToken(data.access_token);
             setUser(data.userReturn);
-            toastSuccess("Registro enviado!");
             formik.resetForm();
             window.location.href = "/role";
           } catch (error) {

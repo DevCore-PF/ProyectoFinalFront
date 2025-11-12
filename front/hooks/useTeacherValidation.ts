@@ -262,7 +262,6 @@ export const useTeacherValidation = () => {
 
     // Si es teacher y no hay estado de validación todavía, cargar
     if (user?.role === "teacher" && !validationStatus && !isLoading) {
-      console.log("🔍 Teacher sin estado de validación, cargando...");
       loadValidationStatus();
       return;
     }
@@ -274,9 +273,7 @@ export const useTeacherValidation = () => {
       typeof user.professorProfile === "object" &&
       validationStatus?.status === "not-submitted"
     ) {
-      console.log(
-        "🔍 Teacher completó perfil pero estado aún es not-submitted, recargando..."
-      );
+   
       loadValidationStatus();
     }
   }, [
@@ -294,9 +291,7 @@ export const useTeacherValidation = () => {
       typeof user.professorProfile === "object" &&
       validationStatus?.status !== "approved"
     ) {
-      console.log(
-        "🔄 ProfessorProfile detectado, actualizando estado inmediatamente"
-      );
+     
       const newValidationStatus = {
         isValidated: true,
         status: "approved" as const,

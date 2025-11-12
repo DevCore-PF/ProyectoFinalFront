@@ -1,7 +1,7 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
 import { getCurrentUserService } from "@/services/user.service";
-import { User } from "@/types/auth.types";
+import { User } from "@/types/user.types";
 
 import {
   createContext,
@@ -98,27 +98,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (isLoggingOut.current) {
             return;
           }
-          if (error instanceof Error) {
-            const errorMessage = error.message.toLowerCase();
-            if (
-              errorMessage.includes("401") ||
-              errorMessage.includes("403") ||
-              errorMessage.includes("404") ||
-              errorMessage.includes("unauthorized") ||
-              errorMessage.includes("not found") ||
-              errorMessage.includes("error obteniendo usuario")
-            ) {
-              console.log(
-                "🚨 Usuario no válido o eliminado. Cerrando sesión..."
-              );
-              logout();
-              return;
-            }
-            console.log("Token inválido, haciendo logout");
-            logout();
-          } else {
-            console.log("Error temporal, manteniendo usuario actual");
-          }
+          // if (error instanceof Error) {
+          //   const errorMessage = error.message.toLowerCase();
+          //   if (
+          //     errorMessage.includes("401") ||
+          //     errorMessage.includes("403") ||
+          //     errorMessage.includes("404") ||
+          //     errorMessage.includes("unauthorized") ||
+          //     errorMessage.includes("not found") ||
+          //     errorMessage.includes("error obteniendo usuario")
+          //   ) {
+          //     console.log(
+          //       "🚨 Usuario no válido o eliminado. Cerrando sesión..."
+          //     );
+          //     logout();
+          //     return;
+          //   }
+          //   console.log("Token inválido, haciendo logout");
+          //   logout();
+          // } else {
+          //   console.log("Error temporal, manteniendo usuario actual");
+          // }
         }
       }
     };
@@ -206,10 +206,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     // Prevenir múltiples ejecuciones simultáneas
     if (isLoggingOut.current) {
-      console.log("⏳ Logout ya en progreso, ignorando llamada duplicada");
       return;
     }
-    //ACA HACE EL LOGOUT
+    
     isLoggingOut.current = true;
 
     try {

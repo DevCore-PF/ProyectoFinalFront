@@ -14,13 +14,13 @@ import { updateRoleService } from "@/services/user.service";
 import { useFormik } from "formik";
 //Validators/Types
 import { roleValidation } from "@/validators/registerSchema";
-import { RoleData } from "@/types/forms.types";
 //Helpers
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 //Context
 import { useAuth } from "@/context/UserContext";
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
+import { RoleData } from "@/types/forms.types";
 
 const page = () => {
   const router = useRouter();
@@ -51,7 +51,6 @@ const page = () => {
             data.userReturn.isGoogleAccount
           ) {
             toastSuccess("Login exitoso!");
-            // <ModalTerms/>
             window.location.href = "/";
           } else {
             toastSuccess(
@@ -77,7 +76,7 @@ const page = () => {
   useEffect(() => {
     // Solo redirigir si NO estamos en proceso de submit
     if (user && user.role && !isSubmittingRole.current) {
-      toastSuccess("Login exitoso!");
+      // toastSuccess("Login exitoso!");
       router.push("/");
     }
   }, [user, router]);
@@ -109,6 +108,7 @@ const page = () => {
   if (!token) {
     return null;
   }
+  if (user && user.role) return <Loader />;
 
   return (
     <form onSubmit={formik.handleSubmit} className="min-h-screen ">

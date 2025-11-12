@@ -15,6 +15,7 @@ import {
   HiPencil,
   HiChartBar,
   HiCurrencyDollar,
+  HiLink,
 } from "react-icons/hi";
 import {
   FaUser,
@@ -189,10 +190,10 @@ export const teacherManagementOptions = [
     },
   },
   {
-    id: "edit-course",
-    title: "Editar curso",
-    icon: <HiPencil className="w-4 h-4" />,
-    onClick: () => console.log("Editar curso"),
+    id: "additional-content",
+    title: "Agregar contenido adicional",
+    icon: <HiLink className="w-4 h-4" />,
+    onClick: () => console.log("Agregar contenido adicional"),
   },
   {
     id: "statistics",
@@ -353,21 +354,21 @@ export const faqs = [
 export const recommendedCourses = [
   {
     id: "1",
-    name: "React Avanzado",
+    title: "React Avanzado",
     description: "Domina hooks, context y patrones avanzados",
     duration: "12 horas",
     rating: "4.8",
   },
   {
     id: "2",
-    name: "TypeScript desde cero",
+    title: "TypeScript desde cero",
     description: "Aprende tipado estático para JavaScript",
     duration: "8 horas",
     rating: "4.9",
   },
   {
     id: "3",
-    name: "Node.js y Express",
+    title: "Node.js y Express",
     description: "Crea APIs robustas con Node",
     duration: "15 horas",
     rating: "4.7",

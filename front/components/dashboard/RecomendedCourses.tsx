@@ -1,7 +1,16 @@
-
-import { RecomendedCoursePorps } from "@/types/user.types";
+// import { RecomendedCoursePorps } from "@/types/user.types";
+import { Course } from "@/types/course.types";
 import { HiBookOpen, HiClock, HiStar, HiArrowRight } from "react-icons/hi";
-const RecommendedCourses = ({ courses }: RecomendedCoursePorps) => {
+interface RecommendedCourseProps {
+  courses: {
+    id: string;
+    title: string;
+    description: string;
+    duration: string;
+    rating: string;
+  }[];
+}
+const RecommendedCourses = ({ courses }: RecommendedCourseProps) => {
   return (
     <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">
@@ -21,7 +30,7 @@ const RecommendedCourses = ({ courses }: RecomendedCoursePorps) => {
           >
             <div className="p-5 flex flex-col flex-1">
               <h3 className="font-bold mb-2 text-slate-200  transition-colors text-lg">
-                {course.name}
+                {course.title}
               </h3>
               <p className="text-sm text-slate-400 mb-4 leading-relaxed flex-1">
                 {course.description}

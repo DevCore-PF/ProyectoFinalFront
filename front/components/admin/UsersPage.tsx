@@ -2,7 +2,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { downloadCSV } from "@/helpers/adminHandlers";
 import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { UsersDetailProps } from "@/types/admin.types";
 import { UserRole } from "@/types/user.types";
@@ -19,6 +18,7 @@ import {
   HiDownload,
 } from "react-icons/hi";
 import Loader from "../Loaders/Loader";
+import { downloadUsers } from "@/helpers/adminHandlers";
 
 type UserRoleType = "all" | UserRole;
 type UserStatus = "all" | "active" | "inactive";
@@ -246,7 +246,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
               </h1>
             </div>
             <button
-              onClick={() => downloadCSV(users)}
+              onClick={() => downloadUsers(users)}
               className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
             >
               <HiDownload className="w-5 h-5" />

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { downloadCSV } from "@/helpers/adminHandlers";
 import {
   toastConfirm,
   toastError,
@@ -27,6 +26,7 @@ import TinyLoader from "../Loaders/TinyLoader";
 import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
+import { downloadCourses } from "@/helpers/adminHandlers";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
@@ -396,15 +396,15 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             </div>
             <div className="flex gap-2">
               <button
-                // onClick={() => downloadCSV(courses)}
-                className="flex cursor-pointer items-center gap-2 bg-slate-700/50 hover:bg-slate-700/80 border border-slate-600 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+                onClick={() => downloadCourses(courses)}
+                className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
               >
                 <HiDownload className="w-5 h-5" />
                 Exportar cursos
               </button>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+                className="flex cursor-pointer items-center gap-2 bg-slate-700/50 hover:bg-slate-700/80 border border-slate-600 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
               >
                 <FaPlus className="w-5 h-5" />
                 Crear Curso
@@ -873,7 +873,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       </div>
       <CourseModal
         isOpen={showCreateModal}
-        onClose={handleCancelCourse} 
+        onClose={handleCancelCourse}
         title="Crear Nuevo Curso"
       >
         <CreateCourseAdmin
@@ -882,7 +882,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             setShowCreateModal(false);
             setShowLessonsModal(true);
           }}
-          onCancel={handleCancelCourse} 
+          onCancel={handleCancelCourse}
         />
       </CourseModal>
 

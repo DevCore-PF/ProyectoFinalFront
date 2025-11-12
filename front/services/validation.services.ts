@@ -1,8 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
-import { ProfessorProfileResponse } from "@/types/api.types";
-import { User } from "@/types/auth.types";
+
 import { TeacherValidationStatus } from "@/types/professionalValidation.types";
+import { ProfessorProfileResponse } from "@/types/professor.types";
+import { User } from "@/types/user.types";
 
 /**
  * Obtiene el perfil completo del usuario incluyendo professorProfile

@@ -14,10 +14,9 @@ export enum CourseCategory {
   MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
-
 export enum CourseStatus {
   DRAFT = "EN REVISION",
-  PUBLISHED = "PUBLICADO", 
+  PUBLISHED = "PUBLICADO",
   REJECT = "RECHAZADO",
 }
 
@@ -27,6 +26,10 @@ export enum CourseVisibility {
   REJECTED = "RECHAZADO",
   IN_REVIEW = "EN REVISION",
   PUBLISHED = "PUBLICADO",
+}
+export interface CourseCardProps {
+  course: Course;
+  viewDetails: (id: string) => void;
 }
 
 export enum CourseType {

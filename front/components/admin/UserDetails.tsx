@@ -149,9 +149,9 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
           <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 shadow-xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                {currentUser.image ? (
+                {currentUser.profileImage ? (
                   <img
-                    src={currentUser.image}
+                    src={currentUser.profileImage}
                     alt={currentUser.name}
                     className="w-20 h-20 rounded-full object-cover border-2 border-button/60"
                   />

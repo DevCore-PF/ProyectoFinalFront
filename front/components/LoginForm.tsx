@@ -6,7 +6,7 @@ import { FaExclamation } from "react-icons/fa6";
 import { FaArrowRotateRight } from "react-icons/fa6";
 
 //Types & Validators
-import { LoginFormData, User } from "@/types/auth.types";
+import { LoginFormData } from "@/types/auth.types";
 import { loginInitialValues, loginValidations } from "@/validators/loginSchema";
 //Formik
 import { useFormik } from "formik";
@@ -26,6 +26,7 @@ import GitHubAuthButton from "@/components/GitHubAuthButton";
 import Loader from "./Loaders/Loader";
 import TinyLoader from "./Loaders/TinyLoader";
 import { useRouter, useSearchParams } from "next/navigation";
+import { User } from "@/types/user.types";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);

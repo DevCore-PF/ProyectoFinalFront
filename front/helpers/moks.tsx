@@ -354,21 +354,21 @@ export const faqs = [
 export const recommendedCourses = [
   {
     id: "1",
-    name: "React Avanzado",
+    title: "React Avanzado",
     description: "Domina hooks, context y patrones avanzados",
     duration: "12 horas",
     rating: "4.8",
   },
   {
     id: "2",
-    name: "TypeScript desde cero",
+    title: "TypeScript desde cero",
     description: "Aprende tipado estático para JavaScript",
     duration: "8 horas",
     rating: "4.9",
   },
   {
     id: "3",
-    name: "Node.js y Express",
+    title: "Node.js y Express",
     description: "Crea APIs robustas con Node",
     duration: "15 horas",
     rating: "4.7",

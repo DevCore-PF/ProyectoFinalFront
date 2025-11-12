@@ -549,9 +549,9 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                         <td className="py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative">
-                              {user.image && !imageError ? (
+                              {user.profileImage && !imageError ? (
                                 <img
-                                  src={user.image}
+                                  src={user.profileImage}
                                   alt={user.name}
                                   onError={() => setImageError(true)}
                                   className="w-10 h-10 rounded-full object-cover border-2 border-button/60"

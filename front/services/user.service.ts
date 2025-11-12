@@ -3,12 +3,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 import { RegisterResponse, LoginResponse } from "@/types/auth.types";
 
-import { RegisterFormData, LoginFormData, User } from "@/types/auth.types";
+import { RegisterFormData, LoginFormData } from "@/types/auth.types";
 import {
   UploadImageResponse,
   UserUpdateResponse,
   UpdateUserFormData,
   UpdateRoleResponse,
+  User,
 } from "@/types/user.types";
 
 export const registerUserService = async (

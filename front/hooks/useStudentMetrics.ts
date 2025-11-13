@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePurchasedCourses } from './usePurchasedCourses';
-import { useLessonProgress } from './useLessonProgress';
+import { lessonProgressService } from '@/services/lesson-progress.service';
+import { useAuth } from '@/context/UserContext';
 import { Course } from '@/types/course.types';
 
 export interface StudentMetrics {
@@ -18,6 +19,7 @@ export interface StudentMetrics {
 
 export const useStudentMetrics = () => {
   const { purchasedCourses, loading: coursesLoading, error: coursesError } = usePurchasedCourses();
+  const { token } = useAuth();
   const [metrics, setMetrics] = useState<StudentMetrics>({
     totalCourses: 0,
     coursesInProgress: 0,
@@ -33,7 +35,7 @@ export const useStudentMetrics = () => {
 
   useEffect(() => {
     const calculateMetrics = async () => {
-      if (coursesLoading || !purchasedCourses) return;
+      if (coursesLoading || !purchasedCourses || !token) return;
       
       try {
         let totalLessons = 0;
@@ -42,21 +44,29 @@ export const useStudentMetrics = () => {
         let completedCourses = 0;
         let progressSum = 0;
 
-        // Calcular métricas para cada curso comprado
+        // Calcular métricas para cada curso comprado usando progreso real
         for (const course of purchasedCourses) {
           const courseLessons = course.lessons?.length || 0;
           totalLessons += courseLessons;
           
-          // Simular progreso del curso basado en lecciones completadas
-          // En un caso real esto vendría de la API de progreso de lecciones
+          // Obtener progreso real de las lecciones del curso
           let courseProgress = 0;
+          let completedLessonsInCourse = 0;
           
-          // Si el curso tiene lecciones, calcular progreso
           if (courseLessons > 0) {
-            // Simular lecciones completadas (en realidad vendría del backend)
-            const mockCompletedLessons = Math.floor(Math.random() * (courseLessons + 1));
-            courseProgress = (mockCompletedLessons / courseLessons) * 100;
-            totalCompleted += mockCompletedLessons;
+            try {
+              // Obtener progreso real del backend
+              const progressResponse = await lessonProgressService.getCompletedLessons(course.id, token);
+              completedLessonsInCourse = progressResponse.totalCompleted || 0;
+              
+              courseProgress = (completedLessonsInCourse / courseLessons) * 100;
+              totalCompleted += completedLessonsInCourse;
+            } catch (progressError) {
+              console.warn(`No se pudo obtener progreso para el curso ${course.title}:`, progressError);
+              // Si no hay progreso disponible, asumimos 0 lecciones completadas
+              courseProgress = 0;
+              completedLessonsInCourse = 0;
+            }
           }
 
           progressSum += courseProgress;

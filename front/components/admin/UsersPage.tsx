@@ -204,7 +204,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
         setLoadingUserId(userId);
         try {
           await activateUser(userId);
-          toastSuccess("Usuario baneado");
+          toastSuccess("Usuario reactivado");
         } catch (error) {
           console.log(error);
           throw error;
@@ -330,7 +330,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-red-400">
+              <p className="text-2xl font-bold text-amber-400">
                 {stats.inactive}
               </p>
             </div>
@@ -432,7 +432,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
 
         {/* ============[ ERROR ]============= */}
         {currentError && !isLoading && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6">
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
             {currentError}
           </div>
         )}

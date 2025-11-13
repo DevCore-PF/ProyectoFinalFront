@@ -23,93 +23,12 @@ import {
 import { categoryOptions, getCategoryConfig } from "@/helpers/course.helpers";
 //Icons
 import { FaExclamation } from "react-icons/fa6";
-import { HiArrowLeft, HiBookOpen } from "react-icons/hi";
 import { CreateCourseFormProps } from "@/types/admin.types";
 
-// const CreateCoursePage = () => {
-//   const router = useRouter();
-//   const { user, token } = useAuth();
-//   const [isSubmitting, setIsSubmitting] = useState(false);
 
-//   const formik = useFormik<CreateCourseFormData>({
-//     initialValues: createCourseInitialValues,
-//     validationSchema: createCourseSchema,
-//     onSubmit: async (values) => {
-//       const professorProfile = user?.professorProfile;
-
-//       if (!professorProfile || !professorProfile.id || !token) {
-//         toastError("Error: No se encontró el perfil de profesor");
-//         return;
-//       }
-
-//       try {
-//         setIsSubmitting(true);
-//         const courseResponse = await createCourseService(
-//           professorProfile.id,
-//           values,
-//           token
-//         );
-
-//         toastSuccess("¡Curso creado exitosamente!");
-
-//         // Redirigir a crear lecciones para este curso
-//         router.push(
-//           `/teacher-dashboard/create-course/${courseResponse.id}/lessons`
-//         );
-//       } catch (error) {
-//         console.error("Error creating course:", error);
-//         toastError(
-//           error instanceof Error ? error.message : "Error al crear el curso"
-//         );
-//       } finally {
-//         setIsSubmitting(false);
-//       }
-//     },
-//   });
-
-//   const selectedCategoryConfig = getCategoryConfig(formik.values.category);
-
-//   return (
-//     <div className="min-h-screen p-6">
-//       <div className="max-w-4xl mx-auto">
-//         {/* Header */}
-//         <div className="mb-8">
-//           <button
-//             onClick={() => router.back()}
-//             className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors mb-4"
-//           >
-//             <HiArrowLeft className="w-5 h-5" />
-//             Volver al Dashboard
-//           </button>
-
-//           <div className="flex items-center gap-4 mb-2">
-//             <div className="p-3 bg-accent-medium/20 rounded-xl">
-//               <HiBookOpen className="w-8 h-8 text-accent-light" />
-//             </div>
-//             <div>
-//               <h1 className="text-3xl sm:text-4xl font-semibold">
-//                 Crear Nuevo Curso
-//               </h1>
-//               <p className="text-gray-400 text-sm sm:text-base">
-//                 Comparte tu conocimiento con miles de estudiantes
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Formulario */}
-//         <div className="border border-border p-8 rounded-2xl shadow-lg">
-//
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CreateCoursePage;
 
 const CreateCourseAdmin = ({ onSuccess, onCancel }: CreateCourseFormProps) => {
-  const router = useRouter();
+
   const { user, token } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

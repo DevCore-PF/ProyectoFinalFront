@@ -1,8 +1,8 @@
 // Enums
 export enum CourseDifficulty {
-  BEGINNER = "PRINCIPIANTE",
-  INTERMEDIATE = "INTERMEDIO",
-  ADVANCED = "AVANZADO",
+  BEGINNER = "Principiante",
+  INTERMEDIATE = "Intermedio",
+  ADVANCED = "Avanzado",
 }
 
 export enum CourseCategory {
@@ -22,7 +22,7 @@ export enum CourseStatus {
 
 export enum CourseVisibility {
   PUBLIC = "PUBLICO",
-  PRIVATE = "PRIVADO"
+  PRIVATE = "PRIVADO",
 }
 export interface CourseCardProps {
   course: Course;

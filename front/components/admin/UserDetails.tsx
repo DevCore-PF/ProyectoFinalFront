@@ -22,11 +22,15 @@ import { FaCheck } from "react-icons/fa6";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
-import { getUserByIdService } from "@/services/admin.services";
+import {
+  getProfessorCourses,
+  getUserByIdService,
+} from "@/services/admin.services";
 import { useAdmin } from "@/context/AdminContext";
 import { UserEnrollments } from "@/types/admin.types";
 import { toastConfirm, toastSuccess } from "@/helpers/alerts.helper";
 import TinyLoader from "../Loaders/TinyLoader";
+import { Course } from "@/types/course.types";
 
 interface UserDetailsProps {
   user: User;
@@ -37,8 +41,15 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
   const [myCourses, setMyCourses] = useState<UserEnrollments[]>([]);
   const [currentUser, setCurrentUser] = useState<User>(user);
   const { token } = useAuth();
-  const { deactivateUser, activateUser } = useAdmin();
+  const { deactivateUser, activateUser, fetchCourseById } = useAdmin();
   const [banUnbanUserLoading, setBanUnbanUserLoading] = useState(false);
+  const [professorCourses, setProfessorCourses] = useState<
+    Course[] | undefined
+  >(undefined);
+  const [activeTab, setActiveTab] = useState<"enrolled" | "created">(
+    "enrolled"
+  );
+
   /////////////////ESTILOS
   const getRoleBadge = (role: string) => {
     const config = {
@@ -75,6 +86,12 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
           const data = await getUserByIdService(userId);
           setCurrentUser(data);
           const enrollments = await data.enrollments;
+
+          if (data.professorProfile && token) {
+            const id = data.professorProfile.id;
+            const professorProfile = await getProfessorCourses(token, id);
+            setProfessorCourses(professorProfile.courses);
+          }
           setMyCourses(enrollments);
         }
       } catch (error) {
@@ -124,7 +141,6 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
       () => {}
     );
   };
-  console.log("este es mi current COURSE ", myCourses);
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
@@ -492,68 +508,152 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
                 <HiBookOpen className="w-6 h-6" />
-                Cursos Inscritos
-                <span className="text-sm font-normal text-slate-400">
-                  ({myCourses.length || 0})
-                </span>
+                Cursos
               </h2>
 
-              {myCourses.length > 0 ? (
-                <div className="space-y-3">
-                  {myCourses.map((course) => (
-                    <div
-                      key={course.id}
-                      className="p-4 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-font-light font-semibold mb-1">
-                            {course.course.title}
-                          </h3>
-                          <span className="text-slate-300 text-sm flex gap-2">
-                            <p className="text-font-light">Duración:</p>
-                            <span>{course.course.duration}</span>
-                          </span>
-
-                          <div className="flex items-center gap-4 mt-3">
-                            <span className="text-slate-400 text-xs flex items-center gap-1">
-                              <HiCalendar className="w-3 h-3" />
-                              {course.completed ? (
-                                <p>terminado</p>
-                              ) : (
-                                <p>Incompleto</p>
-                              )}
-                            </span>
-                            {course.priceAtPurchase && (
-                              <span className="text-emerald-400 text-xs font-medium flex items-center gap-1">
-                                ${course.priceAtPurchase}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <HiBookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400">
-                    Este usuario no está inscrito en ningún curso
-                  </p>
+              {/* Tabs solo si es profesor */}
+              {currentUser.role === "teacher" && (
+                <div className="flex gap-2 mb-6 border-b border-slate-700/50">
+                  <button
+                    onClick={() => setActiveTab("enrolled")}
+                    className={`pb-3 px-4 font-medium transition-all cursor-pointer ${
+                      activeTab === "enrolled"
+                        ? "text-button/80 border-b-2 border-button"
+                        : "text-slate-400 hover:text-slate-300"
+                    }`}
+                  >
+                    Cursos Inscritos ({myCourses.length || 0})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("created")}
+                    className={`pb-3 px-4 font-medium transition-all cursor-pointer ${
+                      activeTab === "created"
+                        ? "text-button/80 border-b-2 border-button"
+                        : "text-slate-400 hover:text-slate-300"
+                    }`}
+                  >
+                    Cursos Creados ({professorCourses?.length || 0})
+                  </button>
                 </div>
               )}
-              {myCourses.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-slate-700/50">
-                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
-                    <span className="text-font-light font-semibold text-lg">
-                      Total Gastado
-                    </span>
-                    <span className="text-emerald-400 text-xl font-bold flex items-center gap-2">
-                      $ {getTotal().toFixed(2)}
-                    </span>
-                  </div>
-                </div>
+
+              {/* Contenido de Cursos Inscritos */}
+              {activeTab === "enrolled" && (
+                <>
+                  {myCourses.length > 0 ? (
+                    <div className="space-y-3">
+                      {myCourses.map((course) => (
+                        <div
+                          key={course.id}
+                          className="p-4 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="text-font-light font-semibold mb-1">
+                                {course.course.title}
+                              </h3>
+                              <span className="text-slate-300 text-sm flex gap-2">
+                                <p className="text-font-light">Duración:</p>
+                                <span>{course.course.duration}</span>
+                              </span>
+
+                              <div className="flex items-center gap-4 mt-3">
+                                <span className="text-slate-400 text-xs flex items-center gap-1">
+                                  <HiCalendar className="w-3 h-3" />
+                                  {course.completed ? (
+                                    <p>Terminado</p>
+                                  ) : (
+                                    <p>Incompleto</p>
+                                  )}
+                                </span>
+                                {course.priceAtPurchase && (
+                                  <span className="text-emerald-400 text-xs font-medium flex items-center gap-1">
+                                    ${course.priceAtPurchase}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <HiBookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                      <p className="text-slate-400">
+                        Este usuario no está inscrito en ningún curso
+                      </p>
+                    </div>
+                  )}
+
+                  {myCourses.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-slate-700/50">
+                      <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                        <span className="text-font-light font-semibold text-lg">
+                          Total Gastado
+                        </span>
+                        <span className="text-emerald-400 text-xl font-bold flex items-center gap-2">
+                          $ {getTotal().toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Contenido de Cursos Creados */}
+              {activeTab === "created" && currentUser.role === "teacher" && (
+                <>
+                  {professorCourses && professorCourses.length > 0 ? (
+                    <div className="space-y-3">
+                      {professorCourses.map((course) => (
+                        <div
+                          key={course.id}
+                          className="p-4 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="text-font-light font-semibold mb-1">
+                                {course.title}
+                              </h3>
+                              <p className="text-slate-400 text-sm mb-2 line-clamp-2">
+                                {course.description}
+                              </p>
+
+                              <div className="flex items-center gap-3 mt-3">
+                                <span className="px-2 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded text-xs">
+                                  {course.category}
+                                </span>
+                                <span className="text-slate-400 text-xs">
+                                  {course.lessons?.length || 0} lecciones
+                                </span>
+                                <span className="text-emerald-400 text-xs font-medium">
+                                  ${course.price}
+                                </span>
+                                <span
+                                  className={`px-2 py-1 rounded text-xs ${
+                                    course.isActive
+                                      ? "bg-emerald-500/10 text-emerald-300"
+                                      : "bg-amber-500/10 text-amber-300"
+                                  }`}
+                                >
+                                  {course.isActive ? "Activo" : "Inactivo"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <HiBookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                      <p className="text-slate-400">
+                        Este profesor no ha creado ningún curso todavía
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

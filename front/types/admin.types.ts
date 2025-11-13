@@ -181,3 +181,12 @@ export interface CreateCourseFormProps {
   onSuccess?: (courseId: string) => void
   onCancel?: () => void;
 }
+
+export interface GetAllCoursesAdminParams {
+  title?: string;
+  category?: string;
+  difficulty?: string;
+  isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}

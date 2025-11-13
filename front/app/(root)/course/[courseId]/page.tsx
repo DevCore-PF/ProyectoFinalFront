@@ -119,7 +119,7 @@ const CourseDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const courseData = await getCourseByIdService(courseId as string);
+        const courseData = await getCourseByIdService(courseId as string, token || undefined);
         setCourse(courseData);
       } catch (err) {
         console.error("Error fetching course:", err);

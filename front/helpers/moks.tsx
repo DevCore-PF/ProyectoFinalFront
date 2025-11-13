@@ -24,7 +24,6 @@ import {
   FaShieldAlt,
   FaGraduationCap,
 } from "react-icons/fa";
-import { HiBookOpen, HiCheckCircle } from "react-icons/hi";
 import { HiShoppingCart } from "react-icons/hi";
 export const courses = [
   {
@@ -211,6 +210,22 @@ export const teacherManagementOptions = [
 
 export const studentManagementOptions = [
   {
+    id: "profile-settings",
+    title: "Ajustes de perfil",
+    icon: <FaUser className="w-4 h-4" />,
+    onClick: () => {
+      console.log("Navegando a ajustes de perfil");
+    },
+  },
+  {
+    id: "become-professor",
+    title: "Postularme para profesor",
+    icon: <FaChalkboardTeacher className="w-4 h-4" />,
+    onClick: () => {
+      console.log("Navegando a postulación de profesor");
+    },
+  },
+  {
     id: "purchase-history",
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
@@ -372,37 +387,6 @@ export const recommendedCourses = [
     description: "Crea APIs robustas con Node",
     duration: "15 horas",
     rating: "4.7",
-  },
-];
-
-export const progressData = [
-  { id: "1", name: "Diseño UX", progress: 28 },
-  { id: "2", name: "JavaScript", progress: 70 },
-  { id: "3", name: "CSS", progress: 60 },
-];
-
-export const studentData = {
-  userName: "Sofia",
-  userEmail: "sofiarodriguez@gmail.com",
-  weeklyGoalProgress: 68,
-  goalHours: 4,
-  currentHours: 2.7,
-};
-
-export const quickAccessItems = [
-  {
-    id: "courses",
-    title: "CURSOS",
-    description: "Accede a todos los cursos en los que estás inscripto.",
-    icon: <HiBookOpen className="w-6 h-6 text-accent-light" />,
-    onClick: () => console.log("Navegando a cursos"),
-  },
-  {
-    id: "tasks",
-    title: "TAREAS",
-    description: "Completa las tareas asignadas a cada lección.",
-    icon: <HiCheckCircle className="w-6 h-6 text-accent-light" />,
-    onClick: () => console.log("Navegando a tareas"),
   },
 ];
 

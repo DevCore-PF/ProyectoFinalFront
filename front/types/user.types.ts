@@ -87,29 +87,6 @@ export interface UpdateRoleResponse {
 }
 
 // Dashboard Cards Types
-export interface ProgressItem {
-  id: string | number;
-  name: string;
-  progress: number;
-}
-
-export interface ProgressCardProps {
-  title: string;
-  progressItems: ProgressItem[];
-}
-
-export interface QuickAccessItem {
-  id: string | number;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  onClick: () => void;
-}
-
-export interface QuickAccessCardProps {
-  items: QuickAccessItem[];
-}
-
 export interface RecommendedCourse {
   id: string;
   name: string;

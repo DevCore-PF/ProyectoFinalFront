@@ -227,7 +227,7 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">
-                Panel de Gestón
+                Panel de Gestión
               </h1>
 
               <p className="text-slate-400">

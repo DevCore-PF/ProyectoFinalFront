@@ -43,6 +43,16 @@ export const useProfessorCourses = () => {
       console.log("📊 Total cursos del profesor:", filteredCourses.length);
       console.log("🔍 ID del profesor actual:", currentProfessorId);
       
+      // Debug: mostrar la visibilidad de cada curso
+      if (filteredCourses.length > 0) {
+        console.log("🔍 Visibilidad de cada curso:", filteredCourses.map(course => ({
+          courseId: course.id,
+          courseTitle: course.title,
+          status: course.status,
+          visibility: course.visibility
+        })));
+      }
+      
       // Debug: mostrar los IDs de profesores de los cursos obtenidos
       if (professorCourses.length > 0) {
         console.log("🔍 IDs de profesores en los cursos:", professorCourses.map(course => ({

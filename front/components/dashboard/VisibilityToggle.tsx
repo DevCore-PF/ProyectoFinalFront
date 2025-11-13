@@ -69,8 +69,15 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
 
   // Sincronizar la visibilidad cuando cambie la prop currentVisibility
   useEffect(() => {
-    setVisibility(currentVisibility);
-  }, [currentVisibility]);
+    console.log(`🔄 VisibilityToggle - Sincronizando visibilidad del curso ${courseId}:`);
+    console.log(`   Visibilidad actual: ${visibility}`);
+    console.log(`   Nueva visibilidad prop: ${currentVisibility}`);
+    
+    if (currentVisibility !== visibility) {
+      setVisibility(currentVisibility);
+      console.log(`✅ Visibilidad actualizada: ${currentVisibility}`);
+    }
+  }, [currentVisibility, courseId, visibility]);
 
   const handleToggleVisibility = async () => {
     if (isActuallyDisabled || !token || isChanging) return;
@@ -79,9 +86,14 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
       setIsChanging(true);
       const response = await courseVisibilityService.toggleVisibility(courseId, token);
       
+      console.log('📥 Respuesta del servicio de visibilidad:', response);
+      
+      // Mapear correctamente las respuestas del backend
       const newVisibility = response.visibility === 'PUBLICO' 
         ? CourseVisibility.PUBLIC 
         : CourseVisibility.PRIVATE;
+      
+      console.log(`🔄 Cambiando visibilidad de ${visibility} a ${newVisibility}`);
       
       setVisibility(newVisibility);
       onVisibilityChange?.(newVisibility);

@@ -5,6 +5,7 @@ import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
+import { CourseVisibility } from "@/types/course.types";
 import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
@@ -52,6 +53,12 @@ const TeacherDashboardPage = () => {
     console.log(`Ver detalles del curso: ${courseId}`);
     // desde aca se puede agregar navegación al detalle del curso
     // router.push(`/teacher-dashboard/courses/${courseId}`);
+  };
+
+  const handleVisibilityChange = (courseId: string, newVisibility: CourseVisibility) => {
+    console.log(`🔄 Visibilidad del curso ${courseId} cambiada a: ${newVisibility}`);
+    // Refrescar los cursos después de cambiar la visibilidad para obtener el estado actualizado
+    refreshCourses();
   };
 
   const handleSubmitValidation = async (formData: FormData) => {
@@ -209,6 +216,7 @@ const TeacherDashboardPage = () => {
                           key={course.id}
                           course={course}
                           viewDetails={handleViewCourseDetails}
+                          onVisibilityChange={handleVisibilityChange}
                         />
                       ))}
                     </div>

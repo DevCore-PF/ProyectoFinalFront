@@ -18,7 +18,11 @@ export const courseVisibilityService = {
         throw new Error('Error al cambiar la visibilidad del curso');
       }
 
-      return await response.json();
+      const result = await response.json();
+      
+      // El backend retorna el curso completo, pero nosotros solo necesitamos la visibilidad
+      console.log('🔄 Respuesta del backend al cambiar visibilidad:', result);
+      return { visibility: result.visibility };
     } catch (error) {
       console.error('Error courseVisibilityService.toggleVisibility:', error);
       throw error;

@@ -202,8 +202,9 @@ const CoursesPage = () => {
                                 Especialidad:{" "}
                               </span>
                               <span className="text-slate-300 font-semibold">
-                                {course.professor?.speciality ||
-                                  "No disponible"}
+                                {course.professor?.speciality || 
+                                 course.professor?.profession || 
+                                 "No disponible"}
                               </span>
                             </div>
                           </div>

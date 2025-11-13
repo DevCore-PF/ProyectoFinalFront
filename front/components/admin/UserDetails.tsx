@@ -25,7 +25,8 @@ import { useAuth } from "@/context/UserContext";
 import { getUserByIdService } from "@/services/admin.services";
 import { useAdmin } from "@/context/AdminContext";
 import { UserEnrollments } from "@/types/admin.types";
-import { toastSuccess } from "@/helpers/alerts.helper";
+import { toastConfirm, toastSuccess } from "@/helpers/alerts.helper";
+import TinyLoader from "../Loaders/TinyLoader";
 
 interface UserDetailsProps {
   user: User;
@@ -37,7 +38,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
   const [currentUser, setCurrentUser] = useState<User>(user);
   const { token } = useAuth();
   const { deactivateUser, activateUser } = useAdmin();
-
+  const [banUnbanUserLoading, setBanUnbanUserLoading] = useState(false);
   /////////////////ESTILOS
   const getRoleBadge = (role: string) => {
     const config = {
@@ -93,23 +94,35 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
   const roleBadge = getRoleBadge(currentUser.role);
 
   const handleBanUnban = async () => {
-    try {
-      if (currentUser.isActive) {
-        await deactivateUser(currentUser.id);
-        toastSuccess("Usuario baneado");
-      } else {
-        await activateUser(currentUser.id);
-        toastSuccess("Usuario activado");
-      }
+    let message = "";
+    currentUser.isActive
+      ? (message = "Banear usuario")
+      : (message = "Reactivar usuario");
+    toastConfirm(
+      message,
+      async () => {
+        setBanUnbanUserLoading(true);
+        try {
+          if (currentUser.isActive) {
+            await deactivateUser(currentUser.id);
+            toastSuccess("Usuario baneado");
+          } else {
+            await activateUser(currentUser.id);
+            toastSuccess("Usuario activado");
+          }
 
-      // Refrescar los datos del usuario desde el backend
-      if (token) {
-        const updatedUser = await getUserByIdService(currentUser.id);
-        setCurrentUser(updatedUser);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+          if (token) {
+            const updatedUser = await getUserByIdService(currentUser.id);
+            setCurrentUser(updatedUser);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setBanUnbanUserLoading(false);
+        }
+      },
+      () => {}
+    );
   };
   console.log("este es mi current COURSE ", myCourses);
 
@@ -193,13 +206,35 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                   title={
                     currentUser.isActive ? "Banear usuario" : "Activar usuario"
                   }
-                  className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
+                  disabled={banUnbanUserLoading}
+                  className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
                     currentUser.isActive
                       ? "border-amber-300/50 text-amber-300"
                       : "border-emerald-400/50 text-emerald-200"
                   }`}
                 >
-                  {currentUser.isActive ? (
+                  {currentUser.isActive && banUnbanUserLoading ? (
+                    <div className="flex gap-2 items-center">
+                      <TinyLoader />
+                      Banear
+                    </div>
+                  ) : currentUser.isActive && !banUnbanUserLoading ? (
+                    <>
+                      <HiBan className="w-5 h-5" />
+                      Banear
+                    </>
+                  ) : !currentUser.isActive && banUnbanUserLoading ? (
+                    <div className="flex gap-2 items-center">
+                      <TinyLoader />
+                      Activar
+                    </div>
+                  ) : (
+                    <>
+                      <HiCheckCircle className="w-5 h-5" />
+                      Activar
+                    </>
+                  )}
+                  {/* {currentUser.isActive ? (
                     <>
                       <HiBan className="w-5 h-5" />
                       Banear
@@ -209,7 +244,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                       <HiCheckCircle className="w-5 h-5" />
                       Activar
                     </>
-                  )}
+                  )} */}
                 </button>
               </div>
             </div>
@@ -475,13 +510,11 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                           <h3 className="text-font-light font-semibold mb-1">
                             {course.course.title}
                           </h3>
-                           <span className="text-slate-300 text-sm flex gap-2">
-                            <p className="text-font-light">
-                              Duración:
-                            </p>
+                          <span className="text-slate-300 text-sm flex gap-2">
+                            <p className="text-font-light">Duración:</p>
                             <span>{course.course.duration}</span>
                           </span>
-                      
+
                           <div className="flex items-center gap-4 mt-3">
                             <span className="text-slate-400 text-xs flex items-center gap-1">
                               <HiCalendar className="w-3 h-3" />

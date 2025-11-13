@@ -27,6 +27,7 @@ import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
 import { downloadCourses } from "@/helpers/adminHandlers";
+import { Course } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
@@ -50,36 +51,36 @@ export interface CourseReview {
   };
 }
 
-export interface Course {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  duration: string;
-  difficulty: "BASICO" | "INTERMEDIO" | "AVANZADO";
-  category: "Backend" | "Frontend" | "FullStack" | "DevOps";
-  type: string;
-  status: string;
-  visibility: string;
-  createdAt: string;
-  updatedAt: string;
-  professor: {
-    id: string;
-    user: {
-      name: string;
-      image: string | null;
-    };
-  } | null;
-  lessons: Array<{
-    id: string;
-    title: string;
-    order: number | null;
-    urlVideos: string[];
-    urlPdfs: string[];
-  }>;
-  isActive: boolean;
-  feedback?: CourseReview[];
-}
+// export interface Course {
+//   id: string;
+//   title: string;
+//   description: string;
+//   price: string;
+//   duration: string;
+//   difficulty: "BASICO" | "INTERMEDIO" | "AVANZADO";
+//   category: "Backend" | "Frontend" | "FullStack" | "DevOps";
+//   type: string;
+//   status: string;
+//   visibility: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   professor: {
+//     id: string;
+//     user: {
+//       name: string;
+//       image: string | null;
+//     };
+//   } | null;
+//   lessons: Array<{
+//     id: string;
+//     title: string;
+//     order: number | null;
+//     urlVideos: string[];
+//     urlPdfs: string[];
+//   }>;
+//   isActive: boolean;
+//   feedback?: CourseReview[];
+// }
 
 const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const {
@@ -109,12 +110,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showLessonsModal, setShowLessonsModal] = useState(false);
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
-  const [attemptingToCloseLessons, setAttemptingToCloseLessons] =
-    useState(false);
+  // const [attemptingToCloseLessons, setAttemptingToCloseLessons] =
+  //   useState(false);
 
-  const [feedbackByCourse, setFeedbackBycourse] = useState<
-    CourseReview[] | undefined
-  >(undefined);
+  const [feedbacksByCourse, setFeedbacksByCourse] = useState<
+    Record<string, CourseReview[]>
+  >({});
   useEffect(() => {
     refreshCourses();
   }, []);
@@ -122,7 +123,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   {
     /* ============[ FILTRADO Y ORDENAMIENTO ]============= */
   }
-  const filteredAndSortedCourses = useMemo(() => {
+  const filteredAndSortedCourses: Course[] = useMemo(() => {
     let filtered = courses;
 
     // Buscar por título
@@ -165,13 +166,16 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         aValue = parseFloat(aValue);
         bValue = parseFloat(bValue);
       } else if (sortBy === "rating") {
-        // Calcular rating promedio
-        // aValue = a.feedback?.length
-        //   ? a.feedback.reduce((sum, f) => sum + f.rating, 0) / a.feedback.length
-        //   : 0;
-        // bValue = b.feedback?.length
-        //   ? b.feedback.reduce((sum, f) => sum + f.rating, 0) / b.feedback.length
-        //   : 0;
+        // Calcular rating promedio usando feedbacksByCourse
+        const aFeedbacks = feedbacksByCourse[a.id];
+        const bFeedbacks = feedbacksByCourse[b.id];
+
+        aValue = aFeedbacks?.length
+          ? aFeedbacks.reduce((sum, f) => sum + f.rating, 0) / aFeedbacks.length
+          : 0;
+        bValue = bFeedbacks?.length
+          ? bFeedbacks.reduce((sum, f) => sum + f.rating, 0) / bFeedbacks.length
+          : 0;
       }
 
       if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
@@ -243,14 +247,16 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       </div>
     );
   };
+  // console.log("estos son mis feedbacks", await fetchFeedback());
 
-  {
-    /* ============[ CALCULAR RATING PROMEDIO ]============= */
-  }
-  const getAverageRating = (feedback: CourseReview[] | undefined) => {
-    if (!feedback || feedback.length === 0) return 0;
-    const sum = feedback.reduce((acc, f) => acc + f.rating, 0);
-    return Math.round(sum / feedback.length);
+  /* ============[ CALCULAR RATING PROMEDIO ]============= */
+  const getAverageRating = (courseId: string): number => {
+    const courseFeedbacks = feedbacksByCourse[courseId];
+
+    if (!courseFeedbacks || courseFeedbacks.length === 0) return 0;
+
+    const sum = courseFeedbacks.reduce((acc, f) => acc + f.rating, 0);
+    return Math.round(sum / courseFeedbacks.length);
   };
 
   const formatDate = (dateString: string) => {
@@ -261,9 +267,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     });
   };
 
-  {
-    /* ============[ HANDLERS ]============= */
-  }
+  /* ============[ HANDLERS ]============= */
   const handleSelectCourse = (courseId: string) => {
     setSelectedCourses((prev) =>
       prev.includes(courseId)
@@ -373,29 +377,59 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     );
   };
   const handleChangeStatus = async (courseId: string) => {
-    setLoadingCourseId(courseId);
-    try {
-      await activateDeactivateCourse(courseId);
-      toastSuccess(
-        courses.find((c) => c.id === courseId)?.isActive
-          ? "Curso desactivado"
-          : "Curso activado"
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCourseId(null);
-    }
+    let message = "";
+    courses.find((c) => {
+      const course = c.id === courseId;
+      if (course && c.isActive) {
+        message = "Desactivar curso";
+      } else if (course && !c.isActive) {
+        message = "Activar curso";
+      }
+    });
+    toastConfirm(
+      message,
+      async () => {
+        setLoadingCourseId(courseId);
+        try {
+          await activateDeactivateCourse(courseId);
+          toastSuccess(
+            courses.find((c) => c.id === courseId)?.isActive
+              ? "Curso desactivado"
+              : "Curso activado"
+          );
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoadingCourseId(null);
+        }
+      },
+      () => {}
+    );
   };
 
   useEffect(() => {
-    const loadAllFeedbacks = async () => {
-      if (courses && courses.length > 0) {
-        await Promise.all(courses.map((course) => fetchFeedback(course.id)));
+    const loadFeedbacks = async () => {
+      const feedbackMap: Record<string, CourseReview[]> = {};
+
+      for (const course of courses) {
+        try {
+          const courseFeedbacks = await fetchFeedback(course.id);
+          if (courseFeedbacks) {
+            feedbackMap[course.id] = courseFeedbacks;
+          }
+        } catch (error) {
+          console.error(
+            `Error loading feedback for course ${course.id}:`,
+            error
+          );
+        }
       }
+      setFeedbacksByCourse(feedbackMap);
     };
 
-    loadAllFeedbacks();
+    if (courses.length > 0) {
+      loadFeedbacks();
+    }
   }, [courses]);
 
   return (
@@ -704,9 +738,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
                   {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
-                    {filteredAndSortedCourses.map((course) => {
-                      // const avgRating = getAverageRating(course.feedback);
-                      // const courseFeedback: CourseReview = feedbacks[course.id];
+                    {filteredAndSortedCourses.map((course, index) => {
                       return (
                         <tr
                           key={course.id}
@@ -753,11 +785,11 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
+                              <div className="w-10 h-8 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
                                 <HiBookOpen className="w-5 h-5 text-accent-light" />
                               </div>
                               <div className="w-full">
-                                <p className="font-medium text-font-light">
+                                <p className="font-medium text-font-light truncate max-w-[200px]">
                                   {course.title}
                                 </p>
                                 <p className="text-xs text-slate-400">
@@ -782,16 +814,23 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-2">
-                              {/* {renderStars(avgRating)} */}
-                              {feedbacks ? (
-                                <span className="text-slate-400 text-xs">
-                                  {/* ({feedbacks.rating}) */}
-                                </span>
-                              ) : (
-                                <span className="text-slate-400 text-xs">
-                                  No hay feedbacks
-                                </span>
-                              )}
+                              {(() => {
+                                const avgRating = getAverageRating(course.id);
+                                const courseFeedbacks =
+                                  feedbacksByCourse[course.id];
+
+                                return (
+                                  <>
+                                    {renderStars(avgRating)}
+                                    {courseFeedbacks &&
+                                      courseFeedbacks.length > 0 && (
+                                        <span className="text-slate-400 text-xs">
+                                          ({courseFeedbacks.length})
+                                        </span>
+                                      )}
+                                  </>
+                                );
+                              })()}
                             </div>
                           </td>
                           <td className="px-4 py-4">

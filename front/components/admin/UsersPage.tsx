@@ -263,7 +263,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
               </p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
-              <p className="text-slate-400 text-xs mb-1">Estudiantes</p>
+              <p className="text-slate-400 text-xs mb-1">Alumnos</p>
               <p className="text-2xl font-bold text-blue-300">
                 {stats.students}
               </p>
@@ -557,13 +557,13 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                                   className="w-10 h-10 rounded-full object-cover border-2 border-button/60"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-3xl font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-font-light text-3xl font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
                                   {user.name.charAt(0).toUpperCase()}
                                 </div>
                               )}
                               {!user.isActive && (
                                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-background rounded-full flex items-center justify-center">
-                                  <HiBan className="w-2.5 h-2.5 text-white" />
+                                  <HiBan className="w-2.5 h-2.5 text-font-light" />
                                 </div>
                               )}
                             </div>

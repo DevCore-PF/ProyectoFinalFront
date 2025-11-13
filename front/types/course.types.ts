@@ -22,10 +22,7 @@ export enum CourseStatus {
 
 export enum CourseVisibility {
   PUBLIC = "PUBLICO",
-  PRIVATE = "PRIVADO",
-  REJECTED = "RECHAZADO",
-  IN_REVIEW = "EN REVISION",
-  PUBLISHED = "PUBLICADO",
+  PRIVATE = "PRIVADO"
 }
 export interface CourseCardProps {
   course: Course;

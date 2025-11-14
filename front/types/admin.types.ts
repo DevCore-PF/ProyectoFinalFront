@@ -1,4 +1,4 @@
-import { Course } from "./course.types";
+import { Course, CourseStatus } from "./course.types";
 import { User } from "./user.types";
 import { ApprovalStatus } from "./professor.types";
 
@@ -189,4 +189,29 @@ export interface GetAllCoursesAdminParams {
   isActive?: boolean;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+}
+export interface ProfessorValidation {
+  id: string;
+  userName: string;
+  userEmail: string;
+  userImage: string | null | undefined;
+  profession: string;
+  phone: string | undefined;
+  biography: string;
+  certificates: string[];
+  professionalLinks: string[];
+  approvalStatus: ApprovalStatus;
+  createdAt: string;
+}
+
+export interface CourseValidation {
+  id: string;
+  title: string;
+  professorName: string;
+  professorEmail: string;
+  category: string;
+  status: CourseStatus;
+  createdAt: string;
+  price: string;
+  difficulty: string;
 }

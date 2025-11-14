@@ -28,7 +28,15 @@ import { downloadCourses } from "@/helpers/adminHandlers";
 import { Course } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
-type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
+type CourseCategory =
+  | "all"
+  | "Backend"
+  | "Frontend"
+  | "Mobile"
+  | "DataScience"
+  | "DataBase"
+  | "VideoGames";
+
 type CourseDifficulty = "all" | "Principiante" | "Intermedio" | "Avanzado";
 type SortBy = "title" | "price" | "createdAt" | "rating";
 type SortOrder = "asc" | "desc";
@@ -440,8 +448,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               <option value="all">Todas las categorías</option>
               <option value="Backend">Backend</option>
               <option value="Front End">Frontend</option>
-              <option value="FullStack">FullStack</option>
-              <option value="DevOps">DevOps</option>
+              <option value="Mobile">Movil</option>
+              <option value="DataScience">Data Science</option>
+              <option value="DataBase">Base de datos</option>
+              <option value="VideoGames">Video Juegos</option>
             </select>
 
             <select

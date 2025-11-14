@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import ProfileImage from "@/components/ui/ProfileImage";
 import { studentManagementOptions } from "@/helpers/moks";
+import TeacherRequestModal from "@/components/TeacherRequestModal";
 
 interface StudentWelcomeCardRealProps {
   userName?: string;
@@ -37,6 +38,7 @@ const StudentWelcomeCardReal = ({
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
   
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
@@ -175,7 +177,12 @@ const StudentWelcomeCardReal = ({
                   <button
                     key={index}
                     onClick={() => {
-                      option.onClick();
+                      // Lógica especial para "Postularme para profesor"
+                      if (option.id === "become-professor") {
+                        setIsTeacherModalOpen(true);
+                      } else {
+                        option.onClick();
+                      }
                       setIsMenuOpen(false);
                     }}
                     className="w-full px-4 py-3.5 cursor-pointer hover:bg-slate-800/70 rounded-lg transition-all duration-200 text-left flex items-center gap-4 group"
@@ -203,6 +210,12 @@ const StudentWelcomeCardReal = ({
           onClick={() => setIsMenuOpen(false)}
         />
       )}
+
+      {/* Modal para solicitud de profesor */}
+      <TeacherRequestModal 
+        isOpen={isTeacherModalOpen}
+        onClose={() => setIsTeacherModalOpen(false)}
+      />
     </div>
   );
 };

@@ -210,7 +210,9 @@ export const teacherManagementOptions = [
     id: "purchase-history",
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
-    onClick: () => console.log("Navegando a historial de compras"),
+    onClick: () => {
+      window.location.href = '/dashboard';
+    },
   },
 ];
 
@@ -220,7 +222,7 @@ export const studentManagementOptions = [
     title: "Ajustes de perfil",
     icon: <FaUser className="w-4 h-4" />,
     onClick: () => {
-      console.log("Navegando a ajustes de perfil");
+      window.location.href = '/dashboard';
     },
   },
   {
@@ -228,7 +230,8 @@ export const studentManagementOptions = [
     title: "Postularme para profesor",
     icon: <FaChalkboardTeacher className="w-4 h-4" />,
     onClick: () => {
-      console.log("Navegando a postulación de profesor");
+      // Este onClick no se usa para become-professor, se maneja directamente en el componente
+      console.log("Esta función no debería ejecutarse");
     },
   },
   {

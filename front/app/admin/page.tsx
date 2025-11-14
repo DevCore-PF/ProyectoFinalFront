@@ -22,6 +22,10 @@ import {
 import CourseDetails from "@/components/admin/CourseDetails";
 import { useAuth } from "@/context/UserContext";
 import ValidationsPage from "@/components/admin/ValidtionsPage";
+import ProfileDetails from "@/components/admin/ProfileValidationDetails";
+import ValidationCourseDetails from "@/components/admin/CourseValidationDetails";
+import ProfileValidationDetails from "@/components/admin/ProfileValidationDetails";
+import CourseValidationDetails from "@/components/admin/CourseValidationDetails";
 
 type ValidationType =
   | "professor"
@@ -41,7 +45,8 @@ const AdminDashboard = () => {
   const [detailView, setDetailView] = useState<{
     tab: TabType | null;
     id: string | null;
-  }>({ tab: null, id: null });
+    validationType?: "professor" | "course";
+  }>({ tab: null, id: null, validationType: undefined });
 
   // ============[ ESTADOS DE LOADING Y USER ]=============
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -50,14 +55,16 @@ const AdminDashboard = () => {
   const { fetchUserById } = useAdmin();
 
   // ============[ FUNCIÓN PARA ABRIR DETALLES CON FETCH ]=============
-  const openDetail = async (tab: TabType, id: string) => {
+  const openDetail = async (
+    tab: TabType,
+    id: string,
+    validationType?: "professor" | "course"
+  ) => {
     if (tab === "users") {
       setIsLoadingDetail(true);
       setDetailView({ tab, id });
-
       try {
         const userData = await fetchUserById(id);
-
         setDetailUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -66,7 +73,7 @@ const AdminDashboard = () => {
         setIsLoadingDetail(false);
       }
     } else {
-      setDetailView({ tab, id });
+      setDetailView({ tab, id, validationType });
     }
   };
 
@@ -271,7 +278,6 @@ const AdminDashboard = () => {
             >
               <HiShieldCheck className="w-5 h-5 text-accent-light" />
               Validaciones
-            
             </button>
 
             <button
@@ -336,7 +342,9 @@ const AdminDashboard = () => {
           >
             {activeTab === "overview" && <OverviewTab />}
             {activeTab === "admins" && <AdminsTab />}
-            {activeTab === "validations" && <ValidationsPage />}
+            {activeTab === "validations" && (
+              <ValidationsPage onViewDetail={openDetail} />
+            )}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
             {activeTab === "courses" && (
               <CoursesPage onViewDetail={openDetail} />
@@ -392,9 +400,27 @@ const AdminDashboard = () => {
                 ) : null}
               </>
             )}
-            {/* ============[ COURSE DETAIL ]============= */}
+            {/* ============[ COURSE DETAIL ]=============  */}
             {detailView.tab === "courses" && detailView.id && (
               <CourseDetails courseId={detailView.id} onBack={closeDetail} />
+            )}
+
+            {/* ============[ VALIDATION DETAIL ]=============  */}
+            {detailView.tab === "validations" && detailView.id && (
+              <>
+                {detailView.validationType === "professor" && (
+                  <ProfileValidationDetails
+                    profileId={detailView.id}
+                    onBack={closeDetail}
+                  />
+                )}
+                {detailView.validationType === "course" && (
+                  <CourseValidationDetails
+                    courseId={detailView.id}
+                    onBack={closeDetail}
+                  />
+                )}
+              </>
             )}
           </div>
         </div>

@@ -434,7 +434,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                 placeholder="Buscar por título..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-button"
+                className="w-full bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-border-light/80"
               />
             </div>
 
@@ -443,7 +443,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedCategory(e.target.value as CourseCategory)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las categorías</option>
               <option value="Backend">Backend</option>
@@ -459,7 +459,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedDifficulty(e.target.value as CourseDifficulty)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las dificultades</option>
               <option value="PRINCIPIANTE">Principiante</option>
@@ -472,7 +472,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedStatus(e.target.value as CourseStatus)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
@@ -505,7 +505,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="title">Título</option>
                     <option value="price">Precio</option>
@@ -520,7 +520,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="asc">Ascendente</option>
                     <option value="desc">Descendente</option>
@@ -533,9 +533,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoadingCourses && (
-          <div className="flex justify-center items-center py-16">
-            <Loader />
-          </div>
+       <div className="flex flex-col justify-center items-center py-16">
+          <Loader size="medium" />
+          <p className="text-slate-400">Cargando cursos...</p>
+        </div>
         )}
 
         {/* ============[ ERROR ]============= */}

@@ -464,8 +464,9 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoading && (
-          <div className="flex justify-center items-center py-16">
-            <Loader />
+          <div className="flex flex-col justify-center items-center py-16">
+            <Loader size="medium" />
+            <p className="text-slate-400">Cargando usuarios...</p>
           </div>
         )}
 

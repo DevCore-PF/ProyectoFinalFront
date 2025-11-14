@@ -13,6 +13,7 @@ export const getAllUsersService = async () => {
       throw new Error(error.message || "Error al obtener usuarios");
     }
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.log(error);
@@ -257,7 +258,10 @@ export const getAllCoursesAdminService = async (
   }
 };
 
-export const getProfessorCourses = async (token: string, userId: string) => {
+export const getProfessorByIdService = async (
+  token: string,
+  userId: string
+) => {
   try {
     const response = await fetch(`${API_URL}/profiles/${userId}`, {
       headers: {
@@ -266,10 +270,32 @@ export const getProfessorCourses = async (token: string, userId: string) => {
     });
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Error al obtener cursos del profesor");
+      throw new Error(error.message || "Error al obtener perfil del profesor");
     }
     const data = await response.json();
     console.log("esta es la respuesta de cursos del profe", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+export const getAllProfessorProfilesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/profesor`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener pefiles de profesor");
+    }
+
+    const data = await response.json();
+    console.log("esta es la data de profile", data);
     return data;
   } catch (error) {
     console.log(error);

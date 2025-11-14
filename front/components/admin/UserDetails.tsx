@@ -22,7 +22,7 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import {
-  getProfessorCourses,
+  getProfessorByIdService,
   getUserByIdService,
 } from "@/services/admin.services";
 import { useAdmin } from "@/context/AdminContext";
@@ -95,7 +95,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
 
           if (data.professorProfile && token) {
             const id = data.professorProfile.id;
-            const professorProfile = await getProfessorCourses(token, id);
+            const professorProfile = await getProfessorByIdService(token, id);
             setProfessorCourses(professorProfile.courses);
           }
           setMyCourses(enrollments);

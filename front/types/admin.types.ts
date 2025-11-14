@@ -178,7 +178,7 @@ export interface CourseModalProps {
   title?: string;
 }
 export interface CreateCourseFormProps {
-  onSuccess?: (courseId: string) => void
+  onSuccess?: (courseId: string) => void;
   onCancel?: () => void;
 }
 
@@ -222,4 +222,49 @@ export interface BanReasonModalProps {
   onConfirm: () => void;
   isMultiple?: boolean;
   userCount?: number;
+}
+export interface ProfessorProfileAdmin {
+  agreedToAproveed: boolean;
+  agreedToInfo: boolean;
+  agreedToTerms: boolean;
+  approvalStatus: string;
+  biography: string;
+  certificates: string[];
+  id: string;
+  phone: string;
+  profession: string;
+  professionalLinks: string[];
+  speciality: string | null;
+  user: UserProfile;
+}
+
+export interface UserProfile {
+  checkBoxTerms: boolean;
+  ciudad: string | null;
+  createdAt: string;
+  direccion: string | null;
+  dni: string | null;
+  email: string;
+  emailVerificationToken: string | null;
+  fechaNacimiento: string | null;
+  genero: string | null;
+  githubId: string | null;
+  googleId: string | null;
+  hasCompletedProfile: boolean;
+  id: string;
+  image: string;
+  isActive: boolean;
+  isEmailVerified: boolean;
+  isGitHubAccount: boolean;
+  isGoogleAccount: boolean;
+  name: string;
+  newPasswordRequest: string | null;
+  newPasswordToken: string | null;
+  password: string | null;
+  resetPasswordExpires: string | null;
+  resetPasswordToken: string | null;
+  role: string;
+  suspensionReason: string | null;
+  telefono: string | null;
+  updatedAt: string;
 }

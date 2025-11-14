@@ -14,6 +14,7 @@ import {
   deactivateUserService,
   getActiveUsersService,
   getAllCoursesAdminService,
+  getAllProfessorProfilesService,
   getAllUsersService,
   getCourseFeedbackService,
   getInactiveUsersService,
@@ -24,6 +25,7 @@ import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
 import {
   CourseFilters,
   GetAllCoursesAdminParams,
+  ProfessorProfileAdmin,
   ValidationRequest,
 } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
@@ -32,27 +34,19 @@ import {
   getCourseByIdService,
 } from "@/services/course.services";
 
-interface AdminStats {
-  totalUsers: number;
-  totalCourses: number;
-  totalRevenue: number;
-  pendingValidations: number;
-  activeTeachers: number;
-  monthlyGrowth: number;
-}
+
 
 interface AdminContextType {
   // Data
   users: User[];
   courses: Course[];
-  validationRequests: ValidationRequest[];
-  stats: AdminStats | null;
   feedbacks: CourseReview[];
+  professorProfiles: ProfessorProfileAdmin[];
 
   // Loading states
   isLoadingUsers: boolean;
   isLoadingCourses: boolean;
-  isLoadingValidations: boolean;
+  isLoadingProfiles: boolean;
   isLoadingInactive: boolean;
   isLoadingActive: boolean;
   isLoadingFeedbacks: boolean;
@@ -60,7 +54,7 @@ interface AdminContextType {
   // Errors
   usersError: string | null;
   coursesError: string | null;
-  validationsError: string | null;
+  profileError: string | null;
   activeError: string | null;
   inactiveError: string | null;
   feedbacksError: string | null;
@@ -74,7 +68,7 @@ interface AdminContextType {
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
   fetchCourseById: (userId: string) => Promise<Course | undefined>;
-  // fetchProfessorCourses: (userId:string)=> Promise<Course[] | undefined>;
+  fetchProfessorProfiles: () => Promise<ProfessorProfileAdmin[]>;
   activateDeactivateCourse: (CourseId: string) => Promise<void>;
   fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
 
@@ -93,16 +87,19 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // State
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [validationRequests, setValidationRequests] = useState<
-    ValidationRequest[]
-  >([]);
-  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [professorProfiles, setProfessorProfile] = useState<ProfessorProfileAdmin[]>(
+    []
+  );
+  // const [stats, setStats] = useState<AdminStats | null>(null);
   const [feedbacks, setFeedbacks] = useState<CourseReview[]>([]);
+  // const [validationRequests, setValidationRequests] = useState<
+  //   ValidationRequest[]
+  // >([]);
 
   // Loading states
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [isLoadingCourses, setIsLoadingCourses] = useState(false);
-  const [isLoadingValidations, setIsLoadingValidations] = useState(false);
+  const [isLoadingProfiles, setIsLoadingProfiles] = useState(false);
   const [isLoadingActive, setIsLoadingActive] = useState(false);
   const [isLoadingInactive, setIsLoadingInactive] = useState(false);
   const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(false);
@@ -110,7 +107,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // Error states
   const [usersError, setUsersError] = useState<string | null>(null);
   const [coursesError, setCoursesError] = useState<string | null>(null);
-  const [validationsError, setValidationsError] = useState<string | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [activeError, setActiveError] = useState<string | null>(null);
   const [inactiveError, setInactiveError] = useState<string | null>(null);
   const [feedbacksError, setFeedbacksError] = useState<string | null>(null);
@@ -230,21 +227,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       setIsLoadingFeedbacks(false);
     }
   };
-  // Fetch Validations (implementar tu servicio)
-  const fetchValidations = async () => {
-    setIsLoadingValidations(true);
-    setValidationsError(null);
-    try {
-      // const data = await getAllValidationsService();
-      // setValidationRequests(data);
-      // calculateStats(users, courses, data);
-    } catch (error) {
-      setValidationsError("Error al cargar validaciones");
-      console.error("Error fetching validations:", error);
-    } finally {
-      setIsLoadingValidations(false);
-    }
-  };
 
   const activateUser = async (userId: string) => {
     try {
@@ -316,6 +298,24 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /////////////////////// Validations
+  const fetchProfessorProfiles = async () => {
+    setIsLoadingProfiles(true);
+    setProfileError(null);
+    try {
+      if (token) {
+        const data = await getAllProfessorProfilesService(token);
+        setProfessorProfile(data);
+        return data;
+      }
+    } catch (error) {
+      setProfileError("Error al cargar perfiles");
+      console.error("Error fetching validations:", error);
+    } finally {
+      setIsLoadingProfiles(false);
+    }
+  };
+
   ///////////////////////////////////// Refresh functions
   const refreshUsers = async () => {
     await fetchUsers();
@@ -326,46 +326,16 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const refreshValidations = async () => {
-    await fetchValidations();
+    await fetchProfessorProfiles();
   };
 
   const refreshAll = async () => {
-    await Promise.all([fetchUsers(), fetchCourses(), fetchValidations()]);
+    await Promise.all([
+      fetchUsers(),
+      fetchCourses(),
+      fetchProfessorProfiles(),
+    ]);
   };
-  ///////////////////////////////////////// User actions
-  //   const banUser = async (userId: string) => {
-  //     try {
-  //       // await banUserService(userId);
-  //       setUsers(prev => prev.map(u =>
-  //         u.id === userId ? { ...u, isActive: false, status: 'banned' } : u
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error banning user:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const activateUser = async (userId: string) => {
-  //     try {
-  //       // await activateUserService(userId);
-  //       setUsers(prev => prev.map(u =>
-  //         u.id === userId ? { ...u, isActive: true, status: 'active' } : u
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error activating user:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const deleteUser = async (userId: string) => {
-  //     try {
-  //       // await deleteUserService(userId);
-  //       setUsers(prev => prev.filter(u => u.id !== userId));
-  //     } catch (error) {
-  //       console.error('Error deleting user:', error);
-  //       throw error;
-  //     }
-  //   };
 
   // Validation actions
   //   const approveValidation = async (validationId: string) => {
@@ -394,29 +364,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   //   };
 
   // Course actions
-  //   const deactivateCourse = async (courseId: string) => {
-  //     try {
-  //       // await deactivateCourseService(courseId);
-  //       setCourses(prev => prev.map(c =>
-  //         c.id === courseId ? { ...c, status: 'RECHAZADO' } : c
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error deactivating course:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const activateCourse = async (courseId: string) => {
-  //     try {
-  //       // await activateCourseService(courseId);
-  //       setCourses(prev => prev.map(c =>
-  //         c.id === courseId ? { ...c, status: 'PUBLICADO' } : c
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error activating course:', error);
-  //       throw error;
-  //     }
-  //   };
 
   // Initial fetch
   useEffect(() => {
@@ -426,18 +373,17 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const value: AdminContextType = {
     users,
     courses,
-    validationRequests,
-    stats,
+    // stats,
     isLoadingUsers,
     isLoadingCourses,
-    isLoadingValidations,
+    isLoadingProfiles,
     isLoadingActive,
     isLoadingInactive,
     activeError,
     inactiveError,
     usersError,
     coursesError,
-    validationsError,
+    profileError,
     refreshUsers,
     refreshCourses,
     refreshValidations,
@@ -447,6 +393,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     fetchActiveUser,
     fetchInactiveUser,
     fetchCourseById,
+    fetchProfessorProfiles,
+    professorProfiles,
     activateUser,
     activateDeactivateCourse,
     changeVisibility,

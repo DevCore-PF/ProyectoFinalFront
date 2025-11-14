@@ -12,8 +12,8 @@ import {
   activateUserService,
   changeVisivilityService,
   deactivateUserService,
-  filterCoursesService,
   getActiveUsersService,
+  getAllCoursesAdminService,
   getAllUsersService,
   getCourseFeedbackService,
   getInactiveUsersService,
@@ -21,7 +21,11 @@ import {
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
 import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
-import { CourseFilters, ValidationRequest } from "@/types/admin.types";
+import {
+  CourseFilters,
+  GetAllCoursesAdminParams,
+  ValidationRequest,
+} from "@/types/admin.types";
 import { useAuth } from "./UserContext";
 import {
   getAllCoursesService,
@@ -63,13 +67,14 @@ interface AdminContextType {
 
   // Actions
   refreshUsers: () => Promise<void>;
-  refreshCourses: () => Promise<void>;
+  refreshCourses: (filters?: GetAllCoursesAdminParams) => Promise<void>;
   refreshValidations: () => Promise<void>;
   refreshAll: () => Promise<void>;
   fetchUserById: (id: string) => Promise<User>;
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
-  fetchCourseById: (userId: string) => Promise<Course | undefined>; /////////////para el profesor
+  fetchCourseById: (userId: string) => Promise<Course | undefined>;
+  // fetchProfessorCourses: (userId:string)=> Promise<Course[] | undefined>;
   activateDeactivateCourse: (CourseId: string) => Promise<void>;
   fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
 
@@ -173,12 +178,21 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (filters?: {
+    title?: string;
+    category?: string;
+    difficulty?: string;
+    isActive?: boolean;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
     setIsLoadingCourses(true);
     setCoursesError(null);
     try {
-      const data = await filterCoursesService();
-      setCourses(data);
+      if (token) {
+        const data = await getAllCoursesAdminService(token, filters);
+        setCourses(data);
+      }
     } catch (error) {
       setCoursesError("Error al cargar cursos");
       console.error("Error fetching courses:", error);
@@ -307,8 +321,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     await fetchUsers();
   };
 
-  const refreshCourses = async () => {
-    await fetchCourses();
+  const refreshCourses = async (filters?: GetAllCoursesAdminParams) => {
+    await fetchCourses(filters);
   };
 
   const refreshValidations = async () => {

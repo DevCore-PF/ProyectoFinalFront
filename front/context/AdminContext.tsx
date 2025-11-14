@@ -10,6 +10,7 @@ import {
 import {
   activateDeactivateCourseService,
   activateUserService,
+  approveProfileService,
   changeVisivilityService,
   deactivateUserService,
   getActiveUsersService,
@@ -23,18 +24,11 @@ import {
 import { User } from "@/types/user.types";
 import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
 import {
-  CourseFilters,
   GetAllCoursesAdminParams,
   ProfessorProfileAdmin,
-  ValidationRequest,
 } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
-import {
-  getAllCoursesService,
-  getCourseByIdService,
-} from "@/services/course.services";
-
-
+import { getCourseByIdService } from "@/services/course.services";
 
 interface AdminContextType {
   // Data
@@ -62,7 +56,7 @@ interface AdminContextType {
   // Actions
   refreshUsers: () => Promise<void>;
   refreshCourses: (filters?: GetAllCoursesAdminParams) => Promise<void>;
-  refreshValidations: () => Promise<void>;
+  refreshProfiles: () => Promise<void>;
   refreshAll: () => Promise<void>;
   fetchUserById: (id: string) => Promise<User>;
   fetchActiveUser: () => Promise<User[]>;
@@ -76,6 +70,7 @@ interface AdminContextType {
   deactivateUser: (id: string, banReason: string) => Promise<void>;
   activateUser: (id: string) => Promise<void>;
   changeVisibility: (id: string) => Promise<void>;
+  approveValidation: (id: string) => Promise<void>;
   // Validation actions
   //   approveValidation: (validationId: string) => Promise<void>;
   //   rejectValidation: (validationId: string, reason?: string) => Promise<void>;
@@ -87,14 +82,10 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // State
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [professorProfiles, setProfessorProfile] = useState<ProfessorProfileAdmin[]>(
-    []
-  );
-  // const [stats, setStats] = useState<AdminStats | null>(null);
+  const [professorProfiles, setProfessorProfile] = useState<
+    ProfessorProfileAdmin[]
+  >([]);
   const [feedbacks, setFeedbacks] = useState<CourseReview[]>([]);
-  // const [validationRequests, setValidationRequests] = useState<
-  //   ValidationRequest[]
-  // >([]);
 
   // Loading states
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
@@ -298,7 +289,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /////////////////////// Validations
+  //////////////////////////////////// Validations
   const fetchProfessorProfiles = async () => {
     setIsLoadingProfiles(true);
     setProfileError(null);
@@ -316,6 +307,19 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const approveValidation = async (professorId: string) => {
+    try {
+      if (token) {
+        await approveProfileService(token, professorId);
+        setProfessorProfile((prev) => prev.filter((v) => v.id !== professorId));
+        await refreshProfiles();
+      }
+    } catch (error) {
+      console.error("Error approving validation:", error);
+      throw error;
+    }
+  };
+
   ///////////////////////////////////// Refresh functions
   const refreshUsers = async () => {
     await fetchUsers();
@@ -325,31 +329,13 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     await fetchCourses(filters);
   };
 
-  const refreshValidations = async () => {
+  const refreshProfiles = async () => {
     await fetchProfessorProfiles();
   };
 
   const refreshAll = async () => {
-    await Promise.all([
-      fetchUsers(),
-      fetchCourses(),
-      fetchProfessorProfiles(),
-    ]);
+    await Promise.all([fetchUsers(), fetchCourses(), fetchProfessorProfiles()]);
   };
-
-  // Validation actions
-  //   const approveValidation = async (validationId: string) => {
-  //     try {
-  //       // await approveValidationService(validationId);
-  //       setValidationRequests(prev =>
-  //         prev.filter(v => v.id !== validationId)
-  //       );
-  //       await refreshUsers(); // Refrescar porque el usuario puede cambiar
-  //     } catch (error) {
-  //       console.error('Error approving validation:', error);
-  //       throw error;
-  //     }
-  //   };
 
   //   const rejectValidation = async (validationId: string, reason?: string) => {
   //     try {
@@ -386,7 +372,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     profileError,
     refreshUsers,
     refreshCourses,
-    refreshValidations,
+    refreshProfiles,
     refreshAll,
     fetchUserById,
     deactivateUser,
@@ -402,8 +388,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     isLoadingFeedbacks,
     feedbacksError,
     fetchFeedback,
-    // deleteUser,
-    // approveValidation,
+    approveValidation,
     // rejectValidation,
     // deactivateCourse,
     // activateCourse,

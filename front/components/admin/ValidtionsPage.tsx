@@ -15,7 +15,6 @@ import Loader from "../Loaders/Loader";
 import { CourseStatus } from "@/types/course.types";
 import { CourseValidation, TabType } from "@/types/admin.types";
 import { useAuth } from "@/context/UserContext";
-
 type ValidationTab = "professors" | "courses";
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 interface validationPageProps {
@@ -35,6 +34,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     professorProfiles,
     isLoadingProfiles,
     profileError,
+    coursesError,
   } = useAdmin();
 
   const [activeTab, setActiveTab] = useState<ValidationTab>("professors");
@@ -333,11 +333,17 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
           <p className="text-slate-400">Cargando validaciones...</p>
         </div>
       )}
-      {profileError && !isLoadingCourses && (
+      {profileError && !isLoadingProfiles && (
         <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
           {profileError}
         </div>
       )}
+      {coursesError && !isLoadingCourses && (
+        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
+          {coursesError}
+        </div>
+      )}
+
       {/* ============[ CONTENIDO ]============ */}
       {!isLoading && (
         <>
@@ -442,11 +448,11 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                 </table>
               </div>
 
-              {filteredProfessorProfiles.length === 0 && (
+              {!profileError && filteredProfessorProfiles.length === 0 && (
                 <div className="text-center py-16 ">
                   <HiAcademicCap className="w-16 h-16 mx-auto text-slate-600 mb-4" />
                   <p className="text-slate-400 text-lg font-medium mb-2">
-                    No hay profesores para validar
+                    No se encontraron profesores.
                   </p>
                   <p className="text-slate-500 text-sm">
                     {filterStatus !== "all"
@@ -552,11 +558,11 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                 </table>
               </div>
 
-              {courseValidations.length === 0 && (
+              {!profileError && courseValidations.length === 0 && (
                 <div className="text-center py-16">
                   <HiBookOpen className="w-16 h-16 mx-auto text-slate-600 mb-4" />
                   <p className="text-slate-400 text-lg font-medium mb-2">
-                    No hay cursos para validar
+                    No se encontraron cursos.
                   </p>
                   <p className="text-slate-500 text-sm">
                     {filterStatus !== "all"

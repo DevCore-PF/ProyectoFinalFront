@@ -281,7 +281,6 @@ export const getProfessorByIdService = async (
   }
 };
 
-
 export const getAllProfessorProfilesService = async (token: string) => {
   try {
     const response = await fetch(`${API_URL}/profiles/profesor`, {
@@ -296,6 +295,31 @@ export const getAllProfessorProfilesService = async (token: string) => {
 
     const data = await response.json();
     console.log("esta es la data de profile", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+export const approveProfileService = async (
+  token: string,
+  profileId: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/aproved/${profileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al aprovar perfil");
+    }
+    const data = response.json();
     return data;
   } catch (error) {
     console.log(error);

@@ -223,6 +223,13 @@ export interface BanReasonModalProps {
   isMultiple?: boolean;
   userCount?: number;
 }
+export interface RejectedReasonModalProps {
+  rejectedReason: string;
+  setRejectedReason: (reason: string) => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
 export interface ProfessorProfileAdmin {
   agreedToAproveed: boolean;
   agreedToInfo: boolean;

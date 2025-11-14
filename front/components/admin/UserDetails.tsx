@@ -324,7 +324,7 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                         Verificado
                       </span>
                     ) : (
-                      <span className="text-amber-400 text-xs flex items-center gap-1">
+                      <span className="text-amber-400 text-xs flex items-center text-center gap-1">
                         <RxCross2 className="w-4 h-4" />
                         No verificado
                       </span>

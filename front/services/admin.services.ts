@@ -1,4 +1,4 @@
-import { CourseFilters } from "@/types/admin.types";
+import { CourseFilters, GetAllCoursesAdminParams } from "@/types/admin.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -179,7 +179,6 @@ export const getCourseFeedbackService = async (
   token: string,
   courseId: string
 ) => {
-  // /course-feedback/{courseId}/feedbacks
   try {
     const response = await fetch(
       `${API_URL}/course-feedback/${courseId}/feedbacks`,
@@ -194,7 +193,6 @@ export const getCourseFeedbackService = async (
       throw new Error(error.message || "Error al obtener feedback");
     }
     const data = await response.json();
-    console.log("esta es la respuesta de mi feedback", data);
 
     return data;
   } catch (error) {
@@ -203,20 +201,74 @@ export const getCourseFeedbackService = async (
   }
 };
 
-export const filterCoursesService = async (filters: CourseFilters = {}) => {
-  const { title, category, difficulty } = filters;
+export const getAllCoursesAdminService = async (
+  token: string,
+  params?: GetAllCoursesAdminParams
+) => {
+  try {
+    // Construir los query parameters
+    const queryParams = new URLSearchParams();
 
-  const params = new URLSearchParams();
+    if (params?.title) {
+      queryParams.append("title", params.title);
+    }
+    if (params?.category) {
+      queryParams.append("category", params.category);
+    }
+    if (params?.difficulty) {
+      queryParams.append("difficulty", params.difficulty);
+    }
+    if (params?.isActive !== undefined) {
+      queryParams.append("isActive", params.isActive.toString());
+    }
+    if (params?.sortBy) {
+      queryParams.append("sortBy", params.sortBy);
+    }
+    if (params?.sortOrder) {
+      queryParams.append("sortOrder", params.sortOrder);
+    }
 
-  if (title) params.append("title", title);
-  if (category) params.append("category", category);
-  if (difficulty) params.append("difficulty", difficulty);
+    const response = await fetch(
+      `${API_URL}/courses/admin${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  const query = params.toString();
-  const url = query ? `/api/courses?${query}` : `/api/courses`;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener cursos desde admin");
+    }
 
-  const response = await fetch(url, { method: "GET" });
-  if (!response.ok) throw new Error("Error al obtener los cursos");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
-  return await response.json();
+
+export const getProfessorCourses = async (token: string, userId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener cursos del profesor");
+    }
+    const data = await response.json();
+    console.log("esta es la respuesta de cursos del profe", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

@@ -21,6 +21,7 @@ import {
 } from "react-icons/hi";
 import CourseDetails from "@/components/admin/CourseDetails";
 import { useAuth } from "@/context/UserContext";
+import ValidationsPage from "@/components/admin/ValidtionsPage";
 
 type ValidationType =
   | "professor"
@@ -227,7 +228,7 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">
-                Panel de Gestón
+                Panel de Gestión
               </h1>
 
               <p className="text-slate-400">
@@ -270,11 +271,7 @@ const AdminDashboard = () => {
             >
               <HiShieldCheck className="w-5 h-5 text-accent-light" />
               Validaciones
-              {10 > 0 && (
-                <span className="absolute -top-1 -right-1 bg-amber-300/80 text-slate-600 text-xs font-bold rounded-full w-5.5 h-5.5 flex items-center  justify-center">
-                  12
-                </span>
-              )}
+            
             </button>
 
             <button
@@ -339,6 +336,7 @@ const AdminDashboard = () => {
           >
             {activeTab === "overview" && <OverviewTab />}
             {activeTab === "admins" && <AdminsTab />}
+            {activeTab === "validations" && <ValidationsPage />}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
             {activeTab === "courses" && (
               <CoursesPage onViewDetail={openDetail} />

@@ -13,11 +13,9 @@ import {
   HiBan,
   HiCheckCircle,
   HiBookOpen,
-  HiCalendar,
   HiChevronDown,
   HiDownload,
   HiStar,
-  HiCurrencyDollar,
 } from "react-icons/hi";
 import { FaPlus } from "react-icons/fa";
 import Loader from "../Loaders/Loader";
@@ -27,10 +25,19 @@ import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
 import { downloadCourses } from "@/helpers/adminHandlers";
+import { Course } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
-type CourseCategory = "all" | "Backend" | "Frontend" | "FullStack" | "DevOps";
-type CourseDifficulty = "all" | "BASICO" | "INTERMEDIO" | "AVANZADO";
+type CourseCategory =
+  | "all"
+  | "Backend"
+  | "Frontend"
+  | "Mobile"
+  | "DataScience"
+  | "DataBase"
+  | "VideoGames";
+
+type CourseDifficulty = "all" | "Principiante" | "Intermedio" | "Avanzado";
 type SortBy = "title" | "price" | "createdAt" | "rating";
 type SortOrder = "asc" | "desc";
 
@@ -50,37 +57,6 @@ export interface CourseReview {
   };
 }
 
-export interface Course {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  duration: string;
-  difficulty: "BASICO" | "INTERMEDIO" | "AVANZADO";
-  category: "Backend" | "Frontend" | "FullStack" | "DevOps";
-  type: string;
-  status: string;
-  visibility: string;
-  createdAt: string;
-  updatedAt: string;
-  professor: {
-    id: string;
-    user: {
-      name: string;
-      image: string | null;
-    };
-  } | null;
-  lessons: Array<{
-    id: string;
-    title: string;
-    order: number | null;
-    urlVideos: string[];
-    urlPdfs: string[];
-  }>;
-  isActive: boolean;
-  feedback?: CourseReview[];
-}
-
 const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const {
     courses,
@@ -89,7 +65,6 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     refreshCourses,
     activateDeactivateCourse,
     fetchFeedback,
-    feedbacks,
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,86 +84,44 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showLessonsModal, setShowLessonsModal] = useState(false);
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
-  const [attemptingToCloseLessons, setAttemptingToCloseLessons] =
-    useState(false);
 
-  const [feedbackByCourse, setFeedbackBycourse] = useState<
-    CourseReview[] | undefined
-  >(undefined);
+  const [feedbacksByCourse, setFeedbacksByCourse] = useState<
+    Record<string, CourseReview[]>
+  >({});
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   useEffect(() => {
-    refreshCourses();
-  }, []);
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
 
-  {
-    /* ============[ FILTRADO Y ORDENAMIENTO ]============= */
-  }
-  const filteredAndSortedCourses = useMemo(() => {
-    let filtered = courses;
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-    // Buscar por título
-    if (searchTerm) {
-      filtered = filtered.filter((course) =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  useEffect(() => {
+    const filters = {
+      title: debouncedSearchTerm || undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      difficulty: selectedDifficulty !== "all" ? selectedDifficulty : undefined,
+      isActive:
+        selectedStatus === "all" ? undefined : selectedStatus === "active",
+      sortBy,
+      sortOrder,
+    };
 
-    // Filtrar por categoría
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (course) => course.category === selectedCategory
-      );
-    }
-
-    // Filtrar por dificultad
-    if (selectedDifficulty !== "all") {
-      filtered = filtered.filter(
-        (course) => course.difficulty === selectedDifficulty
-      );
-    }
-
-    // Filtrar por estado
-    if (selectedStatus !== "all") {
-      filtered = filtered.filter((course) =>
-        selectedStatus === "active" ? course.isActive : !course.isActive
-      );
-    }
-
-    // Ordenar
-    const sorted = [...filtered].sort((a, b) => {
-      let aValue: any = a[sortBy];
-      let bValue: any = b[sortBy];
-
-      if (sortBy === "title") {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-      } else if (sortBy === "price") {
-        aValue = parseFloat(aValue);
-        bValue = parseFloat(bValue);
-      } else if (sortBy === "rating") {
-        // Calcular rating promedio
-        // aValue = a.feedback?.length
-        //   ? a.feedback.reduce((sum, f) => sum + f.rating, 0) / a.feedback.length
-        //   : 0;
-        // bValue = b.feedback?.length
-        //   ? b.feedback.reduce((sum, f) => sum + f.rating, 0) / b.feedback.length
-        //   : 0;
-      }
-
-      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
+    refreshCourses(filters);
   }, [
-    courses,
-    searchTerm,
+    debouncedSearchTerm,
     selectedCategory,
     selectedDifficulty,
     selectedStatus,
     sortBy,
     sortOrder,
   ]);
+
+  useEffect(() => {
+    refreshCourses();
+  }, []);
 
   {
     /* ============[ ESTADISTICAS ]============= */
@@ -211,22 +144,27 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       : "bg-amber-500/10 text-amber-200 border-amber-500/20";
   };
 
-  {
-    /* ============[ ESTILOS BADGE CATEGORY ]============= */
-  }
+  /* ============[ ESTILOS BADGE CATEGORY ]============= */
   const getCategoryBadge = (category: string) => {
     const config = {
-      Backend: "bg-blue-400/10 text-blue-300 border-blue-500/20",
-      Frontend: "bg-purple-400/10 text-purple-300 border-purple-500/20",
+      Backend: "bg-blue-400/10 text-blue-200 border-blue-500/20",
+      "Front End": "bg-purple-400/10 text-purple-300 border-purple-500/20",
       FullStack: "bg-green-400/10 text-green-300 border-green-500/20",
       DevOps: "bg-orange-400/10 text-orange-300 border-orange-500/20",
     };
-    return config[category as keyof typeof config] || config.Backend;
+    return config[category as keyof typeof config];
   };
 
-  {
-    /* ============[ RENDER STARS ]============= */
-  }
+  const getDificulttyBadge = (difficulty: string) => {
+    const config = {
+      PRINCIPIANTE: "text-blue-200 border-blue-300/40",
+      INTERMEDIO: " text-purple-200 border-purple-300/40",
+      AVANZADO: " text-emerald-200 border-emerald-300/40",
+    };
+    return config[difficulty as keyof typeof config];
+  };
+
+  /* ============[ RENDER STARS ]============= */
   const renderStars = (rating: number) => {
     return (
       <div className="flex gap-0.5">
@@ -244,13 +182,14 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     );
   };
 
-  {
-    /* ============[ CALCULAR RATING PROMEDIO ]============= */
-  }
-  const getAverageRating = (feedback: CourseReview[] | undefined) => {
-    if (!feedback || feedback.length === 0) return 0;
-    const sum = feedback.reduce((acc, f) => acc + f.rating, 0);
-    return Math.round(sum / feedback.length);
+  /* ============[ CALCULAR RATING PROMEDIO ]============= */
+  const getAverageRating = (courseId: string): number => {
+    const courseFeedbacks = feedbacksByCourse[courseId];
+
+    if (!courseFeedbacks || courseFeedbacks.length === 0) return 0;
+
+    const sum = courseFeedbacks.reduce((acc, f) => acc + f.rating, 0);
+    return Math.round(sum / courseFeedbacks.length);
   };
 
   const formatDate = (dateString: string) => {
@@ -261,9 +200,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     });
   };
 
-  {
-    /* ============[ HANDLERS ]============= */
-  }
+  /* ============[ HANDLERS ]============= */
   const handleSelectCourse = (courseId: string) => {
     setSelectedCourses((prev) =>
       prev.includes(courseId)
@@ -273,10 +210,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   const handleSelectAll = () => {
-    if (selectedCourses.length === filteredAndSortedCourses.length) {
+    if (selectedCourses.length === courses.length) {
       setSelectedCourses([]);
     } else {
-      setSelectedCourses(filteredAndSortedCourses.map((c) => c.id));
+      setSelectedCourses(courses.map((c) => c.id));
     }
   };
 
@@ -373,29 +310,60 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     );
   };
   const handleChangeStatus = async (courseId: string) => {
-    setLoadingCourseId(courseId);
-    try {
-      await activateDeactivateCourse(courseId);
-      toastSuccess(
-        courses.find((c) => c.id === courseId)?.isActive
-          ? "Curso desactivado"
-          : "Curso activado"
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCourseId(null);
-    }
+    let message = "";
+    courses.find((c) => {
+      const course = c.id === courseId;
+      if (course && c.isActive) {
+        message = "Desactivar curso";
+      } else if (course && !c.isActive) {
+        message = "Activar curso";
+      }
+    });
+    toastConfirm(
+      message,
+      async () => {
+        setLoadingCourseId(courseId);
+        try {
+          await activateDeactivateCourse(courseId);
+          await refreshCourses();
+          toastSuccess(
+            courses.find((c) => c.id === courseId)?.isActive
+              ? "Curso desactivado"
+              : "Curso activado"
+          );
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoadingCourseId(null);
+        }
+      },
+      () => {}
+    );
   };
 
   useEffect(() => {
-    const loadAllFeedbacks = async () => {
-      if (courses && courses.length > 0) {
-        await Promise.all(courses.map((course) => fetchFeedback(course.id)));
+    const loadFeedbacks = async () => {
+      const feedbackMap: Record<string, CourseReview[]> = {};
+
+      for (const course of courses) {
+        try {
+          const courseFeedbacks = await fetchFeedback(course.id);
+          if (courseFeedbacks) {
+            feedbackMap[course.id] = courseFeedbacks;
+          }
+        } catch (error) {
+          console.error(
+            `Error loading feedback for course ${course.id}:`,
+            error
+          );
+        }
       }
+      setFeedbacksByCourse(feedbackMap);
     };
 
-    loadAllFeedbacks();
+    if (courses.length > 0) {
+      loadFeedbacks();
+    }
   }, [courses]);
 
   return (
@@ -480,8 +448,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               <option value="all">Todas las categorías</option>
               <option value="Backend">Backend</option>
               <option value="Front End">Frontend</option>
-              <option value="FullStack">FullStack</option>
-              <option value="DevOps">DevOps</option>
+              <option value="Mobile">Movil</option>
+              <option value="DataScience">Data Science</option>
+              <option value="DataBase">Base de datos</option>
+              <option value="VideoGames">Video Juegos</option>
             </select>
 
             <select
@@ -492,7 +462,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
             >
               <option value="all">Todas las dificultades</option>
-              <option value="BASICO">Básico</option>
+              <option value="PRINCIPIANTE">Principiante</option>
               <option value="INTERMEDIO">Intermedio</option>
               <option value="AVANZADO">Avanzado</option>
             </select>
@@ -570,7 +540,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
         {/* ============[ ERROR ]============= */}
         {coursesError && !isLoadingCourses && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6">
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
             {coursesError}
           </div>
         )}
@@ -582,7 +552,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               <p className="text-slate-400">
                 Mostrando{" "}
                 <span className="text-font-light font-semibold">
-                  {filteredAndSortedCourses.length}
+                  {courses.length}
                 </span>{" "}
                 de{" "}
                 <span className="text-font-light font-semibold">
@@ -640,27 +610,24 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           <input
                             type="checkbox"
                             checked={
-                              selectedCourses.length ===
-                                filteredAndSortedCourses.length &&
-                              filteredAndSortedCourses.length > 0
+                              selectedCourses.length === courses.length &&
+                              courses.length > 0
                             }
                             onChange={handleSelectAll}
                             className="sr-only"
                           />
                           <div
                             className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
-                              selectedCourses.length ===
-                                filteredAndSortedCourses.length &&
-                              filteredAndSortedCourses.length > 0
+                              selectedCourses.length === courses.length &&
+                              courses.length > 0
                                 ? "border-font-light"
                                 : "border-slate-600 bg-slate-700/50"
                             }`}
                           >
                             <svg
                               className={`w-3 h-3 text-font-light transition-opacity ${
-                                selectedCourses.length ===
-                                  filteredAndSortedCourses.length &&
-                                filteredAndSortedCourses.length > 0
+                                selectedCourses.length === courses.length &&
+                                courses.length > 0
                                   ? "opacity-100"
                                   : "opacity-0"
                               }`}
@@ -682,7 +649,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                         Curso
                       </th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-38">
-                        Profesor
+                        Dificultad
                       </th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-32">
                         Categoría
@@ -704,9 +671,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
                   {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
-                    {filteredAndSortedCourses.map((course) => {
-                      // const avgRating = getAverageRating(course.feedback);
-                      // const courseFeedback: CourseReview = feedbacks[course.id];
+                    {courses.map((course, index) => {
                       return (
                         <tr
                           key={course.id}
@@ -753,11 +718,11 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
+                              <div className="w-10 h-8 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
                                 <HiBookOpen className="w-5 h-5 text-accent-light" />
                               </div>
                               <div className="w-full">
-                                <p className="font-medium text-font-light">
+                                <p className="font-medium text-font-light truncate max-w-[200px]">
                                   {course.title}
                                 </p>
                                 <p className="text-xs text-slate-400">
@@ -767,8 +732,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </div>
                           </td>
                           <td className="px-4 py-4">
-                            <p className="text-slate-300 font-light">
-                              {course.professor?.user?.name || "Sin asignar"}
+                            <p
+                              className={`px-3 py-1 rounded-lg text-xs font-light border inline-flex items-center gap-1.5 ${getDificulttyBadge(
+                                course.difficulty
+                              )}`}
+                            >
+                              {course.difficulty}
                             </p>
                           </td>
                           <td className="px-2 py-4">
@@ -782,16 +751,23 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-2">
-                              {/* {renderStars(avgRating)} */}
-                              {feedbacks ? (
-                                <span className="text-slate-400 text-xs">
-                                  {/* ({feedbacks.rating}) */}
-                                </span>
-                              ) : (
-                                <span className="text-slate-400 text-xs">
-                                  No hay feedbacks
-                                </span>
-                              )}
+                              {(() => {
+                                const avgRating = getAverageRating(course.id);
+                                const courseFeedbacks =
+                                  feedbacksByCourse[course.id];
+
+                                return (
+                                  <>
+                                    {renderStars(avgRating)}
+                                    {courseFeedbacks &&
+                                      courseFeedbacks.length > 0 && (
+                                        <span className="text-slate-400 text-xs">
+                                          ({courseFeedbacks.length})
+                                        </span>
+                                      )}
+                                  </>
+                                );
+                              })()}
                             </div>
                           </td>
                           <td className="px-4 py-4">
@@ -856,7 +832,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               </div>
 
               {/* ============[ NO HAY CURSOS ]============= */}
-              {filteredAndSortedCourses.length === 0 && (
+              {courses.length === 0 && (
                 <div className="text-center py-16">
                   <HiBookOpen className="w-16 h-16 mx-auto text-slate-600 mb-4" />
                   <p className="text-slate-400 text-lg font-medium mb-2">
@@ -870,7 +846,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             </div>
 
             {/* Pagination */}
-            {filteredAndSortedCourses.length > 0 && (
+            {courses.length > 0 && (
               <div className="mt-6 flex items-center justify-between">
                 <p className="text-slate-400 text-sm">Página 1 de 1</p>
                 <div className="flex gap-2">

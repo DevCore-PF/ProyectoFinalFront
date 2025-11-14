@@ -23,6 +23,7 @@ import { toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { useAuth } from "@/context/UserContext";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
 import GitHubAuthButton from "@/components/GitHubAuthButton";
+import ForgotPasswordModal from "@/components/ForgotPasswordModal";
 import Loader from "./Loaders/Loader";
 import TinyLoader from "./Loaders/TinyLoader";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,6 +31,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showEmailNotVerified, setShowEmailNotVerified] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   // const [timeRemaining, setTimeRemaining] = useState<number>(180);
   const [timeRemaining, setTimeRemaining] = useState<number>(3600);
   const [canResend, setCanResend] = useState(false);
@@ -87,11 +89,20 @@ const LoginForm = () => {
       setShowEmailNotVerified(true);
     }
   }, [user]);
+  
   useEffect(() => {
     if (!isLoading && user && user.isEmailVerified) {
       router.push("/");
     }
   }, [user, isLoading, router]);
+
+  // Mostrar mensaje de éxito si viene desde reset de contraseña
+  useEffect(() => {
+    const passwordReset = searchParams.get('passwordReset');
+    if (passwordReset === 'true') {
+      toastSuccess("Contraseña restablecida exitosamente. Ya puedes iniciar sesión.");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (showEmailNotVerified && timeRemaining > 0) {
@@ -274,6 +285,17 @@ const LoginForm = () => {
               {formik.isSubmitting ? "Iniciando..." : "Iniciar sesión"}
             </button>
 
+            {/* Botón "Olvidé mi contraseña" */}
+            <div className="text-center mt-3 mb-2">
+              <button
+                type="button"
+                onClick={() => setShowForgotPasswordModal(true)}
+                className="text-accent-light hover:text-accent-medium transition-colors text-sm underline cursor-pointer"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+
             <div className="flex items-center my-2">
               <div className="flex-1 h-px bg-border/80"></div>
               <span className="px-2 text-gray-medium-light text-xl">o</span>
@@ -297,6 +319,12 @@ const LoginForm = () => {
           </div>
         </form>
       </section>
+
+      {/* Modal de "Olvidé mi contraseña" */}
+      <ForgotPasswordModal
+        isOpen={showForgotPasswordModal}
+        onClose={() => setShowForgotPasswordModal(false)}
+      />
     </div>
   );
 };

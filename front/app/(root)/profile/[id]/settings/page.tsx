@@ -7,6 +7,7 @@ import { uploadProfileImageService, updateUserProfileService, getUserProfileServ
 import { useAuth } from "@/context/UserContext";
 import { UserProfile, UpdateUserFormData } from "@/types/user.types";
 import { updateUserInSession } from "@/helpers/session.helpers";
+import PasswordSettings from "@/components/PasswordSettings";
 
 const ProfileSettings = () => {
   const params = useParams();
@@ -687,6 +688,9 @@ const ProfileSettings = () => {
                 </div>
               )}
             </div>
+
+            {/* Sección de Configuración de Contraseñas */}
+            <PasswordSettings />
           </div>
         </div>
       </div>

@@ -90,6 +90,8 @@ const TeacherWelcomeCard = ({
                           router.push('/teacher-dashboard/create-course');
                         } else if (option.id === 'additional-content') {
                           setShowAdditionalContentModal(true);
+                        } else if (option.id === 'purchase-history') {
+                          router.push('/purchase-history');
                         } else {
                           console.log(option.title);
                         }

@@ -35,6 +35,7 @@ const TeacherDashboardPage = () => {
     isLoading: coursesLoading,
     error: coursesError,
     refreshCourses,
+    updateCourseVisibility,
     hasCourses,
   } = useProfessorCourses();
 
@@ -57,8 +58,8 @@ const TeacherDashboardPage = () => {
 
   const handleVisibilityChange = (courseId: string, newVisibility: CourseVisibility) => {
     console.log(`🔄 Visibilidad del curso ${courseId} cambiada a: ${newVisibility}`);
-    // Refrescar los cursos después de cambiar la visibilidad para obtener el estado actualizado
-    refreshCourses();
+    // Actualizar inmediatamente el estado local para animación suave
+    updateCourseVisibility(courseId, newVisibility);
   };
 
   const handleSubmitValidation = async (formData: FormData) => {

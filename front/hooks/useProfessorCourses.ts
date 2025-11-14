@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/UserContext";
 import { getProfessorCoursesService } from "@/services/course.services";
-import { Course } from "@/types/course.types";
+import { Course, CourseVisibility } from "@/types/course.types";
 
 export const useProfessorCourses = () => {
   const { user, token } = useAuth();
@@ -82,11 +82,23 @@ export const useProfessorCourses = () => {
     loadCourses();
   };
 
+  // Función para actualizar la visibilidad de un curso específico sin refetch
+  const updateCourseVisibility = (courseId: string, newVisibility: CourseVisibility) => {
+    setCourses(prevCourses => 
+      prevCourses.map(course => 
+        course.id === courseId 
+          ? { ...course, visibility: newVisibility }
+          : course
+      )
+    );
+  };
+
   return {
     courses,
     isLoading,
     error,
     refreshCourses,
+    updateCourseVisibility,
     hasCourses: courses.length > 0,
   };
 };

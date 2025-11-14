@@ -206,6 +206,12 @@ export const teacherManagementOptions = [
     icon: <HiCurrencyDollar className="w-4 h-4" />,
     onClick: () => console.log("Consultar ingresos"),
   },
+  {
+    id: "purchase-history",
+    title: "Historial de compras",
+    icon: <HiShoppingCart className="w-4 h-4" />,
+    onClick: () => console.log("Navegando a historial de compras"),
+  },
 ];
 
 export const studentManagementOptions = [
@@ -230,7 +236,7 @@ export const studentManagementOptions = [
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
     onClick: () => {
-      console.log("Navegando a hitorial de compras");
+      window.location.href = '/purchase-history';
     },
   },
   // {

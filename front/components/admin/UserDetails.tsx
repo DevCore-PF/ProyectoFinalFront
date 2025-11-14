@@ -14,7 +14,6 @@ import {
   HiKey,
   HiRefresh,
 } from "react-icons/hi";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 
 import { FaCheck } from "react-icons/fa6";
@@ -28,9 +27,14 @@ import {
 } from "@/services/admin.services";
 import { useAdmin } from "@/context/AdminContext";
 import { UserEnrollments } from "@/types/admin.types";
-import { toastConfirm, toastSuccess } from "@/helpers/alerts.helper";
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
 import TinyLoader from "../Loaders/TinyLoader";
 import { Course } from "@/types/course.types";
+import BanReasonModal from "./BanReasonModal";
 
 interface UserDetailsProps {
   user: User;
@@ -49,7 +53,9 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
   const [activeTab, setActiveTab] = useState<"enrolled" | "created">(
     "enrolled"
   );
-
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [banReason, setBanReason] = useState("");
+  const { user: contextUser } = useAuth();
   /////////////////ESTILOS
   const getRoleBadge = (role: string) => {
     const config = {
@@ -111,22 +117,17 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
   const roleBadge = getRoleBadge(currentUser.role);
 
   const handleBanUnban = async () => {
-    let message = "";
-    currentUser.isActive
-      ? (message = "Banear usuario")
-      : (message = "Reactivar usuario");
+    if (currentUser.isActive) {
+      setShowBanModal(true);
+      return;
+    }
     toastConfirm(
-      message,
+      "Reactivar usuario",
       async () => {
         setBanUnbanUserLoading(true);
         try {
-          if (currentUser.isActive) {
-            await deactivateUser(currentUser.id);
-            toastSuccess("Usuario baneado");
-          } else {
-            await activateUser(currentUser.id);
-            toastSuccess("Usuario activado");
-          }
+          await activateUser(currentUser.id);
+          toastSuccess("Usuario activado");
 
           if (token) {
             const updatedUser = await getUserByIdService(currentUser.id);
@@ -142,10 +143,45 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
     );
   };
 
+  const confirmBan = () => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+    if (banReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+
+    setShowBanModal(false);
+
+    toastConfirm(
+      "Banear usuario",
+      async () => {
+        setBanUnbanUserLoading(true);
+        try {
+          await deactivateUser(currentUser.id, banReason);
+          toastSuccess("Usuario baneado");
+          setBanReason("");
+
+          if (token) {
+            const updatedUser = await getUserByIdService(currentUser.id);
+            setCurrentUser(updatedUser);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setBanUnbanUserLoading(false);
+        }
+      },
+      () => {
+        setBanReason("");
+      }
+    );
+  };
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
-        {/* Header con navegación */}
         <div className="mb-6">
           <button
             onClick={onBack}
@@ -217,51 +253,44 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
               </div>
 
               <div className="flex gap-2">
-                <button
-                  onClick={() => handleBanUnban()}
-                  title={
-                    currentUser.isActive ? "Banear usuario" : "Activar usuario"
-                  }
-                  disabled={banUnbanUserLoading}
-                  className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
-                    currentUser.isActive
-                      ? "border-amber-300/50 text-amber-300"
-                      : "border-emerald-400/50 text-emerald-200"
-                  }`}
-                >
-                  {currentUser.isActive && banUnbanUserLoading ? (
-                    <div className="flex gap-2 items-center">
-                      <TinyLoader />
-                      Banear
-                    </div>
-                  ) : currentUser.isActive && !banUnbanUserLoading ? (
-                    <>
-                      <HiBan className="w-5 h-5" />
-                      Banear
-                    </>
-                  ) : !currentUser.isActive && banUnbanUserLoading ? (
-                    <div className="flex gap-2 items-center">
-                      <TinyLoader />
-                      Activar
-                    </div>
-                  ) : (
-                    <>
-                      <HiCheckCircle className="w-5 h-5" />
-                      Activar
-                    </>
-                  )}
-                  {/* {currentUser.isActive ? (
-                    <>
-                      <HiBan className="w-5 h-5" />
-                      Banear
-                    </>
-                  ) : (
-                    <>
-                      <HiCheckCircle className="w-5 h-5" />
-                      Activar
-                    </>
-                  )} */}
-                </button>
+                {user.id !== contextUser?.id ? (
+                  <button
+                    onClick={() => handleBanUnban()}
+                    title={
+                      currentUser.isActive
+                        ? "Banear usuario"
+                        : "Activar usuario"
+                    }
+                    disabled={banUnbanUserLoading}
+                    className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all ${
+                      currentUser.isActive
+                        ? "border-amber-300/50 text-amber-300"
+                        : "border-emerald-400/50 text-emerald-200"
+                    }`}
+                  >
+                    {currentUser.isActive && banUnbanUserLoading ? (
+                      <div className="flex gap-2 items-center">
+                        <TinyLoader />
+                        Baneando
+                      </div>
+                    ) : currentUser.isActive && !banUnbanUserLoading ? (
+                      <>
+                        <HiBan className="w-5 h-5" />
+                        Banear
+                      </>
+                    ) : !currentUser.isActive && banUnbanUserLoading ? (
+                      <div className="flex gap-2 items-center">
+                        <TinyLoader />
+                        Activando
+                      </div>
+                    ) : (
+                      <>
+                        <HiCheckCircle className="w-5 h-5" />
+                        Activar
+                      </>
+                    )}
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
@@ -659,6 +688,17 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
           </div>
         </div>
       </div>
+      {showBanModal && (
+        <BanReasonModal
+          banReason={banReason}
+          setBanReason={setBanReason}
+          onCancel={() => {
+            setShowBanModal(false);
+            setBanReason("");
+          }}
+          onConfirm={confirmBan}
+        />
+      )}
     </div>
   );
 };

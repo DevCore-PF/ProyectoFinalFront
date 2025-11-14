@@ -76,7 +76,11 @@ export const getUserByIdService = async (userId: string) => {
   }
 };
 
-export const deactivateUserService = async (userId: string, token: string) => {
+export const deactivateUserService = async (
+  userId: string,
+  token: string,
+  banReason: string
+) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "DELETE",
@@ -84,6 +88,7 @@ export const deactivateUserService = async (userId: string, token: string) => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ reason: banReason }),
     });
     if (!response.ok) {
       const error = await response.json();
@@ -251,7 +256,6 @@ export const getAllCoursesAdminService = async (
     throw error;
   }
 };
-
 
 export const getProfessorCourses = async (token: string, userId: string) => {
   try {

@@ -215,3 +215,11 @@ export interface CourseValidation {
   price: string;
   difficulty: string;
 }
+export interface BanReasonModalProps {
+  banReason: string;
+  setBanReason: (reason: string) => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+  isMultiple?: boolean;
+  userCount?: number;
+}

@@ -79,7 +79,7 @@ interface AdminContextType {
   fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
 
   // User actions
-  deactivateUser: (id: string) => Promise<void>;
+  deactivateUser: (id: string, banReason: string) => Promise<void>;
   activateUser: (id: string) => Promise<void>;
   changeVisibility: (id: string) => Promise<void>;
   // Validation actions
@@ -260,10 +260,10 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const deactivateUser = async (userId: string) => {
+  const deactivateUser = async (userId: string, banReason: string) => {
     try {
       if (token) {
-        await deactivateUserService(userId, token);
+        await deactivateUserService(userId, token, banReason);
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u))
         );

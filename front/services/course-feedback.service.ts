@@ -10,6 +10,11 @@ export interface CourseFeedbackResponse {
   rating: number;
   feedback?: string;
   createdAt: string;
+  message?: string; // Mensaje del backend sobre la moderación
+  moderation?: {
+    isCensored: boolean;
+    requiresReview: boolean;
+  };
   user: {
     id: string;
     name: string;

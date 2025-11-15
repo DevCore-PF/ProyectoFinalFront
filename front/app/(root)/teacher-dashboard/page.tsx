@@ -5,6 +5,7 @@ import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
+import { CourseVisibility } from "@/types/course.types";
 import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
@@ -23,6 +24,7 @@ const TeacherDashboardPage = () => {
     isLoading: validationLoading,
     canCreateCourses,
     needsValidation,
+    isPending,
     isRejected,
     submitValidation,
     isSubmitting,
@@ -34,6 +36,7 @@ const TeacherDashboardPage = () => {
     isLoading: coursesLoading,
     error: coursesError,
     refreshCourses,
+    updateCourseVisibility,
     hasCourses,
   } = useProfessorCourses();
 
@@ -52,6 +55,12 @@ const TeacherDashboardPage = () => {
     console.log(`Ver detalles del curso: ${courseId}`);
     // desde aca se puede agregar navegación al detalle del curso
     // router.push(`/teacher-dashboard/courses/${courseId}`);
+  };
+
+  const handleVisibilityChange = (courseId: string, newVisibility: CourseVisibility) => {
+    console.log(`🔄 Visibilidad del curso ${courseId} cambiada a: ${newVisibility}`);
+    // Actualizar inmediatamente el estado local para animación suave
+    updateCourseVisibility(courseId, newVisibility);
   };
 
   const handleSubmitValidation = async (formData: FormData) => {
@@ -75,8 +84,8 @@ const TeacherDashboardPage = () => {
   if (isLoading || validationLoading) {
     return <Loader />;
   }
-  console.log("este es paroved: ", isApproved);
-  console.log("este es status", validationStatus);
+  
+
 
   return (
     <div className="min-h-screen p-10">
@@ -98,11 +107,12 @@ const TeacherDashboardPage = () => {
           </div>
         )}
         
-        {(needsValidation || isRejected) && !showForm && (
+        {/* Mostrar botón solo si necesita validación o fue rechazado, PERO no si está pending */}
+        {(needsValidation || isRejected) && !isPending && !showForm && (
           <div className="mb-6 text-center">
             <button
               onClick={handleShowValidationForm}
-              className="px-6 py-3 bg-button/80 cursor-pointer  hover:bg-button text-white font-medium rounded-lg transition-all duration-200"
+              className="px-6 py-3 bg-button/80 cursor-pointer hover:bg-button text-white font-medium rounded-lg transition-all duration-200"
             >
               {needsValidation
                 ? "Completar Perfil Profesional"
@@ -209,6 +219,7 @@ const TeacherDashboardPage = () => {
                           key={course.id}
                           course={course}
                           viewDetails={handleViewCourseDetails}
+                          onVisibilityChange={handleVisibilityChange}
                         />
                       ))}
                     </div>

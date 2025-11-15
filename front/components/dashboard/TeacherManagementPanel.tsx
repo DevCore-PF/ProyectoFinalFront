@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { HiPlus, HiLink, HiChartBar, HiCurrencyDollar } from 'react-icons/hi';
+import { HiPlus, HiLink, HiChartBar, HiCurrencyDollar, HiShoppingCart } from 'react-icons/hi';
 import AdditionalContentModal from './AdditionalContentModal';
 
 interface ManagementOption {
@@ -51,6 +51,13 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       description: 'Mira el alcance e historial de pagos por curso.',
       icon: <HiCurrencyDollar className="text-xl" />,
       onClick: () => console.log('Consultar ingresos')
+    },
+    {
+      id: 'purchase-history',
+      title: 'Historial de compras',
+      description: 'Revisa todas tus compras y transacciones realizadas.',
+      icon: <HiShoppingCart className="text-xl" />,
+      onClick: () => router.push('/purchase-history')
     }
   ];
 

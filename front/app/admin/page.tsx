@@ -29,6 +29,7 @@ import CourseValidationDetails from "@/components/admin/CourseValidationDetails"
 import FinancesPage from "@/components/admin/FinancesPage";
 import MembershipPlans from "@/components/Plans/MembershipPlans";
 import Memberships from "@/components/admin/Memberships";
+import AdminForm from "@/components/admin/AdminForm";
 
 type ValidationType =
   | "professor"
@@ -339,7 +340,7 @@ const AdminDashboard = () => {
           >
             {/* finances */}
             {activeTab === "overview" && <Memberships />}
-            {/* {activeTab === "admins" && <AdminsTab />} */}
+            {activeTab === "admins" && <AdminForm />}
             {activeTab === "validations" && (
               <ValidationsPage onViewDetail={openDetail} />
             )}

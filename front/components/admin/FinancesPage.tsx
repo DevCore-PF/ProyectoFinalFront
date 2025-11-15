@@ -140,12 +140,9 @@ const FinancesPage = ({ onViewDetail }: FinancesDetailProps) => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-font-light mb-2">
+              <h1 className="text-2xl font-bold text-font-light">
                 Finanzas
               </h1>
-              <p className="text-slate-400">
-                Gestiona los pagos y membresías de tu plataforma
-              </p>
             </div>
            
           </div>
@@ -225,7 +222,7 @@ const FinancesPage = ({ onViewDetail }: FinancesDetailProps) => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setTimePeriod("month")}
-                    className={`px-3 py-1.5 border rounded-lg text-xs font-medium transition-all ${
+                    className={`px-3 py-1.5 border rounded-lg cursor-pointer  text-xs font-medium transition-all ${
                       timePeriod === "month"
                         ? "bg-button/80 border-button text-font-light"
                         : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"
@@ -235,7 +232,7 @@ const FinancesPage = ({ onViewDetail }: FinancesDetailProps) => {
                   </button>
                   <button
                     onClick={() => setTimePeriod("year")}
-                    className={`px-3 py-1.5 border rounded-lg text-xs font-medium transition-all ${
+                    className={`px-3 py-1.5 border rounded-lg cursor-pointer text-xs font-medium transition-all ${
                       timePeriod === "year"
                         ? "bg-button/80 border-button text-font-light"
                         : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"

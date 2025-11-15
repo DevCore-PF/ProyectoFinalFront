@@ -19,13 +19,12 @@ import {
 } from "react-icons/hi";
 import { FaPlus } from "react-icons/fa";
 import Loader from "../Loaders/Loader";
-import { TabType } from "@/types/admin.types";
+import { CourseReview, TabType } from "@/types/admin.types";
 import TinyLoader from "../Loaders/TinyLoader";
 import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
 import { downloadCourses } from "@/helpers/adminHandlers";
-import { Course } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory =
@@ -45,18 +44,6 @@ interface CoursesPageProps {
   onViewDetail: (tab: TabType, id: string) => void;
 }
 
-export interface CourseReview {
-  id: string;
-  rating: number;
-  feedback: string;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
-}
-
 const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const {
     courses,
@@ -65,6 +52,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     refreshCourses,
     activateDeactivateCourse,
     fetchFeedback,
+    silentRefreshCourses,
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +122,8 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       totalRevenue: courses.reduce((sum, c) => sum + parseFloat(c.price), 0),
     };
   }, [courses]);
+
+
 
   {
     /* ============[ ESTILOS BADGE STATUS ]============= */
@@ -300,6 +290,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       () => {}
     );
   };
+
   const handleCancelCourse = () => {
     toastConfirm(
       "Perderás los datos ingresados.",
@@ -309,6 +300,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       () => {}
     );
   };
+
   const handleChangeStatus = async (courseId: string) => {
     let message = "";
     courses.find((c) => {
@@ -325,7 +317,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         setLoadingCourseId(courseId);
         try {
           await activateDeactivateCourse(courseId);
-          await refreshCourses();
+          await silentRefreshCourses();
           toastSuccess(
             courses.find((c) => c.id === courseId)?.isActive
               ? "Curso desactivado"
@@ -353,7 +345,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           }
         } catch (error) {
           console.error(
-            `Error loading feedback for course ${course.id}:`,
+            `Error cargando feecback para el curso ${course.id}:`,
             error
           );
         }
@@ -533,10 +525,10 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoadingCourses && (
-       <div className="flex flex-col justify-center items-center py-16">
-          <Loader size="medium" />
-          <p className="text-slate-400">Cargando cursos...</p>
-        </div>
+          <div className="flex flex-col justify-center items-center py-16">
+            <Loader size="medium" />
+            <p className="text-slate-400">Cargando cursos...</p>
+          </div>
         )}
 
         {/* ============[ ERROR ]============= */}
@@ -649,6 +641,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">
                         Curso
                       </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-40">
+                        Profesor
+                      </th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-38">
                         Dificultad
                       </th>
@@ -731,6 +726,11 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                                 </p>
                               </div>
                             </div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="text-font-light text-sm">
+                              {course.professor?.user?.name || "—"}
+                            </span>
                           </td>
                           <td className="px-4 py-4">
                             <p

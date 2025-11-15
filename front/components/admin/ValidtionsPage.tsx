@@ -14,8 +14,6 @@ import {
 import Loader from "../Loaders/Loader";
 import { CourseStatus } from "@/types/course.types";
 import { CourseValidation, TabType } from "@/types/admin.types";
-import { useAuth } from "@/context/UserContext";
-import { toastSuccess } from "@/helpers/alerts.helper";
 type ValidationTab = "professors" | "courses";
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 interface validationPageProps {
@@ -59,12 +57,10 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
   const filteredProfessorProfiles = useMemo(() => {
     let filtered = professorProfiles;
 
-    // 1. Filtrar por estado (pending, approved, rejected, all)
     if (filterStatus !== "all") {
       filtered = filtered.filter((p) => p.approvalStatus === filterStatus);
     }
 
-    // 2. Filtrar por búsqueda (nombre, email, profesión)
     if (debouncedSearchTerm) {
       const searchLower = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -187,12 +183,12 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     };
     refreshPage();
 
-    // const intervalId = setInterval(async () => {
-    //   if (document.visibilityState === "visible") {
-    //     await silentRefreshCourses();
-    //     await silentRefreshProfiles();
-    //   }
-    // }, 10000);
+    const intervalId = setInterval(async () => {
+      if (document.visibilityState === "visible") {
+        await silentRefreshCourses();
+        await silentRefreshProfiles();
+      }
+    }, 10000);
 
     // return () => clearInterval(intervalId);
   }, []);
@@ -210,7 +206,6 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     if (professorsChanged || coursesChanged) {
       prevProfessorsLengthRef.current = professorProfiles.length;
       prevCoursesLengthRef.current = courses.length;
-      if (!isInitialMount) toastSuccess("Has recibido una nueva solicitud");
     }
   }, [professorProfiles.length, courses.length]);
 
@@ -219,7 +214,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
       {/* ============[ HEADER ]============ */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-font-light">
-          Validaciones Pendientes
+          Solicitudes Pendientes
         </h2>
       </div>
 
@@ -279,13 +274,13 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
           >
             <HiAcademicCap className="w-5 h-5" />
             Profesores
-            {users.filter(
-              (u) => u.professorProfile?.approvalStatus === "pending"
+            {filteredProfessorProfiles.filter(
+              (p) => p.approvalStatus === "pending"
             ).length > 0 && (
-              <span className="bg-blue-500 text-font-light text-xs font-bold rounded-full px-2 py-0.5">
+              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-2 py-1">
                 {
-                  users.filter(
-                    (u) => u.professorProfile?.approvalStatus === "pending"
+                  filteredProfessorProfiles.filter(
+                    (p) => p.approvalStatus === "pending"
                   ).length
                 }
               </span>
@@ -308,7 +303,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
             Cursos
             {courses.filter((c) => c.status === CourseStatus.DRAFT).length >
               0 && (
-              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-1.5 py-1">
+              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-2 py-1">
                 {courses.filter((c) => c.status === CourseStatus.DRAFT).length}
               </span>
             )}

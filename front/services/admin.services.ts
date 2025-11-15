@@ -251,7 +251,7 @@ export const getAllCoursesAdminService = async (
     }
 
     const data = await response.json();
-    console.log("esta es la respuesta de curses ", data);
+    console.log("ESTO SON MIS CURSOS ", data);
 
     return data;
   } catch (error) {
@@ -328,7 +328,6 @@ export const approveProfileService = async (
   }
 };
 
-
 export const rejectProfileService = async (
   token: string,
   professorId: string,
@@ -353,4 +352,6 @@ export const rejectProfileService = async (
     console.log(error);
     throw error;
   }
-};``
+};
+
+// export const getMyPayments

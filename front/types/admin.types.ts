@@ -155,9 +155,10 @@ export interface UserEnrollments {
   progress: string;
 }
 
+
 export interface CourseReview {
   id: string;
-  rating?: number; /////del 1 al 5 porque son estrellitas
+  rating: number;
   feedback: string;
   createdAt: string;
   user: {
@@ -165,6 +166,7 @@ export interface CourseReview {
     name: string;
     image: string | null;
   };
+    courseId?: string;
 }
 export interface CourseFilters {
   title?: string;

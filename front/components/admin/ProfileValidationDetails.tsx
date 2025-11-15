@@ -51,8 +51,8 @@ const ProfessorValidationDetails = ({
     if (foundProfessor) {
       setProfessor(foundProfessor);
     }
-    console.log('este es mi porfesor',foundProfessor);
-    
+    console.log("este es mi porfesor", foundProfessor);
+
     setIsLoading(false);
   }, [profileId, professorProfiles]);
 

@@ -111,18 +111,6 @@ const AdminDashboard = () => {
     );
   };
 
-  const handleApproveValidation = (id: string) => {
-    console.log("Aprobar solicitud:", id);
-  };
-
-  const handleRejectValidation = (id: string) => {
-    console.log("Rechazar solicitud:", id);
-  };
-
-  const handleSendAdminInvite = () => {
-    console.log("Enviar invitación de admin");
-  };
-
   // ============[ COMPONENTE DE ADMINS ]=============
   const AdminsTab = () => (
     <div className="space-y-6">

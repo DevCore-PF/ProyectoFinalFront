@@ -6,7 +6,6 @@ import {
   toastError,
   toastConfirm,
 } from "@/helpers/alerts.helper";
-import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import {
   HiArrowLeft,
@@ -36,19 +35,24 @@ const ProfessorValidationDetails = ({
   profileId,
   onBack,
 }: ProfessorValidationDetailsProps) => {
-  const { professorProfiles, approveValidation, refreshProfiles } = useAdmin();
+  const { professorProfiles, approveProfile, refreshProfiles, rejectProfile } =
+    useAdmin();
   const [professor, setProfessor] = useState<ProfessorProfileAdmin | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
   const [loadingApprove, setLoadingApprove] = useState(false);
   const [loadingReject, setLoadingReject] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rejectedReason, setRejectedReason] = useState("");
 
   useEffect(() => {
     const foundProfessor = professorProfiles.find((p) => p.id === profileId);
     if (foundProfessor) {
       setProfessor(foundProfessor);
     }
+    console.log('este es mi porfesor',foundProfessor);
+    
     setIsLoading(false);
   }, [profileId, professorProfiles]);
 
@@ -79,13 +83,14 @@ const ProfessorValidationDetails = ({
     };
     return labels[status as keyof typeof labels] || status;
   };
+
   const handleApprove = async (profileId: string) => {
     toastConfirm(
       "¿Aprobar solicitud de profesor?",
       async () => {
         setLoadingApprove(true);
         try {
-          await approveValidation(profileId);
+          await approveProfile(profileId);
           refreshProfiles;
           toastSuccess("Solicitud aprobada correctamente");
         } catch (error) {
@@ -98,8 +103,7 @@ const ProfessorValidationDetails = ({
       () => {}
     );
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rejectedReason, setRejectedReason] = useState("");
+
   const confirmRejected = () => {
     if (!rejectedReason.trim()) {
       toastError("Debes proporcionar un motivo de rechazo");
@@ -116,10 +120,10 @@ const ProfessorValidationDetails = ({
       async () => {
         setLoadingReject(true);
         try {
-          // TODO: Llamar al servicio de rechazo
-          // await rejectProfessor(professorId);
+          if (professor?.id) {
+            await rejectProfile(professor?.id, rejectedReason);
+          }
           toastSuccess("Solicitud rechazada");
-          // onBack();
         } catch (error) {
           console.error(error);
           toastError("Error al rechazar la solicitud");
@@ -214,6 +218,12 @@ const ProfessorValidationDetails = ({
                   <p className="text-amber-200/80 text-sm">
                     Esta solicitud fue rechazada previamente.
                   </p>
+                  <p className="text-amber-200/80 text-sm">
+                    Motivo:{" "}
+                    {professor.rejectionReason
+                      ? professor.rejectionReason
+                      : "No se encontró motivo"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -285,7 +295,7 @@ const ProfessorValidationDetails = ({
                   <button
                     onClick={handleReject}
                     disabled={loadingReject || loadingApprove}
-                    className="flex items-center cursor-pointer gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
+                    className="flex items-center cursor-pointer gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
                   >
                     {loadingReject ? (
                       <>
@@ -376,14 +386,14 @@ const ProfessorValidationDetails = ({
                   <span
                     className={
                       professor.user.isGoogleAccount
-                        ? "text-emerald-200"
+                        ? "text-emerald-300"
                         : "text-slate-300"
                     }
                   >
                     {professor.user.isGoogleAccount ? (
-                      <FaCheck />
+                      <HiCheckCircle className="w-5 h-5" />
                     ) : (
-                      <RxCross2 />
+                      <RxCross2 className="w-5 h-5" />
                     )}
                   </span>
                 </div>
@@ -397,9 +407,9 @@ const ProfessorValidationDetails = ({
                     }
                   >
                     {professor.user.isGitHubAccount ? (
-                      <FaCheck />
+                      <HiCheckCircle className="w-5 h-5" />
                     ) : (
-                      <RxCross2 />
+                      <RxCross2 className="w-5 h-5" />
                     )}
                   </span>
                 </div>
@@ -410,14 +420,14 @@ const ProfessorValidationDetails = ({
                   <span
                     className={
                       professor.user.hasCompletedProfile
-                        ? "text-emerald-200"
+                        ? "text-emerald-300"
                         : "text-slate-300"
                     }
                   >
                     {professor.user.hasCompletedProfile ? (
-                      <FaCheck />
+                      <HiCheckCircle className="w-5 h-5" />
                     ) : (
-                      <RxCross2 />
+                      <RxCross2 className="w-5 h-5" />
                     )}
                   </span>
                 </div>
@@ -568,9 +578,9 @@ const ProfessorValidationDetails = ({
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Términos generales</span>
                   {professor.agreedToTerms ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-300" />
+                    <HiCheckCircle className="w-6 h-6 text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-red-300" />
+                    <RxCross2 className="w-6 h-6 text-slate-300" />
                   )}
                 </div>
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
@@ -578,17 +588,17 @@ const ProfessorValidationDetails = ({
                     Políticas de información
                   </span>
                   {professor.agreedToInfo ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-300" />
+                    <HiCheckCircle className="w-6 h-6 text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-red-300" />
+                    <RxCross2 className="w-6 h-6 text-slate-300" />
                   )}
                 </div>
                 <div className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-300">Términos de aprobación</span>
                   {professor.agreedToAproveed ? (
-                    <HiCheckCircle className="w-5 h-5 text-emerald-300" />
+                    <HiCheckCircle className="w-6 h-6 text-emerald-300" />
                   ) : (
-                    <HiXCircle className="w-5 h-5 text-red-300" />
+                    <RxCross2 className="w-6 h-6 text-slate-300" />
                   )}
                 </div>
               </div>

@@ -251,6 +251,8 @@ export const getAllCoursesAdminService = async (
     }
 
     const data = await response.json();
+    console.log("esta es la respuesta de curses ", data);
+
     return data;
   } catch (error) {
     console.log(error);
@@ -302,7 +304,6 @@ export const getAllProfessorProfilesService = async (token: string) => {
   }
 };
 
-
 export const approveProfileService = async (
   token: string,
   profileId: string
@@ -326,3 +327,30 @@ export const approveProfileService = async (
     throw error;
   }
 };
+
+
+export const rejectProfileService = async (
+  token: string,
+  professorId: string,
+  reason: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/decline/${professorId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason: reason }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al rechazar perfil");
+    }
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};``

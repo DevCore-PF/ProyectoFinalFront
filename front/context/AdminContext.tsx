@@ -20,6 +20,7 @@ import {
   getCourseFeedbackService,
   getInactiveUsersService,
   getUserByIdService,
+  rejectProfileService,
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
 import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
@@ -58,6 +59,8 @@ interface AdminContextType {
   refreshCourses: (filters?: GetAllCoursesAdminParams) => Promise<void>;
   refreshProfiles: () => Promise<void>;
   refreshAll: () => Promise<void>;
+  silentRefreshCourses: () => Promise<void>;
+  silentRefreshProfiles: () => Promise<void>;
   fetchUserById: (id: string) => Promise<User>;
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
@@ -70,9 +73,9 @@ interface AdminContextType {
   deactivateUser: (id: string, banReason: string) => Promise<void>;
   activateUser: (id: string) => Promise<void>;
   changeVisibility: (id: string) => Promise<void>;
-  approveValidation: (id: string) => Promise<void>;
+  approveProfile: (id: string) => Promise<void>;
+  rejectProfile: (id: string, reason: string) => Promise<void>;
   // Validation actions
-  //   approveValidation: (validationId: string) => Promise<void>;
   //   rejectValidation: (validationId: string, reason?: string) => Promise<void>;
 }
 
@@ -307,7 +310,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const approveValidation = async (professorId: string) => {
+  const approveProfile = async (professorId: string) => {
     try {
       if (token) {
         await approveProfileService(token, professorId);
@@ -315,12 +318,46 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         await refreshProfiles();
       }
     } catch (error) {
-      console.error("Error approving validation:", error);
+      console.error("Error al aprobar perfil:", error);
+      throw error;
+    }
+  };
+
+  const rejectProfile = async (professorId: string, reason: string) => {
+    try {
+      if (token) {
+        const data = await rejectProfileService(token, professorId, reason);
+        setProfessorProfile((prev) => prev.filter((p) => p.id === professorId));
+        await refreshProfiles();
+      }
+    } catch (error) {
+      console.error("Error al rechazar perfil:", error);
       throw error;
     }
   };
 
   ///////////////////////////////////// Refresh functions
+  const silentRefreshProfiles = async () => {
+    try {
+      if (token) {
+        const data = await getAllProfessorProfilesService(token);
+        setProfessorProfile(data);
+      }
+    } catch (error) {
+      console.error("Error en silent refresh profiles:", error);
+    }
+  };
+
+  const silentRefreshCourses = async () => {
+    try {
+      if (token) {
+        const data = await getAllCoursesAdminService(token);
+        setCourses(data);
+      }
+    } catch (error) {
+      console.error("Error en silent refresh courses:", error);
+    }
+  };
   const refreshUsers = async () => {
     await fetchUsers();
   };
@@ -337,21 +374,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     await Promise.all([fetchUsers(), fetchCourses(), fetchProfessorProfiles()]);
   };
 
-  //   const rejectValidation = async (validationId: string, reason?: string) => {
-  //     try {
-  //       // await rejectValidationService(validationId, reason);
-  //       setValidationRequests(prev =>
-  //         prev.filter(v => v.id !== validationId)
-  //       );
-  //     } catch (error) {
-  //       console.error('Error rejecting validation:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  // Course actions
-
-  // Initial fetch
   useEffect(() => {
     refreshAll();
   }, []);
@@ -388,8 +410,11 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     isLoadingFeedbacks,
     feedbacksError,
     fetchFeedback,
-    approveValidation,
-    // rejectValidation,
+    approveProfile,
+    rejectProfile,
+    silentRefreshCourses,
+    silentRefreshProfiles,
+
     // deactivateCourse,
     // activateCourse,
   };

@@ -231,6 +231,7 @@ export interface RejectedReasonModalProps {
 }
 
 export interface ProfessorProfileAdmin {
+  rejectionReason: string;
   agreedToAproveed: boolean;
   agreedToInfo: boolean;
   agreedToTerms: boolean;
@@ -246,6 +247,7 @@ export interface ProfessorProfileAdmin {
 }
 
 export interface UserProfile {
+  RequestingTeacherRoleDate: string;
   checkBoxTerms: boolean;
   ciudad: string | null;
   createdAt: string;

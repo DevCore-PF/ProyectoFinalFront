@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import {
   HiSearch,
@@ -15,6 +15,7 @@ import Loader from "../Loaders/Loader";
 import { CourseStatus } from "@/types/course.types";
 import { CourseValidation, TabType } from "@/types/admin.types";
 import { useAuth } from "@/context/UserContext";
+import { toastSuccess } from "@/helpers/alerts.helper";
 type ValidationTab = "professors" | "courses";
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 interface validationPageProps {
@@ -30,19 +31,23 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     users,
     courses,
     isLoadingCourses,
-    fetchProfessorProfiles,
+    refreshProfiles,
+    refreshCourses,
     professorProfiles,
     isLoadingProfiles,
     profileError,
     coursesError,
+    silentRefreshProfiles,
+    silentRefreshCourses,
   } = useAdmin();
 
   const [activeTab, setActiveTab] = useState<ValidationTab>("professors");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  // Debounce para búsqueda
+  const prevProfessorsLengthRef = useRef<number>(0);
+  const prevCoursesLengthRef = useRef<number>(0);
+  const isInitialMount = useRef(true);
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -77,6 +82,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
   const courseValidations = useMemo(() => {
     const coursesWithValidation: CourseValidation[] = courses.map((course) => ({
       id: course.id,
+
       title: course.title,
       professorName: course.professor?.user?.name || "Sin profesor",
       professorEmail: course.professor?.user?.email || "",
@@ -172,26 +178,41 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     return labels[status as keyof typeof labels] || status;
   };
 
-  // ============[ HANDLERS  ]============
-
-  const handleViewCourseDetail = (id: string) => {
-    console.log("Ver detalle curso:", id);
-    // onViewDetail('courses', id); // Implementar después
-  };
-
-  const { token } = useAuth();
-
+  // ============[ LOADER  ]============
   const isLoading = isLoadingProfiles || isLoadingCourses;
+  useEffect(() => {
+    const refreshPage = async () => {
+      await refreshProfiles();
+      await refreshCourses();
+    };
+    refreshPage();
+
+    // const intervalId = setInterval(async () => {
+    //   if (document.visibilityState === "visible") {
+    //     await silentRefreshCourses();
+    //     await silentRefreshProfiles();
+    //   }
+    // }, 10000);
+
+    // return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
-    const fetchProfiles = async () => {
-      if (token) {
-        const data = await fetchProfessorProfiles();
-        console.log("mi data profile", data);
-      }
-    };
-    fetchProfiles();
-  }, []);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      prevProfessorsLengthRef.current = professorProfiles.length;
+      prevCoursesLengthRef.current = courses.length;
+      return;
+    }
+    const professorsChanged =
+      professorProfiles.length !== prevProfessorsLengthRef.current;
+    const coursesChanged = courses.length !== prevCoursesLengthRef.current;
+    if (professorsChanged || coursesChanged) {
+      prevProfessorsLengthRef.current = professorProfiles.length;
+      prevCoursesLengthRef.current = courses.length;
+      if (!isInitialMount) toastSuccess("Has recibido una nueva solicitud");
+    }
+  }, [professorProfiles.length, courses.length]);
 
   return (
     <div className="space-y-6">
@@ -413,7 +434,9 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                         </td>
                         <td className="px-4 py-4">
                           <p className="text-slate-400 text-sm">
-                            creo su pefil:{formatDate(professor.user.createdAt)}
+                            {formatDate(
+                              professor.user.RequestingTeacherRoleDate
+                            )}
                           </p>
                         </td>
                         <td className="px-4 py-4">

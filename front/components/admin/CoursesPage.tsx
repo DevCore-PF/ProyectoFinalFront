@@ -19,13 +19,12 @@ import {
 } from "react-icons/hi";
 import { FaPlus } from "react-icons/fa";
 import Loader from "../Loaders/Loader";
-import { TabType } from "@/types/admin.types";
+import { CourseReview, TabType } from "@/types/admin.types";
 import TinyLoader from "../Loaders/TinyLoader";
 import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
 import { downloadCourses } from "@/helpers/adminHandlers";
-import { Course } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory =
@@ -45,18 +44,6 @@ interface CoursesPageProps {
   onViewDetail: (tab: TabType, id: string) => void;
 }
 
-export interface CourseReview {
-  id: string;
-  rating: number;
-  feedback: string;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
-}
-
 const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const {
     courses,
@@ -65,6 +52,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     refreshCourses,
     activateDeactivateCourse,
     fetchFeedback,
+    silentRefreshCourses,
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +122,8 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       totalRevenue: courses.reduce((sum, c) => sum + parseFloat(c.price), 0),
     };
   }, [courses]);
+
+
 
   {
     /* ============[ ESTILOS BADGE STATUS ]============= */
@@ -300,6 +290,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       () => {}
     );
   };
+
   const handleCancelCourse = () => {
     toastConfirm(
       "Perderás los datos ingresados.",
@@ -309,6 +300,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       () => {}
     );
   };
+
   const handleChangeStatus = async (courseId: string) => {
     let message = "";
     courses.find((c) => {
@@ -325,7 +317,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         setLoadingCourseId(courseId);
         try {
           await activateDeactivateCourse(courseId);
-          await refreshCourses();
+          await silentRefreshCourses();
           toastSuccess(
             courses.find((c) => c.id === courseId)?.isActive
               ? "Curso desactivado"
@@ -353,7 +345,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           }
         } catch (error) {
           console.error(
-            `Error loading feedback for course ${course.id}:`,
+            `Error cargando feecback para el curso ${course.id}:`,
             error
           );
         }
@@ -434,7 +426,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                 placeholder="Buscar por título..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-button"
+                className="w-full bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-border-light/80"
               />
             </div>
 
@@ -443,7 +435,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedCategory(e.target.value as CourseCategory)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las categorías</option>
               <option value="Backend">Backend</option>
@@ -459,7 +451,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedDifficulty(e.target.value as CourseDifficulty)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las dificultades</option>
               <option value="PRINCIPIANTE">Principiante</option>
@@ -472,7 +464,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               onChange={(e) =>
                 setSelectedStatus(e.target.value as CourseStatus)
               }
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
@@ -505,7 +497,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="title">Título</option>
                     <option value="price">Precio</option>
@@ -520,7 +512,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="asc">Ascendente</option>
                     <option value="desc">Descendente</option>
@@ -533,8 +525,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoadingCourses && (
-          <div className="flex justify-center items-center py-16">
-            <Loader />
+          <div className="flex flex-col justify-center items-center py-16">
+            <Loader size="medium" />
+            <p className="text-slate-400">Cargando cursos...</p>
           </div>
         )}
 
@@ -648,6 +641,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">
                         Curso
                       </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-40">
+                        Profesor
+                      </th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-38">
                         Dificultad
                       </th>
@@ -730,6 +726,11 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                                 </p>
                               </div>
                             </div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="text-font-light text-sm">
+                              {course.professor?.user?.name || "—"}
+                            </span>
                           </td>
                           <td className="px-4 py-4">
                             <p

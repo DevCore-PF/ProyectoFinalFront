@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import {
   HiSearch,
@@ -13,20 +13,39 @@ import {
 } from "react-icons/hi";
 import Loader from "../Loaders/Loader";
 import { CourseStatus } from "@/types/course.types";
-import { CourseValidation, ProfessorValidation } from "@/types/admin.types";
-
+import { CourseValidation, TabType } from "@/types/admin.types";
 type ValidationTab = "professors" | "courses";
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
+interface validationPageProps {
+  onViewDetail: (
+    tab: TabType,
+    id: string,
+    validationType?: "professor" | "course"
+  ) => void;
+}
 
-const ValidationsPage = () => {
-  const { users, courses, isLoadingUsers, isLoadingCourses } = useAdmin();
+const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
+  const {
+    users,
+    courses,
+    isLoadingCourses,
+    refreshProfiles,
+    refreshCourses,
+    professorProfiles,
+    isLoadingProfiles,
+    profileError,
+    coursesError,
+    silentRefreshProfiles,
+    silentRefreshCourses,
+  } = useAdmin();
 
   const [activeTab, setActiveTab] = useState<ValidationTab>("professors");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  // Debounce para búsqueda
+  const prevProfessorsLengthRef = useRef<number>(0);
+  const prevCoursesLengthRef = useRef<number>(0);
+  const isInitialMount = useRef(true);
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -34,51 +53,32 @@ const ValidationsPage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // ============[ PROCESAR PROFESORES ]============
-  const professorValidations = useMemo(() => {
-    const professors: ProfessorValidation[] = users
-      .filter((user) => user.professorProfile)
-      .map((user) => ({
-        id: user.professorProfile!.id,
-        userName: user.name,
-        userEmail: user.email,
-        userImage: user.profileImage,
-        profession: user.professorProfile!.profession,
-        phone: user.professorProfile!.phone,
-        biography: user.professorProfile!.biography || "",
-        certificates: user.professorProfile!.certificates || [],
-        professionalLinks: user.professorProfile!.professionalLinks || [],
-        approvalStatus: user.professorProfile!.approvalStatus,
-        createdAt: user.createdAt,
-      }));
+  // ============[ FILTRAR PROFESORES ]============
+  const filteredProfessorProfiles = useMemo(() => {
+    let filtered = professorProfiles;
 
-    // Filtrar por estado
-    let filtered = professors;
     if (filterStatus !== "all") {
-      filtered = professors.filter((p) => p.approvalStatus === filterStatus);
+      filtered = filtered.filter((p) => p.approvalStatus === filterStatus);
     }
 
-    // Filtrar por búsqueda
     if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(
         (p) =>
-          p.userName
-            .toLowerCase()
-            .includes(debouncedSearchTerm.toLowerCase()) ||
-          p.userEmail
-            .toLowerCase()
-            .includes(debouncedSearchTerm.toLowerCase()) ||
-          p.profession.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+          p.user.name.toLowerCase().includes(searchLower) ||
+          p.user.email.toLowerCase().includes(searchLower) ||
+          p.profession.toLowerCase().includes(searchLower)
       );
     }
 
     return filtered;
-  }, [users, filterStatus, debouncedSearchTerm]);
+  }, [professorProfiles, filterStatus, debouncedSearchTerm]);
 
   // ============[ PROCESAR CURSOS ]============
   const courseValidations = useMemo(() => {
     const coursesWithValidation: CourseValidation[] = courses.map((course) => ({
       id: course.id,
+
       title: course.title,
       professorName: course.professor?.user?.name || "Sin profesor",
       professorEmail: course.professor?.user?.email || "",
@@ -124,15 +124,12 @@ const ValidationsPage = () => {
   // ============[ ESTADÍSTICAS ]============
   const stats = useMemo(() => {
     const professorStats = {
-      pending: users.filter(
-        (u) => u.professorProfile?.approvalStatus === "pending"
-      ).length,
-      approved: users.filter(
-        (u) => u.professorProfile?.approvalStatus === "approved"
-      ).length,
-      rejected: users.filter(
-        (u) => u.professorProfile?.approvalStatus === "rejected"
-      ).length,
+      pending: professorProfiles.filter((p) => p.approvalStatus === "pending")
+        .length,
+      approved: professorProfiles.filter((p) => p.approvalStatus === "approved")
+        .length,
+      rejected: professorProfiles.filter((p) => p.approvalStatus === "rejected")
+        .length,
     };
 
     const courseStats = {
@@ -141,9 +138,8 @@ const ValidationsPage = () => {
         .length,
       rejected: courses.filter((c) => c.status === CourseStatus.REJECT).length,
     };
-
     return activeTab === "professors" ? professorStats : courseStats;
-  }, [users, courses, activeTab]);
+  }, [professorProfiles, courses, activeTab]);
 
   // ============[ UTILIDADES ]============
   const formatDate = (dateString: string) => {
@@ -178,25 +174,47 @@ const ValidationsPage = () => {
     return labels[status as keyof typeof labels] || status;
   };
 
-  // ============[ HANDLERS (preparados para implementar después) ]============
-  const handleViewProfessorDetail = (id: string) => {
-    console.log("Ver detalle profesor:", id);
-    // onViewDetail('professors', id); // Implementar después
-  };
+  // ============[ LOADER  ]============
+  const isLoading = isLoadingProfiles || isLoadingCourses;
+  useEffect(() => {
+    const refreshPage = async () => {
+      await refreshProfiles();
+      await refreshCourses();
+    };
+    refreshPage();
 
-  const handleViewCourseDetail = (id: string) => {
-    console.log("Ver detalle curso:", id);
-    // onViewDetail('courses', id); // Implementar después
-  };
+    const intervalId = setInterval(async () => {
+      if (document.visibilityState === "visible") {
+        await silentRefreshCourses();
+        await silentRefreshProfiles();
+      }
+    }, 10000);
 
-  const isLoading = isLoadingUsers || isLoadingCourses;
+    // return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      prevProfessorsLengthRef.current = professorProfiles.length;
+      prevCoursesLengthRef.current = courses.length;
+      return;
+    }
+    const professorsChanged =
+      professorProfiles.length !== prevProfessorsLengthRef.current;
+    const coursesChanged = courses.length !== prevCoursesLengthRef.current;
+    if (professorsChanged || coursesChanged) {
+      prevProfessorsLengthRef.current = professorProfiles.length;
+      prevCoursesLengthRef.current = courses.length;
+    }
+  }, [professorProfiles.length, courses.length]);
 
   return (
     <div className="space-y-6">
       {/* ============[ HEADER ]============ */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-font-light">
-          Validaciones Pendientes
+          Solicitudes Pendientes
         </h2>
       </div>
 
@@ -256,13 +274,13 @@ const ValidationsPage = () => {
           >
             <HiAcademicCap className="w-5 h-5" />
             Profesores
-            {users.filter(
-              (u) => u.professorProfile?.approvalStatus === "pending"
+            {filteredProfessorProfiles.filter(
+              (p) => p.approvalStatus === "pending"
             ).length > 0 && (
-              <span className="bg-blue-500 text-font-light text-xs font-bold rounded-full px-2 py-0.5">
+              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-2 py-1">
                 {
-                  users.filter(
-                    (u) => u.professorProfile?.approvalStatus === "pending"
+                  filteredProfessorProfiles.filter(
+                    (p) => p.approvalStatus === "pending"
                   ).length
                 }
               </span>
@@ -285,7 +303,7 @@ const ValidationsPage = () => {
             Cursos
             {courses.filter((c) => c.status === CourseStatus.DRAFT).length >
               0 && (
-              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-1.5 py-1">
+              <span className="bg-amber-300/80 text-background/70 text-xs font-bold rounded-full px-2 py-1">
                 {courses.filter((c) => c.status === CourseStatus.DRAFT).length}
               </span>
             )}
@@ -305,16 +323,18 @@ const ValidationsPage = () => {
               }...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full  bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-button"
+              className="w-full  bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-border-light/80"
             />
           </div>
 
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
-            className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-2 focus:ring-button cursor-pointer"
+            className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
           >
-            <option value="all">Todos los estados</option>
+            <option className="hover:bg-button" value="all">
+              Todos los estados
+            </option>
             <option value="pending">Pendientes</option>
             <option value="approved">Aprobados</option>
             <option value="rejected">Rechazados</option>
@@ -324,8 +344,19 @@ const ValidationsPage = () => {
 
       {/* ============[ LOADING ]============ */}
       {isLoading && (
-        <div className="flex justify-center items-center py-16">
-          <Loader />
+        <div className="flex flex-col justify-center items-center py-16">
+          <Loader size="medium" />
+          <p className="text-slate-400">Cargando validaciones...</p>
+        </div>
+      )}
+      {profileError && !isLoadingProfiles && (
+        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
+          {profileError}
+        </div>
+      )}
+      {coursesError && !isLoadingCourses && (
+        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
+          {coursesError}
         </div>
       )}
 
@@ -359,8 +390,9 @@ const ValidationsPage = () => {
                       </th>
                     </tr>
                   </thead>
+
                   <tbody className="divide-y divide-slate-700/50">
-                    {professorValidations.map((professor) => (
+                    {filteredProfessorProfiles.map((professor) => (
                       <tr
                         key={professor.id}
                         className="transition-colors hover:bg-slate-800/30"
@@ -368,10 +400,10 @@ const ValidationsPage = () => {
                         <td className="px-4 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-button to-accent-light flex items-center justify-center">
-                              {professor.userImage ? (
+                              {professor.user.image ? (
                                 <img
-                                  src={professor.userImage}
-                                  alt={professor.userName}
+                                  src={professor.user.image}
+                                  alt={professor.user.name}
                                   className="w-full h-full rounded-full object-cover"
                                 />
                               ) : (
@@ -380,14 +412,14 @@ const ValidationsPage = () => {
                             </div>
                             <div>
                               <p className="font-medium text-font-light">
-                                {professor.userName}
+                                {professor.user.name}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <p className="text-slate-300 text-sm">
-                            {professor.userEmail}
+                            {professor.user.email}
                           </p>
                         </td>
                         <td className="px-4 py-4">
@@ -397,7 +429,9 @@ const ValidationsPage = () => {
                         </td>
                         <td className="px-4 py-4">
                           <p className="text-slate-400 text-sm">
-                            {formatDate(professor.createdAt)}
+                            {formatDate(
+                              professor.user.RequestingTeacherRoleDate
+                            )}
                           </p>
                         </td>
                         <td className="px-4 py-4">
@@ -413,7 +447,11 @@ const ValidationsPage = () => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() =>
-                                handleViewProfessorDetail(professor.id)
+                                onViewDetail(
+                                  "validations",
+                                  professor.id,
+                                  "professor"
+                                )
                               }
                               className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
                               title="Ver detalles"
@@ -428,11 +466,11 @@ const ValidationsPage = () => {
                 </table>
               </div>
 
-              {professorValidations.length === 0 && (
+              {!profileError && filteredProfessorProfiles.length === 0 && (
                 <div className="text-center py-16 ">
                   <HiAcademicCap className="w-16 h-16 mx-auto text-slate-600 mb-4" />
                   <p className="text-slate-400 text-lg font-medium mb-2">
-                    No hay profesores para validar
+                    No se encontraron profesores.
                   </p>
                   <p className="text-slate-500 text-sm">
                     {filterStatus !== "all"
@@ -522,7 +560,9 @@ const ValidationsPage = () => {
                         <td className="px-4 py-4">
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => handleViewCourseDetail(course.id)}
+                              onClick={() =>
+                                onViewDetail("validations", course.id, "course")
+                              }
                               className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
                               title="Ver detalles"
                             >
@@ -536,11 +576,11 @@ const ValidationsPage = () => {
                 </table>
               </div>
 
-              {courseValidations.length === 0 && (
+              {!profileError && courseValidations.length === 0 && (
                 <div className="text-center py-16">
                   <HiBookOpen className="w-16 h-16 mx-auto text-slate-600 mb-4" />
                   <p className="text-slate-400 text-lg font-medium mb-2">
-                    No hay cursos para validar
+                    No se encontraron cursos.
                   </p>
                   <p className="text-slate-500 text-sm">
                     {filterStatus !== "all"

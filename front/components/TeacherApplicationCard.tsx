@@ -125,13 +125,7 @@ const TeacherApplicationCard: React.FC<TeacherApplicationCardProps> = ({
               <p className="text-sm text-red-200">{rejectionReason}</p>
             </div>
           )}
-
-          {status === 'rejected' && (
-            <div className="text-xs text-slate-300 mt-3 space-y-1">
-              <p className="font-medium">• Puedes volver a postularte utilizando el botón <span className="text-blue-400 font-semibold">"Postularme para profesor"</span></p>
-              <p className="font-medium">• Asegúrate de revisar y corregir los puntos mencionados antes de reenviar</p>
-            </div>
-          )}
+          
         </div>
       </div>
     </div>

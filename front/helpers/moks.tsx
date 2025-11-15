@@ -233,6 +233,7 @@ export const studentManagementOptions = [
       // Este onClick no se usa para become-professor, se maneja directamente en el componente
       console.log("Esta función no debería ejecutarse");
     },
+    disabled: false, // Se sobreescribirá en el componente
   },
   {
     id: "purchase-history",

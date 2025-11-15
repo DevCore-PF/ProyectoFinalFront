@@ -9,7 +9,8 @@ import {
 } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import ProfileImage from "@/components/ui/ProfileImage";
-import { studentManagementOptions } from "@/helpers/moks";
+import { studentManagementOptions as baseStudentManagementOptions } from "@/helpers/moks";
+import useStudentTeacherRequest from "@/hooks/useStudentTeacherRequest";
 import TeacherRequestModal from "@/components/TeacherRequestModal";
 
 interface StudentWelcomeCardRealProps {
@@ -39,6 +40,18 @@ const StudentWelcomeCardReal = ({
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
+  const { applicationStatus } = useStudentTeacherRequest();
+
+  // Clonar y modificar las opciones para el menú
+  const studentManagementOptions = baseStudentManagementOptions.map(option => {
+    if (option.id === "become-professor") {
+      return {
+        ...option,
+        disabled: applicationStatus.status === 'rejected',
+      };
+    }
+    return option;
+  });
   
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
@@ -174,29 +187,32 @@ const StudentWelcomeCardReal = ({
                 {studentManagementOptions
                   .filter(option => option.title !== "Ajustes de perfil")
                   .map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      // Lógica especial para "Postularme para profesor"
-                      if (option.id === "become-professor") {
-                        setIsTeacherModalOpen(true);
-                      } else {
-                        option.onClick();
-                      }
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full px-4 py-3.5 cursor-pointer hover:bg-slate-800/70 rounded-lg transition-all duration-200 text-left flex items-center gap-4 group"
-                  >
-                    <div className="p-2 bg-purple-500/10 rounded-lg text-accent-light group-hover:bg-purple-500/20 transition-all">
-                      {option.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
-                        {option.title}
-                      </h4>
-                    </div>
-                  </button>
-                ))}
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (option.disabled) return;
+                        if (option.id === "become-professor") {
+                          setIsTeacherModalOpen(true);
+                        } else {
+                          option.onClick();
+                        }
+                        setIsMenuOpen(false);
+                      }}
+                      disabled={option.disabled}
+                      className={`w-full px-4 py-3.5 flex items-center gap-4 group text-left rounded-lg transition-all duration-200
+                        ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-800/70'}`}
+                      title={option.disabled && option.id === 'become-professor' ? 'No puedes postularte porque tu última solicitud fue rechazada.' : ''}
+                    >
+                      <div className="p-2 bg-purple-500/10 rounded-lg text-accent-light group-hover:bg-purple-500/20 transition-all">
+                        {option.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                          {option.title}
+                        </h4>
+                      </div>
+                    </button>
+                  ))}
               </div>
             </div>
           )}

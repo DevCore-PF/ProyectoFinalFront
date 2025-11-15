@@ -1,18 +1,16 @@
 import React from 'react';
-import { FaClock, FaCheckCircle, FaTimesCircle, FaFileAlt, FaRedo } from 'react-icons/fa';
+import { FaClock, FaCheckCircle, FaTimesCircle, FaFileAlt } from 'react-icons/fa';
 
 interface TeacherApplicationCardProps {
   status: 'pending' | 'approved' | 'rejected' | null;
   message: string | null;
-  onReapply?: () => void;
-  isLoading?: boolean;
+  rejectionReason?: string | null;
 }
 
 const TeacherApplicationCard: React.FC<TeacherApplicationCardProps> = ({
   status,
   message,
-  onReapply,
-  isLoading = false,
+  rejectionReason,
 }) => {
   const getStatusConfig = () => {
     switch (status) {
@@ -44,7 +42,7 @@ const TeacherApplicationCard: React.FC<TeacherApplicationCardProps> = ({
           borderColor: "border-red-400/30", 
           title: "Solicitud Rechazada",
           description: message || "Tu solicitud ha sido rechazada. Puedes actualizar tu información y volver a aplicar.",
-          showButton: true,
+          showButton: false,
         };
       default:
         return {
@@ -121,17 +119,17 @@ const TeacherApplicationCard: React.FC<TeacherApplicationCardProps> = ({
             </div>
           )}
 
-          {/* Botón para reenviar solo si fue rechazada */}
-          {config.showButton && onReapply && (
-            <div className="mt-4">
-              <button
-                onClick={onReapply}
-                disabled={isLoading}
-                className="inline-flex items-center px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-400/50 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FaRedo className="w-4 h-4 mr-2" />
-                {isLoading ? 'Enviando...' : 'Reenviar Solicitud'}
-              </button>
+          {status === 'rejected' && rejectionReason && (
+            <div className="bg-red-500/10 border border-red-400/30 rounded-lg p-3 mb-4">
+              <p className="text-xs font-semibold text-red-300 mb-1">Motivo del rechazo:</p>
+              <p className="text-sm text-red-200">{rejectionReason}</p>
+            </div>
+          )}
+
+          {status === 'rejected' && (
+            <div className="text-xs text-slate-300 mt-3 space-y-1">
+              <p className="font-medium">• Puedes volver a postularte utilizando el botón <span className="text-blue-400 font-semibold">"Postularme para profesor"</span></p>
+              <p className="font-medium">• Asegúrate de revisar y corregir los puntos mencionados antes de reenviar</p>
             </div>
           )}
         </div>

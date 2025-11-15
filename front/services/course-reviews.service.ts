@@ -5,6 +5,11 @@ export interface CourseReview {
   rating: number;
   feedback: string;
   createdAt: string;
+  // Campos de moderación
+  isCensored: boolean;
+  moderationStatus: 'approved' | 'pending' | 'censored' | 'rejected';
+  toxicityScore?: number;
+  moderationReason?: string;
   user: {
     id: string;
     name: string;

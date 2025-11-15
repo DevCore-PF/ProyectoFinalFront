@@ -9,7 +9,7 @@ interface Lesson {
   title: string;
 }
 
-export const useLessonProgress = (courseId: string) => {
+export const useLessonProgress = (courseId: string, isCourseCreator: boolean = false) => {
   const { token } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [totalCompleted, setTotalCompleted] = useState<number>(0);
@@ -89,6 +89,9 @@ export const useLessonProgress = (courseId: string) => {
 
   
   const isLessonEnabled = (lessonIndex: number, lessons: Lesson[]) => {
+    // Si el usuario es el creador del curso, puede acceder a todas las lecciones
+    if (isCourseCreator) return true;
+    
     // La primera lección siempre está habilitada para visualización
     if (lessonIndex === 0) return true; 
     

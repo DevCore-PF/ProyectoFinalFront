@@ -6,6 +6,7 @@ interface StudentApplicationStatus {
   hasApplication: boolean;
   status: 'pending' | 'approved' | 'rejected' | null;
   message: string | null;
+  rejectionReason: string | null;
   canApply: boolean;
   isLoading: boolean;
   error: string | null;
@@ -17,6 +18,7 @@ export const useStudentTeacherRequest = () => {
     hasApplication: false,
     status: null,
     message: null,
+    rejectionReason: null,
     canApply: true,
     isLoading: true,
     error: null,
@@ -38,6 +40,7 @@ export const useStudentTeacherRequest = () => {
         hasApplication: statusData.hasApplication,
         status: statusData.status,
         message: statusData.message,
+        rejectionReason: statusData.rejectionReason || null,
         canApply: !statusData.hasApplication || statusData.status === 'rejected',
         isLoading: false,
         error: null,

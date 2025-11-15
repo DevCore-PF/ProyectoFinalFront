@@ -28,10 +28,6 @@ const StudentApplicationsCard = ({ title }: StudentApplicationsCardProps) => {
     setIsModalOpen(false);
   };
 
-  const handleReapply = () => {
-    setIsModalOpen(true);
-  };
-
   return (
     <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">
@@ -54,8 +50,7 @@ const StudentApplicationsCard = ({ title }: StudentApplicationsCardProps) => {
         <TeacherApplicationCard
           status={applicationStatus.status}
           message={applicationStatus.message}
-          onReapply={canApply ? handleReapply : undefined}
-          isLoading={isSubmitting}
+          rejectionReason={applicationStatus.rejectionReason}
         />
       ) : (
         /* Si no tiene solicitud, mostrar opción para aplicar */

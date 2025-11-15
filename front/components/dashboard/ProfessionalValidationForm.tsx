@@ -93,10 +93,17 @@ const ProfessionalValidationForm: React.FC<ValidationFormProps> = ({
         file && formData.append("certificates", file);
       });
 
-      // Agregar links profesionales (filtrar vacíos)
-      const validLinks = values.professionalLinks.filter(
-        (link) => link.trim() !== ""
-      );
+      // Agregar links profesionales (filtrar vacíos y agregar https:// si falta)
+      const validLinks = values.professionalLinks
+        .filter((link) => link.trim() !== "")
+        .map((link) => {
+          const trimmedLink = link.trim();
+          // Si no tiene protocolo, agregar https://
+          if (!/^https?:\/\//i.test(trimmedLink)) {
+            return `https://${trimmedLink}`;
+          }
+          return trimmedLink;
+        });
       if (validLinks.length > 0) {
         formData.append("professionalLinks", JSON.stringify(validLinks));
       }

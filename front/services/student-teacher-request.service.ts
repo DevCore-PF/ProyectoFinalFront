@@ -58,36 +58,46 @@ export const getStudentApplicationStatusService = async (token: string): Promise
       };
     }
 
-    // Si está solicitando ser profesor, verificamos su rol actual
-    // Solo los profesores pueden acceder al endpoint de approval status
-    if (userData.role === 'teacher') {
-      try {
-        const profileResponse = await fetch(`${API_BASE_URL}/profiles/status/my-approval`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+    // Si está solicitando ser profesor, intentamos obtener el estado de su perfil
+    // Esto funciona tanto para teachers (aprobados) como students (pendientes/rechazados)
+    try {
+      const profileResponse = await fetch(`${API_BASE_URL}/profiles/status/my-approval`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (profileResponse.ok) {
-          const profileData = await profileResponse.json();
-          return {
-            hasApplication: profileData.hasProfile,
-            status: profileData.approvalStatus,
-            message: profileData.message
-          };
-        }
-      } catch (profileError) {
-        console.error('Error accessing teacher profile:', profileError);
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        return {
+          hasApplication: profileData.hasProfile,
+          status: profileData.approvalStatus,
+          message: profileData.message,
+          rejectionReason: profileData.rejectionReason
+        };
+      } else if (profileResponse.status === 403) {
+        // Si recibe 403, es porque el endpoint aún requiere rol teacher
+        // Esto es temporal hasta que se actualice el backend
+        console.warn('Endpoint requires teacher role update. Falling back to pending status.');
+        return {
+          hasApplication: true,
+          status: 'pending',
+          message: 'Tu solicitud está siendo revisada por nuestro equipo.',
+          rejectionReason: null
+        };
       }
+    } catch (profileError) {
+      console.error('Error accessing teacher profile:', profileError);
     }
 
-    // Si es estudiante con isRequestingTeacherRole = true, significa que tiene solicitud pendiente
+    // Fallback: Si hubo error al obtener el perfil
     return {
       hasApplication: true,
       status: 'pending',
-      message: 'Tu solicitud está siendo revisada por nuestro equipo.'
+      message: 'Tu solicitud está siendo revisada por nuestro equipo.',
+      rejectionReason: null
     };
 
   } catch (error) {

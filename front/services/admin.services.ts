@@ -354,4 +354,22 @@ export const rejectProfileService = async (
   }
 };
 
-// export const getMyPayments
+export const approveCourseService = async (token: string, courseId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/aproved`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al aprobar curso");
+    }
+   
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

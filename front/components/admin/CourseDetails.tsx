@@ -26,7 +26,7 @@ import Loader from "../Loaders/Loader";
 import { Course, CourseVisibility } from "@/types/course.types";
 import TinyLoader from "../Loaders/TinyLoader";
 import Image from "next/image";
-import { CourseReview } from "./CoursesPage";
+import { CourseReview } from "@/types/admin.types";
 
 interface CourseDetailsProps {
   courseId: string;

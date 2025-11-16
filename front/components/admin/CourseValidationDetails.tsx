@@ -25,11 +25,16 @@ import {
   HiChevronRight,
   HiPlay,
   HiDocumentText,
+  HiLockClosed,
+  HiLockOpen,
 } from "react-icons/hi";
+
 import Loader from "../Loaders/Loader";
 import TinyLoader from "../Loaders/TinyLoader";
-import { CourseStatus } from "@/types/course.types";
+import { Course, CourseStatus, CourseVisibility } from "@/types/course.types";
 import RejectedReasonModal from "./RejectedReasonModal";
+import { approveCourseService } from "@/services/admin.services";
+import { useAuth } from "@/context/UserContext";
 
 interface CourseValidationDetailsProps {
   courseId: string;
@@ -50,6 +55,8 @@ const CourseValidationDetails = ({
   const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
     new Set()
   );
+  const [loadingVisibility, setLoadingVisibility] = useState(false);
+  const { changeVisibility } = useAdmin();
 
   const toggleLesson = (lessonId: string) => {
     setExpandedLessons((prev) => {
@@ -107,18 +114,20 @@ const CourseValidationDetails = ({
     };
     return config[difficulty as keyof typeof config] || config.PRINCIPIANTE;
   };
+  const { token } = useAuth();
 
-  const handleApprove = async () => {
+  const handleApprove = async (courseId: string) => {
     toastConfirm(
       "¿Aprobar y publicar este curso?",
       async () => {
         setLoadingApprove(true);
         try {
-          // TODO: Implementar servicio de aprobación de curso
-          // await approveCourse(courseId);
+          if (token) {
+            await approveCourseService(token, courseId);
+          }
+          await changeVisibility(courseId);
           await refreshCourses();
           toastSuccess("Curso aprobado y publicado correctamente");
-          onBack();
         } catch (error) {
           console.error(error);
           toastError("Error al aprobar el curso");
@@ -175,7 +184,38 @@ const CourseValidationDetails = ({
       </div>
     );
   }
+  const handleChangeVisibility = async (courseId: string) => {
+    let message = "";
+    courses.find((c: Course) => {
+      const courseFound = c.id === courseId;
+      if (courseFound && c.visibility === "PUBLICO") {
+        message = "Cambiar a privado";
+      } else if (courseFound && c.visibility === "PRIVADO") {
+        message = "Cambiar a público";
+      }
+    });
 
+    toastConfirm(
+      message,
+      async () => {
+        setLoadingVisibility(true);
+        try {
+          const currentCourse = courses.find((c) => c.id === courseId);
+          const wasPublic =
+            currentCourse?.visibility === CourseVisibility.PUBLIC;
+
+          await changeVisibility(courseId);
+
+          toastSuccess(wasPublic ? "Curso privado" : "Curso público");
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoadingVisibility(false);
+        }
+      },
+      () => {}
+    );
+  };
   if (!course) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -309,7 +349,6 @@ const CourseValidationDetails = ({
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-slate-300">
-                      
                       <span>{course.lessons?.length || 0} lecciones</span>
                     </div>
                     {course.isActive ? (
@@ -345,7 +384,7 @@ const CourseValidationDetails = ({
                       )}
                     </button>
                     <button
-                      onClick={handleApprove}
+                      onClick={() => handleApprove(course.id)}
                       disabled={loadingApprove || loadingReject}
                       className="flex items-center cursor-pointer gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
                     >
@@ -363,6 +402,45 @@ const CourseValidationDetails = ({
                     </button>
                   </div>
                 )}
+                <button
+                  disabled={
+                    loadingVisibility ||
+                    (course.status === CourseStatus.DRAFT ||
+                      course.status === CourseStatus.REJECT)
+                  }
+                  title={
+                    course.visibility === CourseVisibility.PRIVATE
+                      ? "Cambiar a público"
+                      : "Cambiar a privado"
+                  }
+                  onClick={() => handleChangeVisibility(course.id)}
+                  className={`relative inline-flex h-7 w-14 cursor-pointer disabled:cursor-not-allowed items-center rounded-full transition-colors duration-300 ${
+                    course.visibility === CourseVisibility.PRIVATE
+                      ? "bg-amber-500/80 "
+                      : "bg-emerald-400/80"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex h-6 w-6 items-center justify-center transform rounded-full bg-font-light shadow-md transition-transform duration-300 ${
+                      course.visibility === CourseVisibility.PUBLIC
+                        ? "translate-x-[30px]"
+                        : "translate-x-[2px]"
+                    }`}
+                  >
+                    {course.visibility === CourseVisibility.PRIVATE &&
+                    !loadingVisibility ? (
+                      <HiLockClosed className="w-4 h-4 text-amber-800" />
+                    ) : course.visibility === CourseVisibility.PRIVATE &&
+                      loadingVisibility ? (
+                      <TinyLoader />
+                    ) : course.visibility === CourseVisibility.PUBLIC &&
+                      !loadingVisibility ? (
+                      <HiLockOpen className="w-4 h-4 text-emerald-800" />
+                    ) : (
+                      <TinyLoader />
+                    )}
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -482,7 +560,6 @@ const CourseValidationDetails = ({
             {/* Lecciones */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
               <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
-                
                 Contenido del Curso ({course.lessons?.length || 0} lecciones)
               </h2>
               {course.lessons && course.lessons.length > 0 ? (
@@ -608,8 +685,10 @@ const CourseValidationDetails = ({
                           )}
 
                           {/* Sin recursos */}
-                          {(!lesson.urlVideos || lesson.urlVideos.length === 0) &&
-                            (!lesson.urlPdfs || lesson.urlPdfs.length === 0) && (
+                          {(!lesson.urlVideos ||
+                            lesson.urlVideos.length === 0) &&
+                            (!lesson.urlPdfs ||
+                              lesson.urlPdfs.length === 0) && (
                               <p className="text-slate-500 text-sm italic text-center py-4">
                                 No hay recursos disponibles para esta lección.
                               </p>

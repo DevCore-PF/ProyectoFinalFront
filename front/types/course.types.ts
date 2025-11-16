@@ -1,8 +1,8 @@
 // Enums
 export enum CourseDifficulty {
-  BEGINNER = "Principiante",
-  INTERMEDIATE = "Intermedio",
-  ADVANCED = "Avanzado",
+  BEGINNER = "PRINCIPIANTE",
+  INTERMEDIATE = "INTERMEDIO",
+  ADVANCED = "AVANZADO",
 }
 
 export enum CourseCategory {

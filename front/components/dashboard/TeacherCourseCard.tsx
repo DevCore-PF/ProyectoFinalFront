@@ -14,36 +14,25 @@ interface TeacherCourseCardProps {
 const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProps) => {
   const router = useRouter();
   
-  // Función para calcular la visibilidad inicial correcta basándose en el status
-  const getInitialVisibility = (): CourseVisibility => {
-    // Si el curso está aprobado/publicado, debería ser público automáticamente
-    const statusStr = course.status as string;
-    if (statusStr === "PUBLICADO" || statusStr === CourseStatus.PUBLISHED) {
-      return CourseVisibility.PUBLIC;
-    }
-    // Si está rechazado, en revisión o borrador, siempre privado
-    return CourseVisibility.PRIVATE;
-  };
-
+  // Usar la visibilidad real del curso que viene del backend
   const [currentVisibility, setCurrentVisibility] = useState<CourseVisibility>(
-    getInitialVisibility()
+    course.visibility
   );
 
-  // Detectar cambios en el status del curso para actualizar la visibilidad
+  // Sincronizar la visibilidad cuando cambie la prop del curso
   useEffect(() => {
-    const newVisibility = getInitialVisibility();
     console.log(`🔍 Curso ${course.id}:`);
     console.log(`   Status: "${course.status}"`);
     console.log(`   Visibilidad actual: ${currentVisibility}`);
-    console.log(`   Nueva visibilidad: ${newVisibility}`);
+    console.log(`   Visibilidad del curso: ${course.visibility}`);
     
-    if (newVisibility !== currentVisibility) {
-      setCurrentVisibility(newVisibility);
-      console.log(`✅ Visibilidad actualizada de ${currentVisibility} a ${newVisibility}`);
+    if (course.visibility !== currentVisibility) {
+      setCurrentVisibility(course.visibility);
+      console.log(`✅ Visibilidad actualizada a: ${course.visibility}`);
     } else {
       console.log(`ℹ️  No hay cambios en la visibilidad`);
     }
-  }, [course.status, course.id, course.updatedAt]);
+  }, [course.visibility, course.id, course.updatedAt, currentVisibility]);
 
   const handleVisibilityChange = (newVisibility: CourseVisibility) => {
     setCurrentVisibility(newVisibility);

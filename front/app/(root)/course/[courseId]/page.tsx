@@ -92,6 +92,12 @@ const CourseDetailPage: React.FC = () => {
 
   const { courseId } = useParams();
   const router = useRouter();
+  const { token, user } = useAuth();
+
+  // Verificar si el usuario es el creador del curso
+  const isCourseCreator = user?.professorProfile && 
+                          typeof user.professorProfile === "object" &&
+                          course?.professor?.id === user.professorProfile.id;
 
   // Usar nuestro nuevo hook para manejar el progreso
   const {
@@ -103,9 +109,7 @@ const CourseDetailPage: React.FC = () => {
     isLessonEnabled,
     isCourseCompleted,
     setError: setProgressError,
-  } = useLessonProgress(courseId as string);
-
-  const { token, user } = useAuth();
+  } = useLessonProgress(courseId as string, isCourseCreator);
   
   // Cart hooks
   const { cart } = useCart();
@@ -119,7 +123,7 @@ const CourseDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const courseData = await getCourseByIdService(courseId as string);
+        const courseData = await getCourseByIdService(courseId as string, token || undefined);
         setCourse(courseData);
       } catch (err) {
         console.error("Error fetching course:", err);
@@ -722,8 +726,10 @@ const CourseDetailPage: React.FC = () => {
                           </>
                         )}
 
-                        {/* Checkbox de finalización - solo si tiene acceso */}
-                        {hasAccessToCourse && (
+                        {/* Checkbox de finalización - solo si tiene acceso Y NO es el profesor */}
+                        {hasAccessToCourse && !(user?.professorProfile && 
+                           typeof user.professorProfile === "object" &&
+                           course?.professor?.id === user.professorProfile.id) && (
                           <div className="mt-6 pt-4 border-t border-slate-600/30">
                           <button
                             onClick={() => handleLessonCompletion(lesson.id)}

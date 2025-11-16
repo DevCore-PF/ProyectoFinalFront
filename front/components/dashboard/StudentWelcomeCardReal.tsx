@@ -9,26 +9,49 @@ import {
 } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import ProfileImage from "@/components/ui/ProfileImage";
-import { studentManagementOptions } from "@/helpers/moks";
+import { studentManagementOptions as baseStudentManagementOptions } from "@/helpers/moks";
+import useStudentTeacherRequest from "@/hooks/useStudentTeacherRequest";
+import TeacherRequestModal from "@/components/TeacherRequestModal";
 
-const WelcomeCard = ({
-  userName = "",
-  userEmail = "",
-  profileImage,
-  weeklyGoalProgress = 0,
-  goalHours = 0,
-  currentHours = 0,
-}: {
+interface StudentWelcomeCardRealProps {
   userName?: string;
   userEmail?: string;
   profileImage?: string;
-  weeklyGoalProgress?: number;
-  goalHours?: number;
-  currentHours?: number;
-}) => {
+  weeklyProgress?: number;
+  weeklyGoal?: number;
+  totalCourses?: number;
+  completedCourses?: number;
+  totalLessons?: number;
+  completedLessons?: number;
+}
+
+const StudentWelcomeCardReal = ({
+  userName = "",
+  userEmail = "",
+  profileImage,
+  weeklyProgress = 0,
+  weeklyGoal = 75,
+  totalCourses = 0,
+  completedCourses = 0,
+  totalLessons = 0,
+  completedLessons = 0,
+}: StudentWelcomeCardRealProps) => {
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
+  const { applicationStatus } = useStudentTeacherRequest();
+
+  // Clonar y modificar las opciones para el menú
+  const studentManagementOptions = baseStudentManagementOptions.map(option => {
+    if (option.id === "become-professor") {
+      return {
+        ...option,
+        disabled: applicationStatus.status === 'rejected',
+      };
+    }
+    return option;
+  });
   
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
@@ -39,11 +62,11 @@ const WelcomeCard = ({
   useEffect(() => {
     setAnimatedProgress(0);
     const timer = setTimeout(() => {
-      setAnimatedProgress(weeklyGoalProgress);
+      setAnimatedProgress(weeklyProgress);
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [weeklyGoalProgress]);
+  }, [weeklyProgress]);
 
   const handleProfileSettings = () => {
     const userData = sessionStorage.getItem("user");
@@ -55,12 +78,16 @@ const WelcomeCard = ({
     }
   };
 
+  // Usar las lecciones reales pasadas como props
+  const totalLessonsFromCourses = totalLessons;
+  const completedLessonsFromProgress = completedLessons;
+
   return (
     <div className="bg-linear-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl min-h-50 flex flex-col justify-center">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         {/* Sección izquierda - Perfil y progreso */}
         <div className="flex-1 w-full">
-          <p className="text-slate-400 text-xs uppercase tracking-wider  mb-3">
+          <p className="text-slate-400 text-xs uppercase tracking-wider mb-3">
             {currentDate}
           </p>
           
@@ -81,7 +108,7 @@ const WelcomeCard = ({
             </div>
           </div>
 
-          {/* Meta semanal */}
+          {/* Meta semanal con datos reales */}
           <div className="rounded-xl p-5 md:p-6 mb-3 bg-slate-900/50 border mr-10 border-slate-700/30">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-3">
@@ -93,7 +120,7 @@ const WelcomeCard = ({
                 </span>
               </div>
               <span className="text-lg font-bold text-slate-400 tabular-nums">
-                {animatedProgress}%
+                {Math.round(animatedProgress)}%
               </span>
             </div>
 
@@ -114,16 +141,18 @@ const WelcomeCard = ({
               <HiClock className="w-4 h-4" />
               <span>
                 <span className="text-slate-200 font-semibold tabular-nums">
-                  {currentHours}h
+                  {completedLessonsFromProgress}
                 </span>{" "}
                 de{" "}
                 <span className="text-slate-200 font-semibold tabular-nums">
-                  {goalHours}h
+                  {totalLessonsFromCourses}
                 </span>
+                {" lecciones completadas"}
               </span>
             </div>
           </div>
 
+          {/* Ajustes de perfil fuera del menú */}
           <button
             onClick={handleProfileSettings}
             className="flex items-center gap-2 text-slate-400 hover:underline cursor-pointer transition-colors duration-200 group"
@@ -154,46 +183,57 @@ const WelcomeCard = ({
           {isMenuOpen && (
             <div className="absolute md:-right-5 mt-3 w-full md:w-72 bg-slate-900/98 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-2">
-                {studentManagementOptions.map((option) => (
-                  <div key={option.id}>
+                {/* Solo mostrar opciones del menú, excluyendo "Ajustes de perfil" */}
+                {studentManagementOptions
+                  .filter(option => option.title !== "Ajustes de perfil")
+                  .map((option, index) => (
                     <button
+                      key={index}
                       onClick={() => {
-                        console.log(option.title);
+                        if (option.disabled) return;
+                        if (option.id === "become-professor") {
+                          setIsTeacherModalOpen(true);
+                        } else {
+                          option.onClick();
+                        }
                         setIsMenuOpen(false);
                       }}
-                      className="w-full px-4 py-3.5 cursor-pointer hover:bg-slate-800/70 rounded-lg transition-all duration-200 text-left flex items-center gap-4 group"
+                      disabled={option.disabled}
+                      className={`w-full px-4 py-3.5 flex items-center gap-4 group text-left rounded-lg transition-all duration-200
+                        ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-800/70'}`}
+                      title={option.disabled && option.id === 'become-professor' ? 'No puedes postularte porque tu última solicitud fue rechazada.' : ''}
                     >
                       <div className="p-2 bg-purple-500/10 rounded-lg text-accent-light group-hover:bg-purple-500/20 transition-all">
                         {option.icon}
                       </div>
-                      <span className="text-sm font-medium text-slate-200 transition-colors">
-                        {option.title}
-                      </span>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                          {option.title}
+                        </h4>
+                      </div>
                     </button>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
+      {/* Click outside to close dropdown */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
 
-        .animate-shimmer {
-          animation: shimmer 2s ease-in-out infinite;
-        }
-      `}</style>
+      {/* Modal para solicitud de profesor */}
+      <TeacherRequestModal 
+        isOpen={isTeacherModalOpen}
+        onClose={() => setIsTeacherModalOpen(false)}
+      />
     </div>
   );
 };
 
-export default WelcomeCard;
+export default StudentWelcomeCardReal;

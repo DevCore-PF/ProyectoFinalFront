@@ -1,24 +1,31 @@
 "use client";
 
-import ProgressCard from "@/components/dashboard/ProgressCard";
-import QuickAccessCard from "@/components/dashboard/QuickAccessCard";
-import WelcomeCard from "@/components/dashboard/StudentWelcomeCard";
-import RecommendedCourses from "@/components/dashboard/RecomendedCourses";
-import {
-  progressData,
-  quickAccessItems,
-  recommendedCourses,
-  studentData,
-} from "@/helpers/moks";
+import StudentWelcomeCardReal from "@/components/dashboard/StudentWelcomeCardReal";
+import StudentApplicationsCard from "@/components/dashboard/StudentApplicationsCard";
+import StudentQuickAccess from "@/components/dashboard/StudentQuickAccess";
+import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { useAuth } from "@/context/UserContext";
-import { useEffect, useEffectEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAllCoursesService } from "@/services/course.services";
+import { usePurchasedCourses } from "@/hooks/usePurchasedCourses";
+import { useStudentMetrics } from "@/hooks/useStudentMetrics";
 import Loader from "@/components/Loaders/Loader";
 
 const DashboardPage = () => {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const { purchasedCourses, loading: coursesLoading, error: coursesError } = usePurchasedCourses();
+  const {
+    totalCourses,
+    completedCourses,
+    weeklyProgress,
+    weeklyGoal,
+    totalLessons,
+    completedLessons,
+    loading: metricsLoading,
+    error: metricsError
+  } = useStudentMetrics();
+
   useEffect(() => {
     if (!isLoading) {
       if (!user || user.role !== "student") {
@@ -27,36 +34,63 @@ const DashboardPage = () => {
     }
   }, [user, isLoading, router]);
 
-  
-if (isLoading ) return <Loader />;
+  if (isLoading || coursesLoading || metricsLoading) return <Loader />;
 
-if (!user || user.role !== "student") return <Loader />;
+  if (!user || user.role !== "student") return <Loader />;
+
+  if (coursesError || metricsError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 text-lg mb-4">
+            Error al cargar el dashboard: {coursesError || metricsError}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-4 py-2 rounded-lg text-font-light font-semibold transition-all duration-300"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen p-10">
       <div className="max-w-7xl mx-auto p-4 md:p-6">
+        {/* Welcome Card con métricas reales */}
         <div className="mb-10">
-          <div className=" relative z-10">
-            <WelcomeCard
+          <div className="relative z-10">
+            <StudentWelcomeCardReal
               userName={user?.name}
               userEmail={user?.email}
               profileImage={user?.profileImage}
-              weeklyGoalProgress={studentData.weeklyGoalProgress}
-              goalHours={studentData.goalHours}
-              currentHours={studentData.currentHours}
+              weeklyProgress={weeklyProgress}
+              weeklyGoal={weeklyGoal}
+              totalCourses={totalCourses}
+              completedCourses={completedCourses}
+              totalLessons={totalLessons}
+              completedLessons={completedLessons}
             />
           </div>
         </div>
 
+        {/* Acceso rápido con datos reales */}
         <div className="mb-4 md:mb-10">
-          <QuickAccessCard items={quickAccessItems} />
+          <StudentQuickAccess 
+            totalCourses={totalCourses}
+            completedCourses={completedCourses}
+          />
         </div>
 
+        {/* Grid de cursos comprados */}
         <div className="mb-4 md:mb-10">
-          <ProgressCard title="Mi progreso" progressItems={progressData} />
+          <PurchasedCoursesGrid />
         </div>
 
+        {/* Mis postulaciones para profesor */}
         <div>
-          <RecommendedCourses courses={recommendedCourses} />
+          <StudentApplicationsCard title="Mis postulaciones" />
         </div>
       </div>
     </div>

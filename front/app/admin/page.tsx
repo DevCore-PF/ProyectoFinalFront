@@ -1,13 +1,9 @@
 "use client";
-import CoursesPage from "@/components/admin/CoursesPage";
-import OverviewTab from "@/components/admin/Memberships";
-import UserDetails from "@/components/admin/UserDetails";
 import { useAdmin } from "@/context/AdminContext";
 import { TabType, ValidationRequest } from "@/types/admin.types";
 import { User } from "@/types/user.types";
 import Loader from "@/components/Loaders/Loader";
 import { useState } from "react";
-import UsersPage from "@/components/admin/UsersPage";
 import {
   HiUsers,
   HiBookOpen,
@@ -19,16 +15,20 @@ import {
   HiMail,
   HiUserCircle,
 } from "react-icons/hi";
-import CourseDetails from "@/components/admin/CourseDetails";
+import CourseDetails from "@/components/admin/adminCourses/CourseDetails";
 import { useAuth } from "@/context/UserContext";
 import ValidationsPage from "@/components/admin/ValidtionsPage";
 
 import { HiCash } from "react-icons/hi";
-import ProfileValidationDetails from "@/components/admin/ProfileValidationDetails";
-import CourseValidationDetails from "@/components/admin/CourseValidationDetails";
+import CourseValidationDetails from "@/components/admin/adminCourses/CourseValidationDetails";
 import FinancesPage from "@/components/admin/FinancesPage";
 import MembershipPlans from "@/components/Plans/MembershipPlans";
 import Memberships from "@/components/admin/Memberships";
+import AdminForm from "@/components/admin/AdminForm";
+import CoursesPage from "@/components/admin/adminCourses/CoursesPage";
+import UsersPage from "@/components/admin/adminUsers/UsersPage";
+import UserDetails from "@/components/admin/adminUsers/UserDetails";
+import ProfileValidationDetails from '@/components/admin/ProfileValidationDetails';
 
 type ValidationType =
   | "professor"
@@ -339,7 +339,7 @@ const AdminDashboard = () => {
           >
             {/* finances */}
             {activeTab === "overview" && <Memberships />}
-            {/* {activeTab === "admins" && <AdminsTab />} */}
+            {activeTab === "admins" && <AdminForm />}
             {activeTab === "validations" && (
               <ValidationsPage onViewDetail={openDetail} />
             )}

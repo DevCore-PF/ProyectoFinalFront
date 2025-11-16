@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/UserContext";
 import { getProfessorCoursesService } from "@/services/course.services";
-import { Course } from "@/types/course.types";
+import { Course, CourseVisibility } from "@/types/course.types";
 
 export const useProfessorCourses = () => {
   const { user, token } = useAuth();
@@ -43,6 +43,16 @@ export const useProfessorCourses = () => {
       console.log("📊 Total cursos del profesor:", filteredCourses.length);
       console.log("🔍 ID del profesor actual:", currentProfessorId);
       
+      // Debug: mostrar la visibilidad de cada curso
+      if (filteredCourses.length > 0) {
+        console.log("🔍 Visibilidad de cada curso:", filteredCourses.map(course => ({
+          courseId: course.id,
+          courseTitle: course.title,
+          status: course.status,
+          visibility: course.visibility
+        })));
+      }
+      
       // Debug: mostrar los IDs de profesores de los cursos obtenidos
       if (professorCourses.length > 0) {
         console.log("🔍 IDs de profesores en los cursos:", professorCourses.map(course => ({
@@ -72,11 +82,23 @@ export const useProfessorCourses = () => {
     loadCourses();
   };
 
+  // Función para actualizar la visibilidad de un curso específico sin refetch
+  const updateCourseVisibility = (courseId: string, newVisibility: CourseVisibility) => {
+    setCourses(prevCourses => 
+      prevCourses.map(course => 
+        course.id === courseId 
+          ? { ...course, visibility: newVisibility }
+          : course
+      )
+    );
+  };
+
   return {
     courses,
     isLoading,
     error,
     refreshCourses,
+    updateCourseVisibility,
     hasCourses: courses.length > 0,
   };
 };

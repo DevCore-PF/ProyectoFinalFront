@@ -69,26 +69,61 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
 
   // Sincronizar la visibilidad cuando cambie la prop currentVisibility
   useEffect(() => {
-    setVisibility(currentVisibility);
-  }, [currentVisibility]);
+    console.log(`🔄 VisibilityToggle - Sincronizando visibilidad del curso ${courseId}:`);
+    console.log(`   Visibilidad actual: ${visibility}`);
+    console.log(`   Nueva visibilidad prop: ${currentVisibility}`);
+    
+    if (currentVisibility !== visibility) {
+      setVisibility(currentVisibility);
+      console.log(`✅ Visibilidad actualizada: ${currentVisibility}`);
+    }
+  }, [currentVisibility, courseId, visibility]);
 
   const handleToggleVisibility = async () => {
     if (isActuallyDisabled || !token || isChanging) return;
 
+    // Calcular la nueva visibilidad antes de hacer la petición
+    const newVisibility = visibility === CourseVisibility.PUBLIC 
+      ? CourseVisibility.PRIVATE 
+      : CourseVisibility.PUBLIC;
+
     try {
       setIsChanging(true);
-      const response = await courseVisibilityService.toggleVisibility(courseId, token);
       
-      const newVisibility = response.visibility === 'PUBLICO' 
-        ? CourseVisibility.PUBLIC 
-        : CourseVisibility.PRIVATE;
-      
+      // Actualización optimista: cambiar inmediatamente la UI
       setVisibility(newVisibility);
       onVisibilityChange?.(newVisibility);
       
-      toastSuccess(`Curso ahora es ${newVisibility.toLowerCase()}`);
+      // Hacer la petición al backend
+      const response = await courseVisibilityService.toggleVisibility(courseId, token);
+      
+      console.log('📥 Respuesta del servicio de visibilidad:', response);
+      
+      // Verificar que el backend confirmó el cambio
+      const backendVisibility = response.visibility === 'PUBLICO' 
+        ? CourseVisibility.PUBLIC 
+        : CourseVisibility.PRIVATE;
+      
+      // Solo actualizar si hay discrepancia (rollback en caso de error)
+      if (backendVisibility !== newVisibility) {
+        console.warn('🔄 Rollback: Discrepancia entre frontend y backend');
+        setVisibility(backendVisibility);
+        onVisibilityChange?.(backendVisibility);
+      }
+      
+      console.log(`✅ Visibilidad confirmada: ${backendVisibility}`);
+      toastSuccess(`Curso ahora es ${backendVisibility.toLowerCase()}`);
     } catch (error) {
       console.error('Error changing visibility:', error);
+      
+      // Rollback en caso de error
+      const rollbackVisibility = newVisibility === CourseVisibility.PUBLIC 
+        ? CourseVisibility.PRIVATE 
+        : CourseVisibility.PUBLIC;
+      
+      setVisibility(rollbackVisibility);
+      onVisibilityChange?.(rollbackVisibility);
+      
       toastError('Error al cambiar la visibilidad del curso');
     } finally {
       setIsChanging(false);

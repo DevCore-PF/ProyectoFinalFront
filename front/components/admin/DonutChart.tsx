@@ -70,7 +70,7 @@ const DonutChart = ({ courses, careers, memberships }: DonutChartProps) => {
     cutout: "70%", // Esto lo hace donut en vez de pie
   };
 
-  return <Doughnut data={data} options={options} />;
+  return <Doughnut data={data}  />;
 };
 
 export default DonutChart;

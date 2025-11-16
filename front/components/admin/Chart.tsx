@@ -118,7 +118,7 @@ const ChartFinances = ({ labels, data, period }: ChartFinancesProps) => {
     },
   };
 
-  return <Bar data={chartData} options={options} />;
+  return <Bar data={chartData}  />;
 };
 
 export default ChartFinances;

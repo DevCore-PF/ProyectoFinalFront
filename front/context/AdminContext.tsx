@@ -10,6 +10,7 @@ import {
 import {
   activateDeactivateCourseService,
   activateUserService,
+  approveCourseService,
   approveProfileService,
   changeVisivilityService,
   deactivateUserService,
@@ -20,6 +21,7 @@ import {
   getCourseFeedbackService,
   getInactiveUsersService,
   getUserByIdService,
+  rejectCourseService,
   rejectProfileService,
 } from "@/services/admin.services";
 import { User } from "@/types/user.types";
@@ -75,6 +77,8 @@ interface AdminContextType {
   changeVisibility: (id: string) => Promise<void>;
   approveProfile: (id: string) => Promise<void>;
   rejectProfile: (id: string, reason: string) => Promise<void>;
+  approveCourse: (id: string) => Promise<void>;
+  rejectCourse: (id: string, reason: string) => Promise<void>;
   // Validation actions
   //   rejectValidation: (validationId: string, reason?: string) => Promise<void>;
 }
@@ -336,6 +340,32 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const approveCourse = async (courseId: string) => {
+    try {
+      if (token) {
+        await approveCourseService(token, courseId);
+        changeVisibility(courseId);
+        setCourses((prev) => prev.filter((v) => v.id !== courseId));
+        await refreshCourses();
+      }
+    } catch (error) {
+      console.error("Error al aprobar curso:", error);
+      throw error;
+    }
+  };
+
+  const rejectCourse = async (courseId: string, reason: string) => {
+    try {
+      if (token) {
+        await rejectCourseService(token, courseId, reason);
+        setCourses((prev) => prev.filter((v) => v.id !== courseId));
+        await refreshCourses();
+      }
+    } catch (error) {
+      console.error("Error al aprobar curso:", error);
+      throw error;
+    }
+  };
   ///////////////////////////////////// Refresh functions
   const silentRefreshProfiles = async () => {
     try {
@@ -414,9 +444,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     rejectProfile,
     silentRefreshCourses,
     silentRefreshProfiles,
-
-    // deactivateCourse,
-    // activateCourse,
+    approveCourse,
+    rejectCourse
   };
 
   return (

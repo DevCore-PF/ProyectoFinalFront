@@ -18,13 +18,15 @@ import {
   HiStar,
 } from "react-icons/hi";
 import { FaPlus } from "react-icons/fa";
-import Loader from "../Loaders/Loader";
 import { CourseReview, TabType } from "@/types/admin.types";
-import TinyLoader from "../Loaders/TinyLoader";
+
+import { downloadCourses } from "@/helpers/adminHandlers";
+import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
 import CourseModal from "./CourseModal";
 import CreateCourseAdmin from "./CreateCourseAdmin";
 import CreateLessonAdmin from "./CreateLessonAdmin";
-import { downloadCourses } from "@/helpers/adminHandlers";
+import { CourseVisibility } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
 type CourseCategory =
@@ -123,13 +125,25 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     };
   }, [courses]);
 
-
-
   {
     /* ============[ ESTILOS BADGE STATUS ]============= */
   }
-  const getStatusBadge = (isActive: boolean) => {
-    return isActive
+  {
+    /* export enum CourseStatus {
+  DRAFT = "EN REVISION",
+  PUBLISHED = "PUBLICADO",
+  REJECT = "RECHAZADO",
+} */
+  }
+  const getStatusBadge = (status: string) => {
+    return status === "PUBLICADO"
+      ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
+      : status === "RECHAZADO"
+      ? "bg-amber-500/10 text-amber-200 border-amber-500/20"
+      : "bg-slate-500/10 text-slate-200 border-slate-500/20";
+  };
+  const getVisibilityBadge = (visibility: string) => {
+    return visibility === "PUBLICO"
       ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
       : "bg-amber-500/10 text-amber-200 border-amber-500/20";
   };
@@ -771,15 +785,21 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               })()}
                             </div>
                           </td>
+
                           <td className="px-4 py-4">
                             <span
                               className={`px-3 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
-                                course.isActive
+                                course.status
                               )}`}
                             >
-                              {course.isActive ? "Activo" : "Inactivo"}
+                              {course.status === "EN REVISION"
+                                ? "En revisión"
+                                : course.status === "PUBLICADO"
+                                ? "Publicado"
+                                : "Rechazado"}
                             </span>
                           </td>
+                      
                           <td className="px-4 py-4">
                             <p className="text-emerald-200/80 text-sm flex items-center">
                               ${course.price}

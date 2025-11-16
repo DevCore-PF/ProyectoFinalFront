@@ -11,7 +11,6 @@ import {
   HiArrowRight,
   HiCreditCard,
 } from "react-icons/hi";
-import { FaInfinity } from "react-icons/fa";
 //Helpers
 import { toastConfirm } from "@/helpers/alerts.helper";
 import Link from "next/link";
@@ -22,7 +21,7 @@ import TinyLoader from "@/components/Loaders/TinyLoader";
 import { useAuth } from "@/context/UserContext";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, getTotal, refreshCart, loading } =
+  const { cart, clearCart, getTotal, refreshCart, loading } =
     useCart();
   useEffect(() => {
     refreshCart();
@@ -30,10 +29,6 @@ export default function CartPage() {
   const [loadingClear, setLoadingClear] = useState(false);
   const { loadingRemove, handleRemoveFromCart } = useRemoveFromCart();
   const router = useRouter();
-  const { user } = useAuth();
-  useEffect(() => {
-    if (!user) router.push('/')
-  }, [user]);
 
   const handleRemove = (course: Course) => {
     toastConfirm("¿Eliminar este curso?", async () => {
@@ -54,7 +49,7 @@ export default function CartPage() {
       }
     });
   };
-  if (!user || loading)
+  if ( loading)
     return (
       <div className="flex flex-col min-h-screen justify-center items-center">
         <Loader size="medium" />

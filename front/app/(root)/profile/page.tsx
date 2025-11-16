@@ -1,21 +1,6 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/UserContext";
 
 const ProfilePage = () => {
-  const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    // Redirigir automáticamente a settings si el usuario está logueado
-    if (user?.id) {
-      router.replace(`/profile/${user.id}/settings`);
-    } else {
-      router.replace("/login");
-    }
-  }, [user, router]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1b3e] to-[#0f1020] flex items-center justify-center">
       <div className="text-center">

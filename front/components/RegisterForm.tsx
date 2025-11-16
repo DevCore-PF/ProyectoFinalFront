@@ -82,13 +82,6 @@ const RegisterForm = () => {
     },
   });
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (user) {
-        router.push("/");
-      }
-    }
-  }, [user, isLoading, router]);
 
   useEffect(() => {
     const error = searchParams.get("error");

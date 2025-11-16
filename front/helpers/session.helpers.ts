@@ -1,18 +1,20 @@
 //Types
 import { UserUpdateResponse } from "@/types/user.types";
-
+import Cookies from "js-cookie";
 export const updateUserInSession = (updatedUser: UserUpdateResponse): void => {
   try {
     // Normalizar la imagen de perfil antes de guardar
-    const userWithImage = updatedUser as UserUpdateResponse & { image?: string };
+    const userWithImage = updatedUser as UserUpdateResponse & {
+      image?: string;
+    };
     const normalizedUser = {
       ...updatedUser,
-      profileImage: updatedUser.profileImage || userWithImage.image
+      profileImage: updatedUser.profileImage || userWithImage.image,
     };
-    
+
     sessionStorage.setItem("user", JSON.stringify(normalizedUser));
     sessionStorage.setItem("userTimestamp", Date.now().toString());
-    console.log("✅ Usuario actualizado en sessionStorage con imagen normalizada");
+ 
   } catch (error) {
     console.error("Error al actualizar SessionStorage:", error);
   }
@@ -46,6 +48,8 @@ export const clearSession = (): void => {
     removeUserFromSession();
     removeTokenFromSession();
     removeTimestampFromSession();
+
+    Cookies.remove("auth-token");
   } catch (error) {
     console.error("Error al limpiar sesión:", error);
   }

@@ -208,7 +208,7 @@
 //     if (isLoggingOut.current) {
 //       return;
 //     }
-    
+
 //     isLoggingOut.current = true;
 
 //     try {
@@ -254,7 +254,7 @@
 import { clearSession } from "@/helpers/session.helpers";
 import { getCurrentUserService } from "@/services/user.service";
 import { User } from "@/types/user.types";
-import Cookies from 'js-cookie'; 
+import Cookies from "js-cookie";
 
 import {
   createContext,
@@ -303,7 +303,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         const now = Date.now();
         if (!userTimestamp || now - parseInt(userTimestamp) > 30000) {
-          console.log("Datos de usuario antiguos, se refrescarán automáticamente");
+          console.log(
+            "Datos de usuario antiguos, se refrescarán automáticamente"
+          );
         }
       } catch (error) {
         console.error("Error al parsear usuario:", error);
@@ -358,9 +360,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (newToken) {
       Cookies.set("auth-token", newToken, {
         expires: 7, // 7 días
-        secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
-        sameSite: 'strict', // Protección CSRF
-        path: '/'
+        secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
+        path: "/",
       });
     } else {
       Cookies.remove("auth-token");
@@ -394,7 +396,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const freshUserData = await getCurrentUserService(token, user.id);
-    
 
       const freshUserWithImage = freshUserData as User & {
         image?: string;
@@ -434,7 +435,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (isLoggingOut.current) {
       return;
     }
-    
+
     isLoggingOut.current = true;
 
     try {

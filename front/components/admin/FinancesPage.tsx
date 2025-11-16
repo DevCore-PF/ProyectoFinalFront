@@ -362,7 +362,7 @@ const FinancesPage = ({ onViewDetail }: FinancesDetailProps) => {
                         </td>
                         <td className="px-6 py-4">
                           <span className="px-2 py-1 bg-slate-700/50 text-slate-300 rounded text-sm">
-                            {item.type || item.plan}
+                            {/* {item.type || item.plan} */}
                           </span>
                         </td>
                         <td className="px-6 py-4">

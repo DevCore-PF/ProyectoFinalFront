@@ -5,8 +5,8 @@ import {
   HiCurrencyDollar,
   HiTrendingUp,
 } from "react-icons/hi";
-import UsersStatistics from "./UsersStatistics";
-import CoursesStatistics from "./CoursesStatistics";
+import UsersStatistics from "./adminUsers/UsersStatistics";
+import CoursesStatistics from "./adminCourses/CoursesStatistics";
 
 const Memberships = () => {
   return (

@@ -20,11 +20,11 @@ import {
   HiChevronDown,
   HiDownload,
 } from "react-icons/hi";
-import Loader from "../Loaders/Loader";
 import { downloadUsers } from "@/helpers/adminHandlers";
-import TinyLoader from "../Loaders/TinyLoader";
-import BanReasonModal from "./BanReasonModal";
 import { useAuth } from "@/context/UserContext";
+import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
+import BanReasonModal from "./BanReasonModal";
 
 type UserRoleType = "all" | UserRole;
 type UserStatus = "all" | "active" | "inactive";

@@ -29,11 +29,10 @@ import {
   HiLockOpen,
 } from "react-icons/hi";
 
-import Loader from "../Loaders/Loader";
-import TinyLoader from "../Loaders/TinyLoader";
+import Loader from "../../Loaders/Loader";
+import TinyLoader from "../../Loaders/TinyLoader";
 import { Course, CourseStatus, CourseVisibility } from "@/types/course.types";
-import RejectedReasonModal from "./RejectedReasonModal";
-import { approveCourseService } from "@/services/admin.services";
+import RejectedReasonModal from "../RejectedReasonModal";
 import { useAuth } from "@/context/UserContext";
 
 interface CourseValidationDetailsProps {
@@ -56,7 +55,7 @@ const CourseValidationDetails = ({
     new Set()
   );
   const [loadingVisibility, setLoadingVisibility] = useState(false);
-  const { changeVisibility } = useAdmin();
+  const { changeVisibility, approveCourse, rejectCourse } = useAdmin();
 
   const toggleLesson = (lessonId: string) => {
     setExpandedLessons((prev) => {
@@ -114,7 +113,6 @@ const CourseValidationDetails = ({
     };
     return config[difficulty as keyof typeof config] || config.PRINCIPIANTE;
   };
-  const { token } = useAuth();
 
   const handleApprove = async (courseId: string) => {
     toastConfirm(
@@ -122,11 +120,7 @@ const CourseValidationDetails = ({
       async () => {
         setLoadingApprove(true);
         try {
-          if (token) {
-            await approveCourseService(token, courseId);
-          }
-          await changeVisibility(courseId);
-          await refreshCourses();
+          await approveCourse(courseId);
           toastSuccess("Curso aprobado y publicado correctamente");
         } catch (error) {
           console.error(error);
@@ -155,11 +149,9 @@ const CourseValidationDetails = ({
       async () => {
         setLoadingReject(true);
         try {
-          // TODO: Implementar servicio de rechazo de curso
-          // await rejectCourse(courseId, rejectedReason);
+          await rejectCourse(courseId, rejectedReason);
           await refreshCourses();
           toastSuccess("Curso rechazado");
-          onBack();
         } catch (error) {
           console.error(error);
           toastError("Error al rechazar el curso");
@@ -405,8 +397,8 @@ const CourseValidationDetails = ({
                 <button
                   disabled={
                     loadingVisibility ||
-                    (course.status === CourseStatus.DRAFT ||
-                      course.status === CourseStatus.REJECT)
+                    course.status === CourseStatus.DRAFT ||
+                    course.status === CourseStatus.REJECT
                   }
                   title={
                     course.visibility === CourseVisibility.PRIVATE

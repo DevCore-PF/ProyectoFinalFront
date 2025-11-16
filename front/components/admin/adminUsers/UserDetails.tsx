@@ -33,8 +33,8 @@ import {
   toastError,
   toastSuccess,
 } from "@/helpers/alerts.helper";
-import TinyLoader from "../Loaders/TinyLoader";
 import { Course } from "@/types/course.types";
+import TinyLoader from "@/components/Loaders/TinyLoader";
 import BanReasonModal from "./BanReasonModal";
 
 interface UserDetailsProps {

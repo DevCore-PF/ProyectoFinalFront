@@ -367,9 +367,37 @@ export const approveCourseService = async (token: string, courseId: string) => {
       const error = await response.json();
       throw new Error(error.messege || "Error al aprobar curso");
     }
-   
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
+
+// /courses/{courseId}/decline
+export const rejectCourseService = async (
+  token: string,
+  courseId: string,
+  reason: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/decline`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason: reason }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al rechazar curso");
+    }
+    // const data = response.json();
+    // return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+

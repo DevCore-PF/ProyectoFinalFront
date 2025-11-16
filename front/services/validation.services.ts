@@ -6,6 +6,35 @@ import { ProfessorProfileResponse } from "@/types/professor.types";
 import { User } from "@/types/user.types";
 
 /**
+ * Obtiene el estado de aprobación del profesor desde el nuevo endpoint
+ */
+export const getProfessorApprovalStatusService = async (token: string): Promise<any> => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/status/my-approval`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(
+        error.message || "Error al obtener el estado de aprobación"
+      );
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error al obtener estado de aprobación:", error);
+    throw error;
+  }
+};
+
+/**
  * Obtiene el perfil completo del usuario incluyendo professorProfile
  */
 export const getUserWithProfileService = async (

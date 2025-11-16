@@ -1,13 +1,9 @@
 "use client";
-import CoursesPage from "@/components/admin/CoursesPage";
-import OverviewTab from "@/components/admin/OverviewTab";
-import UserDetails from "@/components/admin/UserDetails";
 import { useAdmin } from "@/context/AdminContext";
 import { TabType, ValidationRequest } from "@/types/admin.types";
 import { User } from "@/types/user.types";
 import Loader from "@/components/Loaders/Loader";
 import { useState } from "react";
-import UsersPage from "@/components/admin/UsersPage";
 import {
   HiUsers,
   HiBookOpen,
@@ -19,9 +15,20 @@ import {
   HiMail,
   HiUserCircle,
 } from "react-icons/hi";
-import CourseDetails from "@/components/admin/CourseDetails";
+import CourseDetails from "@/components/admin/adminCourses/CourseDetails";
 import { useAuth } from "@/context/UserContext";
 import ValidationsPage from "@/components/admin/ValidtionsPage";
+
+import { HiCash } from "react-icons/hi";
+import CourseValidationDetails from "@/components/admin/adminCourses/CourseValidationDetails";
+import FinancesPage from "@/components/admin/FinancesPage";
+import MembershipPlans from "@/components/Plans/MembershipPlans";
+import Memberships from "@/components/admin/Memberships";
+import AdminForm from "@/components/admin/AdminForm";
+import CoursesPage from "@/components/admin/adminCourses/CoursesPage";
+import UsersPage from "@/components/admin/adminUsers/UsersPage";
+import UserDetails from "@/components/admin/adminUsers/UserDetails";
+import ProfileValidationDetails from '@/components/admin/ProfileValidationDetails';
 
 type ValidationType =
   | "professor"
@@ -36,12 +43,14 @@ const AdminDashboard = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [selectedValidation, setSelectedValidation] =
     useState<ValidationRequest | null>(null);
+  const [showBar, setShowBar] = useState(true);
 
   const { user } = useAuth();
   const [detailView, setDetailView] = useState<{
     tab: TabType | null;
     id: string | null;
-  }>({ tab: null, id: null });
+    validationType?: "professor" | "course";
+  }>({ tab: null, id: null, validationType: undefined });
 
   // ============[ ESTADOS DE LOADING Y USER ]=============
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -50,14 +59,17 @@ const AdminDashboard = () => {
   const { fetchUserById } = useAdmin();
 
   // ============[ FUNCIÓN PARA ABRIR DETALLES CON FETCH ]=============
-  const openDetail = async (tab: TabType, id: string) => {
+  const openDetail = async (
+    tab: TabType,
+    id: string,
+    validationType?: "professor" | "course"
+  ) => {
     if (tab === "users") {
       setIsLoadingDetail(true);
       setDetailView({ tab, id });
-
+      setShowBar(false);
       try {
         const userData = await fetchUserById(id);
-
         setDetailUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -66,7 +78,8 @@ const AdminDashboard = () => {
         setIsLoadingDetail(false);
       }
     } else {
-      setDetailView({ tab, id });
+      setDetailView({ tab, id, validationType });
+      setShowBar(false);
     }
   };
 
@@ -75,6 +88,7 @@ const AdminDashboard = () => {
     setDetailView({ tab: null, id: null });
     setDetailUser(null);
     setIsLoadingDetail(false);
+    setShowBar(true);
   };
 
   const isShowingDetail = detailView.tab !== null;
@@ -103,122 +117,109 @@ const AdminDashboard = () => {
       statusConfig[status as keyof typeof statusConfig] || statusConfig.active
     );
   };
-
-  const handleApproveValidation = (id: string) => {
-    console.log("Aprobar solicitud:", id);
-  };
-
-  const handleRejectValidation = (id: string) => {
-    console.log("Rechazar solicitud:", id);
-  };
-
-  const handleSendAdminInvite = () => {
-    console.log("Enviar invitación de admin");
-  };
-
   // ============[ COMPONENTE DE ADMINS ]=============
-  const AdminsTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-font-light">
-          Gestión de Administradores
-        </h2>
-        <button
-          onClick={handleSendAdminInvite}
-          className="cursor-pointer bg-button hover:bg-button/80 text-font-light px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
-        >
-          <HiMail className="w-5 h-5" />
-          Enviar Invitación
-        </button>
-      </div>
+  // const AdminsTab = () => (
+  //   <div className="space-y-6">
+  //     <div className="flex items-center justify-between">
+  //       <h2 className="text-2xl font-bold text-font-light">
+  //         Gestión de Administradores
+  //       </h2>
+  //       <button
+  //         onClick={handleSendAdminInvite}
+  //         className="cursor-pointer bg-button hover:bg-button/80 text-font-light px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
+  //       >
+  //         <HiMail className="w-5 h-5" />
+  //         Enviar Invitación
+  //       </button>
+  //     </div>
 
-      <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-font-light mb-4">
-          Enviar Invitación de Admin
-        </h3>
-        <div className="space-y-4">
-          <div>
-            <label className="text-slate-400 text-sm mb-2 block">
-              Email del nuevo admin
-            </label>
-            <input
-              type="email"
-              placeholder="admin@devcore.com"
-              className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button"
-            />
-          </div>
-          <div>
-            <label className="text-slate-400 text-sm mb-2 block">
-              Mensaje personalizado (opcional)
-            </label>
-            <textarea
-              placeholder="Escribe un mensaje de bienvenida..."
-              rows={4}
-              className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button resize-none"
-            />
-          </div>
-          <button className="cursor-pointer w-full bg-button/80 hover:bg-button text-font-light py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-            <HiMail className="w-5 h-5" />
-            Enviar Invitación
-          </button>
-          <p className="text-slate-400 text-sm text-center">
-            Se enviará un link de registro profesional al email especificado
-          </p>
-        </div>
-      </div>
+  //     <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
+  //       <h3 className="text-lg font-semibold text-font-light mb-4">
+  //         Enviar Invitación de Admin
+  //       </h3>
+  //       <div className="space-y-4">
+  //         <div>
+  //           <label className="text-slate-400 text-sm mb-2 block">
+  //             Email del nuevo admin
+  //           </label>
+  //           <input
+  //             type="email"
+  //             placeholder="admin@devcore.com"
+  //             className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button"
+  //           />
+  //         </div>
+  //         <div>
+  //           <label className="text-slate-400 text-sm mb-2 block">
+  //             Mensaje personalizado (opcional)
+  //           </label>
+  //           <textarea
+  //             placeholder="Escribe un mensaje de bienvenida..."
+  //             rows={4}
+  //             className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button resize-none"
+  //           />
+  //         </div>
+  //         <button className="cursor-pointer w-full bg-button/80 hover:bg-button text-font-light py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+  //           <HiMail className="w-5 h-5" />
+  //           Enviar Invitación
+  //         </button>
+  //         <p className="text-slate-400 text-sm text-center">
+  //           Se enviará un link de registro profesional al email especificado
+  //         </p>
+  //       </div>
+  //     </div>
 
-      <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-font-light mb-4">
-          Administradores Actuales
-        </h3>
-        <div className="space-y-3">
-          {[
-            {
-              id: "1",
-              name: "Admin Principal",
-              email: "admin@devcore.com",
-              role: "Super Admin",
-              since: "2024-01-01",
-            },
-            {
-              id: "2",
-              name: "María Admin",
-              email: "maria.admin@devcore.com",
-              role: "Admin",
-              since: "2024-06-15",
-            },
-          ].map((admin) => (
-            <div
-              key={admin.id}
-              className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center text-font-light font-bold border border-slate-600">
-                  {admin.name.charAt(0)}
-                </div>
-                <div>
-                  <h4 className="text-font-light font-semibold">
-                    {admin.name}
-                  </h4>
-                  <p className="text-slate-400 text-sm">{admin.email}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-lg text-xs font-medium">
-                    {admin.role}
-                  </span>
-                  <p className="text-slate-500 text-xs mt-1">
-                    Desde {new Date(admin.since).toLocaleDateString("es-ES")}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  //     <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
+  //       <h3 className="text-lg font-semibold text-font-light mb-4">
+  //         Administradores Actuales
+  //       </h3>
+  //       <div className="space-y-3">
+  //         {[
+  //           {
+  //             id: "1",
+  //             name: "Admin Principal",
+  //             email: "admin@devcore.com",
+  //             role: "Super Admin",
+  //             since: "2024-01-01",
+  //           },
+  //           {
+  //             id: "2",
+  //             name: "María Admin",
+  //             email: "maria.admin@devcore.com",
+  //             role: "Admin",
+  //             since: "2024-06-15",
+  //           },
+  //         ].map((admin) => (
+  //           <div
+  //             key={admin.id}
+  //             className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg"
+  //           >
+  //             <div className="flex items-center gap-4">
+  //               <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center text-font-light font-bold border border-slate-600">
+  //                 {admin.name.charAt(0)}
+  //               </div>
+  //               <div>
+  //                 <h4 className="text-font-light font-semibold">
+  //                   {admin.name}
+  //                 </h4>
+  //                 <p className="text-slate-400 text-sm">{admin.email}</p>
+  //               </div>
+  //             </div>
+  //             <div className="flex items-center gap-4">
+  //               <div className="text-right">
+  //                 <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-lg text-xs font-medium">
+  //                   {admin.role}
+  //                 </span>
+  //                 <p className="text-slate-500 text-xs mt-1">
+  //                   Desde {new Date(admin.since).toLocaleDateString("es-ES")}
+  //                 </p>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <div className="min-h-screen p-6 md:p-10">
@@ -246,84 +247,86 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-        {/* ============[ NAVEGACIÓN DE TABS ]============= */}
-        <div className="bg-background2/40 border  border-slate-700/50 rounded-xl p-2 mb-6 overflow-x-auto">
-          <div className="flex gap-2 min-w-max justify-around">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "overview"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiChartBar className="w-5 h-5" />
-              Vista General
-            </button>
 
-            <button
-              onClick={() => setActiveTab("validations")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all relative ${
-                activeTab === "validations"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiShieldCheck className="w-5 h-5 text-accent-light" />
-              Validaciones
-            
-            </button>
+        {showBar && (
+          <>
+            {/* ============[ NAVEGACIÓN DE TABS ]============= */}
+            <div className="bg-background2/40 border  border-slate-700/50 rounded-xl p-2 mb-6 overflow-x-auto">
+              <div className="flex gap-2 min-w-max justify-around">
+                <button
+                  onClick={() => setActiveTab("validations")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all relative ${
+                    activeTab === "validations"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiShieldCheck className="w-5 h-5 text-accent-light" />
+                  Solicitudes
+                </button>
 
-            <button
-              onClick={() => setActiveTab("courses")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "courses"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiBookOpen className="w-5 h-5 text-accent-light" />
-              Cursos
-            </button>
+                <button
+                  onClick={() => setActiveTab("courses")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "courses"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiBookOpen className="w-5 h-5 text-accent-light" />
+                  Cursos
+                </button>
 
-            <button
-              onClick={() => setActiveTab("users")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "users"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiUsers className="w-5 h-5 text-accent-light" />
-              Users
-            </button>
+                <button
+                  onClick={() => setActiveTab("users")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "users"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiUsers className="w-5 h-5 text-accent-light" />
+                  Users
+                </button>
 
-            <button
-              onClick={() => setActiveTab("finances")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "finances"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiCurrencyDollar className="w-5 h-5 text-accent-light" />
-              Finanzas
-            </button>
+                <button
+                  onClick={() => setActiveTab("finances")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "finances"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiCurrencyDollar className="w-5 h-5 text-accent-light" />
+                  Finanzas
+                </button>
 
-            <button
-              onClick={() => setActiveTab("admins")}
-              className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "admins"
-                  ? "bg-button/50 text-font-light"
-                  : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-              }`}
-            >
-              <HiUserGroup className="w-5 h-5 text-accent-light" />
-              Admins
-            </button>
-          </div>
-        </div>
-
+                <button
+                  onClick={() => setActiveTab("admins")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "admins"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiUserGroup className="w-5 h-5 text-accent-light" />
+                  Admins
+                </button>
+                <button
+                  onClick={() => setActiveTab("overview")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "overview"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiCash className="w-5 h-5 text-accent-light" />
+                  Membresías
+                </button>
+              </div>
+            </div>
+          </>
+        )}
         {/* ============[ CONTENIDO DE LOS TABS ]============= */}
         <div className="relative overflow-hidden min-h-[600px]">
           {/* ============[ VISTA PRINCIPAL DE TABS ]============= */}
@@ -334,12 +337,18 @@ const AdminDashboard = () => {
                 : "translate-x-0 opacity-100"
             }`}
           >
-            {activeTab === "overview" && <OverviewTab />}
-            {activeTab === "admins" && <AdminsTab />}
-            {activeTab === "validations" && <ValidationsPage />}
-            {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
+            {/* finances */}
+            {activeTab === "overview" && <Memberships />}
+            {activeTab === "admins" && <AdminForm />}
+            {activeTab === "validations" && (
+              <ValidationsPage onViewDetail={openDetail} />
+            )}
             {activeTab === "courses" && (
               <CoursesPage onViewDetail={openDetail} />
+            )}
+            {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
+            {activeTab === "finances" && (
+              <FinancesPage onViewDetail={openDetail} />
             )}
           </div>
 
@@ -392,9 +401,27 @@ const AdminDashboard = () => {
                 ) : null}
               </>
             )}
-            {/* ============[ COURSE DETAIL ]============= */}
+            {/* ============[ COURSE DETAIL ]=============  */}
             {detailView.tab === "courses" && detailView.id && (
               <CourseDetails courseId={detailView.id} onBack={closeDetail} />
+            )}
+
+            {/* ============[ VALIDATION DETAIL ]=============  */}
+            {detailView.tab === "validations" && detailView.id && (
+              <>
+                {detailView.validationType === "professor" && (
+                  <ProfileValidationDetails
+                    profileId={detailView.id}
+                    onBack={closeDetail}
+                  />
+                )}
+                {detailView.validationType === "course" && (
+                  <CourseValidationDetails
+                    courseId={detailView.id}
+                    onBack={closeDetail}
+                  />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -444,7 +471,7 @@ const AdminDashboard = () => {
                 </pre>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              {/* <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => {
                     handleApproveValidation(selectedValidation.id);
@@ -463,7 +490,7 @@ const AdminDashboard = () => {
                 >
                   Rechazar
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

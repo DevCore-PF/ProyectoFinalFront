@@ -13,6 +13,7 @@ export const getAllUsersService = async () => {
       throw new Error(error.message || "Error al obtener usuarios");
     }
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.log(error);
@@ -76,7 +77,11 @@ export const getUserByIdService = async (userId: string) => {
   }
 };
 
-export const deactivateUserService = async (userId: string, token: string) => {
+export const deactivateUserService = async (
+  userId: string,
+  token: string,
+  banReason: string
+) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "DELETE",
@@ -84,6 +89,7 @@ export const deactivateUserService = async (userId: string, token: string) => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ reason: banReason }),
     });
     if (!response.ok) {
       const error = await response.json();
@@ -245,6 +251,8 @@ export const getAllCoursesAdminService = async (
     }
 
     const data = await response.json();
+    console.log("ESTO SON MIS CURSOS ", data);
+
     return data;
   } catch (error) {
     console.log(error);
@@ -252,8 +260,10 @@ export const getAllCoursesAdminService = async (
   }
 };
 
-
-export const getProfessorCourses = async (token: string, userId: string) => {
+export const getProfessorByIdService = async (
+  token: string,
+  userId: string
+) => {
   try {
     const response = await fetch(`${API_URL}/profiles/${userId}`, {
       headers: {
@@ -262,7 +272,7 @@ export const getProfessorCourses = async (token: string, userId: string) => {
     });
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Error al obtener cursos del profesor");
+      throw new Error(error.message || "Error al obtener perfil del profesor");
     }
     const data = await response.json();
     console.log("esta es la respuesta de cursos del profe", data);
@@ -272,3 +282,122 @@ export const getProfessorCourses = async (token: string, userId: string) => {
     throw error;
   }
 };
+
+export const getAllProfessorProfilesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/profesor`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener pefiles de profesor");
+    }
+
+    const data = await response.json();
+    console.log("esta es la data de profile", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const approveProfileService = async (
+  token: string,
+  profileId: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/aproved/${profileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al aprovar perfil");
+    }
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const rejectProfileService = async (
+  token: string,
+  professorId: string,
+  reason: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/decline/${professorId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason: reason }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al rechazar perfil");
+    }
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const approveCourseService = async (token: string, courseId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/aproved`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al aprobar curso");
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// /courses/{courseId}/decline
+export const rejectCourseService = async (
+  token: string,
+  courseId: string,
+  reason: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/courses/${courseId}/decline`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason: reason }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.messege || "Error al rechazar curso");
+    }
+    // const data = response.json();
+    // return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+

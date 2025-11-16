@@ -39,7 +39,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ className = '' }) => 
 
   return (
     <div className={`rounded-xl p-6 text-white font-body ${className}`} style={{ backgroundColor: '#3F4273' }}>
-      <h2 className="text-xl font-medium mb-6 text-center">Ajustes de Perfil</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-slate-200 mb-6 text-center">Ajustes de Perfil</h2>
       
       <div className="space-y-3">
         {settingsOptions.map((option) => (

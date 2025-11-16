@@ -20,9 +20,11 @@ import {
   HiChevronDown,
   HiDownload,
 } from "react-icons/hi";
-import Loader from "../Loaders/Loader";
 import { downloadUsers } from "@/helpers/adminHandlers";
-import TinyLoader from "../Loaders/TinyLoader";
+import { useAuth } from "@/context/UserContext";
+import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
+import BanReasonModal from "./BanReasonModal";
 
 type UserRoleType = "all" | UserRole;
 type UserStatus = "all" | "active" | "inactive";
@@ -54,7 +56,13 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [imageError, setImageError] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-
+  const [loadingGroupBan, setLoadingGroupBan] = useState(false);
+  const [loadingGroupActivate, setLoadingGroupActivate] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [banReason, setBanReason] = useState("");
+  const [userToBan, setUserToBan] = useState<string | null>(null);
+  const [showGroupBanModal, setShowGroupBanModal] = useState(false);
+  const { user: contextUser } = useAuth();
   // Cargar usuarios cuando cambia el filtro de estado
   useEffect(() => {
     const loadUsers = async () => {
@@ -180,26 +188,15 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   };
 
   const handleBanUser = async (userId: string) => {
-    toastConfirm(
-      "Banear usuario",
-      async () => {
-        setLoadingUserId(userId);
-        try {
-          await deactivateUser(userId);
-          toastSuccess("Usuario baneado");
-        } catch (error) {
-          console.log(error);
-          throw error;
-        } finally {
-          setLoadingUserId(null);
-        }
-      },
-      () => {}
-    );
+    setUserToBan(userId);
+    setShowBanModal(true);
+  };
+  const handleGroupBan = () => {
+    setShowGroupBanModal(true);
   };
   const handleActivateUser = async (userId: string) => {
     toastConfirm(
-      "Activar usuario",
+      "Reactivar usuario",
       async () => {
         setLoadingUserId(userId);
         try {
@@ -215,38 +212,6 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
       () => {}
     );
   };
-
-  const [loadingGroupBan, setLoadingGroupBan] = useState(false);
-
-  const deactivateMultipleUsers = async (userIds: string[]) => {
-    const results = {
-      success: [] as string[],
-      errors: [] as { userId: string; error: string }[],
-    };
-    toastConfirm(
-      "Banear seleccionados",
-      async () => {
-        setLoadingGroupBan(true);
-        for (const userId of userIds) {
-          try {
-            await deactivateUser(userId);
-            results.success.push(userId);
-          } catch (error) {
-            results.errors.push({
-              userId,
-              error:
-                error instanceof Error ? error.message : "Error desconocido",
-            });
-          } finally {
-            setLoadingGroupBan(false);
-          }
-        }
-        toastSuccess("Usuarios baneados");
-      },
-      () => {}
-    );
-  };
-  const [loadingGroupActivate, setLoadingGroupActivate] = useState(false);
 
   const activateMultipleUsers = async (userIds: string[]) => {
     const results = {
@@ -277,6 +242,80 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     );
   };
 
+  const confirmBan = () => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+    if (banReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+    if (!userToBan) return;
+
+    setShowBanModal(false);
+
+    toastConfirm(
+      "Banear usuario",
+      async () => {
+        setLoadingUserId(userToBan);
+        try {
+          await deactivateUser(userToBan, banReason);
+          toastSuccess("Usuario baneado");
+          setBanReason("");
+          setUserToBan(null);
+        } catch (error) {
+          console.log(error);
+          throw error;
+        } finally {
+          setLoadingUserId(null);
+        }
+      },
+      () => {
+        setBanReason("");
+        setUserToBan(null);
+      }
+    );
+  };
+  const confirmGroupBan = () => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+
+    setShowGroupBanModal(false);
+
+    toastConfirm(
+      "Banear seleccionados",
+      async () => {
+        setLoadingGroupBan(true);
+        const results = {
+          success: [] as string[],
+          errors: [] as { userId: string; error: string }[],
+        };
+
+        for (const userId of selectedUsers) {
+          try {
+            await deactivateUser(userId, banReason);
+            results.success.push(userId);
+          } catch (error) {
+            results.errors.push({
+              userId,
+              error:
+                error instanceof Error ? error.message : "Error desconocido",
+            });
+          }
+        }
+
+        toastSuccess(`${results.success.length} usuarios baneados`);
+        setBanReason("");
+        setLoadingGroupBan(false);
+      },
+      () => {
+        setBanReason("");
+      }
+    );
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -425,8 +464,9 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoading && (
-          <div className="flex justify-center items-center py-16">
-            <Loader />
+          <div className="flex flex-col justify-center items-center py-16">
+            <Loader size="medium" />
+            <p className="text-slate-400">Cargando usuarios...</p>
           </div>
         )}
 
@@ -460,14 +500,14 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       {selectedUsers.length} seleccionados
                     </span>
                     <button
-                      onClick={() => deactivateMultipleUsers(selectedUsers)}
+                      onClick={handleGroupBan}
                       disabled={loadingGroupBan}
                       className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200  px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-80 disabled:cursor-not-allowed"
                     >
                       {loadingGroupBan ? (
                         <div className="flex gap-2">
                           <TinyLoader />
-                          Banear seleccionados
+                          Baneando seleccionados
                         </div>
                       ) : (
                         <>Banear seleccionados</>
@@ -483,7 +523,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       {loadingGroupActivate ? (
                         <div className="flex gap-2">
                           <TinyLoader />
-                          Activar seleccionados
+                          Activando seleccionados
                         </div>
                       ) : (
                         <>Activar seleccionados</>
@@ -682,7 +722,8 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                             >
                               <HiEye className="w-4 h-4" />
                             </button>
-                            {user.isActive ? (
+                            {user.id ===
+                            contextUser?.id ? null : user.isActive ? (
                               <button
                                 onClick={() => handleBanUser(user.id)}
                                 disabled={loadingUserId === user.id}
@@ -751,6 +792,32 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
           </>
         )}
       </div>
+
+      {showBanModal && (
+        <BanReasonModal
+          banReason={banReason}
+          setBanReason={setBanReason}
+          onCancel={() => {
+            setShowBanModal(false);
+            setBanReason("");
+            setUserToBan(null);
+          }}
+          onConfirm={confirmBan}
+        />
+      )}
+      {showGroupBanModal && (
+        <BanReasonModal
+          banReason={banReason}
+          setBanReason={setBanReason}
+          onCancel={() => {
+            setShowGroupBanModal(false);
+            setBanReason("");
+          }}
+          onConfirm={confirmGroupBan}
+          isMultiple={true}
+          userCount={selectedUsers.length}
+        />
+      )}
     </div>
   );
 };

@@ -28,7 +28,6 @@ const TeacherDashboardPage = () => {
     isRejected,
     submitValidation,
     isSubmitting,
-    isApproved,
   } = useTeacherValidation();
 
   const {
@@ -43,13 +42,6 @@ const TeacherDashboardPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'created' | 'purchased'>('created');
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (!user || user.role !== "teacher") {
-        router.push("/");
-      }
-    }
-  }, [user, isLoading, router]);
 
   const handleViewCourseDetails = (courseId: string) => {
     console.log(`Ver detalles del curso: ${courseId}`);

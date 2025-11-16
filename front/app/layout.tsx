@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/UserContext";
 import { CartProvider } from "@/context/CartContext";
 import { EB_Garamond } from "next/font/google";
+import ModalOnboarding from "@/components/ModalOnboardign";
 
 const ebGaramond = EB_Garamond({
   variable: "--font-logo",
@@ -60,7 +61,9 @@ export default function RootLayout({
           }}
         />{" "}
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

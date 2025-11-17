@@ -15,12 +15,9 @@ const FAQ = () => {
   return (
     <div className="min-h-screen py-12 sm:py-15 px-4 sm:px-8 lg:px-16">
       <div className="max-w-4xl mx-auto">
-<<<<<<< HEAD
-        <div className="text-center mb-8 sm:mb-12">          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-=======
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-font-light mb-4">
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
+        <div className="text-center mb-8 sm:mb-12">
+          {" "}
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             Preguntas frecuentes
           </h2>
           <p className="text-slate-300 text-sm md:text-base">
@@ -34,7 +31,7 @@ const FAQ = () => {
             , estaremos encantados de ayudarte.
           </p>
         </div>
-
+        <div />
         <div className="space-y-4 mb-8">
           {faqs.map((faq, index) => (
             <div

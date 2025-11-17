@@ -9,6 +9,7 @@ import {
   HiUserCircle,
   HiCalendar,
   HiCash,
+  HiChevronDown,
 } from "react-icons/hi";
 import Loader from "@/components/Loaders/Loader";
 import {
@@ -31,9 +32,11 @@ interface PayoutBatch {
   professorId: string;
   referenceNumber?: string;
 }
+
 interface PayoutBatchManagementProps {
   onCountChange: (count: number) => void;
 }
+
 export default function PayoutBatchManagement({
   onCountChange,
 }: PayoutBatchManagementProps) {
@@ -43,6 +46,9 @@ export default function PayoutBatchManagement({
   const [markingAsPaid, setMarkingAsPaid] = useState<string | null>(null);
   const [referenceNumber, setReferenceNumber] = useState("");
   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
+  const [expandedProfessors, setExpandedProfessors] = useState<Set<string>>(
+    new Set()
+  );
 
   // Función para agrupar por profesor
   const groupByProfessor = (batches: PayoutBatch[]) => {
@@ -54,6 +60,19 @@ export default function PayoutBatchManagement({
       grouped[professorName].push(batch);
       return grouped;
     }, {} as Record<string, PayoutBatch[]>);
+  };
+
+  // Función para toggle el estado de expansión
+  const toggleProfessor = (professorName: string) => {
+    setExpandedProfessors((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(professorName)) {
+        newSet.delete(professorName);
+      } else {
+        newSet.add(professorName);
+      }
+      return newSet;
+    });
   };
 
   useEffect(() => {
@@ -144,7 +163,7 @@ export default function PayoutBatchManagement({
       <div className="space-y-8">
         {Object.entries(groupedBatches).map(
           ([professorName, professorBatches]) => {
-            // Calcular totales por profesor
+            const isExpanded = expandedProfessors.has(professorName);
             const totalAmount = professorBatches.reduce(
               (sum, batch) => sum + parseFloat(batch.totalAmount),
               0
@@ -155,13 +174,16 @@ export default function PayoutBatchManagement({
 
             return (
               <div key={professorName} className="space-y-4">
-                {/* Header del profesor */}
-                <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
+                {/* Header del profesor - Clickeable */}
+                <button
+                  onClick={() => toggleProfessor(professorName)}
+                  className="w-full flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-700/50 hover:bg-slate-800/50 transition-all cursor-pointer"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center border border-purple-500/30">
                       <HiUserCircle className="w-6 h-6 text-purple-300" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="text-lg font-semibold text-font-light">
                         {professorName}
                       </h3>
@@ -177,18 +199,31 @@ export default function PayoutBatchManagement({
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-slate-400 text-xs mb-1">
-                      Total acumulado
-                    </p>
-                    <p className="text-xl font-bold text-emerald-300">
-                      ${totalAmount.toFixed(2)}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-slate-400 text-xs mb-1">
+                        Total acumulado
+                      </p>
+                      <p className="text-xl font-bold text-emerald-300">
+                        ${totalAmount.toFixed(2)}
+                      </p>
+                    </div>
+                    <HiChevronDown
+                      className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
                   </div>
-                </div>
+                </button>
 
-                {/* Lista de lotes del profesor */}
-                <div className="grid grid-cols-1 gap-4 pl-4">
+                {/* Lista de lotes del profesor - Colapsable */}
+                <div
+                  className={`grid grid-cols-1 gap-4 pl-4 transition-all duration-300 overflow-hidden ${
+                    isExpanded
+                      ? "max-h-[5000px] opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
                   {professorBatches.map((batch) => (
                     <div
                       key={batch.payoutId}

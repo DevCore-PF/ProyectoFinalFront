@@ -17,7 +17,6 @@ export const getAllPublicCoursesService = async (): Promise<Course[]> => {
     }
 
     const response = await data.json();
-    console.log("Cursos públicos obtenidos: ", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos públicos: ", error);
@@ -40,7 +39,6 @@ export const getAllCoursesService = async (): Promise<Course[]> => {
     }
 
     const response = await data.json();
-    console.log("Todos los cursos obtenidos: ", response);
     return response;
   } catch (error) {
     console.error("Error con la lista de cursos: ", error);

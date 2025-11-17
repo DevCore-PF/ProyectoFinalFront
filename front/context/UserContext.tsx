@@ -158,14 +158,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshUser = async () => {
     if (!token || !user?.id) {
-      console.warn("No hay token o user para refrescar");
+      // No token or user to refresh
       return;
     }
 
     try {
-      console.log("🔄 Refrescando datos del usuario...");
+      // Refreshing user data
       const freshUserData = await getCurrentUserService(token, user.id);
-      console.log("✅ Datos frescos obtenidos:", freshUserData);
 
       const freshUserWithImage = freshUserData as User & {
         image?: string;
@@ -182,7 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
 
       setUser(normalizedUserData);
-      console.log("✅ Usuario actualizado en contexto y sessionStorage");
+      // User updated in context and sessionStorage
     } catch (error) {
       console.error("Error al refrescar usuario:", error);
       if (error instanceof Error) {
@@ -194,7 +193,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           errorMessage.includes("not found") ||
           errorMessage.includes("error obteniendo usuario")
         ) {
-          console.log("🚨 Usuario no encontrado. Cerrando sesión...");
+          // User not found, logging out
           logout();
           return;
         }

@@ -28,7 +28,7 @@ export const purchasedCoursesService = {
   // Obtener cursos comprados del usuario autenticado
   async getMyPurchasedCourses(token: string): Promise<PurchasedCourse[]> {
     try {
-      console.log('🛒 Obteniendo cursos comprados...');
+      // Fetching purchased courses
       
       const response = await fetch(`${API_URL}/users/me/purchased-courses`, {
         method: 'GET',
@@ -38,7 +38,7 @@ export const purchasedCoursesService = {
         },
       });
 
-      console.log('📡 Respuesta cursos comprados:', response.status, response.statusText);
+      // Response received
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -61,7 +61,7 @@ export const purchasedCoursesService = {
       }
 
       const result = await response.json();
-      console.log('✅ Cursos comprados obtenidos:', result);
+      // Purchased courses fetched successfully
       return result;
     } catch (error) {
       console.error('💥 Error getMyPurchasedCourses:', error);
@@ -72,7 +72,7 @@ export const purchasedCoursesService = {
   // Obtener lecciones completadas de un curso específico
   async getCompletedLessons(token: string, courseId: string): Promise<{ courseId: string, totalCompleted: number, lessons: CourseLesson[] }> {
     try {
-      console.log('📚 Obteniendo lecciones completadas para el curso:', courseId);
+      // Fetching completed lessons
       
       const response = await fetch(`${API_URL}/lesson-progress/completed/${courseId}`, {
         method: 'GET',
@@ -82,7 +82,7 @@ export const purchasedCoursesService = {
         },
       });
 
-      console.log('📡 Respuesta lecciones completadas:', response.status, response.statusText);
+      // Response received
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -101,7 +101,7 @@ export const purchasedCoursesService = {
       }
 
       const result = await response.json();
-      console.log('✅ Lecciones completadas obtenidas:', result);
+      // Completed lessons fetched successfully
       return result;
     } catch (error) {
       console.error('💥 Error getCompletedLessons:', error);
@@ -112,7 +112,7 @@ export const purchasedCoursesService = {
   // Obtener todas las lecciones de un curso (para calcular total)
   async getCourseLessons(token: string, courseId: string): Promise<CourseLesson[]> {
     try {
-      console.log('📝 Obteniendo todas las lecciones del curso:', courseId);
+      // Fetching course lessons
       
       const response = await fetch(`${API_URL}/courses/${courseId}`, {
         method: 'GET',
@@ -122,7 +122,7 @@ export const purchasedCoursesService = {
         },
       });
 
-      console.log('📡 Respuesta curso completo:', response.status, response.statusText);
+      // Response received
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -131,7 +131,7 @@ export const purchasedCoursesService = {
       }
 
       const courseData = await response.json();
-      console.log('✅ Información del curso obtenida:', courseData);
+      // Course information fetched successfully
       
       // Retornar solo las lecciones formateadas
       return (courseData.lessons || []).map((lesson: any) => ({

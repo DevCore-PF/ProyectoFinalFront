@@ -202,7 +202,6 @@ export const getCourseFeedbackService = async (
       throw new Error(error.message || "Error al obtener feedback");
     }
     const data = await response.json();
-    console.log("estos son mis feedbacks", data);
 
     return data;
   } catch (error) {

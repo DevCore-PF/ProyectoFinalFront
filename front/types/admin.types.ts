@@ -171,7 +171,8 @@ export interface CourseReview {
   user: {
     id: string;
     name: string;
-    image: string | null;
+    image?: string | null;
+    isActive: boolean;
   };
 }
 export interface CourseFilters {

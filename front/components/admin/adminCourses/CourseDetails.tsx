@@ -37,6 +37,8 @@ interface CourseDetailsProps {
 export interface UserFeedback {
   id: string;
   name: string;
+  image?: string | null;
+  isActive: boolean;
 }
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   const {
@@ -60,7 +62,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     new Set()
   );
 
-  const [bannedUsers, setBannedUsers] = useState<Set<string>>(new Set());
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
     if (foundCourse) {
@@ -219,7 +220,8 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     setShowBanModal(true);
   };
 
-  const confirmBan = (user: UserFeedback) => {
+  const confirmBan = () => {
+    if (!currentUser) return;
     if (!banReason.trim()) {
       toastError("Debes proporcionar un motivo para el baneo");
       return;
@@ -236,19 +238,30 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       async () => {
         setBanUnbanUserLoading(true);
         try {
-          await deactivateUser(user.id, banReason);
-          setBannedUsers((prev) => new Set([...prev, user.id]));
+          await deactivateUser(currentUser.id, banReason);
+          setLocalFeedbacks((prevFeedbacks) =>
+            prevFeedbacks.map((feedback) =>
+              feedback.user.id === currentUser.id
+                ? {
+                    ...feedback,
+                    user: { ...feedback.user, isActive: false },
+                  }
+                : feedback
+            )
+          );
           toastSuccess("Usuario baneado");
           setBanReason("");
-          setCurrentUser(user);
         } catch (error) {
           console.error(error);
+          toastError("Error al banear usuario");
         } finally {
           setBanUnbanUserLoading(false);
+          setCurrentUser(null);
         }
       },
       () => {
         setBanReason("");
+        setCurrentUser(null);
       }
     );
   };
@@ -733,17 +746,16 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                             {isToxic && (
                               <button
                                 onClick={() => {
-                                  if (!bannedUsers.has(f.user.id)) {
+                                  if (f.user.isActive) {
                                     setCurrentUser(f.user);
                                     setShowBanModal(true);
                                   }
                                 }}
                                 disabled={
-                                  banUnbanUserLoading ||
-                                  bannedUsers.has(f.user.id)
+                                  banUnbanUserLoading || !f.user.isActive
                                 }
                                 className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 border px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-                                  bannedUsers.has(f.user.id)
+                                  !f.user.isActive
                                     ? "border-slate-500/50 text-slate-400"
                                     : "hover:bg-slate-700/90 border-amber-300/50 text-amber-300"
                                 }`}
@@ -754,7 +766,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                                     <TinyLoader />
                                     Baneando usuario
                                   </div>
-                                ) : bannedUsers.has(f.user.id) ? (
+                                ) : !f.user.isActive ? (
                                   <>
                                     <HiBan className="w-4 h-4" />
                                     Usuario baneado
@@ -783,7 +795,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                         setBanReason("");
                         setCurrentUser(null);
                       }}
-                      onConfirm={() => confirmBan(currentUser)}
+                      onConfirm={confirmBan}
                     />
                   )}
                 </>

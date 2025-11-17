@@ -13,10 +13,9 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen py-15 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen py-12 sm:py-15 px-4 sm:px-8 lg:px-16">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+        <div className="text-center mb-8 sm:mb-12">          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             Preguntas frecuentes
           </h2>
           <p className="text-slate-300 text-sm md:text-base">

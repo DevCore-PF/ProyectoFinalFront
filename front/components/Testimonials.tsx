@@ -4,9 +4,9 @@ import Image from "next/image";
 
 const Testimonials = () => {
   return (
-    <div className="min-h-screen py-20 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen py-12 sm:py-20 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-12 gap-4">
           <div>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
               Testimonios

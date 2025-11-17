@@ -10,9 +10,9 @@ import { IoArrowForward } from "react-icons/io5";
 
 const CoursesGrid = () => {
   return (
-    <div className="min-h-screen p-20" id="courses">
+    <div className="min-h-screen py-12 px-4 sm:px-8 lg:px-20" id="courses">
       <div className="max-w-7xl mx-auto">
-        <div className=" mb-12">
+        <div className="mb-8 sm:mb-12">
           <h2 className="text-2xl md:text-5xl font-bold text-font-light mb-4">
             Explora Nuestros Cursos
           </h2>
@@ -75,15 +75,15 @@ const CoursesGrid = () => {
         </div>
         <div
           className="flex justify-center items-center mt-10 bg-button/80 hover:bg-button
-             transition-all duration-300 rounded-lg group mx-auto w-1/6"
+             transition-all duration-300 rounded-lg group mx-auto w-full sm:w-auto max-w-xs sm:max-w-none"
         >
-          <p className="text-slate-300 text-lg p-[11px] rounded-l-lg">
+          <p className="text-slate-300 text-base sm:text-lg p-2 sm:p-[11px] rounded-l-lg">
             Ver más cursos
           </p>
 
-          <Link href="/courses" className="p-[15px] rounded-r-lg">
+          <Link href="/courses" className="p-3 sm:p-[15px] rounded-r-lg">
             <IoArrowForward
-              className="text-slate-300 text-xl -rotate-45 
+              className="text-slate-300 text-lg sm:text-xl -rotate-45 
                                group-hover:rotate-0 transition-transform duration-200"
             />
           </Link>

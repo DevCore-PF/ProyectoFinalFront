@@ -2,9 +2,9 @@ import { featuresChooseUs } from "@/helpers/moks";
 
 const WhyChooseUs = () => {
   return (
-    <div className="min-h-screen p-8 md:p-25">
+    <div className="min-h-screen py-12 px-4 sm:px-8 lg:px-20">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 sm:mb-12 gap-4 sm:gap-6">
           <div>
             <h2 className="text-3xl md:text-5xl font-bold text-font-light mb-4">
               Por qué elegir DevCore?

@@ -43,7 +43,7 @@ const EmailSubscription = () => {
         <div className="absolute inset-0 bg-linear-to-br from-button/10 to-purple-500/10 rounded-2xl blur-2xl group-hover:from-button/20 group-hover:to-purple-500/10 transition-all duration-500"></div>
         <div className="relative bg-slate-800/60 backdrop-blur-sm border border-border-light/50 rounded-2xl p-6 hover:border-slate-600/70 transition-all duration-300">
           <div className="flex flex-col">
-            <h3 className="text-white font-semibold text-xl mb-2 text-center">
+            <h3 className="text-font-light font-semibold text-xl mb-2 text-center">
               Ofertas exclusivas
             </h3>
             <p className="text-slate-300 text-sm mb-4 text-center">
@@ -58,7 +58,7 @@ const EmailSubscription = () => {
                 type="email"
                 placeholder="Ingresa tu email"
                 {...formik.getFieldProps("email")}
-                className={`w-1/2 h-11 mb-0 rounded-lg bg-slate-900/60 backdrop-blur-sm border px-4 text-sm text-white placeholder:text-slate-400 focus:outline-none transition-all ${
+                className={`w-1/2 h-11 mb-0 rounded-lg bg-slate-900/60 backdrop-blur-sm border px-4 text-sm text-font-light placeholder:text-slate-400 focus:outline-none transition-all ${
                   showErrors && formik.errors.email
                     ? "border-amber-400/50 focus:border-amber-500/70 focus:ring-1 focus:ring-amber-500/50"
                     : "border-slate-700/50 focus:border-button/50 focus:ring-1 focus:ring-button/50"
@@ -68,7 +68,7 @@ const EmailSubscription = () => {
               <button
                 type="submit"
                 disabled={isSubscribing}
-                className="w-1/4 h-10 text-sm  bg-button hover:bg-[#6d3dc4] text-white font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-102 active:scale-95 hover:shadow-lg hover:shadow-button/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-1/4 h-10 text-sm  bg-button hover:bg-[#6d3dc4] text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-102 active:scale-95 hover:shadow-lg hover:shadow-button/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isSubscribing ? "Suscribiendo..." : "Suscribirme"}
               </button>

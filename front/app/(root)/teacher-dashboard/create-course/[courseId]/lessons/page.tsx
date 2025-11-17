@@ -167,6 +167,22 @@ const CreateLessonPage = () => {
     }
   };
 
+  const goToPreviousLesson = () => {
+    if (currentLessonIndex > 0) {
+      // Guardar la lección actual antes de retroceder
+      const updatedLessons = [...lessons];
+      updatedLessons[currentLessonIndex] = {
+        ...updatedLessons[currentLessonIndex],
+        ...formik.values,
+      };
+      setLessons(updatedLessons);
+      
+      // Ir a la lección anterior
+      setCurrentLessonIndex(currentLessonIndex - 1);
+      toastSuccess(`Volviendo a Lección ${currentLessonIndex}...`);
+    }
+  };
+
   const handleCancel = () => {
     if (formik.dirty || currentLessonIndex > 0) {
       const hasUnsavedChanges =
@@ -329,15 +345,30 @@ const CreateLessonPage = () => {
                   <HiCheckCircle className="w-5 h-5 text-green-400" />
                   Lecciones completadas ({currentLessonIndex})
                 </h3>
+                <p className="text-sm text-gray-400 mb-3">
+                  Haz clic en cualquier lección para revisarla o editarla
+                </p>
                 <div className="space-y-3">
                   {lessons.slice(0, currentLessonIndex).map((lesson, index) => (
-                    <div
+                    <button
                       key={lesson.id}
-                      className="flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg"
+                      type="button"
+                      onClick={() => {
+                        // Guardar cambios actuales antes de cambiar
+                        const updatedLessons = [...lessons];
+                        updatedLessons[currentLessonIndex] = {
+                          ...updatedLessons[currentLessonIndex],
+                          ...formik.values,
+                        };
+                        setLessons(updatedLessons);
+                        setCurrentLessonIndex(index);
+                        toastSuccess(`Editando Lección ${index + 1}...`);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg hover:bg-green-500/20 hover:border-green-500/30 transition-all duration-200 cursor-pointer group"
                     >
                       <HiCheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-gray-200 font-medium">
+                      <div className="flex-1 text-left">
+                        <p className="text-gray-200 font-medium group-hover:text-green-300 transition-colors">
                           Lección {index + 1}: {lesson.title}
                         </p>
                         <p className="text-gray-400 text-sm">
@@ -345,7 +376,8 @@ const CreateLessonPage = () => {
                           PDF(s)
                         </p>
                       </div>
-                    </div>
+                      <HiArrowLeft className="w-4 h-4 text-gray-500 group-hover:text-green-400 transition-colors rotate-180" />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -415,7 +447,7 @@ const CreateLessonPage = () => {
                   </label>
                   <p className="text-gray-500 text-sm mb-4">
                     Formatos permitidos: MP4, MOV, AVI, WEBM •{" "}
-                    <span className="text-red-400 font-medium">
+                    <span className="text-amber-400 font-medium">
                       Mínimo 1 video
                     </span>{" "}
                     • Máximo 3 videos
@@ -425,7 +457,9 @@ const CreateLessonPage = () => {
                   <div className="bg-accent-medium/10 border border-accent-medium/30 rounded-lg p-3 mb-4">
                     <div className="flex items-start gap-2">
                       <div className="w-4 h-4 bg-accent-medium rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                        <span className="text-xs text-white font-bold">💡</span>
+                        <span className="text-xs text-font-light font-bold">
+                          💡
+                        </span>
                       </div>
                       <div className="text-sm">
                         <p className="text-accent-light font-medium mb-1">
@@ -508,7 +542,7 @@ const CreateLessonPage = () => {
                           <button
                             type="button"
                             onClick={() => removeFile(index, "videos")}
-                            className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-amber-400 transition-colors"
                           >
                             <HiX className="w-4 h-4" />
                           </button>
@@ -535,7 +569,7 @@ const CreateLessonPage = () => {
                   </label>
                   <p className="text-gray-500 text-sm mb-4">
                     Sube documentos, presentaciones o recursos adicionales •{" "}
-                    <span className="text-red-400 font-medium">
+                    <span className="text-amber-400 font-medium">
                       Mínimo 1 PDF
                     </span>{" "}
                     • Máximo 3 PDFs
@@ -545,7 +579,9 @@ const CreateLessonPage = () => {
                   <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
                     <div className="flex items-start gap-2">
                       <div className="w-4 h-4 bg-green-400 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                        <span className="text-xs text-white font-bold">📄</span>
+                        <span className="text-xs text-font-light font-bold">
+                          📄
+                        </span>
                       </div>
                       <div className="text-sm">
                         <p className="text-green-300 font-medium mb-1">
@@ -597,8 +633,8 @@ const CreateLessonPage = () => {
                     />
 
                     <div className="flex flex-col items-center gap-3">
-                      <div className="p-3 bg-red-500/20 rounded-xl">
-                        <HiDocument className="w-8 h-8 text-red-400" />
+                      <div className="p-3 bg-amber-500/20 rounded-xl">
+                        <HiDocument className="w-8 h-8 text-amber-400" />
                       </div>
                       <div>
                         <p className="text-gray-200 font-medium">
@@ -620,7 +656,7 @@ const CreateLessonPage = () => {
                           key={index}
                           className="flex items-center gap-3 p-3 bg-background2 rounded-lg"
                         >
-                          <HiDocument className="w-5 h-5 text-red-400 flex-shrink-0" />
+                          <HiDocument className="w-5 h-5 text-amber-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-gray-200 font-medium truncate">
                               {file.name}
@@ -632,7 +668,7 @@ const CreateLessonPage = () => {
                           <button
                             type="button"
                             onClick={() => removeFile(index, "pdfs")}
-                            className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-amber-400 transition-colors"
                           >
                             <HiX className="w-4 h-4" />
                           </button>
@@ -697,13 +733,27 @@ const CreateLessonPage = () => {
 
                 {/* Botones */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    className="text-gray-400 hover:text-gray-200 font-medium transition-colors w-full sm:w-auto"
-                  >
-                    Cancelar
-                  </button>
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={handleCancel}
+                      className="text-gray-400 hover:text-gray-200 font-medium transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    
+                    {/* Botón para volver a lección anterior */}
+                    {currentLessonIndex > 0 && (
+                      <button
+                        type="button"
+                        onClick={goToPreviousLesson}
+                        className="flex items-center gap-2 px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-200 font-medium rounded-md hover:bg-slate-600/50 hover:border-slate-500 transition-all duration-200 cursor-pointer"
+                      >
+                        <HiArrowLeft className="w-4 h-4" />
+                        Lección anterior
+                      </button>
+                    )}
+                  </div>
 
                   <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                     {/* Botón Agregar otra lección - Solo mostrar si no es la última lección y no hemos llegado al máximo */}

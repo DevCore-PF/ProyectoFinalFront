@@ -1,5 +1,10 @@
 import { HiBookOpen, HiClock, HiTag, HiAcademicCap } from "react-icons/hi";
-import { Course, CourseCategory, CourseVisibility, CourseStatus } from "@/types/course.types";
+import {
+  Course,
+  CourseCategory,
+  CourseVisibility,
+  CourseStatus,
+} from "@/types/course.types";
 import { categoryConfig } from "@/helpers/course.helpers";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -7,13 +12,19 @@ import VisibilityToggle from "./VisibilityToggle";
 
 interface TeacherCourseCardProps {
   course: Course;
-  viewDetails?: (id: string) => void; 
-  onVisibilityChange?: (courseId: string, newVisibility: CourseVisibility) => void;
+  viewDetails?: (id: string) => void;
+  onVisibilityChange?: (
+    courseId: string,
+    newVisibility: CourseVisibility
+  ) => void;
 }
 
-const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProps) => {
+const TeacherCourseCard = ({
+  course,
+  onVisibilityChange,
+}: TeacherCourseCardProps) => {
   const router = useRouter();
-  
+
   // Usar la visibilidad real del curso que viene del backend
   const [currentVisibility, setCurrentVisibility] = useState<CourseVisibility>(
     course.visibility
@@ -25,7 +36,7 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
     console.log(`   Status: "${course.status}"`);
     console.log(`   Visibilidad actual: ${currentVisibility}`);
     console.log(`   Visibilidad del curso: ${course.visibility}`);
-    
+
     if (course.visibility !== currentVisibility) {
       setCurrentVisibility(course.visibility);
       console.log(`✅ Visibilidad actualizada a: ${course.visibility}`);
@@ -62,20 +73,21 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
 
   const formatPrice = (price: number | string | undefined): string => {
     try {
-      const numPrice = typeof price === 'number' ? price : parseFloat(price || '0');
-      return isNaN(numPrice) ? '0.00' : numPrice.toFixed(2);
+      const numPrice =
+        typeof price === "number" ? price : parseFloat(price || "0");
+      return isNaN(numPrice) ? "0.00" : numPrice.toFixed(2);
     } catch {
-      return '0.00';
+      return "0.00";
     }
   };
 
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric' 
+      return date.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       });
     } catch {
       return "Fecha no disponible";
@@ -85,25 +97,26 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
   // Función para obtener colores de dificultad
   const getDifficultyColors = (difficulty: string) => {
     switch (difficulty?.toLowerCase()) {
-      case 'principiante':
-      case 'beginner':
-      case 'básico':
-        return 'bg-green-400/10 border border-green-400/30 text-green-400';
-      case 'intermedio':
-      case 'intermediate':
-        return 'bg-yellow-400/10 border border-yellow-400/30 text-yellow-400';
-      case 'avanzado':
-      case 'advanced':
-        return 'bg-red-400/10 border border-red-400/30 text-red-400';
+      case "principiante":
+      case "beginner":
+      case "básico":
+        return "bg-green-400/10 border border-green-400/30 text-green-400";
+      case "intermedio":
+      case "intermediate":
+        return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
+      case "avanzado":
+      case "advanced":
+        return "bg-amber-400/10 border border-amber-400/30 text-amber-400";
       default:
-        return 'bg-slate-700/50 text-slate-300';
+        return "bg-slate-700/50 text-slate-300";
     }
   };
 
   // Obtener configuración de categoría para iconos y colores
-  const config = categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
+  const config =
+    categoryConfig[course.category] || categoryConfig[CourseCategory.FRONTEND];
   const Icon = config.icon;
-  
+
   const isPublic = course.status === "PUBLICADO";
   const lessonsCount = course.lessons?.length || 0;
 
@@ -112,11 +125,13 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
       {/* Header con ícono y estado */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-4">
-          <div className={`bg-gradient-to-br ${config.iconGradient} p-3 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center`}>
-            <Icon className="w-6 h-6 text-white" />
+          <div
+            className={`bg-gradient-to-br ${config.iconGradient} p-3 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center`}
+          >
+            <Icon className="w-6 h-6 text-font-light" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">
+            <h3 className="text-lg font-bold text-font-light mb-1 line-clamp-2">
               {course.title || "Título no disponible"}
             </h3>
             <p className="text-slate-300 text-sm line-clamp-2">
@@ -124,7 +139,11 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
             </p>
           </div>
         </div>
-        <div className={`px-3 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap ${getStatusColor(course.status)}`}>
+        <div
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap ${getStatusColor(
+            course.status
+          )}`}
+        >
           {getStatusDisplay(course.status)}
         </div>
       </div>
@@ -133,15 +152,27 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
       <div className="flex flex-wrap gap-2 mb-4">
         <div className="flex items-center gap-2 bg-slate-700/50 text-slate-300 px-3 py-1.5 rounded-lg text-xs">
           <HiClock className="w-3 h-3" />
-          <span className="font-medium">{course.duration || "No especificado"}</span>
+          <span className="font-medium">
+            {course.duration || "No especificado"}
+          </span>
         </div>
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${getDifficultyColors(course.difficulty)}`}>
+        <div
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${getDifficultyColors(
+            course.difficulty
+          )}`}
+        >
           <HiAcademicCap className="w-3 h-3" />
-          <span className="font-medium">{course.difficulty || "No especificado"}</span>
+          <span className="font-medium">
+            {course.difficulty || "No especificado"}
+          </span>
         </div>
-        <div className={`flex items-center gap-2 ${config.badgeColor} border px-3 py-1.5 rounded-lg text-xs font-semibold`}>
+        <div
+          className={`flex items-center gap-2 ${config.badgeColor} border px-3 py-1.5 rounded-lg text-xs font-semibold`}
+        >
           <HiTag className="w-3 h-3" />
-          <span className="text-slate-100">{course.category || "Sin categoría"}</span>
+          <span className="text-slate-100">
+            {course.category || "Sin categoría"}
+          </span>
         </div>
         <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-lg text-xs font-semibold">
           <span>${formatPrice(course.price)}</span>
@@ -153,10 +184,10 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
         <div className="flex items-center gap-2">
           <HiBookOpen className="w-4 h-4 text-blue-400" />
           <span className="text-sm font-medium text-slate-300">
-            {lessonsCount} {lessonsCount === 1 ? 'lección' : 'lecciones'}
+            {lessonsCount} {lessonsCount === 1 ? "lección" : "lecciones"}
           </span>
         </div>
-        
+
         {/* Visibility Toggle */}
         <VisibilityToggle
           courseId={course.id}
@@ -170,18 +201,24 @@ const TeacherCourseCard = ({ course, onVisibilityChange }: TeacherCourseCardProp
       <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
         <div className="bg-slate-800/30 rounded-lg p-3">
           <span className="text-slate-300 font-medium block mb-1">Creado:</span>
-          <p className="text-slate-100 font-semibold">{formatDate(course.createdAt)}</p>
+          <p className="text-slate-100 font-semibold">
+            {formatDate(course.createdAt)}
+          </p>
         </div>
         <div className="bg-slate-800/30 rounded-lg p-3">
-          <span className="text-slate-300 font-medium block mb-1">Actualizado:</span>
-          <p className="text-slate-100 font-semibold">{formatDate(course.updatedAt)}</p>
+          <span className="text-slate-300 font-medium block mb-1">
+            Actualizado:
+          </span>
+          <p className="text-slate-100 font-semibold">
+            {formatDate(course.updatedAt)}
+          </p>
         </div>
       </div>
 
       {/* Botón de acción */}
       <button
         onClick={() => router.push(`/course/${course.id}`)}
-        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-white py-3 rounded-lg font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
+        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-font-light py-3 rounded-lg font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
       >
         Ver detalles del curso
       </button>

@@ -30,8 +30,6 @@ export const registerUserService = async (
     }
 
     const response = await data.json();
-    console.log("Esta es mi data desde registerService", response);
-
     return response;
   } catch (error) {
     console.error("Error al registrar: ", error);
@@ -57,8 +55,6 @@ export const loginUserService = async (
     }
 
     const response = await data.json();
-    console.log("esta es mi data desde loginServcie: ", response);
-
     return response;
   } catch (error) {
     console.error("Error al loguearse: ", error);
@@ -81,8 +77,11 @@ export const getCurrentUserService = async (
       throw new Error("Error obteniendo usuario");
     }
     const data = await response.json();
-    console.log("esta es mi respuesta de usuario actual", data);
+<<<<<<< HEAD
+=======
+    
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     return data;
   } catch (error) {
     console.error("Error al conseguir el servicio atual: ", error);
@@ -190,12 +189,10 @@ export const uploadProfileImageService = async (
 
     // Si no se encuentra la URL en la respuesta, obtener datos actualizados del usuario
     if (!imageUrl) {
-      console.log(
-        "⚠️ No se encontró URL en la respuesta, obteniendo datos actualizados del usuario..."
-      );
+      // No URL found in response, getting updated user data
       try {
         const updatedUserData = await getCurrentUserService(token, userId);
-        console.log("✅ Datos actualizados del usuario:", updatedUserData);
+        // User data updated successfully
 
         // Buscar la imagen en los datos actualizados
         const updatedUserWithImage = updatedUserData as User & {
@@ -208,10 +205,7 @@ export const uploadProfileImageService = async (
           updatedUserWithImage.profileImageUrl;
 
         if (imageUrl) {
-          console.log(
-            "✅ URL de imagen encontrada en datos actualizados:",
-            imageUrl
-          );
+          // Image URL found in updated data
         }
       } catch (fetchError) {
         console.error("Error obteniendo datos actualizados:", fetchError);

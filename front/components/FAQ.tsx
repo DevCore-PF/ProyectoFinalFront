@@ -13,10 +13,14 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen py-15 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen py-12 sm:py-15 px-4 sm:px-8 lg:px-16">
       <div className="max-w-4xl mx-auto">
+<<<<<<< HEAD
+        <div className="text-center mb-8 sm:mb-12">          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+=======
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-font-light mb-4">
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
             Preguntas frecuentes
           </h2>
           <p className="text-slate-300 text-sm md:text-base">
@@ -39,9 +43,9 @@ const FAQ = () => {
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors duration-300"
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors duration-300 cursor-pointer"
               >
-                <span className="text-white font-medium text-sm md:text-base pr-4">
+                <span className="text-font-light font-medium text-sm md:text-base pr-4">
                   {faq.question}
                 </span>
                 <div className="shrink-0 cursor-pointer hover:border-border-light border border-transparent w-8 h-8 flex items-center justify-center rounded-lg bg-button/20">

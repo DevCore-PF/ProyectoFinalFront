@@ -35,8 +35,13 @@ const RegisterForm = () => {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleShowPass = () => {
     setShow(!show);
@@ -81,7 +86,6 @@ const RegisterForm = () => {
       );
     },
   });
-
 
   useEffect(() => {
     const error = searchParams.get("error");
@@ -278,7 +282,7 @@ const RegisterForm = () => {
                       }`}
                     >
                       <svg
-                        className={`w-3 h-3 text-white transition-opacity ${
+                        className={`w-3 h-3 text-font-light transition-opacity ${
                           formik.values.checkBoxTerms
                             ? "opacity-100"
                             : "opacity-0"

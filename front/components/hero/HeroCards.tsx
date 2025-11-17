@@ -20,7 +20,7 @@ const HeroCards = () => {
                 <div className="p-3 bg-button/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
                   <FaInfinity className="text-accent-light text-3xl" />
                 </div>
-                <h3 className="text-white font-semibold text-2xl">
+                <h3 className="text-font-light font-semibold text-2xl">
                   Membresías
                 </h3>
               </div>
@@ -51,7 +51,7 @@ const HeroCards = () => {
                 <div className="p-3 bg-purple-500/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
                   <FaGraduationCap className="text-accent-light text-3xl" />
                 </div>
-                <h3 className="text-white font-semibold text-2xl">
+                <h3 className="text-font-light font-semibold text-2xl">
                   Cursos Individuales
                 </h3>
               </div>
@@ -96,7 +96,7 @@ const HeroCards = () => {
                 <div className="inline-flex p-6 bg-button/10 backdrop-blur-sm rounded-2xl border border-button/30 mb-6">
                   <FaCode className="text-accent-light text-7xl" />
                 </div>
-                <h2 className="text-white text-3xl lg:text-4xl font-bold mb-4">
+                <h2 className="text-font-light text-3xl lg:text-4xl font-bold mb-4">
                   Transforma tu futuro
                 </h2>
                 <p className="text-slate-300 text-lg max-w-md mx-auto">

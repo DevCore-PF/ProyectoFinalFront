@@ -74,24 +74,24 @@ const Footer = () => {
             {/* columna izq-der */}
 
             <Link href="/#item" onClick={handleInicioClick}>
-              <p className="text-white font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
+              <p className="text-font-light font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
                 Inicio
               </p>
             </Link>
 
             <Link
               href="/benefits"
-              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+              className="text-[#ABA5B6] text-sm hover:text-font-light focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
             >
               Beneficios
             </Link>
-            <Link href="/courses" className="hover:text-white">
+            <Link href="/courses" className="hover:text-font-light">
               Nuestros Cursos
             </Link>
 
             <Link
               href="/faq"
-              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+              className="text-[#ABA5B6] text-sm hover:text-font-light focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
             >
               Preguntas Frecuentes
             </Link>
@@ -99,33 +99,33 @@ const Footer = () => {
           <div className="flex flex-col text-gray-dark gap-2  font-normal">
             {/* columna cntr-der */}
             <Link href="/company">
-              <p className="text-white font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
+              <p className="text-font-light font-semibold text-md mb-2 hover:text-shadow-xs text-shadow-white">
                 Sobre Nosotros
               </p>
             </Link>
 
             <Link
               href="/company"
-              className="text-[#ABA5B6] text-sm  hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+              className="text-[#ABA5B6] text-sm  hover:text-font-light focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
             >
               La Empresa
             </Link>
             <Link
               href="/achievements"
-              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+              className="text-[#ABA5B6] text-sm hover:text-font-light focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
             >
               Logros
             </Link>
             <Link
               href="/our-goals"
-              className="text-[#ABA5B6] text-sm hover:text-white focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
+              className="text-[#ABA5B6] text-sm hover:text-font-light focus:text-[#ABA5B6] active:text-[#ABA5B6] transition-colors duration-200"
             >
               Nuestras metas
             </Link>
           </div>
           <div>
             {/* columna der-der */}
-            <p className="text-white font-semibold text-md mb-2">
+            <p className="text-font-light font-semibold text-md mb-2">
               Redes Sociales
             </p>
             <div className="flex flex-row justify-around pt-3">

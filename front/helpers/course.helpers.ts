@@ -15,7 +15,7 @@ export const categoryConfig = {
     gradient: "from-blue-500/20 to-cyan-500/20",
     iconGradient: "from-blue-500 to-cyan-500",
     badgeColor: "bg-blue-500/10 border-blue-500/30",
-    textColor: "text-blue-400",
+    textColor: "text-blue-300",
   },
   [CourseCategory.BACKEND]: {
     icon: FaServer,
@@ -33,8 +33,8 @@ export const categoryConfig = {
   },
   [CourseCategory.DATA_SCIENCE]: {
     icon: FaChartBar,
-    gradient: "from-orange-500/20 to-red-500/20",
-    iconGradient: "from-orange-500 to-red-500",
+    gradient: "from-orange-500/20 to-amber-500/20",
+    iconGradient: "from-orange-500 to-amber-500",
     badgeColor: "bg-orange-500/10 border-orange-500/30",
     textColor: "text-orange-400",
   },
@@ -74,4 +74,3 @@ export const getCategoryDisplayName = (category: CourseCategory): string => {
   const option = categoryOptions.find((opt) => opt.value === category);
   return option?.label || category;
 };
-

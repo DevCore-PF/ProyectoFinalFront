@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  HiChevronDown,
-  HiCog,
-  HiTrendingUp,
-  HiClock,
-} from "react-icons/hi";
+import { HiChevronDown, HiCog, HiTrendingUp, HiClock } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import ProfileImage from "@/components/ui/ProfileImage";
 import { studentManagementOptions as baseStudentManagementOptions } from "@/helpers/moks";
@@ -43,16 +38,18 @@ const StudentWelcomeCardReal = ({
   const { applicationStatus } = useStudentTeacherRequest();
 
   // Clonar y modificar las opciones para el menú
-  const studentManagementOptions = baseStudentManagementOptions.map(option => {
-    if (option.id === "become-professor") {
-      return {
-        ...option,
-        disabled: applicationStatus.status === 'rejected',
-      };
+  const studentManagementOptions = baseStudentManagementOptions.map(
+    (option) => {
+      if (option.id === "become-professor") {
+        return {
+          ...option,
+          disabled: applicationStatus.status === "rejected",
+        };
+      }
+      return option;
     }
-    return option;
-  });
-  
+  );
+
   const currentDate = new Date().toLocaleDateString("es-ES", {
     day: "numeric",
     month: "long",
@@ -90,7 +87,7 @@ const StudentWelcomeCardReal = ({
           <p className="text-slate-400 text-xs uppercase tracking-wider mb-3">
             {currentDate}
           </p>
-          
+
           <div className="flex items-center gap-4 mb-4">
             <ProfileImage
               user={{ profileImage, name: userName }}
@@ -102,9 +99,7 @@ const StudentWelcomeCardReal = ({
               <h1 className="text-2xl md:text-3xl font-bold text-slate-200">
                 ¡Bienvenid@ {userName}!
               </h1>
-              <p className="text-slate-300 text-sm md:text-base">
-                {userEmail}
-              </p>
+              <p className="text-slate-300 text-sm md:text-base">{userEmail}</p>
             </div>
           </div>
 
@@ -130,9 +125,7 @@ const StudentWelcomeCardReal = ({
                 style={{ width: `${animatedProgress}%` }}
               >
                 <div className="h-full w-full relative overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent animate-shimmer"
-                  />
+                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                 </div>
               </div>
             </div>
@@ -185,7 +178,7 @@ const StudentWelcomeCardReal = ({
               <div className="p-2">
                 {/* Solo mostrar opciones del menú, excluyendo "Ajustes de perfil" */}
                 {studentManagementOptions
-                  .filter(option => option.title !== "Ajustes de perfil")
+                  .filter((option) => option.title !== "Ajustes de perfil")
                   .map((option, index) => (
                     <button
                       key={index}
@@ -200,14 +193,22 @@ const StudentWelcomeCardReal = ({
                       }}
                       disabled={option.disabled}
                       className={`w-full px-4 py-3.5 flex items-center gap-4 group text-left rounded-lg transition-all duration-200
-                        ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-800/70'}`}
-                      title={option.disabled && option.id === 'become-professor' ? 'No puedes postularte porque tu última solicitud fue rechazada.' : ''}
+                        ${
+                          option.disabled
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer hover:bg-slate-800/70"
+                        }`}
+                      title={
+                        option.disabled && option.id === "become-professor"
+                          ? "No puedes postularte porque tu última solicitud fue rechazada."
+                          : ""
+                      }
                     >
                       <div className="p-2 bg-purple-500/10 rounded-lg text-accent-light group-hover:bg-purple-500/20 transition-all">
                         {option.icon}
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        <h4 className="text-sm font-semibold text-slate-200 group-hover:text-font-light transition-colors">
                           {option.title}
                         </h4>
                       </div>
@@ -221,14 +222,14 @@ const StudentWelcomeCardReal = ({
 
       {/* Click outside to close dropdown */}
       {isMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40" 
+        <div
+          className="fixed inset-0 z-40"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
 
       {/* Modal para solicitud de profesor */}
-      <TeacherRequestModal 
+      <TeacherRequestModal
         isOpen={isTeacherModalOpen}
         onClose={() => setIsTeacherModalOpen(false)}
       />

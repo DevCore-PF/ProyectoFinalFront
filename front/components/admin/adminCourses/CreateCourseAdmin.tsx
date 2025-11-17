@@ -25,10 +25,7 @@ import { categoryOptions, getCategoryConfig } from "@/helpers/course.helpers";
 import { FaExclamation } from "react-icons/fa6";
 import { CreateCourseFormProps } from "@/types/admin.types";
 
-
-
 const CreateCourseAdmin = ({ onSuccess, onCancel }: CreateCourseFormProps) => {
-
   const { user, token } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -223,7 +220,7 @@ const CreateCourseAdmin = ({ onSuccess, onCancel }: CreateCourseFormProps) => {
                     p-2 rounded-lg bg-gradient-to-r ${selectedCategoryConfig.iconGradient}
                   `}
             >
-              <selectedCategoryConfig.icon className="w-5 h-5 text-white" />
+              <selectedCategoryConfig.icon className="w-5 h-5 text-font-light" />
             </div>
             <span className={`font-medium ${selectedCategoryConfig.textColor}`}>
               {

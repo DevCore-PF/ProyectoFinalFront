@@ -5,6 +5,10 @@
   --background: #1f213c;
   --foreground: #171717;
   --color: #c64f06;
+  --color: #c288f9; /* ganancias de profesores */
+  --color2:#689df1;/* ganancias de admin */
+  --color2:#61d6af;/* ganancias totales */
+  
 }
 
 @theme {
@@ -41,8 +45,8 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden; /* Esto previene el scroll horizontal */
-  width: 100%; 
-} 
+  width: 100%;
+}
 input[type="checkbox"]:checked + div .checkbox-indicator {
   display: block;
 }

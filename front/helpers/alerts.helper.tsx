@@ -13,7 +13,9 @@ export const toastSuccess = (message: string) => {
 export const toastError = (message: string) => {
   toast.error(message, {
     duration: 4000,
-    icon: <CiCircleAlert size={19} />,
+    icon: <CiCircleAlert size={19} className="text-amber-500" />,
+    className: "bg-amber-500/10 border border-amber-500/30",
+    descriptionClassName: "text-amber-300",
   });
 };
 

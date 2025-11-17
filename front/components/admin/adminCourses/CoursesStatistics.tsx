@@ -24,7 +24,7 @@ const CoursesStatistics = () => {
         </div>
       </div>
       <h3 className="text-slate-400 text-sm mb-1">Total Cursos</h3>
-      <p className="text-xl font-bold text-white">{`${courses.length}`}</p>
+      <p className="text-xl font-bold text-font-light">{`${courses.length}`}</p>
       {/* //getAllUsersLength */}
     </div>
   );

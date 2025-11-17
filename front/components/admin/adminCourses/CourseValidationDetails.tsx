@@ -91,7 +91,7 @@ const CourseValidationDetails = ({
     const config = {
       "EN REVISION": "bg-blue-500/10 text-blue-300 border-blue-500/20",
       PUBLICADO: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-      RECHAZADO: "bg-red-500/10 text-red-300 border-red-500/20",
+      RECHAZADO: "bg-amber-500/10 text-amber-300 border-amber-500/20",
     };
     return config[status as keyof typeof config] || config["EN REVISION"];
   };
@@ -107,9 +107,9 @@ const CourseValidationDetails = ({
 
   const getDifficultyBadge = (difficulty: string) => {
     const config = {
-      PRINCIPIANTE: "bg-green-500/10 text-green-300 border-green-500/20",
-      INTERMEDIO: "bg-amber-500/10 text-amber-300 border-amber-500/20",
-      AVANZADO: "bg-red-500/10 text-red-300 border-red-500/20",
+      PRINCIPIANTE: "bg-emerald-500/10 text-emerald-200 border-emerald-500/20",
+      INTERMEDIO: "bg-amber-500/10 text-amber-200 border-amber-500/20",
+      AVANZADO: "bg-amber-500/10 text-amber-200 border-amber-500/20",
     };
     return config[difficulty as keyof typeof config] || config.PRINCIPIANTE;
   };
@@ -264,16 +264,16 @@ const CourseValidationDetails = ({
           )}
 
           {course.status === CourseStatus.REJECT && (
-            <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+            <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-500/20 rounded-lg">
-                  <HiXCircle className="w-6 h-6 text-red-300" />
+                <div className="p-2 bg-amber-500/20 rounded-lg">
+                  <HiXCircle className="w-6 h-6 text-amber-300" />
                 </div>
                 <div>
-                  <p className="text-red-200 font-semibold text-lg">
+                  <p className="text-amber-200 font-semibold text-lg">
                     Curso Rechazado
                   </p>
-                  <p className="text-red-200/80 text-sm">
+                  <p className="text-amber-200/80 text-sm">
                     Este curso fue rechazado previamente.
                   </p>
                 </div>
@@ -361,7 +361,7 @@ const CourseValidationDetails = ({
                     <button
                       onClick={handleReject}
                       disabled={loadingReject || loadingApprove}
-                      className="flex items-center cursor-pointer gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
+                      className="flex items-center cursor-pointer gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
                     >
                       {loadingReject ? (
                         <>
@@ -621,8 +621,8 @@ const CourseValidationDetails = ({
                                       rel="noopener noreferrer"
                                       className="flex items-center gap-3 p-3 bg-slate-800/50 hover:bg-slate-800/70 rounded-lg transition-colors group"
                                     >
-                                      <div className="w-10 h-10 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <HiPlay className="w-5 h-5 text-red-400" />
+                                      <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <HiPlay className="w-5 h-5 text-amber-400" />
                                       </div>
                                       <div className="flex-1 min-w-0">
                                         <p className="text-font-light text-sm font-medium group-hover:text-accent-light transition-colors">

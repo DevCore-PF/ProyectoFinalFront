@@ -4,11 +4,11 @@ import Image from "next/image";
 
 const Testimonials = () => {
   return (
-    <div className="min-h-screen py-20 px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen py-12 sm:py-20 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-12 gap-4">
           <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-font-light mb-4">
               Testimonios
             </h2>
             <p className="text-slate-300 text-sm md:text-base ">
@@ -40,7 +40,7 @@ const Testimonials = () => {
                   {testimonials[0].text}
                 </p>
                 <div>
-                  <h4 className="text-white font-semibold">
+                  <h4 className="text-font-light font-semibold">
                     {testimonials[0].name}
                   </h4>
                   <p className="text-slate-400 text-sm flex items-center gap-1">
@@ -71,7 +71,7 @@ const Testimonials = () => {
                   {testimonials[1].text}
                 </p>
                 <div>
-                  <h4 className="text-white font-semibold">
+                  <h4 className="text-font-light font-semibold">
                     {testimonials[1].name}
                   </h4>
                   <p className="text-slate-400 text-sm flex items-center gap-1">
@@ -101,7 +101,7 @@ const Testimonials = () => {
                   {testimonials[2].text}
                 </p>
                 <div>
-                  <h4 className="text-white font-semibold">
+                  <h4 className="text-font-light font-semibold">
                     {testimonials[2].name}
                   </h4>
                   <p className="text-slate-400 text-sm flex items-center gap-1">

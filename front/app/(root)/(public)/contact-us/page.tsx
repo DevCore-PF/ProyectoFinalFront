@@ -29,7 +29,7 @@ const ContactPage = () => {
   });
 
   return (
-    <div className="min-h-screen text-white pb-4 flex flex-col items-center justify-center px-4 ">
+    <div className="min-h-screen text-font-light pb-4 flex flex-col items-center justify-center px-4 ">
       <div className="inline-flex px-4 py-2  bg-button/10 backdrop-blur-sm border border-button/30 rounded-full mb-8">
         <span className="text-font-light font-semibold md:text-lg">
           Contáctanos

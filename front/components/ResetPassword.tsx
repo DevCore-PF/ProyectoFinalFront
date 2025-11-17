@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -6,10 +6,18 @@ import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { resetPasswordService } from "@/services/forgot-password.service";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import Link from "next/link";
+<<<<<<< HEAD
+
+const ResetPassword = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+=======
 const ResetPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
 
   const [formData, setFormData] = useState({
     newPassword: "",
@@ -25,13 +33,21 @@ const ResetPassword = () => {
   useEffect(() => {
     if (!token) {
       toastError("Token de restablecimiento no válido");
+<<<<<<< HEAD
+      router.push('/login');
+=======
       router.push("/login");
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     }
   }, [token, router]);
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     if (password.length < 8) {
       errors.push("Mínimo 8 caracteres");
     }
@@ -50,28 +66,48 @@ const ResetPassword = () => {
     if (!/(?=.*[!@#$%^&*])/.test(password)) {
       errors.push("Al menos un símbolo (!@#$%^&*)");
     }
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     return errors;
   };
 
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
+<<<<<<< HEAD
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+=======
     setShowPasswords((prev) => ({
       ...prev,
       [field]: !prev[field],
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     }));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+<<<<<<< HEAD
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+=======
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     if (!token) {
       toastError("Token no válido");
       return;
@@ -96,6 +132,19 @@ const ResetPassword = () => {
         newPassword: formData.newPassword,
         confirmNewPassword: formData.confirmNewPassword,
       });
+<<<<<<< HEAD
+      
+      setIsSuccess(true);
+      toastSuccess("Contraseña restablecida exitosamente");
+      
+      // Redirigir al login después de 3 segundos
+      setTimeout(() => {
+        router.push('/login?passwordReset=true');
+      }, 3000);
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Error al restablecer la contraseña";
+=======
 
       setIsSuccess(true);
       toastSuccess("Contraseña restablecida exitosamente");
@@ -109,6 +158,7 @@ const ResetPassword = () => {
         error instanceof Error
           ? error.message
           : "Error al restablecer la contraseña";
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
       toastError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -122,6 +172,17 @@ const ResetPassword = () => {
           <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaLock className="text-green-400 text-2xl" />
           </div>
+<<<<<<< HEAD
+          
+          <h1 className="text-2xl font-bold text-font-light mb-4">
+            ¡Contraseña restablecida!
+          </h1>
+          
+          <p className="text-font-light/70 mb-6">
+            Tu contraseña ha sido restablecida exitosamente. Serás redirigido al login en unos segundos.
+          </p>
+          
+=======
 
           <h1 className="text-2xl font-bold text-font-light mb-4">
             ¡Contraseña restablecida!
@@ -132,6 +193,7 @@ const ResetPassword = () => {
             login en unos segundos.
           </p>
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           <Link
             href="/login"
             className="inline-block bg-button hover:bg-button/90 text-font-light px-6 py-3 rounded-lg font-semibold transition-all duration-300"
@@ -150,11 +212,19 @@ const ResetPassword = () => {
           <div className="w-16 h-16 bg-button/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaLock className="text-accent-light text-2xl" />
           </div>
+<<<<<<< HEAD
+          
+          <h1 className="text-2xl font-bold text-font-light mb-2">
+            Restablecer contraseña
+          </h1>
+          
+=======
 
           <h1 className="text-2xl font-bold text-font-light mb-2">
             Restablecer contraseña
           </h1>
 
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           <p className="text-font-light/70 text-sm">
             Ingresa tu nueva contraseña
           </p>
@@ -176,10 +246,14 @@ const ResetPassword = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+<<<<<<< HEAD
+            <label htmlFor="newPassword" className="block text-sm font-medium text-font-light mb-2">
+=======
             <label
               htmlFor="newPassword"
               className="block text-sm font-medium text-font-light mb-2"
             >
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
               Nueva contraseña
             </label>
             <div className="relative">
@@ -195,7 +269,11 @@ const ResetPassword = () => {
               />
               <button
                 type="button"
+<<<<<<< HEAD
+                onClick={() => togglePasswordVisibility('newPassword')}
+=======
                 onClick={() => togglePasswordVisibility("newPassword")}
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
               >
                 {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
@@ -204,19 +282,27 @@ const ResetPassword = () => {
             {formData.newPassword && (
               <div className="mt-2">
                 {validatePassword(formData.newPassword).map((error, index) => (
-                  <p key={index} className="text-xs text-red-400">
+<<<<<<< HEAD
+                  <p key={index} className="text-xs text-red-400">• {error}</p>
+=======
+                  <p key={index} className="text-xs text-amber-400">
                     • {error}
                   </p>
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
                 ))}
               </div>
             )}
           </div>
 
           <div>
+<<<<<<< HEAD
+            <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-font-light mb-2">
+=======
             <label
               htmlFor="confirmNewPassword"
               className="block text-sm font-medium text-font-light mb-2"
             >
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
               Confirmar nueva contraseña
             </label>
             <div className="relative">
@@ -232,27 +318,43 @@ const ResetPassword = () => {
               />
               <button
                 type="button"
+<<<<<<< HEAD
+                onClick={() => togglePasswordVisibility('confirmNewPassword')}
+=======
                 onClick={() => togglePasswordVisibility("confirmNewPassword")}
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
               >
                 {showPasswords.confirmNewPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
+<<<<<<< HEAD
+            {formData.confirmNewPassword && formData.newPassword !== formData.confirmNewPassword && (
+              <p className="text-xs text-red-400 mt-1">Las contraseñas no coinciden</p>
+            )}
+=======
             {formData.confirmNewPassword &&
               formData.newPassword !== formData.confirmNewPassword && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-xs text-amber-400 mt-1">
                   Las contraseñas no coinciden
                 </p>
               )}
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           </div>
 
           <div className="space-y-4 pt-4">
             <button
               type="submit"
               disabled={
+<<<<<<< HEAD
+                isLoading || 
+                !formData.newPassword || 
+                !formData.confirmNewPassword || 
+=======
                 isLoading ||
                 !formData.newPassword ||
                 !formData.confirmNewPassword ||
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
                 formData.newPassword !== formData.confirmNewPassword ||
                 validatePassword(formData.newPassword).length > 0
               }
@@ -286,4 +388,8 @@ const ResetPassword = () => {
   );
 };
 
+<<<<<<< HEAD
 export default ResetPassword;
+=======
+export default ResetPassword;
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e

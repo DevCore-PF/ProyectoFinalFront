@@ -45,7 +45,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshCart = async () => {
     if (!token) {
-      console.log("no hay token");
+      // No token available
       return;
     }
 
@@ -91,7 +91,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = async () => {
     if (!token) {
-      console.log("no hay token");
+      // No token available
       return;
     }
 

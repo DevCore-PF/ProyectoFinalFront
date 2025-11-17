@@ -30,7 +30,7 @@ const DashboardPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 text-lg mb-4">
+          <p className="text-amber-400 text-lg mb-4">
             Error al cargar el dashboard: {coursesError || metricsError}
           </p>
           <button

@@ -196,22 +196,29 @@ export const teacherManagementOptions = [
   },
   {
     id: "statistics",
-    title: "Ver estadísticas",
+    title: "Ver cursos más vendidos",
     icon: <HiChartBar className="w-4 h-4" />,
-    onClick: () => console.log("Ver estadísticas"),
+    onClick: () => {
+      const topCoursesSection = document.getElementById('top-courses-section');
+      if (topCoursesSection) {
+        topCoursesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
   },
   {
     id: "income",
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
-    onClick: () => console.log("Consultar ingresos"),
+    onClick: () => {
+      window.location.href = '/teacher-dashboard/earnings';
+    },
   },
   {
     id: "purchase-history",
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     },
   },
 ];
@@ -222,7 +229,7 @@ export const studentManagementOptions = [
     title: "Ajustes de perfil",
     icon: <FaUser className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     },
   },
   {
@@ -240,7 +247,7 @@ export const studentManagementOptions = [
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/purchase-history';
+      window.location.href = "/purchase-history";
     },
   },
   // {
@@ -400,31 +407,6 @@ export const recommendedCourses = [
   },
 ];
 
-export const teacherFeaturedCourses = [
-  { id: 1, title: "Introducción a React", revenue: 12247.55, trend: "+15%" },
-  { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
-];
-
-export const teacherRecentActivity = [
-  {
-    id: 1,
-    type: "review",
-    text: "Nueva reseña 5★ en 'Introducción a React'",
-    time: "Hace 2 horas",
-  },
-  {
-    id: 2,
-    type: "enrollment",
-    text: "15 nuevos estudiantes esta semana",
-    time: "Hace 5 horas",
-  },
-  {
-    id: 3,
-    type: "update",
-    text: "Actualización completada en 'JavaScript Avanzado'",
-    time: "Hace 1 día",
-  },
-];
 export const teacherData = {
   userName: "Carolina",
   userEmail: "carolinaperez@gmail.com",
@@ -639,19 +621,19 @@ export const faqsByCategory = {
   ],
 };
 
-export   const getDifficultyColors = (difficulty: string) => {
-    switch (difficulty?.toLowerCase()) {
-      case "principiante":
-      case "beginner":
-      case "básico":
-        return "bg-green-400/10 border border-green-400/30 text-green-400";
-      case "intermedio":
-      case "intermediate":
-        return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
-      case "avanzado":
-      case "advanced":
-        return "bg-red-400/10 border border-red-400/30 text-red-400";
-      default:
-        return "bg-slate-700/50 text-slate-300";
-    }
-  };
+export const getDifficultyColors = (difficulty: string) => {
+  switch (difficulty?.toLowerCase()) {
+    case "principiante":
+    case "beginner":
+    case "básico":
+      return "bg-green-400/10 border border-green-400/30 text-green-400";
+    case "intermedio":
+    case "intermediate":
+      return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
+    case "avanzado":
+    case "advanced":
+      return "bg-amber-400/10 border border-amber-400/30 text-amber-400";
+    default:
+      return "bg-slate-700/50 text-slate-300";
+  }
+};

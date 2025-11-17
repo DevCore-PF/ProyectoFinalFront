@@ -25,7 +25,7 @@ import {
   getCourseFeedbackService,
   getProfessorByIdService,
   getUserByIdService,
-} from "@/services/admin.services";
+} from "@/services/admin.service";
 import { useAdmin } from "@/context/AdminContext";
 import { CourseReview, UserEnrollments } from "@/types/admin.types";
 import {

@@ -1,6 +1,7 @@
 import { Course, CourseStatus } from "./course.types";
 import { User } from "./user.types";
 import { ApprovalStatus } from "./professor.types";
+import { UserFeedback } from "@/components/admin/adminCourses/CourseDetails";
 
 export type AdminTabType =
   | "overview"
@@ -155,18 +156,28 @@ export interface UserEnrollments {
   progress: string;
 }
 
-
 export interface CourseReview {
+  courseId: string;
   id: string;
-  rating: number;
+  rating: number; /////del 1 al 5 porque son estrellitas
   feedback: string;
   createdAt: string;
+  // Campos de moderación
+  isCensored: boolean;
+<<<<<<< HEAD
+  moderationStatus: 'approved' | 'pending' | 'censored' | 'rejected';
+=======
+  moderationStatus: "approved" | "pending" | "censored" | "rejected";
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
+  toxicityScore?: number;
+  moderationReason?: string;
+  requiresManualReview?: boolean;
   user: {
     id: string;
     name: string;
-    image: string | null;
+    image?: string | null;
+    isActive: boolean;
   };
-    courseId?: string;
 }
 export interface CourseFilters {
   title?: string;
@@ -216,15 +227,17 @@ export interface CourseValidation {
   createdAt: string;
   price: string;
   difficulty: string;
+  visibility: string;
 }
 export interface BanReasonModalProps {
   banReason: string;
   setBanReason: (reason: string) => void;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: (user?: UserFeedback) => void;
   isMultiple?: boolean;
   userCount?: number;
 }
+
 export interface RejectedReasonModalProps {
   rejectedReason: string;
   setRejectedReason: (reason: string) => void;
@@ -278,4 +291,25 @@ export interface UserProfile {
   suspensionReason: string | null;
   telefono: string | null;
   updatedAt: string;
+}
+
+export interface registerAdminForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+export interface Sale {
+  saleID: string;
+  saleDate: string;
+  courseTitle: string;
+  studentName: string;
+  studentEmail: string;
+  professorName: string;
+  totalPrice: string;
+  professorEarnings: string;
+  adminEarnings: string;
+  paymentId: string;
+  stripeID: string;
+  payoutStatus: string;
 }

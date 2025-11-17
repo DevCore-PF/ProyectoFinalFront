@@ -50,7 +50,7 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       title: 'Consultar ingresos',
       description: 'Mira el alcance e historial de pagos por curso.',
       icon: <HiCurrencyDollar className="text-xl" />,
-      onClick: () => console.log('Consultar ingresos')
+      onClick: () => router.push('/teacher-dashboard/earnings')
     },
     {
       id: 'purchase-history',

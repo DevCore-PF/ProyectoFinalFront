@@ -4,7 +4,7 @@ import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
-import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
+import { teacherFeaturedCourses } from "@/helpers/moks";
 import { CourseVisibility } from "@/types/course.types";
 import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
 import { useEffect, useState } from "react";
@@ -262,8 +262,8 @@ const TeacherDashboardPage = () => {
 
         {/* Estadísticas - solo si puede crear cursos */}
         {canCreateCourses && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-10">
-            <div className="lg:col-span-2 flex flex-col justify-center bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
+          <div className="grid grid-cols-1 gap-6 my-10">
+            <div className="flex flex-col justify-center bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2.5 bg-yellow-500/10 rounded-lg">
                   <HiTrendingUp className="md:w-6 md:h-6 text-yellow-200" />
@@ -303,36 +303,6 @@ const TeacherDashboardPage = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-blue-500/10 rounded-lg">
-                  <HiChartBar className="w-6 h-6 text-blue-300" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-200">
-                    ACTIVIDAD
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Últimas novedades
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {teacherRecentActivity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
-                  >
-                    <p className="text-sm text-slate-200 mb-1 font-medium">
-                      {activity.text}
-                    </p>
-                    <p className="text-xs text-slate-500">{activity.time}</p>
                   </div>
                 ))}
               </div>

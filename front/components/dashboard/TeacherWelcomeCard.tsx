@@ -92,6 +92,8 @@ const TeacherWelcomeCard = ({
                           setShowAdditionalContentModal(true);
                         } else if (option.id === 'purchase-history') {
                           router.push('/purchase-history');
+                        } else if (option.id === 'income') {
+                          router.push('/teacher-dashboard/earnings');
                         } else {
                           console.log(option.title);
                         }

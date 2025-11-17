@@ -204,7 +204,9 @@ export const teacherManagementOptions = [
     id: "income",
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
-    onClick: () => console.log("Consultar ingresos"),
+    onClick: () => {
+      window.location.href = '/teacher-dashboard/earnings';
+    },
   },
   {
     id: "purchase-history",

@@ -53,9 +53,18 @@ export const CourseCompletionFeedback: React.FC<
 
       // Llamar callback para informar que se envió el feedback
       onFeedbackSubmitted();
+<<<<<<< HEAD
+      
+    } catch (error: any) {
+      console.error('Error submitting feedback:', error);
+      // Mostrar el mensaje específico del backend si existe
+      const errorMessage = error?.message || 'Error al enviar el feedback. Inténtalo de nuevo.';
+      toastError(errorMessage);
+=======
     } catch (error) {
       console.error("Error submitting feedback:", error);
       toastError("Error al enviar el feedback. Inténtalo de nuevo.");
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     } finally {
       setIsSubmitting(false);
     }
@@ -113,7 +122,7 @@ export const CourseCompletionFeedback: React.FC<
               onClick={() => handleRatingClick(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="transition-transform hover:scale-110 focus:outline-none"
+              className="transition-transform hover:scale-110 focus:outline-none cursor-pointer"
               disabled={isSubmitting}
             >
               <HiStar
@@ -165,14 +174,18 @@ export const CourseCompletionFeedback: React.FC<
         <button
           onClick={onCancel || handleSkip}
           disabled={isSubmitting}
-          className="flex-1 px-6 py-3 border border-slate-600/50 text-gray-300 rounded-xl hover:bg-slate-700/30 transition-colors disabled:opacity-50 font-medium"
+          className="flex-1 px-6 py-3 border border-slate-600/50 text-gray-300 rounded-xl hover:bg-slate-700/30 transition-colors disabled:opacity-50 font-medium cursor-pointer"
         >
           {onCancel ? "Cancelar" : "Omitir por ahora"}
         </button>
         <button
           onClick={handleSubmit}
           disabled={rating === 0 || isSubmitting}
+<<<<<<< HEAD
+          className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2 cursor-pointer"
+=======
           className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-font-light rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
         >
           {isSubmitting ? (
             <>

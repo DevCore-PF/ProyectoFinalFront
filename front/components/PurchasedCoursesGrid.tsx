@@ -120,6 +120,18 @@ const PurchasedCourseCard: React.FC<PurchasedCourseCardProps> = ({
           </span>
         </div>
 
+<<<<<<< HEAD
+        {/* Progreso de lecciones - Siempre visible */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-gray-400">
+              <HiBookOpen className="w-4 h-4" />
+              <span>Lecciones</span>
+            </div>
+            <span className="text-white font-medium">
+              {completedLessons}/{totalLessons}
+            </span>
+=======
         {/* Progreso de lecciones */}
         {totalLessons > 0 && (
           <div className="space-y-2">
@@ -173,8 +185,41 @@ const PurchasedCourseCard: React.FC<PurchasedCourseCardProps> = ({
                 )}
               </div>
             )}
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           </div>
-        )}
+          
+          {/* Barra de progreso de lecciones */}
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${lessonsProgress}%` }}
+            />
+          </div>
+          
+          {/* Lista de lecciones (máximo 3 visibles) */}
+          {course.lessons && course.lessons.length > 0 && (
+            <div className="space-y-1">
+              <div className="text-xs text-gray-400 mb-2">Últimas lecciones:</div>
+              {course.lessons.slice(0, 3).map((lesson) => (
+                <div key={lesson.id} className="flex items-center gap-2 text-xs">
+                  {lesson.completed ? (
+                    <HiCheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
+                  ) : (
+                    <div className="w-3 h-3 rounded-full border border-gray-600 flex-shrink-0" />
+                  )}
+                  <span className={`line-clamp-1 ${lesson.completed ? 'text-gray-300' : 'text-gray-500'}`}>
+                    {lesson.title}
+                  </span>
+                </div>
+              ))}
+              {course.lessons.length > 3 && (
+                <div className="text-xs text-gray-500 ml-5">
+                  +{course.lessons.length - 3} lecciones más
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Progreso general */}
         <div className="space-y-2">

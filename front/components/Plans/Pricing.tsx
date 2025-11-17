@@ -11,26 +11,26 @@ const PricingPlans = () => {
   );
 
   return (
-    <div id="pricing" className="min-h-screen py-15 px-4 sm:px-8 lg:px-16 mb-15">
+    <div id="pricing" className="min-h-screen py-12 px-4 sm:px-8 lg:px-16 mb-12">
       <div className="max-w-7xl mx-auto">
         <PricingHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="relative min-h-[600px]">
+        <div className="relative min-h-[800px] sm:min-h-[900px] md:min-h-[600px]">
           <div
-            className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+            className={`transition-all duration-500 ease-in-out ${
               activeTab === "memberships"
-                ? "opacity-100 translate-x-0 pointer-events-auto"
-                : "opacity-0 -translate-x-8 pointer-events-none"
+                ? "opacity-100 translate-x-0 relative"
+                : "opacity-0 -translate-x-8 absolute inset-0 pointer-events-none"
             }`}
           >
             <MembershipPlans />
           </div>
 
           <div
-            className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+            className={`transition-all duration-500 ease-in-out ${
               activeTab === "courses"
-                ? "opacity-100 translate-x-0 pointer-events-auto"
-                : "opacity-0 translate-x-8 pointer-events-none"
+                ? "opacity-100 translate-x-0 relative"
+                : "opacity-0 translate-x-8 absolute inset-0 pointer-events-none"
             }`}
           >
             <IndividualCourses />

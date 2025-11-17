@@ -196,15 +196,22 @@ export const teacherManagementOptions = [
   },
   {
     id: "statistics",
-    title: "Ver estadísticas",
+    title: "Ver cursos más vendidos",
     icon: <HiChartBar className="w-4 h-4" />,
-    onClick: () => console.log("Ver estadísticas"),
+    onClick: () => {
+      const topCoursesSection = document.getElementById('top-courses-section');
+      if (topCoursesSection) {
+        topCoursesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
   },
   {
     id: "income",
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
-    onClick: () => console.log("Consultar ingresos"),
+    onClick: () => {
+      window.location.href = '/teacher-dashboard/earnings';
+    },
   },
   {
     id: "purchase-history",
@@ -400,31 +407,6 @@ export const recommendedCourses = [
   },
 ];
 
-export const teacherFeaturedCourses = [
-  { id: 1, title: "Introducción a React", revenue: 12247.55, trend: "+15%" },
-  { id: 2, title: "JavaScript Avanzado", revenue: 11331.11, trend: "+8%" },
-];
-
-export const teacherRecentActivity = [
-  {
-    id: 1,
-    type: "review",
-    text: "Nueva reseña 5★ en 'Introducción a React'",
-    time: "Hace 2 horas",
-  },
-  {
-    id: 2,
-    type: "enrollment",
-    text: "15 nuevos estudiantes esta semana",
-    time: "Hace 5 horas",
-  },
-  {
-    id: 3,
-    type: "update",
-    text: "Actualización completada en 'JavaScript Avanzado'",
-    time: "Hace 1 día",
-  },
-];
 export const teacherData = {
   userName: "Carolina",
   userEmail: "carolinaperez@gmail.com",

@@ -35,8 +35,13 @@ const RegisterForm = () => {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [showR, setShowR] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleShowPass = () => {
     setShow(!show);

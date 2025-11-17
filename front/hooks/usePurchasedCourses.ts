@@ -15,31 +15,31 @@ export const usePurchasedCourses = () => {
     if (!token) return course;
     
     try {
-      // Obtener todas las lecciones del curso
-      const allLessons = await purchasedCoursesService.getCourseLessons(token, course.id);
-      
       // Obtener lecciones completadas
       const completedLessonsData = await purchasedCoursesService.getCompletedLessons(token, course.id);
       
       // Crear un set de IDs de lecciones completadas para búsqueda rápida
       const completedLessonIds = new Set(completedLessonsData.lessons.map(lesson => lesson.id));
       
-      // Marcar qué lecciones están completadas
-      const lessonsWithProgress = allLessons.map(lesson => ({
-        ...lesson,
-        completed: completedLessonIds.has(lesson.id),
-        completedAt: completedLessonsData.lessons.find(completedLesson => 
-          completedLesson.id === lesson.id
-        )?.completedAt || null
-      }));
+      // Si el curso ya tiene lecciones del backend, actualizarlas
+      const lessonsWithProgress = course.lessons && course.lessons.length > 0
+        ? course.lessons.map(lesson => ({
+            ...lesson,
+            completed: completedLessonIds.has(lesson.id),
+            completedAt: completedLessonsData.lessons.find(completedLesson => 
+              completedLesson.id === lesson.id
+            )?.completedAt || null
+          }))
+        : [];
 
       return {
         ...course,
         lessons: lessonsWithProgress,
-        totalLessons: allLessons.length,
         completedLessons: completedLessonsData.totalCompleted,
         // Recalcular el progreso basado en lecciones completadas vs totales
-        progress: allLessons.length > 0 ? (completedLessonsData.totalCompleted / allLessons.length) * 100 : 0
+        progress: course.totalLessons && course.totalLessons > 0 
+          ? (completedLessonsData.totalCompleted / course.totalLessons) * 100 
+          : 0
       };
     } catch (err) {
       console.error(`Error obteniendo detalles de lecciones para curso ${course.id}:`, err);

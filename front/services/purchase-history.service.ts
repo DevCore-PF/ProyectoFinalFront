@@ -6,7 +6,7 @@ export const purchaseHistoryService = {
   // Obtener historial de pagos del usuario autenticado
   async getMyPaymentHistory(token: string): Promise<PaymentTransaction[]> {
     try {
-      console.log('💳 Obteniendo historial de pagos...');
+      // Fetching payment history
       
       const response = await fetch(`${API_URL}/payments/my-payments`, {
         method: 'GET',
@@ -16,7 +16,7 @@ export const purchaseHistoryService = {
         },
       });
 
-      console.log('📡 Respuesta historial de pagos:', response.status, response.statusText);
+      // Response received
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -39,7 +39,7 @@ export const purchaseHistoryService = {
       }
 
       const result = await response.json();
-      console.log('✅ Historial de pagos obtenido:', result);
+      // Payment history fetched successfully
       return result;
     } catch (error) {
       console.error('💥 Error getMyPaymentHistory:', error);

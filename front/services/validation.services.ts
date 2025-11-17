@@ -1,5 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api"
 import { TeacherValidationStatus } from "@/types/professionalValidation.types";
 import { ProfessorProfileResponse } from "@/types/professor.types";
 import { User } from "@/types/user.types";
@@ -57,7 +56,6 @@ export const getUserWithProfileService = async (
     }
 
     const data = await response.json();
-    console.log("data de getuserwithprofileserivce", data);
 
     return data;
   } catch (error) {

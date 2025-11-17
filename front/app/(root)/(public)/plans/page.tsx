@@ -34,22 +34,22 @@ const PlansPage = () => {
 
         <PricingHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="relative min-h-[600px]">
+        <div className="relative min-h-[800px] sm:min-h-[900px] md:min-h-[600px]">
           <div
-            className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+            className={`transition-all duration-500 ease-in-out ${
               activeTab === "memberships"
-                ? "opacity-100 translate-x-0 pointer-events-auto"
-                : "opacity-0 -translate-x-8 pointer-events-none"
+                ? "opacity-100 translate-x-0 relative"
+                : "opacity-0 -translate-x-8 absolute inset-0 pointer-events-none"
             }`}
           >
             <MembershipPlans />
           </div>
 
           <div
-            className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+            className={`transition-all duration-500 ease-in-out ${
               activeTab === "courses"
-                ? "opacity-100 translate-x-0 pointer-events-auto"
-                : "opacity-0 translate-x-8 pointer-events-none"
+                ? "opacity-100 translate-x-0 relative"
+                : "opacity-0 translate-x-8 absolute inset-0 pointer-events-none"
             }`}
           >
             <IndividualCourses />

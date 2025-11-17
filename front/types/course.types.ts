@@ -66,6 +66,12 @@ export interface CourseReview {
   rating: number; /////del 1 al 5 porque son estrellitas
   feedback: string;
   createdAt: string;
+  // Campos de moderación
+  isCensored: boolean;
+  moderationStatus: 'approved' | 'pending' | 'censored' | 'rejected';
+  toxicityScore?: number;
+  moderationReason?: string;
+  requiresManualReview?: boolean;
   user: {
     id: string;
     name: string;

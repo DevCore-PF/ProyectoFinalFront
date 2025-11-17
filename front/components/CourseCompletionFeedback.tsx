@@ -50,9 +50,11 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
       // Llamar callback para informar que se envió el feedback
       onFeedbackSubmitted();
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting feedback:', error);
-      toastError('Error al enviar el feedback. Inténtalo de nuevo.');
+      // Mostrar el mensaje específico del backend si existe
+      const errorMessage = error?.message || 'Error al enviar el feedback. Inténtalo de nuevo.';
+      toastError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

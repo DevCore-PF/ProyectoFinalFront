@@ -142,11 +142,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       ? "bg-amber-500/10 text-amber-200 border-amber-500/20"
       : "bg-slate-500/10 text-slate-200 border-slate-500/20";
   };
-  const getVisibilityBadge = (visibility: string) => {
-    return visibility === "PUBLICO"
-      ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
-      : "bg-amber-500/10 text-amber-200 border-amber-500/20";
-  };
+
 
   /* ============[ ESTILOS BADGE CATEGORY ]============= */
   const getCategoryBadge = (category: string) => {

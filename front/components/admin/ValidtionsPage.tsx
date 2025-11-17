@@ -78,7 +78,6 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
   const courseValidations = useMemo(() => {
     const coursesWithValidation: CourseValidation[] = courses.map((course) => ({
       id: course.id,
-
       title: course.title,
       professorName: course.professor?.user?.name || "Sin profesor",
       professorEmail: course.professor?.user?.email || "",
@@ -87,6 +86,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
       createdAt: course.createdAt,
       price: course.price,
       difficulty: course.difficulty,
+      visibility: course.visibility,
     }));
 
     // Filtrar por estado
@@ -164,16 +164,17 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
 
   const getStatusLabel = (status: string) => {
     const labels = {
-      pending: "Pendiente",
-      approved: "Aprobado",
-      rejected: "Rechazado",
       "EN REVISION": "En Revisión",
       PUBLICADO: "Publicado",
       RECHAZADO: "Rechazado",
     };
     return labels[status as keyof typeof labels] || status;
   };
-
+  const getVisibilityBadge = (visibility: string) => {
+    return visibility === "PUBLICO"
+      ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
+      : "bg-amber-500/10 text-amber-200 border-amber-500/20";
+  };
   // ============[ LOADER  ]============
   const isLoading = isLoadingProfiles || isLoadingCourses;
   useEffect(() => {
@@ -504,6 +505,10 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
                         Estado
                       </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                        Visibilidad
+                      </th>
+
                       <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold">
                         Acciones
                       </th>
@@ -555,6 +560,17 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                             )}`}
                           >
                             {getStatusLabel(course.status)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <span
+                            className={`px-3 py-1 rounded-lg text-xs font-medium border ${getVisibilityBadge(
+                              course.visibility
+                            )}`}
+                          >
+                            {course.visibility === "PUBLICO"
+                              ? "Público"
+                              : "Privado"}
                           </span>
                         </td>
                         <td className="px-4 py-4">

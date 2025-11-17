@@ -21,7 +21,7 @@ import ValidationsPage from "@/components/admin/ValidtionsPage";
 
 import { HiCash } from "react-icons/hi";
 import CourseValidationDetails from "@/components/admin/adminCourses/CourseValidationDetails";
-import FinancesPage from "@/components/admin/FinancesPage";
+import FinancesPage from "@/components/admin/adminFinances/FinancesPage";
 import MembershipPlans from "@/components/Plans/MembershipPlans";
 import Memberships from "@/components/admin/Memberships";
 import AdminForm from "@/components/admin/AdminForm";

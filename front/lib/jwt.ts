@@ -20,13 +20,13 @@ export function decodeToken(token: string): JwtPayload | null {
     
     // Verificar expiración
     if (payload.exp && Date.now() >= payload.exp * 1000) {
-      console.log('⚠️ Token expirado');
+      console.log('Token expirado');
       return null;
     }
     
     return payload as JwtPayload;
   } catch (error) {
-    console.error('❌ Error al decodificar token:', error);
+    console.error('Error al decodificar token:', error);
     return null;
   }
 }

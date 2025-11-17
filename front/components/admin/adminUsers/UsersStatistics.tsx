@@ -1,5 +1,5 @@
 import { useAdmin } from "@/context/AdminContext";
-import { getAllUsersService } from "@/services/admin.services";
+import { getAllUsersService } from "@/services/admin.service";
 import { User } from "@/types/user.types";
 import { useEffect } from "react";
 import { HiUsers } from "react-icons/hi";

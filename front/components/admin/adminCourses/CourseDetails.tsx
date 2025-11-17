@@ -20,6 +20,7 @@ import {
   HiPlay,
   HiDocumentText,
 } from "react-icons/hi";
+import { HiExclamationTriangle } from "react-icons/hi2";
 import { HiLockClosed, HiLockOpen } from "react-icons/hi";
 import Loader from "../../Loaders/Loader";
 
@@ -27,24 +28,39 @@ import { Course, CourseVisibility } from "@/types/course.types";
 import TinyLoader from "../../Loaders/TinyLoader";
 import Image from "next/image";
 import { CourseReview } from "@/types/admin.types";
+import BanReasonModal from "../adminUsers/BanReasonModal";
 
 interface CourseDetailsProps {
   courseId: string;
   onBack: () => void;
 }
-
+export interface UserFeedback {
+  id: string;
+  name: string;
+}
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
-  const { courses, activateDeactivateCourse, changeVisibility, fetchFeedback } =
-    useAdmin();
+  const {
+    courses,
+    activateDeactivateCourse,
+    changeVisibility,
+    fetchFeedback,
+    deactivateUser,
+  } = useAdmin();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
-    new Set()
-  );
+
   const [loadingAction, setLoadingAction] = useState(false);
   const [localFeedbacks, setLocalFeedbacks] = useState<CourseReview[]>([]);
   const [loadingVisibility, setLoadingVisibility] = useState(false);
+  const [banUnbanUserLoading, setBanUnbanUserLoading] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserFeedback | null>(null);
+  const [banReason, setBanReason] = useState("");
+  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
+    new Set()
+  );
 
+  const [bannedUsers, setBannedUsers] = useState<Set<string>>(new Set());
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
     if (foundCourse) {
@@ -197,6 +213,43 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
         }
       },
       () => {}
+    );
+  };
+  const handleBanUnban = async () => {
+    setShowBanModal(true);
+  };
+
+  const confirmBan = (user: UserFeedback) => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+    if (banReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+
+    setShowBanModal(false);
+
+    toastConfirm(
+      "Banear usuario",
+      async () => {
+        setBanUnbanUserLoading(true);
+        try {
+          await deactivateUser(user.id, banReason);
+          setBannedUsers((prev) => new Set([...prev, user.id]));
+          toastSuccess("Usuario baneado");
+          setBanReason("");
+          setCurrentUser(user);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setBanUnbanUserLoading(false);
+        }
+      },
+      () => {
+        setBanReason("");
+      }
     );
   };
 
@@ -618,48 +671,122 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               </div>
 
               {localFeedbacks.length > 0 ? (
-                localFeedbacks.map((f) => {
-                  return (
-                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
-                          <span className="text-font-light font-bold text-lg">
-                            {f.user.image ? (
-                              <Image
-                                alt="Foto de pefil del usuario"
-                                src={f.user.image}
-                                width={100}
-                                height={100}
-                                className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0"
-                              ></Image>
-                            ) : (
-                              `${f.user.name[0].toUpperCase()}`
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="">
-                              <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
-                                {f.user.name}
-                              </h4>
+                <>
+                  {localFeedbacks.map((f) => {
+                    const isToxic = f.toxicityScore && f.toxicityScore > 0.5;
 
-                              <p className="text-slate-400 text-xs">
-                                {formatDate(f.createdAt)}
-                              </p>
-                            </div>
-                            {renderStars(f.rating)}
+                    return (
+                      <div
+                        key={f.id}
+                        className={`border rounded-xl p-5 mb-4 ${
+                          isToxic
+                            ? "bg-amber-900/20 border-amber-500/50"
+                            : "bg-slate-800/30 border-slate-700/50"
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
+                            <span className="text-font-light font-bold text-lg">
+                              {f.user.image ? (
+                                <Image
+                                  alt="Foto de perfil del usuario"
+                                  src={f.user.image}
+                                  width={100}
+                                  height={100}
+                                  className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0"
+                                />
+                              ) : (
+                                `${f.user.name[0].toUpperCase()}`
+                              )}
+                            </span>
                           </div>
 
-                          {/* Feedback */}
-                          <p className="text-slate-300 text-sm leading-relaxed">
-                            {f.feedback}
-                          </p>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="">
+                                <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
+                                  {f.user.name}
+                                  {isToxic && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/50 text-amber-300 text-xs font-medium">
+                                      <HiExclamationTriangle className="w-4 h-4" />
+                                      Contenido inapropiado
+                                    </span>
+                                  )}
+                                </h4>
+                                <p className="text-slate-400 text-xs">
+                                  {formatDate(f.createdAt)}
+                                </p>
+                              </div>
+                              {f.rating && renderStars(f.rating)}
+                            </div>
+
+                            {/* Feedback */}
+                            <p
+                              className={`text-sm leading-relaxed mb-3 ${
+                                isToxic ? "text-amber-200/80" : "text-slate-300"
+                              }`}
+                            >
+                              {f.feedback}
+                            </p>
+
+                            {/* Botón de banear si es tóxico */}
+                            {isToxic && (
+                              <button
+                                onClick={() => {
+                                  if (!bannedUsers.has(f.user.id)) {
+                                    setCurrentUser(f.user);
+                                    setShowBanModal(true);
+                                  }
+                                }}
+                                disabled={
+                                  banUnbanUserLoading ||
+                                  bannedUsers.has(f.user.id)
+                                }
+                                className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 border px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                                  bannedUsers.has(f.user.id)
+                                    ? "border-slate-500/50 text-slate-400"
+                                    : "hover:bg-slate-700/90 border-amber-300/50 text-amber-300"
+                                }`}
+                              >
+                                {banUnbanUserLoading &&
+                                currentUser?.id === f.user.id ? (
+                                  <div className="flex gap-2 items-center">
+                                    <TinyLoader />
+                                    Baneando usuario
+                                  </div>
+                                ) : bannedUsers.has(f.user.id) ? (
+                                  <>
+                                    <HiBan className="w-4 h-4" />
+                                    Usuario baneado
+                                  </>
+                                ) : (
+                                  <>
+                                    <HiBan className="w-4 h-4" />
+                                    Banear por comportamiento inapropiado
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+
+                  {/* Modal ÚNICO fuera del map */}
+                  {showBanModal && currentUser && (
+                    <BanReasonModal
+                      banReason={banReason}
+                      setBanReason={setBanReason}
+                      onCancel={() => {
+                        setShowBanModal(false);
+                        setBanReason("");
+                        setCurrentUser(null);
+                      }}
+                      onConfirm={() => confirmBan(currentUser)}
+                    />
+                  )}
+                </>
               ) : (
                 <div className="text-center py-12">
                   <HiStar className="w-16 h-16 text-slate-600 mx-auto mb-4" />

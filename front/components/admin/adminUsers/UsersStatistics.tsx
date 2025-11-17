@@ -1,5 +1,5 @@
 import { useAdmin } from "@/context/AdminContext";
-import { getAllUsersService } from "@/services/admin.services";
+import { getAllUsersService } from "@/services/admin.service";
 import { User } from "@/types/user.types";
 import { useEffect } from "react";
 import { HiUsers } from "react-icons/hi";
@@ -26,7 +26,7 @@ const UsersStatistics = () => {
         </div>
       </div>
       <h3 className="text-slate-400 text-sm mb-1">Total Usuarios</h3>
-      <p className="text-xl font-bold text-white">{`${users.length}`}</p>
+      <p className="text-xl font-bold text-font-light">{`${users.length}`}</p>
     </div>
   );
 };

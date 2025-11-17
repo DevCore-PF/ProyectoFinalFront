@@ -77,6 +77,11 @@ export const getCurrentUserService = async (
       throw new Error("Error obteniendo usuario");
     }
     const data = await response.json();
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     return data;
   } catch (error) {
     console.error("Error al conseguir el servicio atual: ", error);
@@ -261,7 +266,6 @@ export const getUserProfileService = async (
     throw error;
   }
 };
-
 
 export const updateUserProfileService = async (
   data: UpdateUserFormData,

@@ -1,10 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { courseFeedbackService, CourseFeedbackRequest } from '@/services/course-feedback.service';
-import { useAuth } from '@/context/UserContext';
-import { HiStar, HiCheck, HiHeart } from 'react-icons/hi';
-import { toastSuccess, toastError } from '@/helpers/alerts.helper';
+import React, { useState } from "react";
+import {
+  courseFeedbackService,
+  CourseFeedbackRequest,
+} from "@/services/course-feedback.service";
+import { useAuth } from "@/context/UserContext";
+import { HiStar, HiCheck, HiHeart } from "react-icons/hi";
+import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 
 interface CourseCompletionFeedbackProps {
   courseId: string;
@@ -13,16 +16,13 @@ interface CourseCompletionFeedbackProps {
   onCancel?: () => void;
 }
 
-export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> = ({
-  courseId,
-  courseTitle,
-  onFeedbackSubmitted,
-  onCancel,
-}) => {
+export const CourseCompletionFeedback: React.FC<
+  CourseCompletionFeedbackProps
+> = ({ courseId, courseTitle, onFeedbackSubmitted, onCancel }) => {
   const { token } = useAuth();
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState<string>('');
+  const [feedback, setFeedback] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
@@ -32,7 +32,7 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
 
   const handleSubmit = async () => {
     if (!token || rating === 0) {
-      toastError('Por favor selecciona una calificación');
+      toastError("Por favor selecciona una calificación");
       return;
     }
 
@@ -43,18 +43,28 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
         feedback: feedback.trim() || undefined,
       };
 
-      await courseFeedbackService.submitCourseFeedback(courseId, feedbackData, token);
+      await courseFeedbackService.submitCourseFeedback(
+        courseId,
+        feedbackData,
+        token
+      );
       setSubmitted(true);
-      toastSuccess('¡Gracias por tu feedback!');
-      
+      toastSuccess("¡Gracias por tu feedback!");
+
       // Llamar callback para informar que se envió el feedback
       onFeedbackSubmitted();
+<<<<<<< HEAD
       
     } catch (error: any) {
       console.error('Error submitting feedback:', error);
       // Mostrar el mensaje específico del backend si existe
       const errorMessage = error?.message || 'Error al enviar el feedback. Inténtalo de nuevo.';
       toastError(errorMessage);
+=======
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      toastError("Error al enviar el feedback. Inténtalo de nuevo.");
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
     } finally {
       setIsSubmitting(false);
     }
@@ -88,19 +98,21 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
         <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
           <span className="text-3xl">🎉</span>
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">
+        <h2 className="text-2xl font-bold text-font-light mb-2">
           ¡Felicitaciones!
         </h2>
         <p className="text-gray-300">
-          Has completado exitosamente el curso{' '}
-          <span className="font-semibold text-blue-400">&ldquo;{courseTitle}&rdquo;</span>
+          Has completado exitosamente el curso{" "}
+          <span className="font-semibold text-blue-400">
+            &ldquo;{courseTitle}&rdquo;
+          </span>
         </p>
       </div>
 
       {/* Sección de calificación */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <HiHeart className="w-5 h-5 text-red-400" />
+        <h3 className="text-lg font-semibold text-font-light mb-4 flex items-center gap-2">
+          <HiHeart className="w-5 h-5 text-amber-400" />
           ¿Cómo calificarías este curso?
         </h3>
         <div className="flex justify-center gap-2 mb-4">
@@ -116,8 +128,8 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
               <HiStar
                 className={`w-8 h-8 ${
                   star <= (hoveredRating || rating)
-                    ? 'text-yellow-400'
-                    : 'text-gray-600'
+                    ? "text-yellow-400"
+                    : "text-gray-600"
                 } transition-colors`}
               />
             </button>
@@ -125,27 +137,29 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
         </div>
         {rating > 0 && (
           <p className="text-center text-sm text-gray-400">
-            {rating === 1 && 'Necesita mucho trabajo'}
-            {rating === 2 && 'Podría mejorar'}
-            {rating === 3 && 'Estuvo bien'}
-            {rating === 4 && 'Muy bueno'}
-            {rating === 5 && '¡Excelente!'}
+            {rating === 1 && "Necesita mucho trabajo"}
+            {rating === 2 && "Podría mejorar"}
+            {rating === 3 && "Estuvo bien"}
+            {rating === 4 && "Muy bueno"}
+            {rating === 5 && "¡Excelente!"}
           </p>
         )}
       </div>
 
       {/* Sección de comentarios */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white mb-4">
+        <h3 className="text-lg font-semibold text-font-light mb-4">
           Cuéntanos tu experiencia (opcional)
         </h3>
         <textarea
           value={feedback}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFeedback(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setFeedback(e.target.value)
+          }
           placeholder="¿Qué fue lo que más te gustó del curso? ¿Alguna sugerencia de mejora?"
           rows={4}
           disabled={isSubmitting}
-          className="w-full p-4 bg-slate-700/50 border border-slate-600/50 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-white placeholder-gray-400 transition-colors"
+          className="w-full p-4 bg-slate-700/50 border border-slate-600/50 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-font-light placeholder-gray-400 transition-colors"
           maxLength={500}
         />
         <div className="flex justify-end mt-2">
@@ -167,7 +181,11 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
         <button
           onClick={handleSubmit}
           disabled={rating === 0 || isSubmitting}
+<<<<<<< HEAD
           className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2 cursor-pointer"
+=======
+          className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-font-light rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
         >
           {isSubmitting ? (
             <>

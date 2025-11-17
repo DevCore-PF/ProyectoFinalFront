@@ -1,10 +1,7 @@
 "use client";
-import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/UserContext";
 //Next
 import { courses } from "@/helpers/moks";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 //Incos
 import { IoArrowForward } from "react-icons/io5";
 

@@ -218,7 +218,7 @@ export const teacherManagementOptions = [
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     },
   },
 ];
@@ -229,7 +229,7 @@ export const studentManagementOptions = [
     title: "Ajustes de perfil",
     icon: <FaUser className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     },
   },
   {
@@ -247,7 +247,7 @@ export const studentManagementOptions = [
     title: "Historial de compras",
     icon: <HiShoppingCart className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/purchase-history';
+      window.location.href = "/purchase-history";
     },
   },
   // {
@@ -386,21 +386,21 @@ export const faqs = [
 export const recommendedCourses = [
   {
     id: "1",
-    name: "React Avanzado",
+    title: "React Avanzado",
     description: "Domina hooks, context y patrones avanzados",
     duration: "12 horas",
     rating: "4.8",
   },
   {
     id: "2",
-    name: "TypeScript desde cero",
+    title: "TypeScript desde cero",
     description: "Aprende tipado estático para JavaScript",
     duration: "8 horas",
     rating: "4.9",
   },
   {
     id: "3",
-    name: "Node.js y Express",
+    title: "Node.js y Express",
     description: "Crea APIs robustas con Node",
     duration: "15 horas",
     rating: "4.7",
@@ -621,19 +621,19 @@ export const faqsByCategory = {
   ],
 };
 
-export   const getDifficultyColors = (difficulty: string) => {
-    switch (difficulty?.toLowerCase()) {
-      case "principiante":
-      case "beginner":
-      case "básico":
-        return "bg-green-400/10 border border-green-400/30 text-green-400";
-      case "intermedio":
-      case "intermediate":
-        return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
-      case "avanzado":
-      case "advanced":
-        return "bg-red-400/10 border border-red-400/30 text-red-400";
-      default:
-        return "bg-slate-700/50 text-slate-300";
-    }
-  };
+export const getDifficultyColors = (difficulty: string) => {
+  switch (difficulty?.toLowerCase()) {
+    case "principiante":
+    case "beginner":
+    case "básico":
+      return "bg-green-400/10 border border-green-400/30 text-green-400";
+    case "intermedio":
+    case "intermediate":
+      return "bg-yellow-400/10 border border-yellow-400/30 text-yellow-400";
+    case "avanzado":
+    case "advanced":
+      return "bg-amber-400/10 border border-amber-400/30 text-amber-400";
+    default:
+      return "bg-slate-700/50 text-slate-300";
+  }
+};

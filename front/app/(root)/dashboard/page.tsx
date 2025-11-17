@@ -5,16 +5,14 @@ import StudentApplicationsCard from "@/components/dashboard/StudentApplicationsC
 import StudentQuickAccess from "@/components/dashboard/StudentQuickAccess";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { useAuth } from "@/context/UserContext";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { usePurchasedCourses } from "@/hooks/usePurchasedCourses";
 import { useStudentMetrics } from "@/hooks/useStudentMetrics";
 import Loader from "@/components/Loaders/Loader";
 
 const DashboardPage = () => {
   const { user, isLoading } = useAuth();
-  const router = useRouter();
-  const { purchasedCourses, loading: coursesLoading, error: coursesError } = usePurchasedCourses();
+  const { loading: coursesLoading, error: coursesError } =
+    usePurchasedCourses();
   const {
     totalCourses,
     completedCourses,
@@ -23,26 +21,16 @@ const DashboardPage = () => {
     totalLessons,
     completedLessons,
     loading: metricsLoading,
-    error: metricsError
+    error: metricsError,
   } = useStudentMetrics();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (!user || user.role !== "student") {
-        router.push("/");
-      }
-    }
-  }, [user, isLoading, router]);
-
   if (isLoading || coursesLoading || metricsLoading) return <Loader />;
-
-  if (!user || user.role !== "student") return <Loader />;
 
   if (coursesError || metricsError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 text-lg mb-4">
+          <p className="text-amber-400 text-lg mb-4">
             Error al cargar el dashboard: {coursesError || metricsError}
           </p>
           <button
@@ -77,7 +65,7 @@ const DashboardPage = () => {
 
         {/* Acceso rápido con datos reales */}
         <div className="mb-4 md:mb-10">
-          <StudentQuickAccess 
+          <StudentQuickAccess
             totalCourses={totalCourses}
             completedCourses={completedCourses}
           />

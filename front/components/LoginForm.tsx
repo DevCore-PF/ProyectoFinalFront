@@ -40,6 +40,7 @@ const LoginForm = () => {
   const [loadingResender, setLoadingResender] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -90,14 +91,8 @@ const LoginForm = () => {
       setShowEmailNotVerified(true);
     }
   }, [user]);
-  
-  useEffect(() => {
-    if (!isLoading && user && user.isEmailVerified) {
-      router.push("/");
-    }
-  }, [user, isLoading, router]);
+ 
 
-  // Mostrar mensaje de éxito si viene desde reset de contraseña
   useEffect(() => {
     const passwordReset = searchParams.get('passwordReset');
     if (passwordReset === 'true') {
@@ -136,7 +131,6 @@ const LoginForm = () => {
     setShowPassword(!showPassword);
   };
   if (isLoading) return <Loader />;
-  if (user && user.isEmailVerified) return <Loader />;
   return (
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-6">

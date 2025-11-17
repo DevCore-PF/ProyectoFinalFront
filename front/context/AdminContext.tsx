@@ -10,45 +10,41 @@ import {
 import {
   activateDeactivateCourseService,
   activateUserService,
+  approveCourseService,
+  approveProfileService,
   changeVisivilityService,
   deactivateUserService,
-  filterCoursesService,
   getActiveUsersService,
+  getAllCoursesAdminService,
+  getAllProfessorProfilesService,
   getAllUsersService,
   getCourseFeedbackService,
   getInactiveUsersService,
   getUserByIdService,
-} from "@/services/admin.services";
+  rejectCourseService,
+  rejectProfileService,
+} from "@/services/admin.service";
 import { User } from "@/types/user.types";
-import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
-import { CourseFilters, ValidationRequest } from "@/types/admin.types";
-import { useAuth } from "./UserContext";
+import { Course, CourseVisibility } from "@/types/course.types";
 import {
-  getAllCoursesService,
-  getCourseByIdService,
-} from "@/services/course.services";
-
-interface AdminStats {
-  totalUsers: number;
-  totalCourses: number;
-  totalRevenue: number;
-  pendingValidations: number;
-  activeTeachers: number;
-  monthlyGrowth: number;
-}
+  CourseReview,
+  GetAllCoursesAdminParams,
+  ProfessorProfileAdmin,
+} from "@/types/admin.types";
+import { useAuth } from "./UserContext";
+import { getCourseByIdService } from "@/services/course.services";
 
 interface AdminContextType {
   // Data
   users: User[];
   courses: Course[];
-  validationRequests: ValidationRequest[];
-  stats: AdminStats | null;
   feedbacks: CourseReview[];
+  professorProfiles: ProfessorProfileAdmin[];
 
   // Loading states
   isLoadingUsers: boolean;
   isLoadingCourses: boolean;
-  isLoadingValidations: boolean;
+  isLoadingProfiles: boolean;
   isLoadingInactive: boolean;
   isLoadingActive: boolean;
   isLoadingFeedbacks: boolean;
@@ -56,29 +52,35 @@ interface AdminContextType {
   // Errors
   usersError: string | null;
   coursesError: string | null;
-  validationsError: string | null;
+  profileError: string | null;
   activeError: string | null;
   inactiveError: string | null;
   feedbacksError: string | null;
 
   // Actions
   refreshUsers: () => Promise<void>;
-  refreshCourses: () => Promise<void>;
-  refreshValidations: () => Promise<void>;
+  refreshCourses: (filters?: GetAllCoursesAdminParams) => Promise<void>;
+  refreshProfiles: () => Promise<void>;
   refreshAll: () => Promise<void>;
+  silentRefreshCourses: () => Promise<void>;
+  silentRefreshProfiles: () => Promise<void>;
   fetchUserById: (id: string) => Promise<User>;
   fetchActiveUser: () => Promise<User[]>;
   fetchInactiveUser: () => Promise<User[]>;
-  fetchCourseById: (userId: string) => Promise<Course | undefined>; /////////////para el profesor
+  fetchCourseById: (userId: string) => Promise<Course | undefined>;
+  fetchProfessorProfiles: () => Promise<ProfessorProfileAdmin[]>;
   activateDeactivateCourse: (CourseId: string) => Promise<void>;
   fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
 
   // User actions
-  deactivateUser: (id: string) => Promise<void>;
+  deactivateUser: (id: string, banReason: string) => Promise<void>;
   activateUser: (id: string) => Promise<void>;
   changeVisibility: (id: string) => Promise<void>;
+  approveProfile: (id: string) => Promise<void>;
+  rejectProfile: (id: string, reason: string) => Promise<void>;
+  approveCourse: (id: string) => Promise<void>;
+  rejectCourse: (id: string, reason: string) => Promise<void>;
   // Validation actions
-  //   approveValidation: (validationId: string) => Promise<void>;
   //   rejectValidation: (validationId: string, reason?: string) => Promise<void>;
 }
 
@@ -88,16 +90,15 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // State
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [validationRequests, setValidationRequests] = useState<
-    ValidationRequest[]
+  const [professorProfiles, setProfessorProfile] = useState<
+    ProfessorProfileAdmin[]
   >([]);
-  const [stats, setStats] = useState<AdminStats | null>(null);
   const [feedbacks, setFeedbacks] = useState<CourseReview[]>([]);
 
   // Loading states
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [isLoadingCourses, setIsLoadingCourses] = useState(false);
-  const [isLoadingValidations, setIsLoadingValidations] = useState(false);
+  const [isLoadingProfiles, setIsLoadingProfiles] = useState(false);
   const [isLoadingActive, setIsLoadingActive] = useState(false);
   const [isLoadingInactive, setIsLoadingInactive] = useState(false);
   const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(false);
@@ -105,7 +106,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // Error states
   const [usersError, setUsersError] = useState<string | null>(null);
   const [coursesError, setCoursesError] = useState<string | null>(null);
-  const [validationsError, setValidationsError] = useState<string | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [activeError, setActiveError] = useState<string | null>(null);
   const [inactiveError, setInactiveError] = useState<string | null>(null);
   const [feedbacksError, setFeedbacksError] = useState<string | null>(null);
@@ -173,12 +174,21 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (filters?: {
+    title?: string;
+    category?: string;
+    difficulty?: string;
+    isActive?: boolean;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
     setIsLoadingCourses(true);
     setCoursesError(null);
     try {
-      const data = await filterCoursesService();
-      setCourses(data);
+      if (token) {
+        const data = await getAllCoursesAdminService(token, filters);
+        setCourses(data);
+      }
     } catch (error) {
       setCoursesError("Error al cargar cursos");
       console.error("Error fetching courses:", error);
@@ -216,21 +226,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       setIsLoadingFeedbacks(false);
     }
   };
-  // Fetch Validations (implementar tu servicio)
-  const fetchValidations = async () => {
-    setIsLoadingValidations(true);
-    setValidationsError(null);
-    try {
-      // const data = await getAllValidationsService();
-      // setValidationRequests(data);
-      // calculateStats(users, courses, data);
-    } catch (error) {
-      setValidationsError("Error al cargar validaciones");
-      console.error("Error fetching validations:", error);
-    } finally {
-      setIsLoadingValidations(false);
-    }
-  };
 
   const activateUser = async (userId: string) => {
     try {
@@ -246,10 +241,10 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const deactivateUser = async (userId: string) => {
+  const deactivateUser = async (userId: string, banReason: string) => {
     try {
       if (token) {
-        await deactivateUserService(userId, token);
+        await deactivateUserService(userId, token, banReason);
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u))
         );
@@ -302,109 +297,114 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //////////////////////////////////// Validations
+  const fetchProfessorProfiles = async () => {
+    setIsLoadingProfiles(true);
+    setProfileError(null);
+    try {
+      if (token) {
+        const data = await getAllProfessorProfilesService(token);
+        setProfessorProfile(data);
+        return data;
+      }
+    } catch (error) {
+      setProfileError("Error al cargar perfiles");
+      console.error("Error fetching validations:", error);
+    } finally {
+      setIsLoadingProfiles(false);
+    }
+  };
+
+  const approveProfile = async (professorId: string) => {
+    try {
+      if (token) {
+        await approveProfileService(token, professorId);
+        setProfessorProfile((prev) => prev.filter((v) => v.id !== professorId));
+        await refreshProfiles();
+      }
+    } catch (error) {
+      console.error("Error al aprobar perfil:", error);
+      throw error;
+    }
+  };
+
+  const rejectProfile = async (professorId: string, reason: string) => {
+    try {
+      if (token) {
+        const data = await rejectProfileService(token, professorId, reason);
+        setProfessorProfile((prev) => prev.filter((p) => p.id === professorId));
+        await refreshProfiles();
+      }
+    } catch (error) {
+      console.error("Error al rechazar perfil:", error);
+      throw error;
+    }
+  };
+
+  const approveCourse = async (courseId: string) => {
+    try {
+      if (token) {
+        await approveCourseService(token, courseId);
+        changeVisibility(courseId);
+        setCourses((prev) => prev.filter((v) => v.id !== courseId));
+        await refreshCourses();
+      }
+    } catch (error) {
+      console.error("Error al aprobar curso:", error);
+      throw error;
+    }
+  };
+
+  const rejectCourse = async (courseId: string, reason: string) => {
+    try {
+      if (token) {
+        await rejectCourseService(token, courseId, reason);
+        setCourses((prev) => prev.filter((v) => v.id !== courseId));
+        await refreshCourses();
+      }
+    } catch (error) {
+      console.error("Error al aprobar curso:", error);
+      throw error;
+    }
+  };
   ///////////////////////////////////// Refresh functions
+  const silentRefreshProfiles = async () => {
+    try {
+      if (token) {
+        const data = await getAllProfessorProfilesService(token);
+        setProfessorProfile(data);
+      }
+    } catch (error) {
+      console.error("Error en silent refresh profiles:", error);
+    }
+  };
+
+  const silentRefreshCourses = async () => {
+    try {
+      if (token) {
+        const data = await getAllCoursesAdminService(token);
+        setCourses(data);
+      }
+    } catch (error) {
+      console.error("Error en silent refresh courses:", error);
+    }
+  };
   const refreshUsers = async () => {
     await fetchUsers();
   };
 
-  const refreshCourses = async () => {
-    await fetchCourses();
+  const refreshCourses = async (filters?: GetAllCoursesAdminParams) => {
+    await fetchCourses(filters);
   };
 
-  const refreshValidations = async () => {
-    await fetchValidations();
+  const refreshProfiles = async () => {
+    await fetchProfessorProfiles();
   };
 
   const refreshAll = async () => {
-    await Promise.all([fetchUsers(), fetchCourses(), fetchValidations()]);
+    await Promise.all([fetchUsers(), fetchCourses(), fetchProfessorProfiles()]);
   };
-  ///////////////////////////////////////// User actions
-  //   const banUser = async (userId: string) => {
-  //     try {
-  //       // await banUserService(userId);
-  //       setUsers(prev => prev.map(u =>
-  //         u.id === userId ? { ...u, isActive: false, status: 'banned' } : u
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error banning user:', error);
-  //       throw error;
-  //     }
-  //   };
 
-  //   const activateUser = async (userId: string) => {
-  //     try {
-  //       // await activateUserService(userId);
-  //       setUsers(prev => prev.map(u =>
-  //         u.id === userId ? { ...u, isActive: true, status: 'active' } : u
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error activating user:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const deleteUser = async (userId: string) => {
-  //     try {
-  //       // await deleteUserService(userId);
-  //       setUsers(prev => prev.filter(u => u.id !== userId));
-  //     } catch (error) {
-  //       console.error('Error deleting user:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  // Validation actions
-  //   const approveValidation = async (validationId: string) => {
-  //     try {
-  //       // await approveValidationService(validationId);
-  //       setValidationRequests(prev =>
-  //         prev.filter(v => v.id !== validationId)
-  //       );
-  //       await refreshUsers(); // Refrescar porque el usuario puede cambiar
-  //     } catch (error) {
-  //       console.error('Error approving validation:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const rejectValidation = async (validationId: string, reason?: string) => {
-  //     try {
-  //       // await rejectValidationService(validationId, reason);
-  //       setValidationRequests(prev =>
-  //         prev.filter(v => v.id !== validationId)
-  //       );
-  //     } catch (error) {
-  //       console.error('Error rejecting validation:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  // Course actions
-  //   const deactivateCourse = async (courseId: string) => {
-  //     try {
-  //       // await deactivateCourseService(courseId);
-  //       setCourses(prev => prev.map(c =>
-  //         c.id === courseId ? { ...c, status: 'RECHAZADO' } : c
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error deactivating course:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  //   const activateCourse = async (courseId: string) => {
-  //     try {
-  //       // await activateCourseService(courseId);
-  //       setCourses(prev => prev.map(c =>
-  //         c.id === courseId ? { ...c, status: 'PUBLICADO' } : c
-  //       ));
-  //     } catch (error) {
-  //       console.error('Error activating course:', error);
-  //       throw error;
-  //     }
-  //   };
-
-  // Initial fetch
   useEffect(() => {
     refreshAll();
   }, []);
@@ -412,27 +412,28 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const value: AdminContextType = {
     users,
     courses,
-    validationRequests,
-    stats,
+    // stats,
     isLoadingUsers,
     isLoadingCourses,
-    isLoadingValidations,
+    isLoadingProfiles,
     isLoadingActive,
     isLoadingInactive,
     activeError,
     inactiveError,
     usersError,
     coursesError,
-    validationsError,
+    profileError,
     refreshUsers,
     refreshCourses,
-    refreshValidations,
+    refreshProfiles,
     refreshAll,
     fetchUserById,
     deactivateUser,
     fetchActiveUser,
     fetchInactiveUser,
     fetchCourseById,
+    fetchProfessorProfiles,
+    professorProfiles,
     activateUser,
     activateDeactivateCourse,
     changeVisibility,
@@ -440,11 +441,12 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     isLoadingFeedbacks,
     feedbacksError,
     fetchFeedback,
-    // deleteUser,
-    // approveValidation,
-    // rejectValidation,
-    // deactivateCourse,
-    // activateCourse,
+    approveProfile,
+    rejectProfile,
+    silentRefreshCourses,
+    silentRefreshProfiles,
+    approveCourse,
+    rejectCourse,
   };
 
   return (

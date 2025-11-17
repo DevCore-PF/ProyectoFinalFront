@@ -88,14 +88,6 @@ const RegisterForm = () => {
   });
 
   useEffect(() => {
-    if (!isLoading) {
-      if (user) {
-        router.push("/");
-      }
-    }
-  }, [user, isLoading, router]);
-
-  useEffect(() => {
     const error = searchParams.get("error");
     const error_description = searchParams.get("error_description");
 
@@ -290,7 +282,7 @@ const RegisterForm = () => {
                       }`}
                     >
                       <svg
-                        className={`w-3 h-3 text-white transition-opacity ${
+                        className={`w-3 h-3 text-font-light transition-opacity ${
                           formik.values.checkBoxTerms
                             ? "opacity-100"
                             : "opacity-0"

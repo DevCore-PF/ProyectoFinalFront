@@ -29,7 +29,7 @@ const CreativityBadge = () => {
       </div>
 
       <div className="text-center mb-7 sm:mb-20">
-        <h1 className="text-white leading-[150%] text-center tracking-normal font-medium text-2xl sm:text-3xl lg:text-5xl px-4 mb-4">
+        <h1 className="text-font-light leading-[150%] text-center tracking-normal font-medium text-2xl sm:text-3xl lg:text-5xl px-4 mb-4">
           Con formación online en diseño y desarrollo
         </h1>
 

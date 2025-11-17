@@ -1,24 +1,27 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { HiX, HiLink, HiPlus, HiTrash } from 'react-icons/hi';
-import { useAuth } from '@/context/UserContext';
-import { useProfessorCourses } from '@/hooks/useProfessorCourses';
-import { Course } from '@/types/course.types';
-import { toastSuccess, toastError } from '@/helpers/alerts.helper';
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { HiX, HiLink, HiPlus, HiTrash } from "react-icons/hi";
+import { useAuth } from "@/context/UserContext";
+import { useProfessorCourses } from "@/hooks/useProfessorCourses";
+import { Course } from "@/types/course.types";
+import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 
 interface AdditionalContentModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen, onClose }) => {
+const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const { token } = useAuth();
   const { courses, isLoading: coursesLoading } = useProfessorCourses();
-  
-  const [selectedCourse, setSelectedCourse] = useState<string>('');
-  const [selectedLesson, setSelectedLesson] = useState<string>('');
-  const [urls, setUrls] = useState<string[]>(['']);
+
+  const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [selectedLesson, setSelectedLesson] = useState<string>("");
+  const [urls, setUrls] = useState<string[]>([""]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -26,11 +29,13 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
     setMounted(true);
   }, []);
 
-  const selectedCourseData = courses.find(course => course.id === selectedCourse);
+  const selectedCourseData = courses.find(
+    (course) => course.id === selectedCourse
+  );
   const lessons = selectedCourseData?.lessons || [];
 
   const addUrlField = () => {
-    setUrls([...urls, '']);
+    setUrls([...urls, ""]);
   };
 
   const removeUrlField = (index: number) => {
@@ -48,37 +53,40 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
   const handleSubmit = async () => {
     if (!selectedLesson || !token) return;
 
-    const validUrls = urls.filter(url => url.trim() !== '');
+    const validUrls = urls.filter((url) => url.trim() !== "");
     if (validUrls.length === 0) {
-      toastError('Debes agregar al menos una URL válida');
+      toastError("Debes agregar al menos una URL válida");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/aditionalData/${selectedLesson}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(validUrls),
-      });
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/lessons/aditionalData/${selectedLesson}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(validUrls),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Error al agregar contenido adicional');
+        throw new Error("Error al agregar contenido adicional");
       }
 
-      toastSuccess('Contenido adicional agregado exitosamente');
+      toastSuccess("Contenido adicional agregado exitosamente");
       onClose();
       // Reset form
-      setSelectedCourse('');
-      setSelectedLesson('');
-      setUrls(['']);
+      setSelectedCourse("");
+      setSelectedLesson("");
+      setUrls([""]);
     } catch (error) {
-      console.error('Error:', error);
-      toastError('Error al agregar contenido adicional');
+      console.error("Error:", error);
+      toastError("Error al agregar contenido adicional");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,11 +95,11 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
   if (!isOpen || !mounted) return null;
 
   const modalContent = (
-    <div 
+    <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-[#2a2d3a] rounded-2xl border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl transform scale-100 animate-in fade-in duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -99,11 +107,17 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div className="flex items-center gap-3">
             <HiLink className="text-blue-400 text-xl" />
-            <h2 className="text-xl font-bold text-white">Agregar Contenido Adicional</h2>
+            <h2 className="text-xl font-bold text-font-light">
+              Agregar Contenido Adicional
+            </h2>
           </div>
           <button
             onClick={onClose}
+<<<<<<< HEAD
             className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer"
+=======
+            className="text-slate-400 hover:text-font-light transition-colors p-1"
+>>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           >
             <HiX className="text-xl" />
           </button>
@@ -125,9 +139,9 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
                 value={selectedCourse}
                 onChange={(e) => {
                   setSelectedCourse(e.target.value);
-                  setSelectedLesson(''); // Reset lesson when course changes
+                  setSelectedLesson(""); // Reset lesson when course changes
                 }}
-                className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Selecciona un curso</option>
                 {courses.map((course) => (
@@ -148,7 +162,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
               <select
                 value={selectedLesson}
                 onChange={(e) => setSelectedLesson(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Selecciona una lección</option>
                 {lessons.map((lesson) => (
@@ -174,13 +188,13 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
                       value={url}
                       onChange={(e) => updateUrl(index, e.target.value)}
                       placeholder="https://ejemplo.com/recurso"
-                      className="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     {urls.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeUrlField(index)}
-                        className="bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg px-3 transition-colors"
+                        className="bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 rounded-lg px-3 transition-colors"
                       >
                         <HiTrash className="text-lg" />
                       </button>
@@ -188,7 +202,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
                   </div>
                 ))}
               </div>
-              
+
               <button
                 type="button"
                 onClick={addUrlField}
@@ -211,10 +225,14 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen,
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!selectedLesson || isSubmitting || urls.every(url => url.trim() === '')}
-            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={
+              !selectedLesson ||
+              isSubmitting ||
+              urls.every((url) => url.trim() === "")
+            }
+            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-font-light rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isSubmitting ? 'Agregando...' : 'Agregar Contenido'}
+            {isSubmitting ? "Agregando..." : "Agregar Contenido"}
           </button>
         </div>
       </div>

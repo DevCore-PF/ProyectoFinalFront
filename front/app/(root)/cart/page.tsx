@@ -11,7 +11,6 @@ import {
   HiArrowRight,
   HiCreditCard,
 } from "react-icons/hi";
-import { FaInfinity } from "react-icons/fa";
 //Helpers
 import { toastConfirm } from "@/helpers/alerts.helper";
 import Link from "next/link";
@@ -22,18 +21,13 @@ import TinyLoader from "@/components/Loaders/TinyLoader";
 import { useAuth } from "@/context/UserContext";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, getTotal, refreshCart, loading } =
-    useCart();
+  const { cart, clearCart, getTotal, refreshCart, loading } = useCart();
   useEffect(() => {
     refreshCart();
   }, []);
   const [loadingClear, setLoadingClear] = useState(false);
   const { loadingRemove, handleRemoveFromCart } = useRemoveFromCart();
   const router = useRouter();
-  const { user } = useAuth();
-  useEffect(() => {
-    if (!user) router.push('/')
-  }, [user]);
 
   const handleRemove = (course: Course) => {
     toastConfirm("¿Eliminar este curso?", async () => {
@@ -54,7 +48,7 @@ export default function CartPage() {
       }
     });
   };
-  if (!user || loading)
+  if (loading)
     return (
       <div className="flex flex-col min-h-screen justify-center items-center">
         <Loader size="medium" />
@@ -80,7 +74,7 @@ export default function CartPage() {
 
             <button
               onClick={() => router.push("/courses")}
-              className="group cursor-pointer inline-flex items-center gap-3 bg-button hover:bg-button/80 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
+              className="group cursor-pointer inline-flex items-center gap-3 bg-button hover:bg-button/80 text-font-light px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
             >
               <span>Ver Cursos</span>
               <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -168,7 +162,7 @@ export default function CartPage() {
                             </span>
                             <button
                               onClick={() => handleRemove(course)}
-                              className="group/btn cursor-pointer flex items-center gap-2 text-red-300 hover:text-red-200 text-sm font-medium transition-colors duration-200"
+                              className="group/btn cursor-pointer flex items-center gap-2 text-amber-300 hover:text-amber-200 text-sm font-medium transition-colors duration-200"
                             >
                               <HiTrash className=" w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
                               <span className="hidden sm:inline">Eliminar</span>
@@ -211,7 +205,7 @@ export default function CartPage() {
 
               <button
                 onClick={() => router.push("/checkout")}
-                className="group w-full cursor-pointer bg-button hover:bg-button/80 text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3 mb-4"
+                className="group w-full cursor-pointer bg-button hover:bg-button/80 text-font-light py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3 mb-4"
               >
                 <HiCreditCard className="w-5 h-5" />
                 <span>Proceder al Pago</span>

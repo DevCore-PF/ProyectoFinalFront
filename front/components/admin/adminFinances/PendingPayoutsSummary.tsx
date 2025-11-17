@@ -1,0 +1,239 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/UserContext";
+import {
+  getAllPendingSummaryService,
+  createBatchService,
+} from "@/services/admin.service";
+import {
+  HiCurrencyDollar,
+  HiUserGroup,
+  HiShoppingCart,
+  HiCash,
+} from "react-icons/hi";
+import Loader from "@/components/Loaders/Loader";
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
+
+interface PendingSummary {
+  professorId: string;
+  professorName: string;
+  totalOwed: number;
+  salesCount: number;
+}
+interface PendingPayoutsSummaryProps {
+  onCountChange: (count: number) => void;
+}
+
+export default function PendingPayoutsSummary({
+  onCountChange,
+}: PendingPayoutsSummaryProps) {
+  const { token } = useAuth();
+  const [pendingSummary, setPendingSummary] = useState<PendingSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creatingBatch, setCreatingBatch] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPendingSummary();
+  }, []);
+
+  const fetchPendingSummary = async () => {
+    try {
+      setLoading(true);
+      if (token) {
+        const data = await getAllPendingSummaryService(token);
+        setPendingSummary(data);
+        onCountChange(data.length);
+      }
+    } catch (error) {
+      toastError("Error al cargar el resumen de pagos pendientes");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateBatch = async (
+    professorId: string,
+    professorName: string
+  ) => {
+    toastConfirm(
+      `Crear lote de pago para ${professorName}?`,
+      async () => {
+        try {
+          setCreatingBatch(professorId);
+          if (token) {
+            await createBatchService(token, professorId);
+            toastSuccess(`Lote creado exitosamente para ${professorName}`);
+          }
+          fetchPendingSummary();
+        } catch (error) {
+          toastError("Error al crear el lote de pago");
+          console.error(error);
+        } finally {
+          setCreatingBatch(null);
+        }
+      },
+      () => {}
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (pendingSummary.length === 0) {
+    return (
+      <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-16 text-center">
+        <HiCurrencyDollar className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+        <p className="text-slate-400 text-lg font-medium mb-2">
+          No hay pagos pendientes
+        </p>
+        <p className="text-slate-500 text-sm">
+          Todos los profesores están al día con sus pagos
+        </p>
+      </div>
+    );
+  }
+
+  const totalOwed = pendingSummary.reduce((acc, p) => acc + p.totalOwed, 0);
+  const totalSales = pendingSummary.reduce((acc, p) => acc + p.salesCount, 0);
+
+  return (
+    <div>
+      {/* Estadísticas Globales */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 hover:border-slate-600 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-emerald-500/10 rounded-lg">
+              <HiCurrencyDollar className="w-6 h-6 text-emerald-300" />
+            </div>
+            <p className="text-slate-400 text-sm font-medium">Total a Pagar</p>
+          </div>
+          <p className="text-3xl font-bold text-emerald-300">
+            ${totalOwed.toFixed(2)}
+          </p>
+        </div>
+
+        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 hover:border-slate-600 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-blue-500/10 rounded-lg">
+              <HiUserGroup className="w-6 h-6 text-blue-300" />
+            </div>
+            <p className="text-slate-400 text-sm font-medium">Profesores</p>
+          </div>
+          <p className="text-3xl font-bold text-font-light">
+            {pendingSummary.length}
+          </p>
+        </div>
+
+        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 hover:border-slate-600 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-purple-500/10 rounded-lg">
+              <HiShoppingCart className="w-6 h-6 text-purple-300" />
+            </div>
+            <p className="text-slate-400 text-sm font-medium">
+              Ventas Pendientes
+            </p>
+          </div>
+          <p className="text-3xl font-bold text-font-light">{totalSales}</p>
+        </div>
+      </div>
+
+      {/* Título */}
+      <h2 className="text-xl font-semibold text-font-light mb-4">
+        Pagos pendientes por profesor
+      </h2>
+
+      {/* Tarjetas de Profesores */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pendingSummary.map((professor) => (
+          <div
+            key={professor.professorId}
+            className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 hover:border-slate-600 transition-all"
+          >
+            {/* Header del profesor */}
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center border border-purple-500/30">
+                    <span className="text-purple-300 font-bold text-sm">
+                      {professor.professorName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-font-light font-semibold">
+                      {professor.professorName}
+                    </h3>
+                    <p className="text-slate-400 text-xs">
+                      {professor.salesCount}{" "}
+                      {professor.salesCount === 1 ? "curso" : "cursos"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Monto a pagar */}
+            <div className="bg-slate-800/50 rounded-lg p-4 mb-4">
+              <p className="text-slate-400 text-xs mb-1">Monto a pagar</p>
+              <p className="text-2xl font-bold text-emerald-300">
+                ${professor.totalOwed.toFixed(2)}
+              </p>
+            </div>
+
+            {/* Botón de acción */}
+            <button
+              onClick={() =>
+                handleCreateBatch(
+                  professor.professorId,
+                  professor.professorName
+                )
+              }
+              disabled={creatingBatch === professor.professorId}
+              className="w-full bg-gradient-to-r cursor-pointer from-button/80 to-button hover:from-button hover:to-button/90 text-font-light font-medium py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {creatingBatch === professor.professorId ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Creando...
+                </>
+              ) : (
+                <>
+                  <HiCash className="w-5 h-5" />
+                  Crear Lote de Pago
+                </>
+              )}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -2,10 +2,8 @@
 import WhyChooseUs from "@/components/ChooseUs";
 import CoursesGrid from "@/components/CoursesGrid";
 import FAQ from "@/components/FAQ";
-import Footer from "@/components/Footer";
 import HeroSection from "@/components/hero/HeroSection";
 import ModalOnboarding from "@/components/ModalOnboardign";
-import Navbar from "@/components/Navbar";
 import PricingPlans from "@/components/Plans/Pricing";
 import Testimonials from "@/components/Testimonials";
 

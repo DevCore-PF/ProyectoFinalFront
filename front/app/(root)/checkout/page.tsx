@@ -136,13 +136,13 @@ export default function CheckoutPage() {
             </div>
 
             {error && (
-              <div className="bg-red-900/40 backdrop-blur-sm border border-red-500/50 rounded-xl p-4 mb-6 flex items-start gap-3">
+              <div className="bg-amber-900/40 backdrop-blur-sm border border-amber-500/50 rounded-xl p-4 mb-6 flex items-start gap-3">
                 <div className="shrink-0 mt-0.5">
-                  <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <span className="text-red-400 text-xs font-bold">!</span>
+                  <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center">
+                    <span className="text-amber-400 text-xs font-bold">!</span>
                   </div>
                 </div>
-                <p className="text-red-200 text-sm md:text-base">{error}</p>
+                <p className="text-amber-200 text-sm md:text-base">{error}</p>
               </div>
             )}
 
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handleCheckout}
                 disabled={loading || courses.length === 0}
-                className="group w-full bg-button cursor-pointer disabled:hover:scale-[1] disabled:hover:shadow-none hover:bg-button/80 disabled:bg-slate-700 disabled:cursor-not-allowed text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
+                className="group w-full bg-button cursor-pointer disabled:hover:scale-[1] disabled:hover:shadow-none hover:bg-button/80 disabled:bg-slate-700 disabled:cursor-not-allowed text-font-light py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
               >
                 {loading ? (
                   <>

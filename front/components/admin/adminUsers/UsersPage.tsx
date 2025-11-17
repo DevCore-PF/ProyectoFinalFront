@@ -1,8 +1,11 @@
-
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { toastError, toastSuccess } from "@/helpers/alerts.helper";
+import {
+  toastConfirm,
+  toastError,
+  toastSuccess,
+} from "@/helpers/alerts.helper";
 import { UsersDetailProps } from "@/types/admin.types";
 import { UserRole } from "@/types/user.types";
 import {
@@ -17,8 +20,11 @@ import {
   HiChevronDown,
   HiDownload,
 } from "react-icons/hi";
-import Loader from "../Loaders/Loader";
 import { downloadUsers } from "@/helpers/adminHandlers";
+import { useAuth } from "@/context/UserContext";
+import Loader from "@/components/Loaders/Loader";
+import TinyLoader from "@/components/Loaders/TinyLoader";
+import BanReasonModal from "./BanReasonModal";
 
 type UserRoleType = "all" | UserRole;
 type UserStatus = "all" | "active" | "inactive";
@@ -49,7 +55,14 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [imageError, setImageError] = useState(false);
-
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+  const [loadingGroupBan, setLoadingGroupBan] = useState(false);
+  const [loadingGroupActivate, setLoadingGroupActivate] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [banReason, setBanReason] = useState("");
+  const [userToBan, setUserToBan] = useState<string | null>(null);
+  const [showGroupBanModal, setShowGroupBanModal] = useState(false);
+  const { user: contextUser } = useAuth();
   // Cargar usuarios cuando cambia el filtro de estado
   useEffect(() => {
     const loadUsers = async () => {
@@ -175,66 +188,134 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   };
 
   const handleBanUser = async (userId: string) => {
-    try {
-      await deactivateUser(userId);
-      toastSuccess("Usuario baneado");
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    setUserToBan(userId);
+    setShowBanModal(true);
   };
-
+  const handleGroupBan = () => {
+    setShowGroupBanModal(true);
+  };
   const handleActivateUser = async (userId: string) => {
-    try {
-      await activateUser(userId);
-      toastSuccess("Usuario activado");
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    toastConfirm(
+      "Reactivar usuario",
+      async () => {
+        setLoadingUserId(userId);
+        try {
+          await activateUser(userId);
+          toastSuccess("Usuario reactivado");
+        } catch (error) {
+          console.log(error);
+          throw error;
+        } finally {
+          setLoadingUserId(null);
+        }
+      },
+      () => {}
+    );
   };
 
-  const deactivateMultipleUsers = async (userIds: string[]) => {
-    const results = {
-      success: [] as string[],
-      errors: [] as { userId: string; error: string }[],
-    };
-
-    for (const userId of userIds) {
-      try {
-        await deactivateUser(userId);
-        results.success.push(userId);
-      } catch (error) {
-        results.errors.push({
-          userId,
-          error: error instanceof Error ? error.message : "Error desconocido",
-        });
-      }
-    }
-
-    toastSuccess("Usuarios baneados");
-  };
-  
   const activateMultipleUsers = async (userIds: string[]) => {
     const results = {
       success: [] as string[],
       errors: [] as { userId: string; error: string }[],
     };
-
-    for (const userId of userIds) {
-      try {
-        await activateUser(userId);
-        results.success.push(userId);
-      } catch (error) {
-        results.errors.push({
-          userId,
-          error: error instanceof Error ? error.message : "Error desconocido",
-        });
-      }
-    }
-    toastSuccess("Usuarios activados");
+    toastConfirm(
+      "Activar seleccionados",
+      async () => {
+        setLoadingGroupActivate(true);
+        for (const userId of userIds) {
+          try {
+            await activateUser(userId);
+            results.success.push(userId);
+          } catch (error) {
+            results.errors.push({
+              userId,
+              error:
+                error instanceof Error ? error.message : "Error desconocido",
+            });
+          } finally {
+            setLoadingGroupActivate(false);
+          }
+        }
+        toastSuccess("Usuarios Activados");
+      },
+      () => {}
+    );
   };
 
+  const confirmBan = () => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+    if (banReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+    if (!userToBan) return;
+
+    setShowBanModal(false);
+
+    toastConfirm(
+      "Banear usuario",
+      async () => {
+        setLoadingUserId(userToBan);
+        try {
+          await deactivateUser(userToBan, banReason);
+          toastSuccess("Usuario baneado");
+          setBanReason("");
+          setUserToBan(null);
+        } catch (error) {
+          console.log(error);
+          throw error;
+        } finally {
+          setLoadingUserId(null);
+        }
+      },
+      () => {
+        setBanReason("");
+        setUserToBan(null);
+      }
+    );
+  };
+  const confirmGroupBan = () => {
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
+    }
+
+    setShowGroupBanModal(false);
+
+    toastConfirm(
+      "Banear seleccionados",
+      async () => {
+        setLoadingGroupBan(true);
+        const results = {
+          success: [] as string[],
+          errors: [] as { userId: string; error: string }[],
+        };
+
+        for (const userId of selectedUsers) {
+          try {
+            await deactivateUser(userId, banReason);
+            results.success.push(userId);
+          } catch (error) {
+            results.errors.push({
+              userId,
+              error:
+                error instanceof Error ? error.message : "Error desconocido",
+            });
+          }
+        }
+
+        toastSuccess(`${results.success.length} usuarios baneados`);
+        setBanReason("");
+        setLoadingGroupBan(false);
+      },
+      () => {
+        setBanReason("");
+      }
+    );
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
@@ -263,7 +344,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
               </p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
-              <p className="text-slate-400 text-xs mb-1">Estudiantes</p>
+              <p className="text-slate-400 text-xs mb-1">Alumnos</p>
               <p className="text-2xl font-bold text-blue-300">
                 {stats.students}
               </p>
@@ -288,7 +369,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-red-400">
+              <p className="text-2xl font-bold text-amber-400">
                 {stats.inactive}
               </p>
             </div>
@@ -383,14 +464,15 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoading && (
-          <div className="flex justify-center items-center py-16">
-            <Loader />
+          <div className="flex flex-col justify-center items-center py-16">
+            <Loader size="medium" />
+            <p className="text-slate-400">Cargando usuarios...</p>
           </div>
         )}
 
         {/* ============[ ERROR ]============= */}
         {currentError && !isLoading && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6">
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
             {currentError}
           </div>
         )}
@@ -418,16 +500,34 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       {selectedUsers.length} seleccionados
                     </span>
                     <button
-                      onClick={() => deactivateMultipleUsers(selectedUsers)}
-                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200  px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                      onClick={handleGroupBan}
+                      disabled={loadingGroupBan}
+                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200  px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-80 disabled:cursor-not-allowed"
                     >
-                      Banear seleccionados
+                      {loadingGroupBan ? (
+                        <div className="flex gap-2">
+                          <TinyLoader />
+                          Baneando seleccionados
+                        </div>
+                      ) : (
+                        <>Banear seleccionados</>
+                      )}
                     </button>
+
                     <button
                       onClick={() => activateMultipleUsers(selectedUsers)}
-                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                      disabled={loadingGroupActivate}
+                      className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all
+                      disabled:opacity-80 disabled:cursor-not-allowed"
                     >
-                      Activar seleccionados
+                      {loadingGroupActivate ? (
+                        <div className="flex gap-2">
+                          <TinyLoader />
+                          Activando seleccionados
+                        </div>
+                      ) : (
+                        <>Activar seleccionados</>
+                      )}
                     </button>
                   </div>
                 </>
@@ -508,7 +608,9 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                       <tr
                         key={user.id}
                         className={`transition-colors hover:bg-slate-800/30 ${
-                          !user.isActive ? "bg-amber-300/10 hover:bg-amber-300/10! " : ""
+                          !user.isActive
+                            ? "bg-amber-300/10 hover:bg-amber-300/10! "
+                            : ""
                         }`}
                       >
                         <td className="px-4 py-4">
@@ -557,13 +659,13 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                                   className="w-10 h-10 rounded-full object-cover border-2 border-button/60"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-3xl font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-font-light text-3xl font-bold border bg-gradient-to-br from-slate-600 to-slate-700 border-slate-600">
                                   {user.name.charAt(0).toUpperCase()}
                                 </div>
                               )}
                               {!user.isActive && (
-                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-background rounded-full flex items-center justify-center">
-                                  <HiBan className="w-2.5 h-2.5 text-white" />
+                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 border-2 border-background rounded-full flex items-center justify-center">
+                                  <HiBan className="w-2.5 h-2.5 text-font-light" />
                                 </div>
                               )}
                             </div>
@@ -620,21 +722,32 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                             >
                               <HiEye className="w-4 h-4" />
                             </button>
-                            {user.isActive ? (
+                            {user.id ===
+                            contextUser?.id ? null : user.isActive ? (
                               <button
                                 onClick={() => handleBanUser(user.id)}
+                                disabled={loadingUserId === user.id}
                                 className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all"
                                 title="Banear usuario"
                               >
-                                <HiBan className="w-4 h-4" />
+                                {loadingUserId === user.id ? (
+                                  <TinyLoader />
+                                ) : (
+                                  <HiBan className="w-4 h-4" />
+                                )}
                               </button>
                             ) : (
                               <button
                                 onClick={() => handleActivateUser(user.id)}
+                                disabled={loadingUserId === user.id}
                                 className="p-2 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400/80 rounded-lg transition-all"
                                 title="Activar usuario"
                               >
-                                <HiCheckCircle className="w-4 h-4" />
+                                {loadingUserId === user.id ? (
+                                  <TinyLoader />
+                                ) : (
+                                  <HiCheckCircle className="w-4 h-4" />
+                                )}
                               </button>
                             )}
                           </div>
@@ -679,6 +792,32 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
           </>
         )}
       </div>
+
+      {showBanModal && (
+        <BanReasonModal
+          banReason={banReason}
+          setBanReason={setBanReason}
+          onCancel={() => {
+            setShowBanModal(false);
+            setBanReason("");
+            setUserToBan(null);
+          }}
+          onConfirm={confirmBan}
+        />
+      )}
+      {showGroupBanModal && (
+        <BanReasonModal
+          banReason={banReason}
+          setBanReason={setBanReason}
+          onCancel={() => {
+            setShowGroupBanModal(false);
+            setBanReason("");
+          }}
+          onConfirm={confirmGroupBan}
+          isMultiple={true}
+          userCount={selectedUsers.length}
+        />
+      )}
     </div>
   );
 };

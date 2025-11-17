@@ -1,7 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { toastSuccess, toastError } from "@/helpers/alerts.helper";
+import {
+  toastSuccess,
+  toastError,
+  toastConfirm,
+} from "@/helpers/alerts.helper";
 import {
   HiArrowLeft,
   HiBookOpen,
@@ -10,43 +14,53 @@ import {
   HiStar,
   HiClock,
   HiCalendar,
-  HiCurrencyDollar,
   HiAcademicCap,
   HiChevronDown,
   HiChevronUp,
   HiPlay,
   HiDocumentText,
 } from "react-icons/hi";
+import { HiExclamationTriangle } from "react-icons/hi2";
 import { HiLockClosed, HiLockOpen } from "react-icons/hi";
-import Loader from "../Loaders/Loader";
-import { changeVisivilityService } from "@/services/admin.services";
-import { useAuth } from "@/context/UserContext";
-import { CourseVisibility } from "@/types/course.types";
-import TinyLoader from "../Loaders/TinyLoader";
+import Loader from "../../Loaders/Loader";
+
+import { Course, CourseVisibility } from "@/types/course.types";
+import TinyLoader from "../../Loaders/TinyLoader";
 import Image from "next/image";
+import { CourseReview } from "@/types/admin.types";
+import BanReasonModal from "../adminUsers/BanReasonModal";
 
 interface CourseDetailsProps {
   courseId: string;
   onBack: () => void;
 }
-
+export interface UserFeedback {
+  id: string;
+  name: string;
+  image?: string | null;
+  isActive: boolean;
+}
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   const {
     courses,
     activateDeactivateCourse,
     changeVisibility,
     fetchFeedback,
-    feedbacks,
-    isLoadingFeedbacks,
-    feedbacksError,
+    deactivateUser,
   } = useAdmin();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [localFeedbacks, setLocalFeedbacks] = useState<CourseReview[]>([]);
+  const [loadingVisibility, setLoadingVisibility] = useState(false);
+  const [banUnbanUserLoading, setBanUnbanUserLoading] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserFeedback | null>(null);
+  const [banReason, setBanReason] = useState("");
   const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
     new Set()
   );
-  const [loadingAction, setLoadingAction] = useState(false);
-  const [showId, setShowId] = useState(false);
 
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
@@ -56,6 +70,16 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     setIsLoading(false);
   }, [courseId, courses]);
 
+  useEffect(() => {
+    const loadFeedbacks = async () => {
+      const data = await fetchFeedback(courseId);
+      if (data) {
+        setLocalFeedbacks(data);
+      }
+    };
+
+    loadFeedbacks();
+  }, [courseId]);
   const toggleLesson = (lessonId: string) => {
     const newExpanded = new Set(expandedLessons);
     if (newExpanded.has(lessonId)) {
@@ -120,16 +144,35 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   };
 
   const handleToggleActive = async () => {
-    setLoadingAction(true);
-    try {
-      await activateDeactivateCourse(courseId);
-      toastSuccess(course.isActive ? "Curso desactivado" : "Curso activado");
-    } catch (error) {
-      console.log(error);
-      toastError("Error al cambiar estado del curso");
-    } finally {
-      setLoadingAction(false);
-    }
+    let message = "";
+    courses.find((c: Course) => {
+      const courseFound = c.id === courseId;
+      if (courseFound && c.isActive) {
+        message = "Dar curso de baja";
+      } else if (courseFound && !c.isActive) {
+        message = "Dar curso de alta";
+      }
+    });
+    toastConfirm(
+      message,
+      async () => {
+        setLoadingAction(true);
+        try {
+          await activateDeactivateCourse(courseId);
+          course?.visibility === CourseVisibility.PUBLIC &&
+            (await changeVisibility(courseId));
+          toastSuccess(
+            course.isActive ? "Curso desactivado" : "Curso activado"
+          );
+        } catch (error) {
+          console.log(error);
+          toastError("Error al cambiar estado del curso");
+        } finally {
+          setLoadingAction(false);
+        }
+      },
+      () => {}
+    );
   };
 
   const getCategoryBadge = (category: string) => {
@@ -143,28 +186,93 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   };
 
   const handleChangeVisibility = async (courseId: string) => {
-    try {
-      const currentCourse = courses.find((c) => c.id === courseId);
-      const wasPublic = currentCourse?.visibility === CourseVisibility.PUBLIC;
+    let message = "";
+    courses.find((c: Course) => {
+      const courseFound = c.id === courseId;
+      if (courseFound && c.visibility === "PUBLICO") {
+        message = "Cambiar a privado";
+      } else if (courseFound && c.visibility === "PRIVADO") {
+        message = "Cambiar a público";
+      }
+    });
+    toastConfirm(
+      message,
+      async () => {
+        setLoadingVisibility(true);
+        try {
+          const currentCourse = courses.find((c) => c.id === courseId);
+          const wasPublic =
+            currentCourse?.visibility === CourseVisibility.PUBLIC;
 
-      await changeVisibility(courseId);
+          await changeVisibility(courseId);
 
-      toastSuccess(wasPublic ? "Curso privado" : "Curso público");
-    } catch (error) {
-      console.error(error);
+          toastSuccess(wasPublic ? "Curso privado" : "Curso público");
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoadingVisibility(false);
+        }
+      },
+      () => {}
+    );
+  };
+  const handleBanUnban = async () => {
+    setShowBanModal(true);
+  };
+
+  const confirmBan = () => {
+    if (!currentUser) return;
+    if (!banReason.trim()) {
+      toastError("Debes proporcionar un motivo para el baneo");
+      return;
     }
+    if (banReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+
+    setShowBanModal(false);
+
+    toastConfirm(
+      "Banear usuario",
+      async () => {
+        setBanUnbanUserLoading(true);
+        try {
+          await deactivateUser(currentUser.id, banReason);
+          setLocalFeedbacks((prevFeedbacks) =>
+            prevFeedbacks.map((feedback) =>
+              feedback.user.id === currentUser.id
+                ? {
+                    ...feedback,
+                    user: { ...feedback.user, isActive: false },
+                  }
+                : feedback
+            )
+          );
+          toastSuccess("Usuario baneado");
+          setBanReason("");
+        } catch (error) {
+          console.error(error);
+          toastError("Error al banear usuario");
+        } finally {
+          setBanUnbanUserLoading(false);
+          setCurrentUser(null);
+        }
+      },
+      () => {
+        setBanReason("");
+        setCurrentUser(null);
+      }
+    );
   };
 
   const averageRating =
-    feedbacks.length > 0
+    localFeedbacks.length > 0
       ? (
-          feedbacks.reduce((acc, f) => acc + f.rating, 0) / feedbacks.length
+          localFeedbacks.reduce((acc, f) => acc + f.rating, 0) /
+          localFeedbacks.length
         ).toFixed(1)
       : "0.0";
-
-  useEffect(() => {
-    fetchFeedback(courseId);
-  }, [courseId]);
 
   if (isLoading) {
     return (
@@ -283,12 +391,12 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 ) : course.isActive ? (
                   <>
                     <HiBan className="w-5 h-5" />
-                    Desactivar
+                    Dar de baja
                   </>
                 ) : (
                   <>
                     <HiCheckCircle className="w-5 h-5" />
-                    Activar
+                    Dar de alta
                   </>
                 )}
               </button>
@@ -418,7 +526,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400 text-sm">Reseñas</span>
                   <span className="text-font-light font-bold">
-                    {feedbacks.length || 0}
+                    {localFeedbacks.length || 0}
                   </span>
                 </div>
               </div>
@@ -440,9 +548,12 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
 
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-slate-300">
-                    {course.visibility === "PRIVADO" ? "Privado" : "Público"}
+                    {course.visibility === "PRIVADO"
+                      ? "Solo profesor puede verlo"
+                      : "Visible para todos"}
                   </span>
                   <button
+                    disabled={loadingVisibility}
                     title={
                       course.visibility === CourseVisibility.PRIVATE
                         ? "Cambiar a público"
@@ -462,10 +573,17 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                           : "translate-x-[2px]"
                       }`}
                     >
-                      {course.visibility === CourseVisibility.PRIVATE ? (
+                      {course.visibility === CourseVisibility.PRIVATE &&
+                      !loadingVisibility ? (
                         <HiLockClosed className="w-4 h-4 text-amber-800" />
-                      ) : (
+                      ) : course.visibility === CourseVisibility.PRIVATE &&
+                        loadingVisibility ? (
+                        <TinyLoader />
+                      ) : course.visibility === CourseVisibility.PUBLIC &&
+                        !loadingVisibility ? (
                         <HiLockOpen className="w-4 h-4 text-emerald-800" />
+                      ) : (
+                        <TinyLoader />
                       )}
                     </span>
                   </button>
@@ -515,27 +633,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                                 <HiPlay className="w-4 h-4" />
                                 Videos ({lesson.urlVideos.length})
                               </h4>
-                              <div className="space-y-2">
-                                {/* {lesson.urlVideos.map(
-                                  (videoUrl: string, videoIndex: number) => {
-                                    const fileName = getCleanFileName(videoUrl);
-                                    return (
-                                      
-                                        key={videoIndex}
-                                        href={videoUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-3 p-3 bg-slate-800/30 hover:bg-slate-800/50 rounded-lg transition-colors group"
-                                      >
-                                        <HiPlay className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                                        <span className="text-slate-300 group-hover:text-font-light transition-colors truncate">
-                                          {fileName}
-                                        </span>
-                                      </a>
-                                    );
-                                  }
-                                )} */}
-                              </div>
                             </div>
                           )}
 
@@ -546,27 +643,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                                 <HiDocumentText className="w-4 h-4" />
                                 Documentos ({lesson.urlPdfs.length})
                               </h4>
-                              <div className="space-y-2">
-                                {/* {lesson.urlPdfs.map(
-                                  (pdfUrl: string, pdfIndex: number) => {
-                                    const fileName = getCleanFileName(pdfUrl);
-                                    return (
-                                      
-                                        key={pdfIndex}
-                                        href={pdfUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-3 p-3 bg-slate-800/30 hover:bg-slate-800/50 rounded-lg transition-colors group"
-                                      >
-                                        <HiDocumentText className="w-4 h-4 text-red-400 flex-shrink-0" />
-                                        <span className="text-slate-300 group-hover:text-font-light transition-colors truncate">
-                                          {fileName}
-                                        </span>
-                                      </a>
-                                    );
-                                  }
-                                )} */}
-                              </div>
                             </div>
                           )}
 
@@ -599,7 +675,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   <HiStar className="w-6 h-6 text-yellow-200" />
                   Comentarios y reseñas
                   <span className="text-sm font-normal text-slate-400">
-                    ({feedbacks?.length || 0})
+                    ({localFeedbacks?.length || 0})
                   </span>
                 </h2>
                 <p className="flex items-center  gap-1 text-lg font-bold text-slate-200 mr-3.5">
@@ -607,56 +683,122 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 </p>
               </div>
 
-              {feedbacks.length > 0 ? (
-                feedbacks.map((f) => {
-                  return (
-                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
-                          <span className="text-font-light font-bold text-lg">
-                            {f.user.image ? (
-                              <Image
-                                alt="Foto de pefil del usuario"
-                                src={f.user.image}
-                                width={100}
-                                height={100}
-                              ></Image>
-                            ) : (
-                              `${f.user.name[0].toUpperCase()}`
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="">
-                              <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
-                                {f.user.name}
-                                <button
-                                  onClick={() => setShowId(!showId)}
-                                  title="Ver id completo"
-                                  className="text-slate-400 bg-background py-1 px-2 rounded-md text-xs font-light cursor-pointer select-text"
-                                >
-                                  #{showId ? f.user.id : f.user.id.slice(0, 7)}
-                                  ...
-                                </button>
-                              </h4>
+              {localFeedbacks.length > 0 ? (
+                <>
+                  {localFeedbacks.map((f) => {
+                    const isToxic = f.toxicityScore && f.toxicityScore > 0.5;
 
-                              <p className="text-slate-400 text-xs">
-                                {formatDate(f.createdAt)}
-                              </p>
-                            </div>
-                            {renderStars(f.rating)}
+                    return (
+                      <div
+                        key={f.id}
+                        className={`border rounded-xl p-5 mb-4 ${
+                          isToxic
+                            ? "bg-amber-900/20 border-amber-500/50"
+                            : "bg-slate-800/30 border-slate-700/50"
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
+                            <span className="text-font-light font-bold text-lg">
+                              {f.user.image ? (
+                                <Image
+                                  alt="Foto de perfil del usuario"
+                                  src={f.user.image}
+                                  width={100}
+                                  height={100}
+                                  className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0"
+                                />
+                              ) : (
+                                `${f.user.name[0].toUpperCase()}`
+                              )}
+                            </span>
                           </div>
 
-                          {/* Feedback */}
-                          <p className="text-slate-300 text-sm leading-relaxed">
-                            {f.feedback}
-                          </p>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="">
+                                <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
+                                  {f.user.name}
+                                  {isToxic && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/50 text-amber-300 text-xs font-medium">
+                                      <HiExclamationTriangle className="w-4 h-4" />
+                                      Contenido inapropiado
+                                    </span>
+                                  )}
+                                </h4>
+                                <p className="text-slate-400 text-xs">
+                                  {formatDate(f.createdAt)}
+                                </p>
+                              </div>
+                              {f.rating && renderStars(f.rating)}
+                            </div>
+
+                            {/* Feedback */}
+                            <p
+                              className={`text-sm leading-relaxed mb-3 ${
+                                isToxic ? "text-amber-200/80" : "text-slate-300"
+                              }`}
+                            >
+                              {f.feedback}
+                            </p>
+
+                            {/* Botón de banear si es tóxico */}
+                            {isToxic && (
+                              <button
+                                onClick={() => {
+                                  if (f.user.isActive) {
+                                    setCurrentUser(f.user);
+                                    setShowBanModal(true);
+                                  }
+                                }}
+                                disabled={
+                                  banUnbanUserLoading || !f.user.isActive
+                                }
+                                className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 border px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                                  !f.user.isActive
+                                    ? "border-slate-500/50 text-slate-400"
+                                    : "hover:bg-slate-700/90 border-amber-300/50 text-amber-300"
+                                }`}
+                              >
+                                {banUnbanUserLoading &&
+                                currentUser?.id === f.user.id ? (
+                                  <div className="flex gap-2 items-center">
+                                    <TinyLoader />
+                                    Baneando usuario
+                                  </div>
+                                ) : !f.user.isActive ? (
+                                  <>
+                                    <HiBan className="w-4 h-4" />
+                                    Usuario baneado
+                                  </>
+                                ) : (
+                                  <>
+                                    <HiBan className="w-4 h-4" />
+                                    Banear por comportamiento inapropiado
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+
+                  {/* Modal ÚNICO fuera del map */}
+                  {showBanModal && currentUser && (
+                    <BanReasonModal
+                      banReason={banReason}
+                      setBanReason={setBanReason}
+                      onCancel={() => {
+                        setShowBanModal(false);
+                        setBanReason("");
+                        setCurrentUser(null);
+                      }}
+                      onConfirm={confirmBan}
+                    />
+                  )}
+                </>
               ) : (
                 <div className="text-center py-12">
                   <HiStar className="w-16 h-16 text-slate-600 mx-auto mb-4" />

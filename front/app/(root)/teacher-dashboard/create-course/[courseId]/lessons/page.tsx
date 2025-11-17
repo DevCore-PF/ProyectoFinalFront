@@ -447,7 +447,7 @@ const CreateLessonPage = () => {
                   </label>
                   <p className="text-gray-500 text-sm mb-4">
                     Formatos permitidos: MP4, MOV, AVI, WEBM •{" "}
-                    <span className="text-red-400 font-medium">
+                    <span className="text-amber-400 font-medium">
                       Mínimo 1 video
                     </span>{" "}
                     • Máximo 3 videos
@@ -457,7 +457,9 @@ const CreateLessonPage = () => {
                   <div className="bg-accent-medium/10 border border-accent-medium/30 rounded-lg p-3 mb-4">
                     <div className="flex items-start gap-2">
                       <div className="w-4 h-4 bg-accent-medium rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                        <span className="text-xs text-white font-bold">💡</span>
+                        <span className="text-xs text-font-light font-bold">
+                          💡
+                        </span>
                       </div>
                       <div className="text-sm">
                         <p className="text-accent-light font-medium mb-1">
@@ -540,7 +542,7 @@ const CreateLessonPage = () => {
                           <button
                             type="button"
                             onClick={() => removeFile(index, "videos")}
-                            className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-amber-400 transition-colors"
                           >
                             <HiX className="w-4 h-4" />
                           </button>
@@ -567,7 +569,7 @@ const CreateLessonPage = () => {
                   </label>
                   <p className="text-gray-500 text-sm mb-4">
                     Sube documentos, presentaciones o recursos adicionales •{" "}
-                    <span className="text-red-400 font-medium">
+                    <span className="text-amber-400 font-medium">
                       Mínimo 1 PDF
                     </span>{" "}
                     • Máximo 3 PDFs
@@ -577,7 +579,9 @@ const CreateLessonPage = () => {
                   <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
                     <div className="flex items-start gap-2">
                       <div className="w-4 h-4 bg-green-400 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                        <span className="text-xs text-white font-bold">📄</span>
+                        <span className="text-xs text-font-light font-bold">
+                          📄
+                        </span>
                       </div>
                       <div className="text-sm">
                         <p className="text-green-300 font-medium mb-1">
@@ -629,8 +633,8 @@ const CreateLessonPage = () => {
                     />
 
                     <div className="flex flex-col items-center gap-3">
-                      <div className="p-3 bg-red-500/20 rounded-xl">
-                        <HiDocument className="w-8 h-8 text-red-400" />
+                      <div className="p-3 bg-amber-500/20 rounded-xl">
+                        <HiDocument className="w-8 h-8 text-amber-400" />
                       </div>
                       <div>
                         <p className="text-gray-200 font-medium">
@@ -652,7 +656,7 @@ const CreateLessonPage = () => {
                           key={index}
                           className="flex items-center gap-3 p-3 bg-background2 rounded-lg"
                         >
-                          <HiDocument className="w-5 h-5 text-red-400 flex-shrink-0" />
+                          <HiDocument className="w-5 h-5 text-amber-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-gray-200 font-medium truncate">
                               {file.name}
@@ -664,7 +668,7 @@ const CreateLessonPage = () => {
                           <button
                             type="button"
                             onClick={() => removeFile(index, "pdfs")}
-                            className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-amber-400 transition-colors"
                           >
                             <HiX className="w-4 h-4" />
                           </button>

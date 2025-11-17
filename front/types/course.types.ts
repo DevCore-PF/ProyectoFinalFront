@@ -14,19 +14,19 @@ export enum CourseCategory {
   MOBILE_DEVELOPMENT = "Mobile Development",
 }
 
-
 export enum CourseStatus {
   DRAFT = "EN REVISION",
-  PUBLISHED = "PUBLICADO", 
+  PUBLISHED = "PUBLICADO",
   REJECT = "RECHAZADO",
 }
 
 export enum CourseVisibility {
   PUBLIC = "PUBLICO",
   PRIVATE = "PRIVADO",
-  REJECTED = "RECHAZADO",
-  IN_REVIEW = "EN REVISION",
-  PUBLISHED = "PUBLICADO",
+}
+export interface CourseCardProps {
+  course: Course;
+  viewDetails: (id: string) => void;
 }
 
 export enum CourseType {
@@ -57,10 +57,6 @@ export interface Course {
   revenue?: number;
   rating?: number;
 }
-// export enum Visibility {
-//   PUBLICO = "PUBLICO",
-//   PRIVADO = "PRIVADO",
-// }
 export interface CourseReview {
   id: string;
   rating: number; /////del 1 al 5 porque son estrellitas

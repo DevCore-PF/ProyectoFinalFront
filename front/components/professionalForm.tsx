@@ -443,7 +443,7 @@
 //                     }`}
 //                   >
 //                     <svg
-//                       className={`w-3 h-3 text-white transition-opacity ${
+//                       className={`w-3 h-3 text-font-light transition-opacity ${
 //                         formik.values.checkboxInfo ? "opacity-100" : "opacity-0"
 //                       }`}
 //                       fill="none"
@@ -496,7 +496,7 @@
 //                   }`}
 //                 >
 //                   <svg
-//                     className={`w-3 h-3 text-white transition-opacity ${
+//                     className={`w-3 h-3 text-font-light transition-opacity ${
 //                       formik.values.checkboxTerms ? "opacity-100" : "opacity-0"
 //                     }`}
 //                     fill="none"
@@ -553,7 +553,7 @@
 //                   }`}
 //                 >
 //                   <svg
-//                     className={`w-3 h-3 text-white transition-opacity ${
+//                     className={`w-3 h-3 text-font-light transition-opacity ${
 //                       formik.values.checkboxSupervision
 //                         ? "opacity-100"
 //                         : "opacity-0"

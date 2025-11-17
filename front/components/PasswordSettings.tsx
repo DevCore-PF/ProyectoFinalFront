@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash, FaLock, FaShieldAlt } from "react-icons/fa";
-import { usePasswordManagement, PasswordFormData, PasswordChangeData } from "@/hooks/usePasswordManagement";
+import {
+  usePasswordManagement,
+  PasswordFormData,
+  PasswordChangeData,
+} from "@/hooks/usePasswordManagement";
 
 const PasswordSettings = () => {
   const {
@@ -13,7 +17,7 @@ const PasswordSettings = () => {
     setPassword,
     requestPasswordChange,
     checkPasswordCapabilities,
-    clearMessage
+    clearMessage,
   } = usePasswordManagement();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -31,10 +35,11 @@ const PasswordSettings = () => {
   });
 
   // Formulario para cambiar contraseña
-  const [changePasswordForm, setChangePasswordForm] = useState<PasswordChangeData>({
-    newPassword: "",
-    confirmNewPassword: "",
-  });
+  const [changePasswordForm, setChangePasswordForm] =
+    useState<PasswordChangeData>({
+      newPassword: "",
+      confirmNewPassword: "",
+    });
 
   // Verificar capacidades al montar el componente
   useEffect(() => {
@@ -49,15 +54,15 @@ const PasswordSettings = () => {
   }, [isExpanded]);
 
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
-    
+
     if (password.length < 8) {
       errors.push("Mínimo 8 caracteres");
     }
@@ -76,13 +81,13 @@ const PasswordSettings = () => {
     if (!/(?=.*[!@#$%^&*])/.test(password)) {
       errors.push("Al menos un símbolo (!@#$%^&*)");
     }
-    
+
     return errors;
   };
 
   const handleSetPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (setPasswordForm.password !== setPasswordForm.confirmPassword) {
       clearMessage();
       setTimeout(() => {
@@ -105,7 +110,7 @@ const PasswordSettings = () => {
         newPassword: false,
         confirmNewPassword: false,
       });
-      
+
       // Re-verificar capacidades después de establecer contraseña
       setTimeout(() => {
         checkPasswordCapabilities();
@@ -115,8 +120,10 @@ const PasswordSettings = () => {
 
   const handleChangePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
+
+    if (
+      changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword
+    ) {
       clearMessage();
       setTimeout(() => {
         clearMessage();
@@ -145,17 +152,19 @@ const PasswordSettings = () => {
 
   const handleSetPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setSetPasswordForm(prev => ({
+    setSetPasswordForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleChangePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangePasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
-    setChangePasswordForm(prev => ({
+    setChangePasswordForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -166,30 +175,30 @@ const PasswordSettings = () => {
         icon: <FaLock className="text-gray-400" />,
         title: "Cargando...",
         description: "Verificando estado de contraseña",
-        action: "Cargando"
+        action: "Cargando",
       };
     }
-    
+
     if (passwordCapabilities.canSetPassword) {
       return {
         icon: <FaLock className="text-amber-400" />,
         title: "Establecer Contraseña",
         description: "Configura una contraseña para tu cuenta social",
-        action: "Establecer"
+        action: "Establecer",
       };
     } else if (passwordCapabilities.hasPassword) {
       return {
         icon: <FaShieldAlt className="text-green-400" />,
         title: "Cambiar Contraseña",
         description: "Actualiza tu contraseña actual",
-        action: "Cambiar"
+        action: "Cambiar",
       };
     } else {
       return {
         icon: <FaLock className="text-gray-400" />,
         title: "Gestión de Contraseña",
         description: "Gestiona la seguridad de tu cuenta",
-        action: "Gestionar"
+        action: "Gestionar",
       };
     }
   };
@@ -225,7 +234,7 @@ const PasswordSettings = () => {
   return (
     <div className="bg-background2/30 border border-border rounded-xl backdrop-blur-sm overflow-hidden">
       {/* Header clickeable */}
-      <div 
+      <div
         className="p-6 cursor-pointer hover:bg-background2/20 transition-all duration-300"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -247,9 +256,11 @@ const PasswordSettings = () => {
             <span className="text-sm text-font-light/60">
               {passwordStatus.action}
             </span>
-            <div className={`transform transition-transform duration-300 text-font-light/60 ${
-              isExpanded ? 'rotate-180' : ''
-            }`}>
+            <div
+              className={`transform transition-transform duration-300 text-font-light/60 ${
+                isExpanded ? "rotate-180" : ""
+              }`}
+            >
               ▼
             </div>
           </div>
@@ -278,7 +289,10 @@ const PasswordSettings = () => {
             <form onSubmit={handleSetPasswordSubmit} className="space-y-4">
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-font-light mb-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-font-light mb-2"
+                  >
                     Nueva Contraseña
                   </label>
                   <div className="relative">
@@ -294,7 +308,7 @@ const PasswordSettings = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => togglePasswordVisibility('password')}
+                      onClick={() => togglePasswordVisibility("password")}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
                     >
                       {showPasswords.password ? <FaEyeSlash /> : <FaEye />}
@@ -302,15 +316,22 @@ const PasswordSettings = () => {
                   </div>
                   {setPasswordForm.password && (
                     <div className="mt-2">
-                      {validatePassword(setPasswordForm.password).map((error, index) => (
-                        <p key={index} className="text-xs text-red-400">• {error}</p>
-                      ))}
+                      {validatePassword(setPasswordForm.password).map(
+                        (error, index) => (
+                          <p key={index} className="text-xs text-amber-400">
+                            • {error}
+                          </p>
+                        )
+                      )}
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-font-light mb-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-font-light mb-2"
+                  >
                     Confirmar Contraseña
                   </label>
                   <div className="relative">
@@ -326,23 +347,38 @@ const PasswordSettings = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => togglePasswordVisibility('confirmPassword')}
+                      onClick={() =>
+                        togglePasswordVisibility("confirmPassword")
+                      }
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
                     >
-                      {showPasswords.confirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      {showPasswords.confirmPassword ? (
+                        <FaEyeSlash />
+                      ) : (
+                        <FaEye />
+                      )}
                     </button>
                   </div>
-                  {setPasswordForm.confirmPassword && setPasswordForm.password !== setPasswordForm.confirmPassword && (
-                    <p className="text-xs text-red-400 mt-1">Las contraseñas no coinciden</p>
-                  )}
+                  {setPasswordForm.confirmPassword &&
+                    setPasswordForm.password !==
+                      setPasswordForm.confirmPassword && (
+                      <p className="text-xs text-amber-400 mt-1">
+                        Las contraseñas no coinciden
+                      </p>
+                    )}
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={isLoading || !setPasswordForm.password || !setPasswordForm.confirmPassword || 
-                         setPasswordForm.password !== setPasswordForm.confirmPassword ||
-                         validatePassword(setPasswordForm.password).length > 0}
+                disabled={
+                  isLoading ||
+                  !setPasswordForm.password ||
+                  !setPasswordForm.confirmPassword ||
+                  setPasswordForm.password !==
+                    setPasswordForm.confirmPassword ||
+                  validatePassword(setPasswordForm.password).length > 0
+                }
                 className="w-full bg-button hover:bg-button/90 text-font-light px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
@@ -361,98 +397,127 @@ const PasswordSettings = () => {
           )}
 
           {/* Formulario para cambiar contraseña */}
-          {passwordCapabilities.hasPassword && !passwordCapabilities.canSetPassword && (
-            <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="newPassword" className="block text-sm font-medium text-font-light mb-2">
-                    Nueva Contraseña
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="newPassword"
-                      name="newPassword"
-                      type={showPasswords.newPassword ? "text" : "password"}
-                      value={changePasswordForm.newPassword}
-                      onChange={handleChangePasswordChange}
-                      placeholder="Ingresa tu nueva contraseña"
-                      className="w-full px-4 py-3 pr-12 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility('newPassword')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
+          {passwordCapabilities.hasPassword &&
+            !passwordCapabilities.canSetPassword && (
+              <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="newPassword"
+                      className="block text-sm font-medium text-font-light mb-2"
                     >
-                      {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                  {changePasswordForm.newPassword && (
-                    <div className="mt-2">
-                      {validatePassword(changePasswordForm.newPassword).map((error, index) => (
-                        <p key={index} className="text-xs text-red-400">• {error}</p>
-                      ))}
+                      Nueva Contraseña
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="newPassword"
+                        name="newPassword"
+                        type={showPasswords.newPassword ? "text" : "password"}
+                        value={changePasswordForm.newPassword}
+                        onChange={handleChangePasswordChange}
+                        placeholder="Ingresa tu nueva contraseña"
+                        className="w-full px-4 py-3 pr-12 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => togglePasswordVisibility("newPassword")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
+                      >
+                        {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-font-light mb-2">
-                    Confirmar Nueva Contraseña
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="confirmNewPassword"
-                      name="confirmNewPassword"
-                      type={showPasswords.confirmNewPassword ? "text" : "password"}
-                      value={changePasswordForm.confirmNewPassword}
-                      onChange={handleChangePasswordChange}
-                      placeholder="Confirma tu nueva contraseña"
-                      className="w-full px-4 py-3 pr-12 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility('confirmNewPassword')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
-                    >
-                      {showPasswords.confirmNewPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+                    {changePasswordForm.newPassword && (
+                      <div className="mt-2">
+                        {validatePassword(changePasswordForm.newPassword).map(
+                          (error, index) => (
+                            <p key={index} className="text-xs text-amber-400">
+                              • {error}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    )}
                   </div>
-                  {changePasswordForm.confirmNewPassword && changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword && (
-                    <p className="text-xs text-red-400 mt-1">Las contraseñas no coinciden</p>
-                  )}
+
+                  <div>
+                    <label
+                      htmlFor="confirmNewPassword"
+                      className="block text-sm font-medium text-font-light mb-2"
+                    >
+                      Confirmar Nueva Contraseña
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="confirmNewPassword"
+                        name="confirmNewPassword"
+                        type={
+                          showPasswords.confirmNewPassword ? "text" : "password"
+                        }
+                        value={changePasswordForm.confirmNewPassword}
+                        onChange={handleChangePasswordChange}
+                        placeholder="Confirma tu nueva contraseña"
+                        className="w-full px-4 py-3 pr-12 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          togglePasswordVisibility("confirmNewPassword")
+                        }
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-font-light/60 hover:text-font-light transition-colors"
+                      >
+                        {showPasswords.confirmNewPassword ? (
+                          <FaEyeSlash />
+                        ) : (
+                          <FaEye />
+                        )}
+                      </button>
+                    </div>
+                    {changePasswordForm.confirmNewPassword &&
+                      changePasswordForm.newPassword !==
+                        changePasswordForm.confirmNewPassword && (
+                        <p className="text-xs text-amber-400 mt-1">
+                          Las contraseñas no coinciden
+                        </p>
+                      )}
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-blue-500/20 p-4 rounded-lg border border-blue-500/30">
-                <p className="text-sm text-blue-300">
-                  <strong>Importante:</strong> Se enviará un enlace de confirmación a tu correo electrónico. 
-                  Debes hacer clic en el enlace para completar el cambio de contraseña.
-                </p>
-              </div>
+                <div className="bg-blue-500/20 p-4 rounded-lg border border-blue-500/30">
+                  <p className="text-sm text-blue-300">
+                    <strong>Importante:</strong> Se enviará un enlace de
+                    confirmación a tu correo electrónico. Debes hacer clic en el
+                    enlace para completar el cambio de contraseña.
+                  </p>
+                </div>
 
-              <button
-                type="submit"
-                disabled={isLoading || !changePasswordForm.newPassword || !changePasswordForm.confirmNewPassword || 
-                         changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword ||
-                         validatePassword(changePasswordForm.newPassword).length > 0}
-                className="w-full bg-button hover:bg-button/90 text-font-light px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-font-light/20 border-t-font-light rounded-full animate-spin"></div>
-                    Solicitando...
-                  </>
-                ) : (
-                  <>
-                    <FaShieldAlt />
-                    Solicitar Cambio
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  disabled={
+                    isLoading ||
+                    !changePasswordForm.newPassword ||
+                    !changePasswordForm.confirmNewPassword ||
+                    changePasswordForm.newPassword !==
+                      changePasswordForm.confirmNewPassword ||
+                    validatePassword(changePasswordForm.newPassword).length > 0
+                  }
+                  className="w-full bg-button hover:bg-button/90 text-font-light px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-font-light/20 border-t-font-light rounded-full animate-spin"></div>
+                      Solicitando...
+                    </>
+                  ) : (
+                    <>
+                      <FaShieldAlt />
+                      Solicitar Cambio
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
 
           {/* Mensajes de estado */}
           {message.text && (
@@ -460,7 +525,7 @@ const PasswordSettings = () => {
               className={`p-4 rounded-lg text-sm ${
                 message.type === "success"
                   ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                  : "bg-red-500/20 text-red-300 border border-red-500/30"
+                  : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
               }`}
             >
               {message.text}

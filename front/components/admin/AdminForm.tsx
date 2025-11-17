@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import {
   FaRegEye,
   FaRegEyeSlash,
@@ -11,30 +10,12 @@ import {
 } from "react-icons/fa";
 import { HiMail, HiUser } from "react-icons/hi";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
+import { registerAdminForm } from "@/types/admin.types";
+import { registerAdminValidation } from "@/validators/registerSchema";
+import { registerAdminSerivice } from "@/services/admin.service";
+import { useAuth } from "@/context/UserContext";
 
 // Validación con Yup
-const inviteAdminValidation = Yup.object({
-  name: Yup.string()
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .required("El nombre es requerido"),
-  email: Yup.string().email("Email inválido").required("El email es requerido"),
-  password: Yup.string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .matches(/[A-Z]/, "Debe contener al menos una mayúscula")
-    .matches(/[a-z]/, "Debe contener al menos una minúscula")
-    .matches(/[0-9]/, "Debe contener al menos un número")
-    .required("La contraseña es requerida"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Las contraseñas no coinciden")
-    .required("Debes confirmar la contraseña"),
-});
-
-interface InviteAdminFormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
 
 interface InviteAdminFormProps {
   onClose?: () => void;
@@ -43,29 +24,24 @@ interface InviteAdminFormProps {
 const AdminForm = ({ onClose }: InviteAdminFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const formik = useFormik<InviteAdminFormData>({
+  const { token } = useAuth();
+  const formik = useFormik<registerAdminForm>({
     initialValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
-    validationSchema: inviteAdminValidation,
+    validationSchema: registerAdminValidation,
     validateOnMount: false,
     onSubmit: async (values) => {
       try {
-        // TODO: Aquí irá tu servicio cuando esté listo
-        // await inviteAdminService(values);
-
+        if (token) {
+          const data = await registerAdminSerivice(token, values);
+        }
         console.log("Invitando admin:", values);
-
-        // Simulación de éxito
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         toastSuccess("Invitación enviada exitosamente!");
         formik.resetForm();
-        onClose?.();
       } catch (error) {
         if (error instanceof Error) {
           toastError(error.message);
@@ -287,7 +263,8 @@ const AdminForm = ({ onClose }: InviteAdminFormProps) => {
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
           <p className="text-blue-300 text-sm">
             <strong>Nota:</strong> Se enviará un email a{" "}
-            {formik.values.email || "el usuario"} con las credenciales de acceso.
+            {formik.values.email || "el usuario"} con las credenciales de
+            acceso.
           </p>
         </div>
       </form>

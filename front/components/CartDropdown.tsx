@@ -128,7 +128,7 @@ export default function CartDropdown() {
               <Link
                 href="/courses"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex items-center gap-2 cursor-pointer bg-button hover:bg-button/80 text-white px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-sm hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 cursor-pointer bg-button hover:bg-button/80 text-font-light px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-sm hover:scale-105 active:scale-95"
               >
                 <HiAcademicCap className="w-4 h-4" />
                 <span>Ver Cursos</span>
@@ -154,7 +154,6 @@ export default function CartDropdown() {
                           : "hover:bg-background/80"
                       }`}
                     >
-                      
                       {loadingRemove === course.id && (
                         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
                           <div className="flex flex-col items-center gap-2">
@@ -168,7 +167,7 @@ export default function CartDropdown() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between">
-                          <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-slate-200 group-hover:text-white transition-colors duration-200">
+                          <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-slate-200 group-hover:text-font-light transition-colors duration-200">
                             {course.title}
                           </h4>
                           <button
@@ -246,7 +245,7 @@ export default function CartDropdown() {
                 <Link
                   href={pathname === "/cart" ? "/courses" : "/cart"}
                   onClick={() => setIsOpen(false)}
-                  className="flex cursor-pointer items-center justify-center gap-2 w-full bg-button hover:bg-button/80 py-3 rounded-lg font-semibold transition-all duration-200 text-white hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
+                  className="flex cursor-pointer items-center justify-center gap-2 w-full bg-button hover:bg-button/80 py-3 rounded-lg font-semibold transition-all duration-200 text-font-light hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25"
                 >
                   {pathname !== "/cart" ? (
                     <span>Ver Carrito Completo</span>

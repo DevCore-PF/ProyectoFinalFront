@@ -23,10 +23,11 @@ import {
   getUserByIdService,
   rejectCourseService,
   rejectProfileService,
-} from "@/services/admin.services";
+} from "@/services/admin.service";
 import { User } from "@/types/user.types";
-import { Course, CourseReview, CourseVisibility } from "@/types/course.types";
+import { Course, CourseVisibility } from "@/types/course.types";
 import {
+  CourseReview,
   GetAllCoursesAdminParams,
   ProfessorProfileAdmin,
 } from "@/types/admin.types";
@@ -445,7 +446,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     silentRefreshCourses,
     silentRefreshProfiles,
     approveCourse,
-    rejectCourse
+    rejectCourse,
   };
 
   return (

@@ -14,6 +14,7 @@ import {
 import Loader from "../Loaders/Loader";
 import { CourseStatus } from "@/types/course.types";
 import { CourseValidation, TabType } from "@/types/admin.types";
+import { useAuth } from "@/context/UserContext";
 type ValidationTab = "professors" | "courses";
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 interface validationPageProps {
@@ -26,7 +27,6 @@ interface validationPageProps {
 
 const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
   const {
-    users,
     courses,
     isLoadingCourses,
     refreshProfiles,
@@ -52,10 +52,17 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchTerm]);
+  const { user } = useAuth();
 
+  const currentUserId = user?.id;
   // ============[ FILTRAR PROFESORES ]============
   const filteredProfessorProfiles = useMemo(() => {
     let filtered = professorProfiles;
+
+    // ✅ Excluir el usuario actual
+    if (currentUserId) {
+      filtered = filtered.filter((p) => p.user.id !== currentUserId);
+    }
 
     if (filterStatus !== "all") {
       filtered = filtered.filter((p) => p.approvalStatus === filterStatus);
@@ -72,13 +79,12 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     }
 
     return filtered;
-  }, [professorProfiles, filterStatus, debouncedSearchTerm]);
+  }, [professorProfiles, filterStatus, debouncedSearchTerm, currentUserId]); // ✅
 
   // ============[ PROCESAR CURSOS ]============
   const courseValidations = useMemo(() => {
     const coursesWithValidation: CourseValidation[] = courses.map((course) => ({
       id: course.id,
-
       title: course.title,
       professorName: course.professor?.user?.name || "Sin profesor",
       professorEmail: course.professor?.user?.email || "",
@@ -87,6 +93,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
       createdAt: course.createdAt,
       price: course.price,
       difficulty: course.difficulty,
+      visibility: course.visibility,
     }));
 
     // Filtrar por estado
@@ -154,26 +161,32 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     const config = {
       pending: "bg-blue-500/10 text-blue-300 border-blue-500/20",
       approved: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-      rejected: "bg-red-500/10 text-red-300 border-red-500/20",
+      rejected: "bg-amber-500/10 text-amber-300 border-amber-500/20",
       "EN REVISION": "bg-blue-500/10 text-blue-300 border-blue-500/20",
       PUBLICADO: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-      RECHAZADO: "bg-red-500/10 text-red-300 border-red-500/20",
+      RECHAZADO: "bg-amber-500/10 text-amber-300 border-amber-500/20",
     };
     return config[status as keyof typeof config] || config.pending;
   };
 
   const getStatusLabel = (status: string) => {
     const labels = {
-      pending: "Pendiente",
-      approved: "Aprobado",
-      rejected: "Rechazado",
+      // Estados de cursos (mayúsculas)
       "EN REVISION": "En Revisión",
       PUBLICADO: "Publicado",
       RECHAZADO: "Rechazado",
+      pending: "Pendiente",
+      approved: "Aprobado",
+      rejected: "Rechazado",
     };
     return labels[status as keyof typeof labels] || status;
   };
 
+  const getVisibilityBadge = (visibility: string) => {
+    return visibility === "PUBLICO"
+      ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
+      : "bg-amber-500/10 text-amber-200 border-amber-500/20";
+  };
   // ============[ LOADER  ]============
   const isLoading = isLoadingProfiles || isLoadingCourses;
   useEffect(() => {
@@ -208,7 +221,6 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
       prevCoursesLengthRef.current = courses.length;
     }
   }, [professorProfiles.length, courses.length]);
-
   return (
     <div className="space-y-6">
       {/* ============[ HEADER ]============ */}
@@ -504,6 +516,10 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
                         Estado
                       </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
+                        Visibilidad
+                      </th>
+
                       <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold">
                         Acciones
                       </th>
@@ -555,6 +571,17 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
                             )}`}
                           >
                             {getStatusLabel(course.status)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <span
+                            className={`px-3 py-1 rounded-lg text-xs font-medium border ${getVisibilityBadge(
+                              course.visibility
+                            )}`}
+                          >
+                            {course.visibility === "PUBLICO"
+                              ? "Público"
+                              : "Privado"}
                           </span>
                         </td>
                         <td className="px-4 py-4">

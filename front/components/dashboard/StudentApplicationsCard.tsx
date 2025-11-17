@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { HiAcademicCap } from "react-icons/hi";
-import TeacherApplicationCard from '@/components/TeacherApplicationCard';
-import TeacherRequestModal from '@/components/TeacherRequestModal';
-import useStudentTeacherRequest from '@/hooks/useStudentTeacherRequest';
+import TeacherApplicationCard from "@/components/TeacherApplicationCard";
+import TeacherRequestModal from "@/components/TeacherRequestModal";
+import useStudentTeacherRequest from "@/hooks/useStudentTeacherRequest";
 
 interface StudentApplicationsCardProps {
   title: string;
@@ -12,10 +12,10 @@ interface StudentApplicationsCardProps {
 
 const StudentApplicationsCard = ({ title }: StudentApplicationsCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { 
-    applicationStatus, 
-    canApply, 
-    hasApplication, 
+  const {
+    applicationStatus,
+    canApply,
+    hasApplication,
     isPending,
     isSubmitting,
   } = useStudentTeacherRequest();
@@ -65,7 +65,7 @@ const StudentApplicationsCard = ({ title }: StudentApplicationsCardProps) => {
           <button
             onClick={handleOpenModal}
             disabled={!canApply}
-            className="inline-flex items-center gap-2 bg-button hover:bg-button/80 px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 bg-button hover:bg-button/80 px-6 py-3 rounded-lg text-font-light font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <HiAcademicCap className="w-5 h-5" />
             Postularme como Profesor
@@ -74,10 +74,7 @@ const StudentApplicationsCard = ({ title }: StudentApplicationsCardProps) => {
       )}
 
       {/* Modal para solicitud */}
-      <TeacherRequestModal 
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      <TeacherRequestModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

@@ -13,7 +13,10 @@ import { categoryConfig } from "@/helpers/course.helpers";
 import { getDifficultyColors } from "@/helpers/moks";
 //Services
 import { getAllPublicCoursesService } from "@/services/course.service";
-import { purchasedCoursesService, PurchasedCourse } from "@/services/purchased-courses.service";
+import {
+  purchasedCoursesService,
+  PurchasedCourse,
+} from "@/services/purchased-courses.service";
 //Components
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
@@ -22,7 +25,9 @@ const CoursesPage = () => {
   const { user, token } = useAuth();
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>([]);
+  const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>(
+    []
+  );
   const [showMyCoursesOnly, setShowMyCoursesOnly] = useState(false);
   const [loadingCourses, setLoadingCourses] = useState(false);
   const { handleAddToCart, loadingAddToCart } = useAddToCart();
@@ -47,7 +52,8 @@ const CoursesPage = () => {
     const fetchPurchasedCourses = async () => {
       if (user && token) {
         try {
-          const purchasedData = await purchasedCoursesService.getMyPurchasedCourses(token);
+          const purchasedData =
+            await purchasedCoursesService.getMyPurchasedCourses(token);
           setPurchasedCourses(purchasedData);
         } catch (error) {
           console.error("Error fetching purchased courses:", error);
@@ -65,10 +71,13 @@ const CoursesPage = () => {
     window.location.reload();
     setLoadingCourses(false);
   };
-  if (loadingCourses) return(<div className="flex flex-col min-h-screen justify-center items-center">
-      <Loader size="medium" />
-      <p className="text-slate-400">Cargando...</p>
-    </div>)
+  if (loadingCourses)
+    return (
+      <div className="flex flex-col min-h-screen justify-center items-center">
+        <Loader size="medium" />
+        <p className="text-slate-400">Cargando...</p>
+      </div>
+    );
   return (
     <div className="min-h-screen">
       {courses.length ? (
@@ -118,14 +127,14 @@ const CoursesPage = () => {
                         <div
                           className={`bg-gradient-to-br ${config.iconGradient} p-4 rounded-xl shadow-lg w-20 h-20 flex items-center justify-center`}
                         >
-                          <Icon className="w-10 h-10 text-white" />
+                          <Icon className="w-10 h-10 text-font-light" />
                         </div>
                       </div>
 
                       <div className="flex-1 flex flex-col">
                         <div className="mb-4">
                           <div className="flex items-start justify-between mb-2">
-                            <h3 className="text-white text-2xl font-bold flex-1">
+                            <h3 className="text-font-light text-2xl font-bold flex-1">
                               {course.title}
                             </h3>
                             {!isOwnCourse && !isPurchasedCourse ? (
@@ -156,7 +165,7 @@ const CoursesPage = () => {
                               onClick={() =>
                                 router.push(`/course/${course.id}`)
                               }
-                              className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer"
+                              className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer"
                             >
                               Ver Curso
                             </button>
@@ -202,9 +211,9 @@ const CoursesPage = () => {
                                 Especialidad:{" "}
                               </span>
                               <span className="text-slate-300 font-semibold">
-                                {course.professor?.speciality || 
-                                 course.professor?.profession || 
-                                 "No disponible"}
+                                {course.professor?.speciality ||
+                                  course.professor?.profession ||
+                                  "No disponible"}
                               </span>
                             </div>
                           </div>
@@ -218,7 +227,7 @@ const CoursesPage = () => {
 
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
-                <h3 className="text-3xl font-bold text-white mb-2">
+                <h3 className="text-3xl font-bold text-font-light mb-2">
                   {courses.length}+
                 </h3>
                 <p className="text-slate-300">
@@ -226,11 +235,13 @@ const CoursesPage = () => {
                 </p>
               </div>
               <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
-                <h3 className="text-3xl font-bold text-white mb-2">200+</h3>
+                <h3 className="text-3xl font-bold text-font-light mb-2">
+                  200+
+                </h3>
                 <p className="text-slate-300">Horas de Contenido</p>
               </div>
               <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">
-                <h3 className="text-3xl font-bold text-white mb-2">10+</h3>
+                <h3 className="text-3xl font-bold text-font-light mb-2">10+</h3>
                 <p className="text-slate-300">Instructores Expertos</p>
               </div>
             </div>
@@ -259,7 +270,7 @@ const CoursesPage = () => {
             </div>
 
             {/* Título */}
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-font-light mb-4">
               No hay cursos disponibles
             </h2>
 
@@ -274,7 +285,7 @@ const CoursesPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => router.push("/")}
-                className="bg-button hover:bg-button/80 cursor-pointer px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-button/30"
+                className="bg-button hover:bg-button/80 cursor-pointer px-6 py-3 rounded-lg text-font-light font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-button/30"
               >
                 Volver al inicio
               </button>

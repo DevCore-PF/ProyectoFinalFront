@@ -110,7 +110,7 @@ const ModalTerms = () => {
                 }`}
               >
                 <svg
-                  className={`w-3 h-3 text-white transition-opacity ${
+                  className={`w-3 h-3 text-font-light transition-opacity ${
                     formik.values.checkBoxTerms ? "opacity-100" : "opacity-0"
                   }`}
                   fill="none"
@@ -162,7 +162,7 @@ const ModalTerms = () => {
                 checkBoxTerms: true,
               });
             }}
-            disabled={formik.isSubmitting }
+            disabled={formik.isSubmitting}
             className="w-full bg-button/90 disabled:hover:bg-button/20 disabled:cursor-not-allowed cursor-pointer hover:bg-button transition rounded-md py-3 font-semibold text-font-light disabled:opacity-50"
           >
             {formik.isSubmitting ? "Procesando..." : "Aceptar y continuar"}

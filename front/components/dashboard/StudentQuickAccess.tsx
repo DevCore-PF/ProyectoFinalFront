@@ -1,6 +1,12 @@
 "use client";
 
-import { HiBookOpen, HiShoppingCart, HiCurrencyDollar, HiAcademicCap, HiArrowRight } from "react-icons/hi";
+import {
+  HiBookOpen,
+  HiShoppingCart,
+  HiCurrencyDollar,
+  HiAcademicCap,
+  HiArrowRight,
+} from "react-icons/hi";
 import { useRouter } from "next/navigation";
 
 interface StudentQuickAccessProps {
@@ -8,21 +14,25 @@ interface StudentQuickAccessProps {
   completedCourses: number;
 }
 
-const StudentQuickAccess = ({ totalCourses, completedCourses }: StudentQuickAccessProps) => {
+const StudentQuickAccess = ({
+  totalCourses,
+  completedCourses,
+}: StudentQuickAccessProps) => {
   const router = useRouter();
-  
+
   const quickAccessItems = [
     {
       id: "explore-courses",
       title: "EXPLORAR",
-      description: "Descubre nuevos cursos para ampliar tus conocimientos y habilidades.",
+      description:
+        "Descubre nuevos cursos para ampliar tus conocimientos y habilidades.",
       icon: <HiAcademicCap className="w-6 h-6 text-accent-light" />,
       onClick: () => router.push("/courses"),
     },
   ];
 
   return (
-    <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-white shadow-xl hover:border-slate-600/50 transition-all duration-300">
+    <div className="bg-background2/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
       <div className="mb-5">
         <h2 className="text-xl md:text-2xl font-bold text-slate-200">
           Acceso rápido

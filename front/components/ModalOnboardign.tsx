@@ -1,4 +1,3 @@
-
 "use client";
 import Link from "next/link";
 import { useFormik } from "formik";
@@ -184,7 +183,7 @@ const ModalOnboarding = () => {
                     }`}
                   >
                     <svg
-                      className={`w-3 h-3 text-white transition-opacity ${
+                      className={`w-3 h-3 text-font-light transition-opacity ${
                         formik.values.checkBoxTerms
                           ? "opacity-100"
                           : "opacity-0"

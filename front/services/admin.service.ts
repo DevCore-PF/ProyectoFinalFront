@@ -1,4 +1,7 @@
-import { CourseFilters, GetAllCoursesAdminParams } from "@/types/admin.types";
+import {
+  GetAllCoursesAdminParams,
+  registerAdminForm,
+} from "@/types/admin.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -251,7 +254,6 @@ export const getAllCoursesAdminService = async (
     }
 
     const data = await response.json();
-    console.log("ESTO SON MIS CURSOS ", data);
 
     return data;
   } catch (error) {
@@ -296,7 +298,6 @@ export const getAllProfessorProfilesService = async (token: string) => {
     }
 
     const data = await response.json();
-    console.log("esta es la data de profile", data);
     return data;
   } catch (error) {
     console.log(error);
@@ -373,7 +374,6 @@ export const approveCourseService = async (token: string, courseId: string) => {
   }
 };
 
-// /courses/{courseId}/decline
 export const rejectCourseService = async (
   token: string,
   courseId: string,
@@ -393,11 +393,264 @@ export const rejectCourseService = async (
       const error = await response.json();
       throw new Error(error.messege || "Error al rechazar curso");
     }
-    // const data = response.json();
-    // return data;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
 
+export const registerAdminSerivice = async (
+  token: string,
+  values: registerAdminForm
+) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/register/admin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(values),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.mesgage || "Error al registrar administrador");
+    }
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllSalesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/sales/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los pagos");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis pagos ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllSalesPendingService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/sales/pending`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los pagos pendientes");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis pagos pendientes ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllSalesPaidService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/sales/paid`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los pagos pagados");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis pagos pagados ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const createBatchService = async (
+  token: string,
+  professorId: string
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/payouts/create-batch/${professorId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al crear lote");
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const markAsPaidService = async (
+  token: string,
+  payoutId: string,
+  referenceNumber: string
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/payouts/mark-paid/${payoutId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ referenceNumber }),
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al marcar como pagado");
+    }
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllPendingSummaryService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/pending-summary`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los lotes creados");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis lotes creados ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllBatchesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/batches/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los lotes ");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis lotes ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllPendingBatchesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/batches/pending`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los lotes pendientes");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis lotes pendientes ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAllPaidBatchesService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/payouts/batches/paid`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los lotes pagos");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis lotes pagos ", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// /**
+//  * Endpoint 1: Obtiene TODOS los lotes de pago (Pagados y Pendientes)
+//  */
+// @Get('batches/all')
+// async getAllBatches() {
+//     return this.payoutService.getPayoutBatches(); // Sin filtro
+// }
+
+// /**
+//  * Endpoint 2: Obtiene solo lotes PENDIENTES
+//  */
+// @Get('batches/pending')
+// async getPendingBatches() {
+//     return this.payoutService.getPayoutBatches(PayoutStatus.PENDING);
+// }
+
+// /**
+//  * Endpoint 3: Obtiene solo lotes YA PAGADOS
+//  */
+// @Get('batches/paid')
+// async getPaidBatches() {
+//     return this.payoutService.getPayoutBatches(PayoutStatus.PAID);
+// }

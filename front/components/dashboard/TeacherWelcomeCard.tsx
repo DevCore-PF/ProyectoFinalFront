@@ -94,6 +94,9 @@ const TeacherWelcomeCard = ({
                           router.push('/purchase-history');
                         } else if (option.id === 'income') {
                           router.push('/teacher-dashboard/earnings');
+                        } else if (option.id === 'statistics') {
+                          // Ejecutar el onClick del option que hace scroll
+                          option.onClick();
                         } else {
                           console.log(option.title);
                         }

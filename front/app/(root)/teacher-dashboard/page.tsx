@@ -4,9 +4,8 @@ import TeacherCourseCard from "@/components/dashboard/TeacherCourseCard";
 import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
-import { teacherFeaturedCourses } from "@/helpers/moks";
 import { CourseVisibility } from "@/types/course.types";
-import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
+import { HiBookOpen, HiShoppingCart } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -15,6 +14,7 @@ import { useProfessorCourses } from "@/hooks/useProfessorCourses";
 import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
+import TopCoursesWidget from "@/components/dashboard/TopCoursesWidget";
 
 const TeacherDashboardPage = () => {
   const { user, isLoading } = useAuth();
@@ -262,51 +262,8 @@ const TeacherDashboardPage = () => {
 
         {/* Estadísticas - solo si puede crear cursos */}
         {canCreateCourses && (
-          <div className="grid grid-cols-1 gap-6 my-10">
-            <div className="flex flex-col justify-center bg-transparent backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-yellow-500/10 rounded-lg">
-                  <HiTrendingUp className="md:w-6 md:h-6 text-yellow-200" />
-                </div>
-                <div>
-                  <h2 className="text-lg md:text-2xl font-bold text-slate-200">
-                    CURSOS DESTACADOS
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Tus cursos con mejor rendimiento este mes
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {teacherFeaturedCourses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex-1">
-                        <h3 className="text-sm md:text-lg font-semibold text-slate-200 mb-1">
-                          {course.title}
-                        </h3>
-                        <p className="text-xs md:text-sm text-slate-400">
-                          Ingresos generados
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs md:text-2xl font-bold text-green-600">
-                          ${course.revenue.toFixed(0)}
-                        </p>
-                        <p className="text-sm text-green-400 flex items-center gap-1 justify-end">
-                          <HiTrendingUp className="w-4 h-4" />
-                          {course.trend}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div id="top-courses-section" className="my-10 scroll-mt-20">
+            <TopCoursesWidget />
           </div>
         )}
       </div>

@@ -6,6 +6,7 @@ import { HiOutlineComputerDesktop } from "react-icons/hi2";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 // Next/React
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 //Services
@@ -114,10 +115,14 @@ const page = () => {
     <form onSubmit={formik.handleSubmit} className="min-h-screen ">
       <div className="min-h-screen text-font-light flex flex-col">
         <header className="p-6 backdrop-blur-sm">
-          <Link href="/" className="inline-block">
-            <span className="text-xl font-bold text-font-light hover:opacity-80 transition-opacity">
-              LOGO
-            </span>
+          <Link href="/" className="flex items-center space-x-2 cursor-pointer">
+            <Image
+              alt="logoDev"
+              src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
+              width={500}
+              height={500}
+              className="h-9 w-9"
+            />
           </Link>
         </header>
 

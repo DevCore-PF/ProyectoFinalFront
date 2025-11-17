@@ -113,11 +113,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
           </div>
           <button
             onClick={onClose}
-<<<<<<< HEAD
             className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer"
-=======
-            className="text-slate-400 hover:text-font-light transition-colors p-1"
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
           >
             <HiX className="text-xl" />
           </button>

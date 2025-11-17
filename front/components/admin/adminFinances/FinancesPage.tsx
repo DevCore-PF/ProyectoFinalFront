@@ -56,7 +56,7 @@ export default function FinancesSection() {
               }`}
             >
               <HiCollection className="w-4 h-4" />
-              Cursos a pagar
+              Lotes a pagar
               {batchesCount > 0 && (
                 <span className="text-amber-200/80 text-xs font-bold ">
                   ({batchesCount})
@@ -72,7 +72,7 @@ export default function FinancesSection() {
               }`}
             >
               <FaCheckCircle className="w-4 h-4" />
-              Cursos pagados
+              Lotes pagados
               {paidBatchesCount > 0 && (
                 <span className=" text-amber-200/80 text-xs font-bold ">
                   ({paidBatchesCount})

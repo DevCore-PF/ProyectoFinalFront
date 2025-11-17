@@ -9,6 +9,7 @@ import {
   HiCalendar,
   HiCash,
   HiDocumentText,
+  HiChevronDown,
 } from "react-icons/hi";
 import Loader from "@/components/Loaders/Loader";
 import { getAllPaidBatchesService } from "@/services/admin.service";
@@ -22,7 +23,9 @@ interface PayoutBatch {
   professorName: string;
   professorId: string;
   referenceNumber?: string;
+  salesCount: number;
 }
+
 interface PaidManagementtProps {
   onCountChange: (count: number) => void;
 }
@@ -33,6 +36,9 @@ export default function PaidManagement({
   const { token } = useAuth();
   const [batches, setBatches] = useState<PayoutBatch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedProfessors, setExpandedProfessors] = useState<Set<string>>(
+    new Set()
+  );
 
   const groupByProfessor = (batches: PayoutBatch[]) => {
     return batches.reduce((grouped, batch) => {
@@ -43,6 +49,18 @@ export default function PaidManagement({
       grouped[professorName].push(batch);
       return grouped;
     }, {} as Record<string, PayoutBatch[]>);
+  };
+
+  const toggleProfessor = (professorName: string) => {
+    setExpandedProfessors((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(professorName)) {
+        newSet.delete(professorName);
+      } else {
+        newSet.add(professorName);
+      }
+      return newSet;
+    });
   };
 
   useEffect(() => {
@@ -96,7 +114,7 @@ export default function PaidManagement({
       <div className="space-y-8">
         {Object.entries(groupedBatches).map(
           ([professorName, professorBatches]) => {
-            // Calcular totales por profesor
+            const isExpanded = expandedProfessors.has(professorName);
             const totalAmount = professorBatches.reduce(
               (sum, batch) => sum + parseFloat(batch.totalAmount),
               0
@@ -104,13 +122,16 @@ export default function PaidManagement({
 
             return (
               <div key={professorName} className="space-y-4">
-                {/* Header del profesor */}
-                <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
+                {/* Header del profesor - Clickeable */}
+                <button
+                  onClick={() => toggleProfessor(professorName)}
+                  className="w-full flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-700/50 hover:bg-slate-800/50 transition-all cursor-pointer"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-full flex items-center justify-center border border-emerald-500/30">
                       <HiUserCircle className="w-6 h-6 text-emerald-300" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="text-lg font-semibold text-font-light">
                         {professorName}
                       </h3>
@@ -122,16 +143,29 @@ export default function PaidManagement({
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-slate-400 text-xs mb-1">Total pagado</p>
-                    <p className="text-xl font-bold text-emerald-300">
-                      ${totalAmount.toFixed(2)}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-slate-400 text-xs mb-1">Total pagado</p>
+                      <p className="text-xl font-bold text-emerald-300">
+                        ${totalAmount.toFixed(2)}
+                      </p>
+                    </div>
+                    <HiChevronDown
+                      className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
                   </div>
-                </div>
+                </button>
 
-                {/* Lista de lotes del profesor */}
-                <div className="grid grid-cols-1 gap-4 pl-4">
+                {/* Lista de lotes del profesor - Colapsable */}
+                <div
+                  className={`grid grid-cols-1 gap-4 pl-4 transition-all duration-300 overflow-hidden ${
+                    isExpanded
+                      ? "max-h-[5000px] opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
                   {professorBatches.map((batch) => (
                     <div
                       key={batch.payoutId}
@@ -193,6 +227,11 @@ export default function PaidManagement({
                                 </span>
                               </div>
                             )}
+                            <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-1 rounded-lg">
+                              <span className="text-slate-300 text-xs font-medium">
+                                Cursos pagados: {batch.salesCount}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -1,9 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
-
-<<<<<<< HEAD
-=======
-
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api"
 import { TeacherValidationStatus } from "@/types/professionalValidation.types";
 import { ProfessorProfileResponse } from "@/types/professor.types";
 import { User } from "@/types/user.types";

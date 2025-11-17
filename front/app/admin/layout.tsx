@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AuthProvider } from "../../context/UserContext";
+import { CartProvider } from "@/context/CartContext";
 import { AdminProvider } from "@/context/AdminContext";
 
 export const metadata: Metadata = {
@@ -14,10 +17,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AdminProvider>
-      <Navbar />
-      {children}
-      <Footer />
-    </AdminProvider>
+    <div>
+      <AuthProvider>
+        <CartProvider>
+          <AdminProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </AdminProvider>
+        </CartProvider>
+      </AuthProvider>
+    </div>
   );
 }

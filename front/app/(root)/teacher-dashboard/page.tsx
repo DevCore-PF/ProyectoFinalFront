@@ -5,16 +5,7 @@ import ValidationMessage from "@/components/dashboard/ValidationMessage";
 import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValidationForm";
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { CourseVisibility } from "@/types/course.types";
-<<<<<<< HEAD
 import { HiBookOpen, HiShoppingCart } from "react-icons/hi";
-=======
-import {
-  HiBookOpen,
-  HiTrendingUp,
-  HiChartBar,
-  HiShoppingCart,
-} from "react-icons/hi";
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -164,7 +155,6 @@ const TeacherDashboardPage = () => {
             </div>
           </div>
 
-<<<<<<< HEAD
           {/* Tabs - Siempre mostrar, pero condicionar el contenido */}
           <div className="flex border-b border-slate-700/50 mb-6">
             <button
@@ -178,38 +168,6 @@ const TeacherDashboardPage = () => {
               <div className="flex items-center gap-2">
                 <HiBookOpen className="w-4 h-4" />
                 Cursos Creados
-=======
-          {canCreateCourses ? (
-            <>
-              {/* Tabs */}
-              <div className="flex border-b border-slate-700/50 mb-6">
-                <button
-                  onClick={() => setActiveTab("created")}
-                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === "created"
-                      ? "text-blue-400 border-blue-400"
-                      : "text-slate-400 border-transparent hover:text-slate-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <HiBookOpen className="w-4 h-4" />
-                    Cursos Creados
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab("purchased")}
-                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === "purchased"
-                      ? "text-green-400 border-green-400"
-                      : "text-slate-400 border-transparent hover:text-slate-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <HiShoppingCart className="w-4 h-4" />
-                    Cursos Comprados
-                  </div>
-                </button>
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
               </div>
             </button>
             <button
@@ -227,15 +185,10 @@ const TeacherDashboardPage = () => {
             </button>
           </div>
 
-<<<<<<< HEAD
           {/* Contenido de tabs */}
           {activeTab === 'created' ? (
             <>
               {canCreateCourses ? (
-=======
-              {/* Contenido de tabs */}
-              {activeTab === "created" ? (
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
                 <>
                   {coursesLoading ? (
                     <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">

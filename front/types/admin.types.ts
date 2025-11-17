@@ -164,11 +164,7 @@ export interface CourseReview {
   createdAt: string;
   // Campos de moderación
   isCensored: boolean;
-<<<<<<< HEAD
   moderationStatus: 'approved' | 'pending' | 'censored' | 'rejected';
-=======
-  moderationStatus: "approved" | "pending" | "censored" | "rejected";
->>>>>>> b7e5b95a29666bac1e3f99667d0b36199ff3156e
   toxicityScore?: number;
   moderationReason?: string;
   requiresManualReview?: boolean;

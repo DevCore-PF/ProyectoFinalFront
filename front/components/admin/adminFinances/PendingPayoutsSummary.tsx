@@ -25,8 +25,13 @@ interface PendingSummary {
   totalOwed: number;
   salesCount: number;
 }
+interface PendingPayoutsSummaryProps {
+  onCountChange: (count: number) => void;
+}
 
-export default function PendingPayoutsSummary() {
+export default function PendingPayoutsSummary({
+  onCountChange,
+}: PendingPayoutsSummaryProps) {
   const { token } = useAuth();
   const [pendingSummary, setPendingSummary] = useState<PendingSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +47,7 @@ export default function PendingPayoutsSummary() {
       if (token) {
         const data = await getAllPendingSummaryService(token);
         setPendingSummary(data);
+        onCountChange(data.length);
       }
     } catch (error) {
       toastError("Error al cargar el resumen de pagos pendientes");
@@ -193,7 +199,7 @@ export default function PendingPayoutsSummary() {
                 )
               }
               disabled={creatingBatch === professor.professorId}
-              className="w-full bg-gradient-to-r cursor-pointer from-button/80 to-button hover:from-button hover:to-button/90 text-white font-medium py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r cursor-pointer from-button/80 to-button hover:from-button hover:to-button/90 text-font-light font-medium py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {creatingBatch === professor.professorId ? (
                 <>

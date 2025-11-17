@@ -260,7 +260,7 @@ const CreateCoursePage = () => {
                     p-2 rounded-lg bg-gradient-to-r ${selectedCategoryConfig.iconGradient}
                   `}
                   >
-                    <selectedCategoryConfig.icon className="w-5 h-5 text-white" />
+                    <selectedCategoryConfig.icon className="w-5 h-5 text-font-light" />
                   </div>
                   <span
                     className={`font-medium ${selectedCategoryConfig.textColor}`}

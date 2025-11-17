@@ -39,7 +39,6 @@ const AchievementsPage = () => {
           </p>
         </header>
 
-
         <section className="mb-20">
           <h2 className="text-3xl font-bold mb-10 text-center text-gray-100">
             📊 Cifras Clave del Despegue (Primeros 12 Meses)
@@ -166,7 +165,7 @@ const AchievementsPage = () => {
                 <li className="flex items-start">
                   <span className="text-yellow-light mr-3 mt-1">✓</span>{" "}
                   Diversidad Geográfica: Estudiantes y profesores de más de 20
-                  países de habla hispana, creando una red global de
+                  países de habla hispana, creando una amber global de
                   oportunidades.
                 </li>
               </ul>

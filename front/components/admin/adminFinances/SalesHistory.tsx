@@ -192,40 +192,6 @@ export default function SalesHistory() {
   const chartData = getChartData();
   return (
     <div>
-      {/* Gráfico de barras */}
-      <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-font-light flex items-center gap-2">
-            <HiChartBar className="w-5 h-5 text-purple-300" />
-            {timePeriod === "month" ? "Ingresos por día" : "Ingresos mensuales"}
-          </h3>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setTimePeriod("month")}
-              className={`px-3 py-1.5 border rounded-lg cursor-pointer text-xs font-medium transition-all ${
-                timePeriod === "month"
-                  ? "bg-button/80 border-button text-font-light"
-                  : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"
-              }`}
-            >
-              Este mes
-            </button>
-            <button
-              onClick={() => setTimePeriod("year")}
-              className={`px-3 py-1.5 border rounded-lg cursor-pointer text-xs font-medium transition-all ${
-                timePeriod === "year"
-                  ? "bg-button/80 border-button text-font-light"
-                  : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"
-              }`}
-            >
-              Este año
-            </button>
-          </div>
-        </div>
-        <div className="h-80">
-          <Chart data={chartData} period={timePeriod} />
-        </div>
-      </div>
       {/* Estadísticas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition-all">
@@ -276,15 +242,49 @@ export default function SalesHistory() {
           </p>
         </div>
       </div>
+      {/* Gráfico de barras */}
+      <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-font-light flex items-center gap-2">
+            <HiChartBar className="w-5 h-5 text-purple-300" />
+            {timePeriod === "month" ? "Ingresos por día" : "Ingresos mensuales"}
+          </h3>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTimePeriod("month")}
+              className={`px-3 py-1.5 border rounded-lg cursor-pointer text-xs font-medium transition-all ${
+                timePeriod === "month"
+                  ? "bg-button/80 border-button text-font-light"
+                  : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"
+              }`}
+            >
+              Este mes
+            </button>
+            <button
+              onClick={() => setTimePeriod("year")}
+              className={`px-3 py-1.5 border rounded-lg cursor-pointer text-xs font-medium transition-all ${
+                timePeriod === "year"
+                  ? "bg-button/80 border-button text-font-light"
+                  : "bg-slate-700/50 hover:bg-slate-700 border-slate-600 text-slate-300"
+              }`}
+            >
+              Este año
+            </button>
+          </div>
+        </div>
+        <div className="h-80">
+          <Chart data={chartData} period={timePeriod} />
+        </div>
+      </div>
 
       {/* Filtros */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-2">
           <button
             onClick={() => setFilter("ALL")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-medium transition-all ${
               filter === "ALL"
-                ? "bg-button/50 text-white border border-button"
+                ? "bg-button/50 text-font-light border border-button"
                 : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600"
             }`}
           >
@@ -292,9 +292,9 @@ export default function SalesHistory() {
           </button>
           <button
             onClick={() => setFilter("PENDING")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-all ${
               filter === "PENDING"
-                ? "bg-amber-700/50 text-white border border-amber-500"
+                ? "bg-amber-700/50 text-font-light border border-amber-500"
                 : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600"
             }`}
           >
@@ -302,9 +302,9 @@ export default function SalesHistory() {
           </button>
           <button
             onClick={() => setFilter("PAID")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-medium transition-all ${
               filter === "PAID"
-                ? "bg-emerald-700/50 text-white border border-emerald-500"
+                ? "bg-emerald-700/50 text-font-light border border-emerald-500"
                 : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600"
             }`}
           >

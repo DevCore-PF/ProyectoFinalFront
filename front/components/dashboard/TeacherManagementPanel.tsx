@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { HiPlus, HiLink, HiChartBar, HiCurrencyDollar, HiShoppingCart } from 'react-icons/hi';
-import AdditionalContentModal from './AdditionalContentModal';
+import React, { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  HiPlus,
+  HiLink,
+  HiChartBar,
+  HiCurrencyDollar,
+  HiShoppingCart,
+} from "react-icons/hi";
+import AdditionalContentModal from "./AdditionalContentModal";
 
 interface ManagementOption {
   id: string;
@@ -16,61 +22,68 @@ interface TeacherManagementPanelProps {
   className?: string;
 }
 
-const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ className = '' }) => {
+const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({
+  className = "",
+}) => {
   const router = useRouter();
-  const [showAdditionalContentModal, setShowAdditionalContentModal] = useState(false);
-  
+  const [showAdditionalContentModal, setShowAdditionalContentModal] =
+    useState(false);
+
   const managementOptions: ManagementOption[] = [
     {
-      id: 'create-course',
-      title: 'Crear nuevo curso',
-      description: 'Inicia el flujo de creación desde cero.',
+      id: "create-course",
+      title: "Crear nuevo curso",
+      description: "Inicia el flujo de creación desde cero.",
       icon: <HiPlus className="text-xl" />,
       onClick: () => {
-        console.log('Navegando a crear curso...');
-        router.push('/teacher-dashboard/create-course');
-      }
+        console.log("Navegando a crear curso...");
+        router.push("/teacher-dashboard/create-course");
+      },
     },
     {
-      id: 'additional-content',
-      title: 'Agregar contenido adicional',
-      description: 'Añade URLs y recursos extras a tus lecciones existentes.',
+      id: "additional-content",
+      title: "Agregar contenido adicional",
+      description: "Añade URLs y recursos extras a tus lecciones existentes.",
       icon: <HiLink className="text-xl" />,
-      onClick: () => setShowAdditionalContentModal(true)
+      onClick: () => setShowAdditionalContentModal(true),
     },
     {
-      id: 'statistics',
-      title: 'Ver mis estadísticas',
-      description: 'Accede a métricas de rendimiento de tus cursos.',
+      id: "statistics",
+      title: "Ver mis estadísticas",
+      description: "Accede a métricas de rendimiento de tus cursos.",
       icon: <HiChartBar className="text-xl" />,
-      onClick: () => console.log('Ver estadísticas')
+      onClick: () => console.log("Ver estadísticas"),
     },
     {
-      id: 'income',
-      title: 'Consultar ingresos',
-      description: 'Mira el alcance e historial de pagos por curso.',
+      id: "income",
+      title: "Consultar ingresos",
+      description: "Mira el alcance e historial de pagos por curso.",
       icon: <HiCurrencyDollar className="text-xl" />,
-      onClick: () => console.log('Consultar ingresos')
+      onClick: () => console.log("Consultar ingresos"),
     },
     {
-      id: 'purchase-history',
-      title: 'Historial de compras',
-      description: 'Revisa todas tus compras y transacciones realizadas.',
+      id: "purchase-history",
+      title: "Historial de compras",
+      description: "Revisa todas tus compras y transacciones realizadas.",
       icon: <HiShoppingCart className="text-xl" />,
-      onClick: () => router.push('/purchase-history')
-    }
+      onClick: () => router.push("/purchase-history"),
+    },
   ];
 
   return (
-    <div className={`rounded-xl p-6 text-white font-body ${className}`} style={{ backgroundColor: '#3F4273' }}>
+    <div
+      className={`rounded-xl p-6 text-font-light font-body ${className}`}
+      style={{ backgroundColor: "#3F4273" }}
+    >
       <div className="flex items-center space-x-3 mb-6">
-        <Image 
-          src="/icons/settingsIcon.svg" 
-          alt="Panel de Gestión" 
-          width={24} 
+        <Image
+          src="/icons/settingsIcon.svg"
+          alt="Panel de Gestión"
+          width={24}
           height={24}
-          style={{ 
-            filter: 'brightness(0) saturate(100%) invert(96%) sepia(16%) saturate(290%) hue-rotate(22deg) brightness(103%) contrast(96%)'
+          style={{
+            filter:
+              "brightness(0) saturate(100%) invert(96%) sepia(16%) saturate(290%) hue-rotate(22deg) brightness(103%) contrast(96%)",
           }}
         />
         <h2 className="text-xl font-medium">PANEL DE GESTIÓN</h2>
@@ -78,7 +91,7 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
       <p className="text-sm text-gray-300 font-light mb-6">
         Breve descripción de sección panel de gestión
       </p>
-      
+
       <div className="space-y-0">
         {managementOptions.map((option, index) => (
           <div key={option.id}>
@@ -86,12 +99,14 @@ const TeacherManagementPanel: React.FC<TeacherManagementPanelProps> = ({ classNa
               onClick={option.onClick}
               className="w-full p-4 hover:bg-white/10 transition-all duration-200 cursor-pointer text-left flex items-start space-x-3"
             >
-              <div className="text-white mt-1">
-                {option.icon}
-              </div>
+              <div className="text-font-light mt-1">{option.icon}</div>
               <div className="flex-1">
-                <h3 className="font-medium text-white text-sm mb-1">{option.title}</h3>
-                <p className="text-xs text-gray-300 font-light leading-relaxed">{option.description}</p>
+                <h3 className="font-medium text-font-light text-sm mb-1">
+                  {option.title}
+                </h3>
+                <p className="text-xs text-gray-300 font-light leading-relaxed">
+                  {option.description}
+                </p>
               </div>
             </button>
             {index < managementOptions.length - 1 && (

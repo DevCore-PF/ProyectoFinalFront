@@ -6,7 +6,12 @@ import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValid
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { teacherFeaturedCourses, teacherRecentActivity } from "@/helpers/moks";
 import { CourseVisibility } from "@/types/course.types";
-import { HiBookOpen, HiTrendingUp, HiChartBar, HiShoppingCart } from "react-icons/hi";
+import {
+  HiBookOpen,
+  HiTrendingUp,
+  HiChartBar,
+  HiShoppingCart,
+} from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -40,8 +45,9 @@ const TeacherDashboardPage = () => {
   } = useProfessorCourses();
 
   const [showForm, setShowForm] = useState(false);
-  const [activeTab, setActiveTab] = useState<'created' | 'purchased'>('created');
-
+  const [activeTab, setActiveTab] = useState<"created" | "purchased">(
+    "created"
+  );
 
   const handleViewCourseDetails = (courseId: string) => {
     console.log(`Ver detalles del curso: ${courseId}`);
@@ -49,8 +55,13 @@ const TeacherDashboardPage = () => {
     // router.push(`/teacher-dashboard/courses/${courseId}`);
   };
 
-  const handleVisibilityChange = (courseId: string, newVisibility: CourseVisibility) => {
-    console.log(`🔄 Visibilidad del curso ${courseId} cambiada a: ${newVisibility}`);
+  const handleVisibilityChange = (
+    courseId: string,
+    newVisibility: CourseVisibility
+  ) => {
+    console.log(
+      `🔄 Visibilidad del curso ${courseId} cambiada a: ${newVisibility}`
+    );
     // Actualizar inmediatamente el estado local para animación suave
     updateCourseVisibility(courseId, newVisibility);
   };
@@ -76,8 +87,6 @@ const TeacherDashboardPage = () => {
   if (isLoading || validationLoading) {
     return <Loader />;
   }
-  
-
 
   return (
     <div className="min-h-screen p-10">
@@ -98,13 +107,13 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
-        
+
         {/* Mostrar botón solo si necesita validación o fue rechazado, PERO no si está pending */}
         {(needsValidation || isRejected) && !isPending && !showForm && (
           <div className="mb-6 text-center">
             <button
               onClick={handleShowValidationForm}
-              className="px-6 py-3 bg-button/80 cursor-pointer hover:bg-button text-white font-medium rounded-lg transition-all duration-200"
+              className="px-6 py-3 bg-button/80 cursor-pointer hover:bg-button text-font-light font-medium rounded-lg transition-all duration-200"
             >
               {needsValidation
                 ? "Completar Perfil Profesional"
@@ -129,7 +138,7 @@ const TeacherDashboardPage = () => {
             />
           </div>
         )}
-        
+
         <div
           className={`bg-background2/40 border border-slate-700/50 rounded-2xl p-6 md:p-8 text-font-light shadow-xl hover:border-slate-600/50 transition-all duration-300 ${
             !canCreateCourses ? "opacity-50" : ""
@@ -156,11 +165,11 @@ const TeacherDashboardPage = () => {
               {/* Tabs */}
               <div className="flex border-b border-slate-700/50 mb-6">
                 <button
-                  onClick={() => setActiveTab('created')}
+                  onClick={() => setActiveTab("created")}
                   className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === 'created'
-                      ? 'text-blue-400 border-blue-400'
-                      : 'text-slate-400 border-transparent hover:text-slate-300'
+                    activeTab === "created"
+                      ? "text-blue-400 border-blue-400"
+                      : "text-slate-400 border-transparent hover:text-slate-300"
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -169,11 +178,11 @@ const TeacherDashboardPage = () => {
                   </div>
                 </button>
                 <button
-                  onClick={() => setActiveTab('purchased')}
+                  onClick={() => setActiveTab("purchased")}
                   className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === 'purchased'
-                      ? 'text-green-400 border-green-400'
-                      : 'text-slate-400 border-transparent hover:text-slate-300'
+                    activeTab === "purchased"
+                      ? "text-green-400 border-green-400"
+                      : "text-slate-400 border-transparent hover:text-slate-300"
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -184,7 +193,7 @@ const TeacherDashboardPage = () => {
               </div>
 
               {/* Contenido de tabs */}
-              {activeTab === 'created' ? (
+              {activeTab === "created" ? (
                 <>
                   {coursesLoading ? (
                     <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">
@@ -228,7 +237,7 @@ const TeacherDashboardPage = () => {
                         onClick={() =>
                           router.push("/teacher-dashboard/create-course")
                         }
-                        className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-white font-medium rounded-lg transition-all duration-200"
+                        className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-font-light font-medium rounded-lg transition-all duration-200"
                       >
                         Crear mi primer curso
                       </button>

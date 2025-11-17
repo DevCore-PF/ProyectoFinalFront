@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -204,7 +204,7 @@ const ResetPassword = () => {
             {formData.newPassword && (
               <div className="mt-2">
                 {validatePassword(formData.newPassword).map((error, index) => (
-                  <p key={index} className="text-xs text-red-400">
+                  <p key={index} className="text-xs text-amber-400">
                     • {error}
                   </p>
                 ))}
@@ -240,7 +240,7 @@ const ResetPassword = () => {
             </div>
             {formData.confirmNewPassword &&
               formData.newPassword !== formData.confirmNewPassword && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-xs text-amber-400 mt-1">
                   Las contraseñas no coinciden
                 </p>
               )}

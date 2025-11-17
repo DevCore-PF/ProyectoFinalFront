@@ -13,7 +13,6 @@ export default function PaymentCancelled() {
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
       <div className="max-w-2xl w-full">
         <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 md:p-12 text-center shadow-2xl hover:border-slate-600/50 transition-all duration-300">
-         
           <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-8">
             <div className="absolute inset-0 bg-yellow-500/20 rounded-full animate-pulse"></div>
             <div className="relative w-full h-full bg-yellow-500/10 border-2 border-yellow-500/50 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -33,7 +32,6 @@ export default function PaymentCancelled() {
           <div className="bg-slate-800/50 border border-slate-700/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
             <div className="flex items-center justify-center gap-3 mb-2">
               <HiShoppingCart className="w-6 h-6 text-slate-400" />
-              
             </div>
             <p className="text-slate-400 text-sm">
               Realiza otra compra cuando lo desees
@@ -43,7 +41,7 @@ export default function PaymentCancelled() {
           <div className="space-y-3 md:space-y-4">
             <button
               onClick={() => router.push("/courses")}
-              className="group cursor-pointer w-full bg-button hover:bg-button/80 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
+              className="group cursor-pointer w-full bg-button hover:bg-button/80 text-font-light py-4 px-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3"
             >
               <HiRefresh className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
               <span>Intentar de nuevo</span>
@@ -63,7 +61,7 @@ export default function PaymentCancelled() {
           <p className="text-slate-400 text-sm mb-3">
             ¿Tuviste algún problema con el pago?
           </p>
-          <Link 
+          <Link
             href="/contact-us"
             className="text-button hover:underline font-semibold text-sm inline-flex items-center gap-2"
           >

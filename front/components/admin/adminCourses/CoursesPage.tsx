@@ -129,11 +129,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     /* ============[ ESTILOS BADGE STATUS ]============= */
   }
   {
-    /* export enum CourseStatus {
-  DRAFT = "EN REVISION",
-  PUBLISHED = "PUBLICADO",
-  REJECT = "RECHAZADO",
-} */
+
   }
   const getStatusBadge = (status: string) => {
     return status === "PUBLICADO"

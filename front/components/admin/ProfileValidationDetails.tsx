@@ -209,7 +209,7 @@ const ProfessorValidationDetails = ({
             <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-amber-500/20 rounded-lg">
-                  <HiXCircle className="w-6 h-6 text-red-300" />
+                  <HiXCircle className="w-6 h-6 text-amber-300" />
                 </div>
                 <div>
                   <p className="text-amber-200 font-semibold text-lg">

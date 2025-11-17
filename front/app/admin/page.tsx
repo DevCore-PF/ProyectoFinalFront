@@ -28,7 +28,7 @@ import AdminForm from "@/components/admin/AdminForm";
 import CoursesPage from "@/components/admin/adminCourses/CoursesPage";
 import UsersPage from "@/components/admin/adminUsers/UsersPage";
 import UserDetails from "@/components/admin/adminUsers/UserDetails";
-import ProfileValidationDetails from '@/components/admin/ProfileValidationDetails';
+import ProfileValidationDetails from "@/components/admin/ProfileValidationDetails";
 
 type ValidationType =
   | "professor"
@@ -384,7 +384,7 @@ const AdminDashboard = () => {
                   <div className="min-h-screen bg-background flex items-center justify-center">
                     <div className="text-center">
                       <HiUserCircle className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-                      <h2 className="text-2xl font-bold text-white mb-2">
+                      <h2 className="text-2xl font-bold text-font-light mb-2">
                         Usuario no encontrado
                       </h2>
                       <p className="text-slate-400 mb-6">

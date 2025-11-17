@@ -1,14 +1,21 @@
 "use client";
 import { useState } from "react";
 import { HiCurrencyDollar, HiDocumentText, HiCollection } from "react-icons/hi";
+import { FaCheckCircle } from "react-icons/fa";
+
 import PendingPayoutsSummary from "./PendingPayoutsSummary";
 import SalesHistory from "./SalesHistory";
 import PayoutBatchManagement from "./PayoutBatchManagement";
+import PaidManagement from "./PaidManagement";
 
 export default function FinancesSection() {
-  const [activeTab, setActiveTab] = useState<"pending" | "sales" | "batches">(
-    "pending"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "pending" | "sales" | "batches" | "batches-paid"
+  >("pending");
+
+  const [pendingCount, setPendingCount] = useState(0);
+  const [batchesCount, setBatchesCount] = useState(0);
+  const [paidBatchesCount, setPaidBatchesCount] = useState(0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,7 +39,12 @@ export default function FinancesSection() {
               }`}
             >
               <HiCurrencyDollar className="w-4 h-4" />
-              Pagos Pendientes
+              Lotes pendientes
+              {pendingCount > 0 && (
+                <span className="text-amber-200/80 text-xs font-bold">
+                  ({pendingCount})
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("batches")}
@@ -43,7 +55,28 @@ export default function FinancesSection() {
               }`}
             >
               <HiCollection className="w-4 h-4" />
-              Lotes a pagar
+              Cursos a pagar
+              {batchesCount > 0 && (
+                <span className="text-amber-200/80 text-xs font-bold ">
+                  ({batchesCount})
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("batches-paid")}
+              className={`pb-3 px-4 font-medium transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === "batches-paid"
+                  ? "text-accent-medium border-b-2 border-button"
+                  : "text-slate-400 hover:text-slate-300"
+              }`}
+            >
+              <FaCheckCircle className="w-4 h-4" />
+              Cursos pagados
+              {paidBatchesCount > 0 && (
+                <span className=" text-amber-200/80 text-xs font-bold ">
+                  ({paidBatchesCount})
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("sales")}
@@ -60,9 +93,16 @@ export default function FinancesSection() {
 
           {/* Content */}
           <div>
-            {activeTab === "pending" && <PendingPayoutsSummary />}
+            {activeTab === "pending" && (
+              <PendingPayoutsSummary onCountChange={setPendingCount} />
+            )}
+            {activeTab === "batches" && (
+              <PayoutBatchManagement onCountChange={setBatchesCount} />
+            )}
+            {activeTab === "batches-paid" && (
+              <PaidManagement onCountChange={setPaidBatchesCount} />
+            )}
             {activeTab === "sales" && <SalesHistory />}
-            {activeTab === "batches" && <PayoutBatchManagement />}
           </div>
         </div>
       </div>

@@ -1,8 +1,17 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { CourseReview, courseReviewsService } from '@/services/course-reviews.service';
-import { HiStar, HiUser, HiExclamationCircle, HiEye, HiEyeOff } from 'react-icons/hi';
-import Loader from '@/components/Loaders/Loader';
+import React, { useEffect, useState } from "react";
+import {
+  CourseReview,
+  courseReviewsService,
+} from "@/services/course-reviews.service";
+import {
+  HiStar,
+  HiUser,
+  HiExclamationCircle,
+  HiEye,
+  HiEyeOff,
+} from "react-icons/hi";
+import Loader from "@/components/Loaders/Loader";
 
 interface CourseReviewsProps {
   courseId: string;
@@ -12,18 +21,22 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
   const [reviews, setReviews] = useState<CourseReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [visibleCensoredIds, setVisibleCensoredIds] = useState<Set<string>>(new Set());
+  const [visibleCensoredIds, setVisibleCensoredIds] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         setLoading(true);
-        const courseReviews = await courseReviewsService.getCourseReviews(courseId);
+        const courseReviews = await courseReviewsService.getCourseReviews(
+          courseId
+        );
         setReviews(courseReviews);
         setError(null);
       } catch (err) {
-        console.error('Error cargando reseñas:', err);
-        setError('Error al cargar las reseñas');
+        console.error("Error cargando reseñas:", err);
+        setError("Error al cargar las reseñas");
       } finally {
         setLoading(false);
       }
@@ -35,18 +48,18 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      return date.toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
     } catch {
-      return 'Fecha no disponible';
+      return "Fecha no disponible";
     }
   };
 
   const toggleCensoredVisibility = (reviewId: string) => {
-    setVisibleCensoredIds(prev => {
+    setVisibleCensoredIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(reviewId)) {
         newSet.delete(reviewId);
@@ -57,7 +70,8 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
     });
   };
 
-  const isCensoredVisible = (reviewId: string) => visibleCensoredIds.has(reviewId);
+  const isCensoredVisible = (reviewId: string) =>
+    visibleCensoredIds.has(reviewId);
 
   const renderStars = (rating: number) => {
     return (
@@ -66,7 +80,7 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
           <HiStar
             key={index}
             className={`w-4 h-4 ${
-              index < rating ? 'text-yellow-400' : 'text-slate-600'
+              index < rating ? "text-yellow-400" : "text-slate-600"
             }`}
             fill="currentColor"
           />
@@ -93,7 +107,7 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
   if (error) {
     return (
       <div className="mt-12 bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8">
-        <div className="text-center text-red-400">
+        <div className="text-center text-amber-400">
           <p>{error}</p>
         </div>
       </div>
@@ -131,18 +145,20 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
               Reseñas de Estudiantes
             </h3>
             <p className="text-sm text-slate-400">
-              {reviews.length} {reviews.length === 1 ? 'reseña' : 'reseñas'}
+              {reviews.length} {reviews.length === 1 ? "reseña" : "reseñas"}
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             {Array.from({ length: 5 }, (_, index) => (
               <HiStar
                 key={index}
                 className={`w-5 h-5 ${
-                  index < Math.round(averageRating) ? 'text-yellow-400' : 'text-slate-600'
+                  index < Math.round(averageRating)
+                    ? "text-yellow-400"
+                    : "text-slate-600"
                 }`}
                 fill="currentColor"
               />
@@ -151,9 +167,7 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
           <span className="text-2xl font-bold text-slate-100">
             {averageRating.toFixed(1)}
           </span>
-          <span className="text-slate-400 text-sm">
-            de 5 estrellas
-          </span>
+          <span className="text-slate-400 text-sm">de 5 estrellas</span>
         </div>
       </div>
 
@@ -179,7 +193,7 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-slate-200 truncate">
@@ -189,31 +203,31 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                     {formatDate(review.createdAt)}
                   </span>
                 </div>
-                
-                <div className="mb-3">
-                  {renderStars(review.rating)}
-                </div>
-                
+
+                <div className="mb-3">{renderStars(review.rating)}</div>
+
                 {/* Contenido de la reseña */}
                 {review.feedback && (
                   <div className="mt-3">
                     {/* Caso 1: Feedback censurado y NO visible */}
                     {review.isCensored && !isCensoredVisible(review.id) ? (
-                      <div className="bg-red-500/10 border border-red-400/30 rounded-lg p-4">
+                      <div className="bg-amber-500/10 border border-amber-400/30 rounded-lg p-4">
                         <div className="flex items-start gap-3 mb-3">
-                          <HiExclamationCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                          <HiExclamationCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                           <div className="flex-1">
-                            <p className="text-red-300 font-semibold text-sm mb-1">
+                            <p className="text-amber-300 font-semibold text-sm mb-1">
                               Contenido moderado por lenguaje inapropiado
                             </p>
-                            <p className="text-red-200/80 text-xs">
-                              Este comentario ha sido identificado como potencialmente ofensivo y ha sido censurado automáticamente.
+                            <p className="text-amber-200/80 text-xs">
+                              Este comentario ha sido identificado como
+                              potencialmente ofensivo y ha sido censurado
+                              automáticamente.
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => toggleCensoredVisibility(review.id)}
-                          className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-400/40 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 text-sm font-medium"
+                          className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 hover:text-amber-200 rounded-lg transition-all duration-200 text-sm font-medium"
                         >
                           <HiEye className="w-4 h-4" />
                           Ver contenido (bajo tu responsabilidad)
@@ -227,20 +241,25 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                             <div className="flex items-center gap-2">
                               <HiExclamationCircle className="w-4 h-4 text-yellow-400" />
                               <p className="text-yellow-300 text-xs font-medium">
-                                ⚠️ Este contenido ha sido marcado como inapropiado
+                                ⚠️ Este contenido ha sido marcado como
+                                inapropiado
                               </p>
                             </div>
                           </div>
                         )}
-                        <div className={`text-slate-300 text-sm leading-relaxed ${
-                          review.isCensored && isCensoredVisible(review.id) ? 'blur-sm hover:blur-none transition-all duration-300' : ''
-                        }`}>
+                        <div
+                          className={`text-slate-300 text-sm leading-relaxed ${
+                            review.isCensored && isCensoredVisible(review.id)
+                              ? "blur-sm hover:blur-none transition-all duration-300"
+                              : ""
+                          }`}
+                        >
                           <p className="break-words">{review.feedback}</p>
                         </div>
                         {review.isCensored && isCensoredVisible(review.id) && (
                           <button
                             onClick={() => toggleCensoredVisibility(review.id)}
-                            className="flex items-center gap-2 mt-3 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-400/40 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 text-xs font-medium"
+                            className="flex items-center cursor-pointer gap-2 mt-3 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 hover:text-amber-200 rounded-lg transition-all duration-200 text-xs font-medium"
                           >
                             <HiEyeOff className="w-3.5 h-3.5" />
                             Ocultar contenido

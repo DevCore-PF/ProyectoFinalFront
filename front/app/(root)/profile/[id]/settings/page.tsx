@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { uploadProfileImageService, updateUserProfileService, getUserProfileService } from "@/services/user.service";
+import {
+  uploadProfileImageService,
+  updateUserProfileService,
+  getUserProfileService,
+} from "@/services/user.service";
 import { useAuth } from "@/context/UserContext";
 import { UserProfile, UpdateUserFormData } from "@/types/user.types";
 import { updateUserInSession } from "@/helpers/session.helpers";
@@ -26,7 +30,7 @@ const ProfileSettings = () => {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-  
+
   // Estados para el formulario de perfil
   const [formData, setFormData] = useState<UpdateUserFormData>({
     ciudad: "",
@@ -45,7 +49,6 @@ const ProfileSettings = () => {
   useEffect(() => {
     if (contextUser?.profileImage && !imagePreview) {
       setImagePreview(contextUser.profileImage);
-      
     }
   }, [contextUser?.profileImage, imagePreview]);
 
@@ -65,14 +68,18 @@ const ProfileSettings = () => {
 
       try {
         // Cargar datos del usuario desde el backend
-        const backendUserData = await getUserProfileService(userId as string, token);
-        
+        const backendUserData = await getUserProfileService(
+          userId as string,
+          token
+        );
+
         const userProfile: UserProfile = {
           id: backendUserData.id,
           name: backendUserData.name,
           email: backendUserData.email,
           role: backendUserData.role,
-          profileImage: backendUserData.profileImage || contextUser.profileImage,
+          profileImage:
+            backendUserData.profileImage || contextUser.profileImage,
           ciudad: backendUserData.ciudad || "",
           direccion: backendUserData.direccion || "",
           dni: backendUserData.dni || "",
@@ -82,32 +89,37 @@ const ProfileSettings = () => {
         };
 
         setUser(userProfile);
-        
+
         // Inicializar datos del formulario
         setFormData({
           ciudad: userProfile.ciudad || "",
           direccion: userProfile.direccion || "",
           dni: userProfile.dni || "",
           telefono: userProfile.telefono || "",
-          fechaNacimiento: userProfile.fechaNacimiento 
-            ? new Date(userProfile.fechaNacimiento).toISOString().split('T')[0] 
+          fechaNacimiento: userProfile.fechaNacimiento
+            ? new Date(userProfile.fechaNacimiento).toISOString().split("T")[0]
             : "",
           genero: userProfile.genero,
         });
 
         // Verificar si el usuario ya tiene información adicional
-        const hasAdditionalData = !!(userProfile.ciudad || userProfile.direccion || userProfile.dni || 
-                                     userProfile.telefono || userProfile.fechaNacimiento || userProfile.genero);
-        
+        const hasAdditionalData = !!(
+          userProfile.ciudad ||
+          userProfile.direccion ||
+          userProfile.dni ||
+          userProfile.telefono ||
+          userProfile.fechaNacimiento ||
+          userProfile.genero
+        );
+
         setHasAdditionalInfo(hasAdditionalData);
         setIsEditingAdditionalInfo(!hasAdditionalData); // Si no tiene datos, mostrar formulario
-        
+
         // Preservar la imagen de perfil existente o cargar la del backend
         const imageToShow = userProfile.profileImage || imagePreview;
         if (imageToShow) {
           setImagePreview(imageToShow);
         }
-        
       } catch (error) {
         console.error("Error al cargar datos del usuario:", error);
         // Fallback a datos básicos del contexto si hay error
@@ -124,7 +136,7 @@ const ProfileSettings = () => {
           fechaNacimiento: "",
           genero: undefined,
         };
-        
+
         setUser(basicUserProfile);
         setHasAdditionalInfo(false);
         setIsEditingAdditionalInfo(true); // Mostrar formulario si hay error
@@ -179,7 +191,7 @@ const ProfileSettings = () => {
         let finalImageUrl = result.imageUrl;
 
         // Si el resultado indica que debemos refrescar los datos del usuario
-        if (result.imageUrl?.startsWith('refresh_user_data_')) {
+        if (result.imageUrl?.startsWith("refresh_user_data_")) {
           console.log("🔄 Refrescando datos del usuario...");
           try {
             await refreshUser();
@@ -187,11 +199,11 @@ const ProfileSettings = () => {
             const userData = sessionStorage.getItem("user");
             if (userData) {
               const parsedUser = JSON.parse(userData);
-              finalImageUrl = parsedUser.profileImage || parsedUser.image || '';
+              finalImageUrl = parsedUser.profileImage || parsedUser.image || "";
             }
           } catch (refreshError) {
             console.error("Error al refrescar usuario:", refreshError);
-            finalImageUrl = ''; // Fallback
+            finalImageUrl = ""; // Fallback
           }
         }
 
@@ -236,9 +248,11 @@ const ProfileSettings = () => {
   };
 
   // Funciones para el formulario de perfil
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value || undefined,
     }));
@@ -266,7 +280,10 @@ const ProfileSettings = () => {
         await refreshUser();
 
         // Recargar los datos del usuario desde el backend
-        const updatedUserData = await getUserProfileService(userId as string, token);
+        const updatedUserData = await getUserProfileService(
+          userId as string,
+          token
+        );
         const updatedUserProfile: UserProfile = {
           id: updatedUserData.id,
           name: updatedUserData.name,
@@ -284,16 +301,21 @@ const ProfileSettings = () => {
         setUser(updatedUserProfile);
 
         // Verificar si ahora tiene información adicional
-        const hasData = !!(updatedUserProfile.ciudad || updatedUserProfile.direccion || 
-                          updatedUserProfile.dni || updatedUserProfile.telefono || 
-                          updatedUserProfile.fechaNacimiento || updatedUserProfile.genero);
-        
+        const hasData = !!(
+          updatedUserProfile.ciudad ||
+          updatedUserProfile.direccion ||
+          updatedUserProfile.dni ||
+          updatedUserProfile.telefono ||
+          updatedUserProfile.fechaNacimiento ||
+          updatedUserProfile.genero
+        );
+
         setHasAdditionalInfo(hasData);
         setIsEditingAdditionalInfo(false); // Cambiar a modo visualización
 
-        setProfileMessage({ 
-          type: "success", 
-          text: "Perfil actualizado exitosamente" 
+        setProfileMessage({
+          type: "success",
+          text: "Perfil actualizado exitosamente",
         });
 
         // Limpiar el mensaje después de 3 segundos
@@ -447,7 +469,7 @@ const ProfileSettings = () => {
                       <button
                         onClick={handleRemoveImage}
                         disabled={isUploading}
-                        className="bg-background2/40 hover:bg-background2/60 text-font-light px-4 py-2 rounded-lg font-semibold transition-all duration-300 border border-border-light/20"
+                        className="bg-background2/40 cursor-pointer hover:bg-background2/60 text-font-light px-4 py-2 rounded-lg font-semibold transition-all duration-300 border border-border-light/20"
                       >
                         Cancelar
                       </button>
@@ -459,7 +481,7 @@ const ProfileSettings = () => {
                       className={`p-3 rounded-lg text-sm ${
                         message.type === "success"
                           ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                          : "bg-red-500/20 text-red-300 border border-red-500/30"
+                          : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
                       }`}
                     >
                       {message.text}
@@ -495,39 +517,53 @@ const ProfileSettings = () => {
                     {user?.ciudad && (
                       <div className="p-3 bg-background2/20 rounded-lg">
                         <p className="text-sm text-font-light/70">Ciudad</p>
-                        <p className="text-font-light font-medium">{user.ciudad}</p>
+                        <p className="text-font-light font-medium">
+                          {user.ciudad}
+                        </p>
                       </div>
                     )}
                     {user?.telefono && (
                       <div className="p-3 bg-background2/20 rounded-lg">
                         <p className="text-sm text-font-light/70">Teléfono</p>
-                        <p className="text-font-light font-medium">{user.telefono}</p>
+                        <p className="text-font-light font-medium">
+                          {user.telefono}
+                        </p>
                       </div>
                     )}
                     {user?.dni && (
                       <div className="p-3 bg-background2/20 rounded-lg">
                         <p className="text-sm text-font-light/70">DNI</p>
-                        <p className="text-font-light font-medium">{user.dni}</p>
+                        <p className="text-font-light font-medium">
+                          {user.dni}
+                        </p>
                       </div>
                     )}
                     {user?.fechaNacimiento && (
                       <div className="p-3 bg-background2/20 rounded-lg">
-                        <p className="text-sm text-font-light/70">Fecha de Nacimiento</p>
+                        <p className="text-sm text-font-light/70">
+                          Fecha de Nacimiento
+                        </p>
                         <p className="text-font-light font-medium">
-                          {new Date(user.fechaNacimiento).toLocaleDateString('es-ES')}
+                          {new Date(user.fechaNacimiento).toLocaleDateString(
+                            "es-ES"
+                          )}
                         </p>
                       </div>
                     )}
                     {user?.genero && (
                       <div className="p-3 bg-background2/20 rounded-lg">
                         <p className="text-sm text-font-light/70">Género</p>
-                        <p className="text-font-light font-medium capitalize">{user.genero}</p>
+                        <p className="text-font-light font-medium capitalize">
+                          {user.genero}
+                        </p>
                       </div>
                     )}
                     {user?.direccion && (
                       <div className="md:col-span-2 p-3 bg-background2/20 rounded-lg">
                         <p className="text-sm text-font-light/70">Dirección</p>
-                        <p className="text-font-light font-medium">{user.direccion}</p>
+                        <p className="text-font-light font-medium">
+                          {user.direccion}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -538,16 +574,18 @@ const ProfileSettings = () => {
               {(!hasAdditionalInfo || isEditingAdditionalInfo) && (
                 <div>
                   <p className="text-sm text-font-light/70 mb-6">
-                    {hasAdditionalInfo 
-                      ? "Edita tu información adicional" 
-                      : "Completa tu perfil con información adicional (todos los campos son opcionales)"
-                    }
+                    {hasAdditionalInfo
+                      ? "Edita tu información adicional"
+                      : "Completa tu perfil con información adicional (todos los campos son opcionales)"}
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Ciudad */}
                     <div>
-                      <label htmlFor="ciudad" className="block text-sm font-medium text-font-light mb-2">
+                      <label
+                        htmlFor="ciudad"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
                         Ciudad
                       </label>
                       <input
@@ -561,87 +599,122 @@ const ProfileSettings = () => {
                       />
                     </div>
 
-                {/* Teléfono */}
-                <div>
-                  <label htmlFor="telefono" className="block text-sm font-medium text-font-light mb-2">
-                    Teléfono
-                  </label>
-                  <input
-                    id="telefono"
-                    name="telefono"
-                    type="tel"
-                    value={formData.telefono}
-                    onChange={handleFormChange}
-                    placeholder="+54 9 11 1234-5678"
-                    className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                  />
-                </div>
+                    {/* Teléfono */}
+                    <div>
+                      <label
+                        htmlFor="telefono"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
+                        Teléfono
+                      </label>
+                      <input
+                        id="telefono"
+                        name="telefono"
+                        type="tel"
+                        value={formData.telefono}
+                        onChange={handleFormChange}
+                        placeholder="+54 9 11 1234-5678"
+                        className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                      />
+                    </div>
 
-                {/* DNI */}
-                <div>
-                  <label htmlFor="dni" className="block text-sm font-medium text-font-light mb-2">
-                    DNI
-                  </label>
-                  <input
-                    id="dni"
-                    name="dni"
-                    type="text"
-                    value={formData.dni}
-                    onChange={handleFormChange}
-                    placeholder="12345678"
-                    className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                  />
-                </div>
+                    {/* DNI */}
+                    <div>
+                      <label
+                        htmlFor="dni"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
+                        DNI
+                      </label>
+                      <input
+                        id="dni"
+                        name="dni"
+                        type="text"
+                        value={formData.dni}
+                        onChange={handleFormChange}
+                        placeholder="12345678"
+                        className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                      />
+                    </div>
 
-                {/* Fecha de Nacimiento */}
-                <div>
-                  <label htmlFor="fechaNacimiento" className="block text-sm font-medium text-font-light mb-2">
-                    Fecha de Nacimiento
-                  </label>
-                  <input
-                    id="fechaNacimiento"
-                    name="fechaNacimiento"
-                    type="date"
-                    value={formData.fechaNacimiento}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                  />
-                </div>
+                    {/* Fecha de Nacimiento */}
+                    <div>
+                      <label
+                        htmlFor="fechaNacimiento"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
+                        Fecha de Nacimiento
+                      </label>
+                      <input
+                        id="fechaNacimiento"
+                        name="fechaNacimiento"
+                        type="date"
+                        value={formData.fechaNacimiento}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                      />
+                    </div>
 
-                {/* Género */}
-                <div>
-                  <label htmlFor="genero" className="block text-sm font-medium text-font-light mb-2">
-                    Género
-                  </label>
-                  <select
-                    id="genero"
-                    name="genero"
-                    value={formData.genero || ""}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300 [&>option]:bg-background2 [&>option]:text-font-light [&>option]:py-2"
-                  >
-                    <option value="" className="bg-background2 text-font-light">Seleccionar género</option>
-                    <option value="masculino" className="bg-background2 text-font-light">Masculino</option>
-                    <option value="femenino" className="bg-background2 text-font-light">Femenino</option>
-                    <option value="otro" className="bg-background2 text-font-light">Otro</option>
-                  </select>
-                </div>
+                    {/* Género */}
+                    <div>
+                      <label
+                        htmlFor="genero"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
+                        Género
+                      </label>
+                      <select
+                        id="genero"
+                        name="genero"
+                        value={formData.genero || ""}
+                        onChange={handleFormChange}
+                        className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300 [&>option]:bg-background2 [&>option]:text-font-light [&>option]:py-2"
+                      >
+                        <option
+                          value=""
+                          className="bg-background2 text-font-light"
+                        >
+                          Seleccionar género
+                        </option>
+                        <option
+                          value="masculino"
+                          className="bg-background2 text-font-light"
+                        >
+                          Masculino
+                        </option>
+                        <option
+                          value="femenino"
+                          className="bg-background2 text-font-light"
+                        >
+                          Femenino
+                        </option>
+                        <option
+                          value="otro"
+                          className="bg-background2 text-font-light"
+                        >
+                          Otro
+                        </option>
+                      </select>
+                    </div>
 
-                {/* Dirección - Columna completa */}
-                <div className="md:col-span-2">
-                  <label htmlFor="direccion" className="block text-sm font-medium text-font-light mb-2">
-                    Dirección
-                  </label>
-                  <input
-                    id="direccion"
-                    name="direccion"
-                    type="text"
-                    value={formData.direccion}
-                    onChange={handleFormChange}
-                    placeholder="Tu dirección completa"
-                    className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
-                  />
-                </div>
+                    {/* Dirección - Columna completa */}
+                    <div className="md:col-span-2">
+                      <label
+                        htmlFor="direccion"
+                        className="block text-sm font-medium text-font-light mb-2"
+                      >
+                        Dirección
+                      </label>
+                      <input
+                        id="direccion"
+                        name="direccion"
+                        type="text"
+                        value={formData.direccion}
+                        onChange={handleFormChange}
+                        placeholder="Tu dirección completa"
+                        className="w-full px-4 py-3 bg-background2/20 border border-border-light/20 rounded-lg text-font-light placeholder-font-light/50 focus:outline-none focus:ring-2 focus:ring-button/50 focus:border-button/50 transition-all duration-300"
+                      />
+                    </div>
                   </div>
 
                   {/* Botones dinámicos */}
@@ -678,7 +751,7 @@ const ProfileSettings = () => {
                         className={`p-3 rounded-lg text-sm ${
                           profileMessage.type === "success"
                             ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                            : "bg-red-500/20 text-red-300 border border-red-500/30"
+                            : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
                         }`}
                       >
                         {profileMessage.text}
@@ -741,7 +814,7 @@ export default ProfileSettings;
 //   const [imagePreview, setImagePreview] = useState<string>("");
 //   const [isUploading, setIsUploading] = useState(false);
 //   const [message, setMessage] = useState({ type: "", text: "" });
-  
+
 //   const [formData, setFormData] = useState<UpdateUserFormData>({
 //     ciudad: "",
 //     direccion: "",
@@ -777,7 +850,7 @@ export default ProfileSettings;
 
 //       try {
 //         const backendUserData = await getUserProfileService(userId as string, token);
-        
+
 //         const userProfile: UserProfile = {
 //           id: backendUserData.id,
 //           name: backendUserData.name,
@@ -793,29 +866,29 @@ export default ProfileSettings;
 //         };
 
 //         setUser(userProfile);
-        
+
 //         setFormData({
 //           ciudad: userProfile.ciudad || "",
 //           direccion: userProfile.direccion || "",
 //           dni: userProfile.dni || "",
 //           telefono: userProfile.telefono || "",
-//           fechaNacimiento: userProfile.fechaNacimiento 
-//             ? new Date(userProfile.fechaNacimiento).toISOString().split('T')[0] 
+//           fechaNacimiento: userProfile.fechaNacimiento
+//             ? new Date(userProfile.fechaNacimiento).toISOString().split('T')[0]
 //             : "",
 //           genero: userProfile.genero,
 //         });
 
-//         const hasAdditionalData = !!(userProfile.ciudad || userProfile.direccion || userProfile.dni || 
+//         const hasAdditionalData = !!(userProfile.ciudad || userProfile.direccion || userProfile.dni ||
 //                                      userProfile.telefono || userProfile.fechaNacimiento || userProfile.genero);
-        
+
 //         setHasAdditionalInfo(hasAdditionalData);
 //         setIsEditingAdditionalInfo(!hasAdditionalData);
-        
+
 //         const imageToShow = userProfile.profileImage || imagePreview;
 //         if (imageToShow) {
 //           setImagePreview(imageToShow);
 //         }
-        
+
 //       } catch (error) {
 //         console.error("Error al cargar datos del usuario:", error);
 //         const basicUserProfile: UserProfile = {
@@ -831,7 +904,7 @@ export default ProfileSettings;
 //           fechaNacimiento: "",
 //           genero: undefined,
 //         };
-        
+
 //         setUser(basicUserProfile);
 //         setHasAdditionalInfo(false);
 //         setIsEditingAdditionalInfo(true);
@@ -978,16 +1051,16 @@ export default ProfileSettings;
 
 //         setUser(updatedUserProfile);
 
-//         const hasData = !!(updatedUserProfile.ciudad || updatedUserProfile.direccion || 
-//                           updatedUserProfile.dni || updatedUserProfile.telefono || 
+//         const hasData = !!(updatedUserProfile.ciudad || updatedUserProfile.direccion ||
+//                           updatedUserProfile.dni || updatedUserProfile.telefono ||
 //                           updatedUserProfile.fechaNacimiento || updatedUserProfile.genero);
-        
+
 //         setHasAdditionalInfo(hasData);
 //         setIsEditingAdditionalInfo(false);
 
-//         setProfileMessage({ 
-//           type: "success", 
-//           text: "Perfil actualizado exitosamente" 
+//         setProfileMessage({
+//           type: "success",
+//           text: "Perfil actualizado exitosamente"
 //         });
 
 //         setTimeout(() => {
@@ -1058,18 +1131,18 @@ export default ProfileSettings;
 //                   Información Personal
 //                 </h2>
 //               </div>
-              
+
 //               <div className="space-y-4">
 //                 <div className="p-3 bg-slate-800/30 rounded-lg">
 //                   <p className="text-xs text-slate-400 mb-1">Nombre</p>
 //                   <p className="text-font-light font-medium">{user.name}</p>
 //                 </div>
-                
+
 //                 <div className="p-3 bg-slate-800/30 rounded-lg">
 //                   <p className="text-xs text-slate-400 mb-1">Email</p>
 //                   <p className="text-font-light font-medium text-sm break-all">{user.email}</p>
 //                 </div>
-                
+
 //                 <div className="p-3 bg-slate-800/30 rounded-lg">
 //                   <p className="text-xs text-slate-400 mb-1">Rol</p>
 //                   <span className="inline-block bg-purple-500/10 text-purple-300 border border-purple-500/20 px-3 py-1 rounded-lg text-xs font-medium capitalize">
@@ -1165,7 +1238,7 @@ export default ProfileSettings;
 //                       className={`p-3 rounded-lg text-sm border ${
 //                         message.type === "success"
 //                           ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/20"
-//                           : "bg-red-500/10 text-red-300 border-red-500/20"
+//                           : "bg-amber-500/10 text-amber-300 border-amber-500/20"
 //                       }`}
 //                     >
 //                       {message.text}
@@ -1207,7 +1280,7 @@ export default ProfileSettings;
 //                       <p className="text-font-light font-medium">{user.ciudad}</p>
 //                     </div>
 //                   )}
-                  
+
 //                   {user?.telefono && (
 //                     <div className="p-4 bg-slate-800/30 rounded-lg">
 //                       <div className="flex items-center gap-2 mb-2">
@@ -1217,7 +1290,7 @@ export default ProfileSettings;
 //                       <p className="text-font-light font-medium">{user.telefono}</p>
 //                     </div>
 //                   )}
-                  
+
 //                   {user?.dni && (
 //                     <div className="p-4 bg-slate-800/30 rounded-lg">
 //                       <div className="flex items-center gap-2 mb-2">
@@ -1227,7 +1300,7 @@ export default ProfileSettings;
 //                       <p className="text-font-light font-medium">{user.dni}</p>
 //                     </div>
 //                   )}
-                  
+
 //                   {user?.fechaNacimiento && (
 //                     <div className="p-4 bg-slate-800/30 rounded-lg">
 //                       <div className="flex items-center gap-2 mb-2">
@@ -1239,7 +1312,7 @@ export default ProfileSettings;
 //                       </p>
 //                     </div>
 //                   )}
-                  
+
 //                   {user?.genero && (
 //                     <div className="p-4 bg-slate-800/30 rounded-lg">
 //                       <div className="flex items-center gap-2 mb-2">
@@ -1249,11 +1322,11 @@ export default ProfileSettings;
 //                       <p className="text-font-light font-medium capitalize">{user.genero}</p>
 //                     </div>
 //                   )}
-                  
+
 //                   {user?.direccion && (
 //                     <div className="md:col-span-2 p-4 bg-slate-800/30 rounded-lg">
 //                       <div className="flex items-center gap-2 mb-2">
-//                         <HiLocationMarker className="w-4 h-4 text-red-300" />
+//                         <HiLocationMarker className="w-4 h-4 text-amber-300" />
 //                         <p className="text-xs text-slate-400">Dirección</p>
 //                       </div>
 //                       <p className="text-font-light font-medium">{user.direccion}</p>
@@ -1266,8 +1339,8 @@ export default ProfileSettings;
 //               {(!hasAdditionalInfo || isEditingAdditionalInfo) && (
 //                 <div>
 //                   <p className="text-sm text-slate-400 mb-6">
-//                     {hasAdditionalInfo 
-//                       ? "Edita tu información adicional" 
+//                     {hasAdditionalInfo
+//                       ? "Edita tu información adicional"
 //                       : "Completa tu perfil con información adicional (todos los campos son opcionales)"
 //                     }
 //                   </p>
@@ -1403,7 +1476,7 @@ export default ProfileSettings;
 //                         className={`p-3 rounded-lg text-sm border ${
 //                           profileMessage.type === "success"
 //                             ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/20"
-//                             : "bg-red-500/10 text-red-300 border-red-500/20"
+//                             : "bg-amber-500/10 text-amber-300 border-amber-500/20"
 //                         }`}
 //                       >
 //                         {profileMessage.text}

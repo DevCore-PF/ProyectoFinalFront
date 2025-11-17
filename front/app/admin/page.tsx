@@ -22,8 +22,6 @@ import ValidationsPage from "@/components/admin/ValidtionsPage";
 import { HiCash } from "react-icons/hi";
 import CourseValidationDetails from "@/components/admin/adminCourses/CourseValidationDetails";
 import FinancesPage from "@/components/admin/adminFinances/FinancesPage";
-import MembershipPlans from "@/components/Plans/MembershipPlans";
-import Memberships from "@/components/admin/Memberships";
 import AdminForm from "@/components/admin/AdminForm";
 import CoursesPage from "@/components/admin/adminCourses/CoursesPage";
 import UsersPage from "@/components/admin/adminUsers/UsersPage";
@@ -38,7 +36,7 @@ type ValidationType =
   | "role_change";
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [activeTab, setActiveTab] = useState<TabType>("validations");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [selectedValidation, setSelectedValidation] =
@@ -312,17 +310,7 @@ const AdminDashboard = () => {
                   <HiUserGroup className="w-5 h-5 text-accent-light" />
                   Admins
                 </button>
-                <button
-                  onClick={() => setActiveTab("overview")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                    activeTab === "overview"
-                      ? "bg-button/50 text-font-light"
-                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-                  }`}
-                >
-                  <HiCash className="w-5 h-5 text-accent-light" />
-                  Membresías
-                </button>
+               
               </div>
             </div>
           </>
@@ -337,8 +325,6 @@ const AdminDashboard = () => {
                 : "translate-x-0 opacity-100"
             }`}
           >
-            {/* finances */}
-            {activeTab === "overview" && <Memberships />}
             {activeTab === "admins" && <AdminForm />}
             {activeTab === "validations" && (
               <ValidationsPage onViewDetail={openDetail} />
@@ -348,7 +334,7 @@ const AdminDashboard = () => {
             )}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
             {activeTab === "finances" && (
-              <FinancesPage onViewDetail={openDetail} />
+              <FinancesPage  />
             )}
           </div>
 

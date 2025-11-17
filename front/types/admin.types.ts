@@ -294,3 +294,17 @@ export interface registerAdminForm {
   password: string;
   confirmPassword: string;
 }
+export interface Sale {
+  saleID: string;
+  saleDate: string;
+  courseTitle: string;
+  studentName: string;
+  studentEmail: string;
+  professorName: string;
+  totalPrice: string;
+  professorEarnings: string;
+  adminEarnings: string;
+  paymentId: string;
+  stripeID: string;
+  payoutStatus: string;
+}

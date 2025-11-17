@@ -7,6 +7,7 @@ import PendingPayoutsSummary from "./PendingPayoutsSummary";
 import SalesHistory from "./SalesHistory";
 import PayoutBatchManagement from "./PayoutBatchManagement";
 import PaidManagement from "./PaidManagement";
+import { downloadSalesHistory } from "@/helpers/adminHandlers";
 
 export default function FinancesSection() {
   const [activeTab, setActiveTab] = useState<
@@ -27,7 +28,7 @@ export default function FinancesSection() {
               <h1 className="text-2xl font-bold text-font-light">Finanzas</h1>
             </div>
           </div>
-
+       
           {/* Tabs */}
           <div className="flex gap-2 mb-6 border-b border-slate-700/50">
             <button

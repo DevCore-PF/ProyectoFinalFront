@@ -14,26 +14,14 @@ import {
   HiCheckCircle,
   HiClock,
   HiChartBar,
+  HiDownload,
 } from "react-icons/hi";
 
 import Loader from "@/components/Loaders/Loader";
 import { toastError } from "@/helpers/alerts.helper";
 import Chart from "./Chart";
-
-interface Sale {
-  saleID: string;
-  saleDate: string;
-  courseTitle: string;
-  studentName: string;
-  studentEmail: string;
-  professorName: string;
-  totalPrice: string;
-  professorEarnings: string;
-  adminEarnings: string;
-  paymentId: string;
-  stripeID: string;
-  payoutStatus: string;
-}
+import { Sale } from "@/types/admin.types";
+import { downloadSalesHistory } from "@/helpers/adminHandlers";
 
 type SalesFilter = "ALL" | "PENDING" | "PAID";
 
@@ -192,6 +180,15 @@ export default function SalesHistory() {
   const chartData = getChartData();
   return (
     <div>
+      <div className="flex justify-end mb-3 ">
+        <button
+          onClick={() => downloadSalesHistory(sales)}
+          className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+        >
+          <HiDownload className="w-5 h-5" />
+          Exportar ventas
+        </button>
+      </div>
       {/* Estadísticas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition-all">

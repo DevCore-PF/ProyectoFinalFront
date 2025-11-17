@@ -42,7 +42,7 @@ const BanReasonModal = ({
                 Cancelar
               </button>
               <button
-                onClick={onConfirm}
+                onClick={() => onConfirm}
                 className="flex-1 px-4 py-2 cursor-pointer bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg font-medium transition-all border border-amber-500/50"
               >
                 Confirmar Baneo

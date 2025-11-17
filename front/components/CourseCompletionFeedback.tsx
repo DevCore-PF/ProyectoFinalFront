@@ -110,7 +110,7 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
               onClick={() => handleRatingClick(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="transition-transform hover:scale-110 focus:outline-none"
+              className="transition-transform hover:scale-110 focus:outline-none cursor-pointer"
               disabled={isSubmitting}
             >
               <HiStar
@@ -160,14 +160,14 @@ export const CourseCompletionFeedback: React.FC<CourseCompletionFeedbackProps> =
         <button
           onClick={onCancel || handleSkip}
           disabled={isSubmitting}
-          className="flex-1 px-6 py-3 border border-slate-600/50 text-gray-300 rounded-xl hover:bg-slate-700/30 transition-colors disabled:opacity-50 font-medium"
+          className="flex-1 px-6 py-3 border border-slate-600/50 text-gray-300 rounded-xl hover:bg-slate-700/30 transition-colors disabled:opacity-50 font-medium cursor-pointer"
         >
           {onCancel ? "Cancelar" : "Omitir por ahora"}
         </button>
         <button
           onClick={handleSubmit}
           disabled={rating === 0 || isSubmitting}
-          className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+          className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2 cursor-pointer"
         >
           {isSubmitting ? (
             <>

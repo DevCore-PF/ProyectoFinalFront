@@ -115,7 +115,7 @@ const PurchaseHistoryPage = () => {
             </div>
             <button
               onClick={refresh}
-              className="flex items-center space-x-2 px-6 py-3 bg-slate-800/80 border border-slate-600/50 text-slate-200 rounded-xl hover:bg-slate-700/80 hover:border-slate-500/60 transition-all duration-200 shadow-lg"
+              className="flex items-center space-x-2 px-6 py-3 bg-slate-800/80 border border-slate-600/50 text-slate-200 rounded-xl hover:bg-slate-700/80 hover:border-slate-500/60 transition-all duration-200 shadow-lg cursor-pointer"
             >
               <FaSyncAlt className="h-4 w-4" />
               <span className="font-medium">Actualizar</span>

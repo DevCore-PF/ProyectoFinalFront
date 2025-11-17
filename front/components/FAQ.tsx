@@ -39,7 +39,7 @@ const FAQ = () => {
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors duration-300"
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors duration-300 cursor-pointer"
               >
                 <span className="text-white font-medium text-sm md:text-base pr-4">
                   {faq.question}

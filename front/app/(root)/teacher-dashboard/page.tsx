@@ -159,40 +159,40 @@ const TeacherDashboardPage = () => {
             </div>
           </div>
 
-          {canCreateCourses ? (
-            <>
-              {/* Tabs */}
-              <div className="flex border-b border-slate-700/50 mb-6">
-                <button
-                  onClick={() => setActiveTab('created')}
-                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === 'created'
-                      ? 'text-blue-400 border-blue-400'
-                      : 'text-slate-400 border-transparent hover:text-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <HiBookOpen className="w-4 h-4" />
-                    Cursos Creados
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab('purchased')}
-                  className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
-                    activeTab === 'purchased'
-                      ? 'text-green-400 border-green-400'
-                      : 'text-slate-400 border-transparent hover:text-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <HiShoppingCart className="w-4 h-4" />
-                    Cursos Comprados
-                  </div>
-                </button>
+          {/* Tabs - Siempre mostrar, pero condicionar el contenido */}
+          <div className="flex border-b border-slate-700/50 mb-6">
+            <button
+              onClick={() => setActiveTab('created')}
+              className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                activeTab === 'created'
+                  ? 'text-blue-400 border-blue-400'
+                  : 'text-slate-400 border-transparent hover:text-slate-300'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <HiBookOpen className="w-4 h-4" />
+                Cursos Creados
               </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('purchased')}
+              className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                activeTab === 'purchased'
+                  ? 'text-green-400 border-green-400'
+                  : 'text-slate-400 border-transparent hover:text-slate-300'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <HiShoppingCart className="w-4 h-4" />
+                Cursos Comprados
+              </div>
+            </button>
+          </div>
 
-              {/* Contenido de tabs */}
-              {activeTab === 'created' ? (
+          {/* Contenido de tabs */}
+          {activeTab === 'created' ? (
+            <>
+              {canCreateCourses ? (
                 <>
                   {coursesLoading ? (
                     <div className="text-center py-16 text-slate-400 justify-center flex flex-col items-center gap-4">
@@ -244,19 +244,19 @@ const TeacherDashboardPage = () => {
                   )}
                 </>
               ) : (
-                <PurchasedCoursesGrid />
+                <div className="text-center py-16 text-slate-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
+                  <HiBookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                  <p className="text-lg font-semibold text-slate-300 mb-2">
+                    Validación Requerida
+                  </p>
+                  <p className="text-sm">
+                    Completa tu perfil profesional para poder crear cursos
+                  </p>
+                </div>
               )}
             </>
           ) : (
-            <div className="text-center py-16 text-slate-400 bg-slate-900/30 rounded-xl border border-slate-700/20">
-              <HiBookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
-              <p className="text-lg font-semibold text-slate-300 mb-2">
-                Validación Requerida
-              </p>
-              <p className="text-sm">
-                Completa tu perfil profesional para poder crear cursos
-              </p>
-            </div>
+            <PurchasedCoursesGrid />
           )}
         </div>
 

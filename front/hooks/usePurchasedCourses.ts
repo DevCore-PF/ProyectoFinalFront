@@ -18,8 +18,15 @@ export const usePurchasedCourses = () => {
       // Obtener lecciones completadas
       const completedLessonsData = await purchasedCoursesService.getCompletedLessons(token, course.id);
       
+      // Validar que completedLessonsData y lessons existan
+      if (!completedLessonsData || !Array.isArray(completedLessonsData.lessons)) {
+        return course;
+      }
+      
       // Crear un set de IDs de lecciones completadas para búsqueda rápida
-      const completedLessonIds = new Set(completedLessonsData.lessons.map(lesson => lesson.id));
+      const completedLessonIds = new Set(
+        completedLessonsData.lessons.map(lesson => lesson.id)
+      );
       
       // Si el curso ya tiene lecciones del backend, actualizarlas
       const lessonsWithProgress = course.lessons && course.lessons.length > 0

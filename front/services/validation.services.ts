@@ -17,6 +17,11 @@ export const getProfessorApprovalStatusService = async (token: string): Promise<
     });
 
     if (!response.ok) {
+      // Si es 403 (Forbidden), el usuario no es profesor, retornar null sin error ni log
+      if (response.status === 403) {
+        return null;
+      }
+      
       const error = await response.json();
       throw new Error(
         error.message || "Error al obtener el estado de aprobación"
@@ -27,8 +32,16 @@ export const getProfessorApprovalStatusService = async (token: string): Promise<
 
     return data;
   } catch (error) {
-    console.error("Error al obtener estado de aprobación:", error);
-    throw error;
+    // Si es error de red y el fetch falló con 403, retornar null silenciosamente
+    if (error instanceof TypeError) {
+      // Error de red, retornar null
+      return null;
+    }
+    // Solo loguear errores que NO sean 403
+    if (!(error instanceof Error && error.message.includes('403'))) {
+      console.error("Error al obtener estado de aprobación:", error);
+    }
+    return null; // Retornar null en lugar de lanzar error para evitar romper el flujo
   }
 };
 

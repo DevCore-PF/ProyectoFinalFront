@@ -105,7 +105,12 @@ export const purchasedCoursesService = {
       return result;
     } catch (error) {
       console.error('💥 Error getCompletedLessons:', error);
-      throw error;
+      // Retornar estructura vacía en caso de error para evitar crashes
+      return {
+        courseId,
+        totalCompleted: 0,
+        lessons: []
+      };
     }
   },
 

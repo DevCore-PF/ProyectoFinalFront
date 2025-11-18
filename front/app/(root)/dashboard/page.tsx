@@ -44,10 +44,10 @@ const DashboardPage = () => {
     );
   }
   return (
-    <div className="min-h-screen p-10">
-      <div className="max-w-7xl mx-auto p-4 md:p-6">
+    <div className="min-h-screen p-4 sm:p-6 md:p-8 lg:p-10">
+      <div className="max-w-7xl mx-auto">
         {/* Welcome Card con métricas reales */}
-        <div className="mb-10">
+        <div className="mb-6 sm:mb-8 md:mb-10">
           <div className="relative z-10">
             <StudentWelcomeCardReal
               userName={user?.name}
@@ -64,7 +64,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Acceso rápido con datos reales */}
-        <div className="mb-4 md:mb-10">
+        <div className="mb-6 sm:mb-8 md:mb-10">
           <StudentQuickAccess
             totalCourses={totalCourses}
             completedCourses={completedCourses}
@@ -72,7 +72,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Grid de cursos comprados */}
-        <div className="mb-4 md:mb-10">
+        <div className="mb-6 sm:mb-8 md:mb-10">
           <PurchasedCoursesGrid />
         </div>
 

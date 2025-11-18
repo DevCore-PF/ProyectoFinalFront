@@ -97,18 +97,18 @@ const PlansPage = () => {
           </div>
         </div>
 
-        <div className="mt-15 text-center">
-          <div className=" p-8 md:p-12">
-            <h2 className="text-font-light text-3xl md:text-4xl font-bold mb-4">
+        <div className="mt-15 text-center px-4">
+          <div className="p-6 sm:p-8 md:p-12">
+            <h2 className="text-font-light text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
               ¿Aún tienes dudas?
             </h2>
-            <p className="text-slate-300 text-lg mb-6 max-w-2xl mx-auto">
+            <p className="text-slate-300 text-base sm:text-lg mb-6 max-w-2xl mx-auto">
               Nuestro equipo está listo para ayudarte a elegir el mejor plan
               para tus necesidades
             </p>
             <Link
               href={"/contact-us"}
-              className="px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30"
+              className="inline-block px-6 sm:px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30 text-sm sm:text-base whitespace-nowrap"
             >
               Contactar con soporte
             </Link>

@@ -76,17 +76,17 @@ const ValidationMessage: React.FC<ValidationMessageProps> = ({
   return (
     <div
       className={`
-      bg-slate-900/50 backdrop-blur-sm border rounded-2xl p-6 
+      bg-slate-900/50 backdrop-blur-sm border rounded-2xl p-4 sm:p-6 
       ${config.bgColor} ${config.borderColor} 
       transition-all duration-300 hover:border-opacity-50
       ${className}
     `}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3 sm:gap-4">
         {/* Icon */}
         <div
           className={`
-          p-3 rounded-xl ${config.bgColor} ${config.iconColor}
+          p-2.5 sm:p-3 rounded-xl ${config.bgColor} ${config.iconColor}
           flex-shrink-0
         `}
         >
@@ -95,10 +95,10 @@ const ValidationMessage: React.FC<ValidationMessageProps> = ({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-semibold text-slate-200 mb-2">
+          <h2 className="text-base sm:text-lg font-semibold text-slate-200 mb-2 break-words">
             {config.title}
           </h2>
-          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 break-words">
             {config.description}
           </p>
 
@@ -108,11 +108,12 @@ const ValidationMessage: React.FC<ValidationMessageProps> = ({
               onClick={config.actionButton.onClick}
               className={`
                 cursor-pointer 
-                px-4 py-2 rounded-lg font-medium text-sm
+                px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm
                 ${config.iconColor} ${config.bgColor}
                 border ${config.borderColor}
                 hover:scale-101 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900
+                w-full sm:w-auto
               `}
             >
               {config.actionButton.text}

@@ -24,6 +24,9 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
   const [visibleCensoredIds, setVisibleCensoredIds] = useState<Set<string>>(
     new Set()
   );
+  const [unblurredCensoredIds, setUnblurredCensoredIds] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -70,8 +73,19 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
     });
   };
 
+  const unblurCensoredContent = (reviewId: string) => {
+    setUnblurredCensoredIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(reviewId);
+      return newSet;
+    });
+  };
+
   const isCensoredVisible = (reviewId: string) =>
     visibleCensoredIds.has(reviewId);
+
+  const isCensoredUnblurred = (reviewId: string) =>
+    unblurredCensoredIds.has(reviewId);
 
   const renderStars = (rating: number) => {
     return (
@@ -211,14 +225,14 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                   <div className="mt-3">
                     {/* Caso 1: Feedback censurado y NO visible */}
                     {review.isCensored && !isCensoredVisible(review.id) ? (
-                      <div className="bg-amber-500/10 border border-amber-400/30 rounded-lg p-4">
-                        <div className="flex items-start gap-3 mb-3">
-                          <HiExclamationCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <p className="text-amber-300 font-semibold text-sm mb-1">
+                      <div className="bg-amber-500/10 border border-amber-400/30 rounded-lg p-3 sm:p-4 overflow-hidden">
+                        <div className="flex items-start gap-2 sm:gap-3 mb-3">
+                          <HiExclamationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-amber-300 font-semibold text-xs sm:text-sm mb-1 break-words">
                               Contenido moderado por lenguaje inapropiado
                             </p>
-                            <p className="text-amber-200/80 text-xs">
+                            <p className="text-amber-200/80 text-xs break-words">
                               Este comentario ha sido identificado como
                               potencialmente ofensivo y ha sido censurado
                               automáticamente.
@@ -227,10 +241,10 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                         </div>
                         <button
                           onClick={() => toggleCensoredVisibility(review.id)}
-                          className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 hover:text-amber-200 rounded-lg transition-all duration-200 text-sm font-medium"
+                          className="flex items-center justify-center cursor-pointer gap-2 px-3 sm:px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 hover:text-amber-200 rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium w-full sm:w-auto"
                         >
                           <HiEye className="w-4 h-4" />
-                          Ver contenido (bajo tu responsabilidad)
+                          <span className="whitespace-nowrap">Ver contenido</span>
                         </button>
                       </div>
                     ) : (
@@ -248,9 +262,14 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                           </div>
                         )}
                         <div
+                          onClick={() => {
+                            if (review.isCensored && isCensoredVisible(review.id) && !isCensoredUnblurred(review.id)) {
+                              unblurCensoredContent(review.id);
+                            }
+                          }}
                           className={`text-slate-300 text-sm leading-relaxed ${
-                            review.isCensored && isCensoredVisible(review.id)
-                              ? "blur-sm hover:blur-none transition-all duration-300"
+                            review.isCensored && isCensoredVisible(review.id) && !isCensoredUnblurred(review.id)
+                              ? "blur-sm cursor-pointer transition-all duration-300"
                               : ""
                           }`}
                         >

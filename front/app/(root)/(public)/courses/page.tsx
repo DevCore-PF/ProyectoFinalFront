@@ -32,6 +32,13 @@ const CoursesPage = () => {
   const [loadingCourses, setLoadingCourses] = useState(false);
   const { handleAddToCart, loadingAddToCart } = useAddToCart();
 
+  // Estados para paginación y filtros
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
+  const coursesPerPage = 6;
+
   useEffect(() => {
     const fetchAllCourses = async () => {
       try {
@@ -71,6 +78,41 @@ const CoursesPage = () => {
     window.location.reload();
     setLoadingCourses(false);
   };
+
+  // Filtrar cursos
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearch = course.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === "all" || course.category === selectedCategory;
+    
+    // Comparar directamente con el valor del enum (que viene en español del backend)
+    const matchesDifficulty = selectedDifficulty === "all" || course.difficulty === selectedDifficulty;
+
+    return matchesSearch && matchesCategory && matchesDifficulty;
+  });
+
+  // Calcular paginación
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+  // Resetear a página 1 cuando cambian los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, selectedDifficulty]);
+
+  // Scroll al inicio cuando cambia la página
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
+  // Obtener categorías únicas
+  const uniqueCategories = Array.from(new Set(courses.map(course => course.category)));
+
   if (loadingCourses)
     return (
       <div className="flex flex-col min-h-screen justify-center items-center">
@@ -100,8 +142,83 @@ const CoursesPage = () => {
               </p>
             </div>
 
+            {/* Filtros y búsqueda */}
+            <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Búsqueda */}
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Buscar curso
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Buscar por nombre o descripción..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-700/50 rounded-lg text-font-light placeholder:text-slate-500 focus:outline-none focus:border-button/50 focus:ring-1 focus:ring-button/50 transition-all"
+                  />
+                </div>
+
+                {/* Filtro por categoría */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Categoría
+                  </label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-700/50 rounded-lg text-font-light focus:outline-none focus:border-button/50 focus:ring-1 focus:ring-button/50 transition-all"
+                  >
+                    <option value="all">Todas las categorías</option>
+                    {uniqueCategories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Filtro por dificultad */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Dificultad
+                  </label>
+                  <select
+                    value={selectedDifficulty}
+                    onChange={(e) => setSelectedDifficulty(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-700/50 rounded-lg text-font-light focus:outline-none focus:border-button/50 focus:ring-1 focus:ring-button/50 transition-all"
+                  >
+                    <option value="all">Todas las dificultades</option>
+                    <option value="PRINCIPIANTE">Principiante</option>
+                    <option value="INTERMEDIO">Intermedio</option>
+                    <option value="AVANZADO">Avanzado</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Indicador de resultados */}
+              <div className="mt-4 flex items-center justify-between text-sm">
+                <p className="text-slate-400">
+                  Mostrando <span className="text-font-light font-semibold">{indexOfFirstCourse + 1}</span> - <span className="text-font-light font-semibold">{Math.min(indexOfLastCourse, filteredCourses.length)}</span> de{" "}
+                  <span className="text-font-light font-semibold">{filteredCourses.length}</span> cursos
+                </p>
+                {(searchTerm || selectedCategory !== "all" || selectedDifficulty !== "all") && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm("");
+                      setSelectedCategory("all");
+                      setSelectedDifficulty("all");
+                    }}
+                    className="text-accent-medium hover:text-accent-light transition-colors"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="space-y-8">
-              {courses.map((course) => {
+              {currentCourses.map((course) => {
                 const config =
                   categoryConfig[course.category] ||
                   categoryConfig[CourseCategory.FRONTEND];
@@ -260,6 +377,80 @@ const CoursesPage = () => {
                 );
               })}
             </div>
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-font-light transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800/50"
+                >
+                  ← Anterior
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-10 h-10 rounded-lg font-semibold transition-all ${
+                        currentPage === page
+                          ? "bg-button text-font-light shadow-lg shadow-button/30"
+                          : "bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-700/50 hover:text-font-light"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-font-light transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800/50"
+                >
+                  Siguiente →
+                </button>
+              </div>
+            )}
+
+            {/* Mensaje si no hay resultados */}
+            {filteredCourses.length === 0 && (
+              <div className="text-center py-16">
+                <div className="inline-flex p-6 bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-2xl mb-4">
+                  <svg
+                    className="w-16 h-16 text-slate-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-300 mb-2">
+                  No se encontraron cursos
+                </h3>
+                <p className="text-slate-400 mb-6">
+                  No hay cursos que coincidan con los filtros seleccionados
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedCategory("all");
+                    setSelectedDifficulty("all");
+                  }}
+                  className="px-6 py-3 bg-button hover:bg-button/80 text-font-light rounded-lg font-semibold transition-all duration-300"
+                >
+                  Limpiar filtros
+                </button>
+              </div>
+            )}
 
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-center">

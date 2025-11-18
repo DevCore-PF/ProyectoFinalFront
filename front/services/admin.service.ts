@@ -1,7 +1,4 @@
-import {
-  GetAllCoursesAdminParams,
-  registerAdminForm,
-} from "@/types/admin.types";
+import { GetAllCoursesAdminParams, registerAdminForm } from "@/types/admin.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -80,11 +77,7 @@ export const getUserByIdService = async (userId: string) => {
   }
 };
 
-export const deactivateUserService = async (
-  userId: string,
-  token: string,
-  banReason: string
-) => {
+export const deactivateUserService = async (userId: string, token: string, banReason: string) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "DELETE",
@@ -130,10 +123,7 @@ export const activateUserService = async (token: string, userId: string) => {
   }
 };
 
-export const activateDeactivateCourseService = async (
-  token: string,
-  courseId: string
-) => {
+export const activateDeactivateCourseService = async (token: string, courseId: string) => {
   try {
     const response = await fetch(`${API_URL}/courses/${courseId}/status`, {
       method: "PATCH",
@@ -155,21 +145,15 @@ export const activateDeactivateCourseService = async (
   }
 };
 
-export const changeVisivilityService = async (
-  token: string,
-  courseId: string
-) => {
+export const changeVisivilityService = async (token: string, courseId: string) => {
   try {
-    const response = await fetch(
-      `${API_URL}/courses/change/visibility/${courseId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/courses/change/visibility/${courseId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       const error = await response.json();
@@ -184,19 +168,13 @@ export const changeVisivilityService = async (
   }
 };
 
-export const getCourseFeedbackService = async (
-  token: string,
-  courseId: string
-) => {
+export const getCourseFeedbackService = async (token: string, courseId: string) => {
   try {
-    const response = await fetch(
-      `${API_URL}/course-feedback/${courseId}/feedbacks`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/course-feedback/${courseId}/feedbacks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Error al obtener feedback");
@@ -210,10 +188,7 @@ export const getCourseFeedbackService = async (
   }
 };
 
-export const getAllCoursesAdminService = async (
-  token: string,
-  params?: GetAllCoursesAdminParams
-) => {
+export const getAllCoursesAdminService = async (token: string, params?: GetAllCoursesAdminParams) => {
   try {
     // Construir los query parameters
     const queryParams = new URLSearchParams();
@@ -238,9 +213,7 @@ export const getAllCoursesAdminService = async (
     }
 
     const response = await fetch(
-      `${API_URL}/courses/admin${
-        queryParams.toString() ? `?${queryParams.toString()}` : ""
-      }`,
+      `${API_URL}/courses/admin${queryParams.toString() ? `?${queryParams.toString()}` : ""}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -262,10 +235,7 @@ export const getAllCoursesAdminService = async (
   }
 };
 
-export const getProfessorByIdService = async (
-  token: string,
-  userId: string
-) => {
+export const getProfessorByIdService = async (token: string, userId: string) => {
   try {
     const response = await fetch(`${API_URL}/profiles/${userId}`, {
       headers: {
@@ -305,10 +275,7 @@ export const getAllProfessorProfilesService = async (token: string) => {
   }
 };
 
-export const approveProfileService = async (
-  token: string,
-  profileId: string
-) => {
+export const approveProfileService = async (token: string, profileId: string) => {
   try {
     const response = await fetch(`${API_URL}/profiles/aproved/${profileId}`, {
       method: "PATCH",
@@ -329,11 +296,7 @@ export const approveProfileService = async (
   }
 };
 
-export const rejectProfileService = async (
-  token: string,
-  professorId: string,
-  reason: string
-) => {
+export const rejectProfileService = async (token: string, professorId: string, reason: string) => {
   try {
     const response = await fetch(`${API_URL}/profiles/decline/${professorId}`, {
       method: "PATCH",
@@ -374,11 +337,7 @@ export const approveCourseService = async (token: string, courseId: string) => {
   }
 };
 
-export const rejectCourseService = async (
-  token: string,
-  courseId: string,
-  reason: string
-) => {
+export const rejectCourseService = async (token: string, courseId: string, reason: string) => {
   try {
     const response = await fetch(`${API_URL}/courses/${courseId}/decline`, {
       method: "PATCH",
@@ -399,10 +358,7 @@ export const rejectCourseService = async (
   }
 };
 
-export const registerAdminSerivice = async (
-  token: string,
-  values: registerAdminForm
-) => {
+export const registerAdminSerivice = async (token: string, values: registerAdminForm) => {
   try {
     const response = await fetch(`${API_URL}/auth/register/admin`, {
       method: "POST",
@@ -490,21 +446,15 @@ export const getAllSalesPaidService = async (token: string) => {
   }
 };
 
-export const createBatchService = async (
-  token: string,
-  professorId: string
-) => {
+export const createBatchService = async (token: string, professorId: string) => {
   try {
-    const response = await fetch(
-      `${API_URL}/admin/payouts/create-batch/${professorId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/admin/payouts/create-batch/${professorId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Error al crear lote");
@@ -515,23 +465,16 @@ export const createBatchService = async (
   }
 };
 
-export const markAsPaidService = async (
-  token: string,
-  payoutId: string,
-  referenceNumber: string
-) => {
+export const markAsPaidService = async (token: string, payoutId: string, referenceNumber: string) => {
   try {
-    const response = await fetch(
-      `${API_URL}/admin/payouts/mark-paid/${payoutId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ referenceNumber }),
-      }
-    );
+    const response = await fetch(`${API_URL}/admin/payouts/mark-paid/${payoutId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ referenceNumber }),
+    });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Error al marcar como pagado");
@@ -631,26 +574,91 @@ export const getAllPaidBatchesService = async (token: string) => {
   }
 };
 
-// /**
-//  * Endpoint 1: Obtiene TODOS los lotes de pago (Pagados y Pendientes)
-//  */
-// @Get('batches/all')
-// async getAllBatches() {
-//     return this.payoutService.getPayoutBatches(); // Sin filtro
-// }
 
-// /**
-//  * Endpoint 2: Obtiene solo lotes PENDIENTES
-//  */
-// @Get('batches/pending')
-// async getPendingBatches() {
-//     return this.payoutService.getPayoutBatches(PayoutStatus.PENDING);
-// }
+export const getAbandonedCartDashboardService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/settings/abandoned-cart-dashboard`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los carritos abandonados");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis carritos abandonados dashboard ", data);
 
-// /**
-//  * Endpoint 3: Obtiene solo lotes YA PAGADOS
-//  */
-// @Get('batches/paid')
-// async getPaidBatches() {
-//     return this.payoutService.getPayoutBatches(PayoutStatus.PAID);
-// }
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAbandonedCartSettingsService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/admin/settings/abandoned-cart`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener los carritos abandonados");
+    }
+    const data = await response.json();
+    console.log("Esta es la respuesta de todos mis carritos abandonados ESTEEEE", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+
+export const updateAbandonedCartSettingsService = async (
+  token: string,
+  settings: { isEnabled?: boolean; delayHours?: string }
+) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/admin/settings/abandoned-cart`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(settings),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Error updating abandoned cart settings");
+  }
+
+  return response.json();
+};
+
+export const triggerAllRemindersService = async (token: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/admin/settings/trigger-all-reminders`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Error triggering abandoned cart emails");
+  }
+
+  return response.json();
+};

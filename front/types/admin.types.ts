@@ -310,3 +310,10 @@ export interface Sale {
   stripeID: string;
   payoutStatus: string;
 }
+export interface AbandonedCartDashboard {
+  isEnabled: boolean; 
+  delayHours: string; 
+  delayValue: string; 
+  pendingCount: number; 
+  lastExecution: string; 
+}

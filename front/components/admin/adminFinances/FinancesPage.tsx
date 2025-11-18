@@ -1,17 +1,22 @@
 "use client";
 import { useState } from "react";
-import { HiCurrencyDollar, HiDocumentText, HiCollection } from "react-icons/hi";
+import {
+  HiCurrencyDollar,
+  HiMail,
+  HiDocumentText,
+  HiCollection,
+} from "react-icons/hi";
 import { FaCheckCircle } from "react-icons/fa";
 
 import PendingPayoutsSummary from "./PendingPayoutsSummary";
 import SalesHistory from "./SalesHistory";
 import PayoutBatchManagement from "./PayoutBatchManagement";
 import PaidManagement from "./PaidManagement";
-import { downloadSalesHistory } from "@/helpers/adminHandlers";
+import NewsletterManagement from "../NewsletterManagement";
 
 export default function FinancesSection() {
   const [activeTab, setActiveTab] = useState<
-    "pending" | "sales" | "batches" | "batches-paid"
+    "pending" | "sales" | "batches" | "batches-paid" | "newsletter"
   >("pending");
 
   const [pendingCount, setPendingCount] = useState(0);
@@ -28,7 +33,7 @@ export default function FinancesSection() {
               <h1 className="text-2xl font-bold text-font-light">Finanzas</h1>
             </div>
           </div>
-       
+
           {/* Tabs */}
           <div className="flex gap-2 mb-6 border-b border-slate-700/50">
             <button
@@ -90,6 +95,7 @@ export default function FinancesSection() {
               <HiDocumentText className="w-4 h-4" />
               Historial de Ventas
             </button>
+         
           </div>
 
           {/* Content */}

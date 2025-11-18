@@ -134,7 +134,8 @@ export type TabType =
   | "courses"
   | "users"
   | "finances"
-  | "admins";
+  | "admins"
+  | "newsletter";
 
 export interface UserDetailsProps {
   user: User;
@@ -164,7 +165,7 @@ export interface CourseReview {
   createdAt: string;
   // Campos de moderación
   isCensored: boolean;
-  moderationStatus: 'approved' | 'pending' | 'censored' | 'rejected';
+  moderationStatus: "approved" | "pending" | "censored" | "rejected";
   toxicityScore?: number;
   moderationReason?: string;
   requiresManualReview?: boolean;

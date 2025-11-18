@@ -19,7 +19,6 @@ import CourseDetails from "@/components/admin/adminCourses/CourseDetails";
 import { useAuth } from "@/context/UserContext";
 import ValidationsPage from "@/components/admin/ValidtionsPage";
 
-import { HiCash } from "react-icons/hi";
 import CourseValidationDetails from "@/components/admin/adminCourses/CourseValidationDetails";
 import FinancesPage from "@/components/admin/adminFinances/FinancesPage";
 import AdminForm from "@/components/admin/AdminForm";
@@ -27,6 +26,7 @@ import CoursesPage from "@/components/admin/adminCourses/CoursesPage";
 import UsersPage from "@/components/admin/adminUsers/UsersPage";
 import UserDetails from "@/components/admin/adminUsers/UserDetails";
 import ProfileValidationDetails from "@/components/admin/ProfileValidationDetails";
+import NewsletterManagement from "@/components/admin/NewsletterManagement";
 
 type ValidationType =
   | "professor"
@@ -310,7 +310,17 @@ const AdminDashboard = () => {
                   <HiUserGroup className="w-5 h-5 text-accent-light" />
                   Admins
                 </button>
-               
+                <button
+                  onClick={() => setActiveTab("newsletter")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "newsletter"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiMail className="w-5 h-5 text-accent-light" />
+                  Newsletter
+                </button>
               </div>
             </div>
           </>
@@ -333,9 +343,8 @@ const AdminDashboard = () => {
               <CoursesPage onViewDetail={openDetail} />
             )}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
-            {activeTab === "finances" && (
-              <FinancesPage  />
-            )}
+            {activeTab === "finances" && <FinancesPage />}
+            {activeTab === "newsletter" && <NewsletterManagement />}
           </div>
 
           {/* ============[ VISTA DE DETALLES de USER CON TRANSICIÓN ]============= */}

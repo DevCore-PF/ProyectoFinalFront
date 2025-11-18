@@ -2,6 +2,7 @@
 import { clearSession } from "@/helpers/session.helpers";
 import { getCurrentUserService } from "@/services/user.service";
 import { User } from "@/types/user.types";
+import { decodeToken } from "@/lib/jwt";
 import Cookies from "js-cookie";
 
 import {
@@ -31,37 +32,72 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const isLoggingOut = useRef(false);
 
+  // Efecto inicial: cargar token y usuario
   useEffect(() => {
-    const userToken = Cookies.get("auth-token");
-    const userData = sessionStorage.getItem("user");
-    const userTimestamp = sessionStorage.getItem("userTimestamp");
+    const initializeAuth = async () => {
+      const userToken = Cookies.get("auth-token");
+      const userData = sessionStorage.getItem("user");
+      const userTimestamp = sessionStorage.getItem("userTimestamp");
 
-    if (userToken) {
-      setTokenState(userToken);
-    }
-    if (userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        const parsedUserWithImage = parsedUser as User & { image?: string };
-        const normalizedUser = {
-          ...parsedUser,
-          profileImage: parsedUser.profileImage || parsedUserWithImage.image,
-        };
-        setUserState(normalizedUser);
+      if (userToken) {
+        setTokenState(userToken);
 
-        const now = Date.now();
-        if (!userTimestamp || now - parseInt(userTimestamp) > 30000) {
-          console.log(
-            "Datos de usuario antiguos, se refrescarán automáticamente"
-          );
+        // Si hay usuario en sessionStorage, usarlo
+        if (userData) {
+          try {
+            const parsedUser = JSON.parse(userData);
+            const parsedUserWithImage = parsedUser as User & { image?: string };
+            const normalizedUser = {
+              ...parsedUser,
+              profileImage: parsedUser.profileImage || parsedUserWithImage.image,
+            };
+            setUserState(normalizedUser);
+
+            const now = Date.now();
+            if (!userTimestamp || now - parseInt(userTimestamp) > 30000) {
+              console.log(
+                "Datos de usuario antiguos, se refrescarán automáticamente"
+              );
+            }
+          } catch (error) {
+            console.error("Error al parsear usuario:", error);
+            sessionStorage.removeItem("user");
+            sessionStorage.removeItem("userTimestamp");
+          }
+        } else {
+          // Si NO hay usuario en sessionStorage pero SÍ hay token,
+          // decodificar el token y obtener el usuario
+          try {
+            const decodedToken = decodeToken(userToken);
+            if (decodedToken && decodedToken.sub) {
+              const userId = decodedToken.sub;
+              const freshUserData = await getCurrentUserService(userToken, userId);
+              const freshUserWithImage = freshUserData as User & { image?: string };
+              const normalizedUserData = {
+                ...freshUserData,
+                profileImage: freshUserData.profileImage || freshUserWithImage.image,
+              };
+              
+              setUserState(normalizedUserData);
+              sessionStorage.setItem("user", JSON.stringify(normalizedUserData));
+              sessionStorage.setItem("userTimestamp", Date.now().toString());
+            } else {
+              // Token inválido o expirado, limpiar
+              Cookies.remove("auth-token", { path: "/" });
+              setTokenState(null);
+            }
+          } catch (error) {
+            console.error("Error al recuperar usuario desde token:", error);
+            // Si falla, limpiar el token
+            Cookies.remove("auth-token", { path: "/" });
+            setTokenState(null);
+          }
         }
-      } catch (error) {
-        console.error("Error al parsear usuario:", error);
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("userTimestamp");
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   useEffect(() => {
@@ -113,7 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         path: "/",
       });
     } else {
-      Cookies.remove("auth-token");
+      Cookies.remove("auth-token", { path: "/" });
     }
     setTokenState(newToken);
   };
@@ -191,7 +227,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       clearSession();
-      Cookies.remove("auth-token");
+      // Eliminar la cookie con las mismas opciones con las que se creó
+      Cookies.remove("auth-token", { path: "/" });
       setTokenState(null);
       setUserState(null);
 

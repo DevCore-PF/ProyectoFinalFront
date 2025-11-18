@@ -9,7 +9,7 @@ interface Lesson {
   title: string;
 }
 
-export const useLessonProgress = (courseId: string, isCourseCreator: boolean = false) => {
+export const useLessonProgress = (courseId: string, isCourseCreator: boolean = false, hasAccess: boolean = false) => {
   const { token } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [totalCompleted, setTotalCompleted] = useState<number>(0);
@@ -24,11 +24,12 @@ export const useLessonProgress = (courseId: string, isCourseCreator: boolean = f
         return;
       }
 
-      // Si no hay token, inicializar con valores por defecto pero no cargar
-      if (!token) {
+      // Si no hay token o no tiene acceso al curso, inicializar con valores por defecto
+      if (!token || !hasAccess) {
         setCompletedLessons([]);
         setTotalCompleted(0);
         setLoading(false);
+        setError(null);
         return;
       }
 
@@ -43,6 +44,7 @@ export const useLessonProgress = (courseId: string, isCourseCreator: boolean = f
           setCompletedLessons(progress.lessons.map(lesson => lesson.id));
           setTotalCompleted(progress.totalCompleted || 0);
         }
+        setError(null);
       } catch (err) {
         console.error('Error fetching lesson progress:', err);
         setError('Error al cargar el progreso de lecciones');
@@ -52,7 +54,7 @@ export const useLessonProgress = (courseId: string, isCourseCreator: boolean = f
     };
 
     fetchProgress();
-  }, [courseId, token]);
+  }, [courseId, token, hasAccess]);
 
   
   const markLessonCompleted = async (lessonId: string) => {

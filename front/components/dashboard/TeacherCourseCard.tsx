@@ -121,26 +121,26 @@ const TeacherCourseCard = ({
   const lessonsCount = course.lessons?.length || 0;
 
   return (
-    <div className="group bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#3f4273]/30">
+    <div className="group bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 sm:p-6 hover:border-slate-600/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#3f4273]/30">
       {/* Header con ícono y estado */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+        <div className="flex items-start gap-3 sm:gap-4 flex-1">
           <div
-            className={`bg-gradient-to-br ${config.iconGradient} p-3 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center`}
+            className={`bg-gradient-to-br ${config.iconGradient} p-2.5 sm:p-3 rounded-xl shadow-lg w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0`}
           >
-            <Icon className="w-6 h-6 text-font-light" />
+            <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-font-light" />
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-font-light mb-1 line-clamp-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base sm:text-lg font-bold text-font-light mb-1 line-clamp-2 break-words">
               {course.title || "Título no disponible"}
             </h3>
-            <p className="text-slate-300 text-sm line-clamp-2">
+            <p className="text-slate-300 text-xs sm:text-sm line-clamp-2 break-words">
               {course.description || "Sin descripción"}
             </p>
           </div>
         </div>
         <div
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap ${getStatusColor(
+          className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap self-start ${getStatusColor(
             course.status
           )}`}
         >
@@ -149,67 +149,69 @@ const TeacherCourseCard = ({
       </div>
 
       {/* Tags informativos */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <div className="flex items-center gap-2 bg-slate-700/50 text-slate-300 px-3 py-1.5 rounded-lg text-xs">
-          <HiClock className="w-3 h-3" />
-          <span className="font-medium">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-700/50 text-slate-300 px-2 sm:px-3 py-1.5 rounded-lg text-xs">
+          <HiClock className="w-3 h-3 flex-shrink-0" />
+          <span className="font-medium truncate">
             {course.duration || "No especificado"}
           </span>
         </div>
         <div
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${getDifficultyColors(
+          className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold ${getDifficultyColors(
             course.difficulty
           )}`}
         >
-          <HiAcademicCap className="w-3 h-3" />
-          <span className="font-medium">
+          <HiAcademicCap className="w-3 h-3 flex-shrink-0" />
+          <span className="font-medium truncate">
             {course.difficulty || "No especificado"}
           </span>
         </div>
         <div
-          className={`flex items-center gap-2 ${config.badgeColor} border px-3 py-1.5 rounded-lg text-xs font-semibold`}
+          className={`flex items-center gap-1.5 sm:gap-2 ${config.badgeColor} border px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold`}
         >
-          <HiTag className="w-3 h-3" />
-          <span className="text-slate-100">
+          <HiTag className="w-3 h-3 flex-shrink-0" />
+          <span className="text-slate-100 truncate">
             {course.category || "Sin categoría"}
           </span>
         </div>
-        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-lg text-xs font-semibold">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold">
           <span>${formatPrice(course.price)}</span>
         </div>
       </div>
 
       {/* Información de lecciones y estado */}
-      <div className="flex items-center justify-between mb-4 p-3 bg-slate-800/30 rounded-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 p-3 bg-slate-800/30 rounded-lg">
         <div className="flex items-center gap-2">
-          <HiBookOpen className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium text-slate-300">
+          <HiBookOpen className="w-4 h-4 text-blue-400 flex-shrink-0" />
+          <span className="text-xs sm:text-sm font-medium text-slate-300">
             {lessonsCount} {lessonsCount === 1 ? "lección" : "lecciones"}
           </span>
         </div>
 
         {/* Visibility Toggle */}
-        <VisibilityToggle
-          courseId={course.id}
-          courseStatus={course.status}
-          currentVisibility={currentVisibility}
-          onVisibilityChange={handleVisibilityChange}
-        />
+        <div className="flex justify-start sm:justify-end">
+          <VisibilityToggle
+            courseId={course.id}
+            courseStatus={course.status}
+            currentVisibility={currentVisibility}
+            onVisibilityChange={handleVisibilityChange}
+          />
+        </div>
       </div>
 
       {/* Fechas */}
-      <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
-        <div className="bg-slate-800/30 rounded-lg p-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4 text-xs">
+        <div className="bg-slate-800/30 rounded-lg p-2 sm:p-3">
           <span className="text-slate-300 font-medium block mb-1">Creado:</span>
-          <p className="text-slate-100 font-semibold">
+          <p className="text-slate-100 font-semibold break-words">
             {formatDate(course.createdAt)}
           </p>
         </div>
-        <div className="bg-slate-800/30 rounded-lg p-3">
+        <div className="bg-slate-800/30 rounded-lg p-2 sm:p-3">
           <span className="text-slate-300 font-medium block mb-1">
             Actualizado:
           </span>
-          <p className="text-slate-100 font-semibold">
+          <p className="text-slate-100 font-semibold break-words">
             {formatDate(course.updatedAt)}
           </p>
         </div>
@@ -218,7 +220,7 @@ const TeacherCourseCard = ({
       {/* Botón de acción */}
       <button
         onClick={() => router.push(`/course/${course.id}`)}
-        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-font-light py-3 rounded-lg font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
+        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-font-light py-2.5 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
       >
         Ver detalles del curso
       </button>

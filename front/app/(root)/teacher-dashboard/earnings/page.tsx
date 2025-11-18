@@ -230,40 +230,41 @@ const EarningsPage = () => {
                 {filteredEarnings.map((earning) => (
                   <div
                     key={earning.saleId}
-                    className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 hover:border-slate-600 hover:bg-slate-900/70 transition-all"
+                    className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 sm:p-5 hover:border-slate-600 hover:bg-slate-900/70 transition-all"
                   >
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-white font-semibold text-lg">
-                            {earning.courseTitle}
-                          </h3>
-                          <div className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${getStatusColor(earning.status)} lg:hidden`}>
-                            {earning.status}
-                          </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-slate-400">
-                          <span className="flex items-center gap-1">
-                            📅 {formatDate(earning.saleDate)}
-                          </span>
-                          {earning.paymentReference && (
-                            <span className="flex items-center gap-1">
-                              🔖 Ref: {earning.paymentReference}
-                            </span>
-                          )}
+                    <div className="flex flex-col gap-3 sm:gap-4">
+                      {/* Header - Título y Estado */}
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-font-light font-semibold text-base sm:text-lg flex-1 min-w-0 break-words">
+                          {earning.courseTitle}
+                        </h3>
+                        <div className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-xs sm:text-sm font-medium whitespace-nowrap flex-shrink-0 ${getStatusColor(earning.status)}`}>
+                          {earning.status}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-3xl font-bold text-green-400">
+                      {/* Info - Fecha y Referencia */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs sm:text-sm text-slate-400">
+                        <span className="flex items-center gap-1.5">
+                          📅 {formatDate(earning.saleDate)}
+                        </span>
+                        {earning.paymentReference && (
+                          <>
+                            <span className="hidden sm:inline text-slate-600">•</span>
+                            <span className="flex items-center gap-1.5 truncate">
+                              🔖 Ref: {earning.paymentReference}
+                            </span>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Footer - Ganancia */}
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-700/50">
+                        <div className="text-left">
+                          <p className="text-xs text-slate-500 mb-0.5">Tu ganancia</p>
+                          <p className="text-2xl sm:text-3xl font-bold text-green-400">
                             {formatCurrency(earning.yourEarnings)}
                           </p>
-                          <p className="text-xs text-slate-500">Tu ganancia</p>
-                        </div>
-
-                        <div className={`px-4 py-2 rounded-lg border text-sm font-medium ${getStatusColor(earning.status)} hidden lg:block`}>
-                          {earning.status}
                         </div>
                       </div>
                     </div>

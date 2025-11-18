@@ -140,7 +140,7 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       {/* Estado actual texto */}
       <span
         className={`text-xs font-medium ${
@@ -156,7 +156,7 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
         disabled={isActuallyDisabled || isChanging}
         title={getTooltipMessage()}
         className={`
-          relative inline-flex items-center h-6 w-12 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed
+          relative inline-flex items-center h-6 w-11 sm:w-12 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0
           ${
             isPublic
               ? "bg-gradient-to-r from-green-400 to-blue-500"
@@ -168,7 +168,7 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
         <span
           className={`
             inline-flex items-center justify-center w-5 h-5 bg-white rounded-full shadow-lg transform transition-transform duration-300 ease-in-out
-            ${isPublic ? "translate-x-6" : "translate-x-0.5"}
+            ${isPublic ? "translate-x-5 sm:translate-x-6" : "translate-x-0.5"}
           `}
         >
           {isChanging ? (
@@ -181,8 +181,8 @@ const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
         </span>
       </button>
 
-      {/* Tooltip/helper text */}
-      <span className={`text-xs font-medium ${getTextColor()}`}>
+      {/* Tooltip/helper text - oculto en móvil */}
+      <span className={`hidden sm:inline text-xs font-medium ${getTextColor()}`}>
         {!canToggleVisibility
           ? getCourseStatusDisplay()
           : isPublic

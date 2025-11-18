@@ -133,18 +133,31 @@ const CoursesPage = () => {
 
                       <div className="flex-1 flex flex-col">
                         <div className="mb-4">
-                          <div className="flex items-start justify-between mb-2">
-                            <h3 className="text-font-light text-2xl font-bold flex-1">
+                          {/* Título y precio */}
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                            <h3 className="text-font-light text-xl sm:text-2xl font-bold">
                               {course.title}
                             </h3>
+                            <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-lg sm:text-xl px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap">
+                              ${course.price}
+                            </span>
+                          </div>
+
+                          {/* Descripción */}
+                          <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                            {course.description}
+                          </p>
+
+                          {/* Botones - En su propia sección */}
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                             {!isOwnCourse && !isPurchasedCourse ? (
                               <button
                                 disabled={loadingAddToCart ? true : false}
                                 onClick={() => handleAddToCart(course)}
-                                className="bg-slate-700/50 cursor-pointer hover:bg-slate-600/50 px-4 py-2 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300 disabled:hover:bg-slate-700/50 disabled:cursor-not-allowed"
+                                className="bg-slate-700/50 cursor-pointer hover:bg-slate-600/50 px-4 py-2.5 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300 disabled:hover:bg-slate-700/50 disabled:cursor-not-allowed w-full sm:w-auto text-center"
                               >
                                 {loadingAddToCart === course.id ? (
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center justify-center gap-2">
                                     <TinyLoader />
                                     <span>Agregando...</span>
                                   </div>
@@ -153,11 +166,11 @@ const CoursesPage = () => {
                                 )}
                               </button>
                             ) : isOwnCourse ? (
-                              <div className="px-4 py-2 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold">
+                              <div className="px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold text-center">
                                 Tu curso
                               </div>
                             ) : isPurchasedCourse ? (
-                              <div className="px-4 py-2 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold">
+                              <div className="px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold text-center">
                                 Curso comprado
                               </div>
                             ) : null}
@@ -165,14 +178,11 @@ const CoursesPage = () => {
                               onClick={() =>
                                 router.push(`/course/${course.id}`)
                               }
-                              className="ml-4 bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer"
+                              className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2.5 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer w-full sm:w-auto text-center"
                             >
                               Ver Curso
                             </button>
                           </div>
-                          <p className="text-slate-300 text-sm leading-relaxed">
-                            {course.description}
-                          </p>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-4">
                           <span className="bg-slate-700/50 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
@@ -189,9 +199,6 @@ const CoursesPage = () => {
                             className={`${config.badgeColor} border ${config.textColor} text-xs px-3 py-1.5 rounded-lg font-semibold`}
                           >
                             {course.category}
-                          </span>
-                          <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-xs px-3 py-1.5 rounded-lg font-semibold">
-                            ${course.price}
                           </span>
                         </div>
 

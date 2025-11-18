@@ -110,7 +110,7 @@ const CourseDetailPage: React.FC = () => {
     isLessonEnabled,
     isCourseCompleted,
     setError: setProgressError,
-  } = useLessonProgress(courseId as string, isCourseCreator);
+  } = useLessonProgress(courseId as string, isCourseCreator, hasAccessToCourse);
 
   // Cart hooks
   const { cart } = useCart();
@@ -436,8 +436,8 @@ const CourseDetailPage: React.FC = () => {
         </div>
 
         {/* Contenido del curso */}
-        <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-font-light mb-6">
+        <div className="bg-[#3f4273]/20 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-4 sm:mb-6">
             Contenido del curso
           </h2>
 
@@ -474,7 +474,7 @@ const CourseDetailPage: React.FC = () => {
           )}
 
           {course.lessons && course.lessons.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {course.lessons.map((lesson, index) => {
                 const isCompleted = isLessonCompleted(lesson.id);
                 const isAvailable = isLessonAvailable(index);
@@ -495,7 +495,7 @@ const CourseDetailPage: React.FC = () => {
                     <button
                       onClick={() => isAvailable && toggleLesson(lesson.id)}
                       disabled={isLocked}
-                      className={`w-full p-4 transition-colors flex items-center justify-between text-left ${
+                      className={`w-full p-3 sm:p-4 transition-colors flex items-center justify-between text-left ${
                         isLocked
                           ? "bg-slate-800/10 cursor-not-allowed"
                           : "bg-slate-800/30 hover:bg-slate-800/50"

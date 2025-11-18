@@ -84,8 +84,8 @@ const TeacherDashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen p-10">
-      <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen p-4 sm:p-6 md:p-10">
+      <div className="max-w-7xl mx-auto">
         <div className="mb-6 relative z-10">
           <TeacherWelcomeCard
             userName={user?.name}
@@ -156,31 +156,33 @@ const TeacherDashboardPage = () => {
           </div>
 
           {/* Tabs - Siempre mostrar, pero condicionar el contenido */}
-          <div className="flex border-b border-slate-700/50 mb-6">
+          <div className="flex border-b border-slate-700/50 mb-6 overflow-x-auto">
             <button
               onClick={() => setActiveTab('created')}
-              className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+              className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
                 activeTab === 'created'
                   ? 'text-blue-400 border-blue-400'
                   : 'text-slate-400 border-transparent hover:text-slate-300'
               }`}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <HiBookOpen className="w-4 h-4" />
-                Cursos Creados
+                <span className="hidden sm:inline">Cursos Creados</span>
+                <span className="sm:hidden">Creados</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('purchased')}
-              className={`px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+              className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
                 activeTab === 'purchased'
                   ? 'text-green-400 border-green-400'
                   : 'text-slate-400 border-transparent hover:text-slate-300'
               }`}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <HiShoppingCart className="w-4 h-4" />
-                Cursos Comprados
+                <span className="hidden sm:inline">Cursos Comprados</span>
+                <span className="sm:hidden">Comprados</span>
               </div>
             </button>
           </div>

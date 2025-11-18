@@ -478,24 +478,24 @@ const CreateLessonPage = () => {
                   </p>
 
                   {/* Advertencia sobre nombres de archivos */}
-                  <div className="bg-accent-medium/10 border border-accent-medium/30 rounded-lg p-3 mb-4">
+                  <div className="bg-accent-medium/10 border border-accent-medium/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
                     <div className="flex items-start gap-2">
-                      <div className="w-4 h-4 bg-accent-medium rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 bg-accent-medium rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
                         <span className="text-xs text-font-light font-bold">
                           💡
                         </span>
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm flex-1 min-w-0">
                         <p className="text-accent-light font-medium mb-1">
                           Consejo importante:
                         </p>
-                        <p className="text-gray-300">
+                        <p className="text-gray-300 break-words">
                           Asigna nombres descriptivos a tus videos como{" "}
-                          <span className="font-mono bg-accent-medium/20 px-1 rounded">
+                          <span className="font-mono bg-accent-medium/20 px-1 rounded text-[10px] sm:text-xs break-all">
                             &quot;introduccion_al_tema.mp4&quot;
                           </span>{" "}
                           o{" "}
-                          <span className="font-mono bg-accent-medium/20 px-1 rounded">
+                          <span className="font-mono bg-accent-medium/20 px-1 rounded text-[10px] sm:text-xs break-all">
                             &quot;ejercicios_practicos.mp4&quot;
                           </span>
                           . Estos nombres aparecerán en las lecciones para que
@@ -600,28 +600,28 @@ const CreateLessonPage = () => {
                   </p>
 
                   {/* Advertencia sobre nombres de archivos */}
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
                     <div className="flex items-start gap-2">
-                      <div className="w-4 h-4 bg-green-400 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-400 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
                         <span className="text-xs text-font-light font-bold">
                           📄
                         </span>
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm flex-1 min-w-0">
                         <p className="text-green-300 font-medium mb-1">
                           Nombres descriptivos:
                         </p>
-                        <p className="text-green-200">
+                        <p className="text-green-200 break-words">
                           Usa nombres claros como{" "}
-                          <span className="font-mono bg-green-500/20 px-1 rounded">
+                          <span className="font-mono bg-green-500/20 px-1 rounded text-[10px] sm:text-xs break-all">
                             &quot;manual_usuario.pdf&quot;
                           </span>
                           ,{" "}
-                          <span className="font-mono bg-green-500/20 px-1 rounded">
+                          <span className="font-mono bg-green-500/20 px-1 rounded text-[10px] sm:text-xs break-all">
                             &quot;ejercicios_practica.pdf&quot;
                           </span>{" "}
                           o{" "}
-                          <span className="font-mono bg-green-500/20 px-1 rounded">
+                          <span className="font-mono bg-green-500/20 px-1 rounded text-[10px] sm:text-xs break-all">
                             &quot;referencias_teoria.pdf&quot;
                           </span>
                           . Los estudiantes verán estos nombres al acceder a los
@@ -756,12 +756,12 @@ const CreateLessonPage = () => {
                 </div>
 
                 {/* Botones */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex flex-col gap-3 pt-6">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full">
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="text-gray-400 hover:text-gray-200 font-medium transition-colors"
+                      className="text-gray-400 hover:text-gray-200 font-medium transition-colors text-sm sm:text-base py-2 sm:py-0"
                     >
                       Cancelar
                     </button>
@@ -771,10 +771,10 @@ const CreateLessonPage = () => {
                       <button
                         type="button"
                         onClick={goToPreviousLesson}
-                        className="flex items-center gap-2 px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-200 font-medium rounded-md hover:bg-slate-600/50 hover:border-slate-500 transition-all duration-200 cursor-pointer"
+                        className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-200 font-medium rounded-md hover:bg-slate-600/50 hover:border-slate-500 transition-all duration-200 cursor-pointer text-sm sm:text-base"
                       >
-                        <HiArrowLeft className="w-4 h-4" />
-                        Lección anterior
+                        <HiArrowLeft className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">Lección anterior</span>
                       </button>
                     )}
 
@@ -783,16 +783,16 @@ const CreateLessonPage = () => {
                       <button
                         type="button"
                         onClick={removeLastLesson}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-700/30 border border-red-600/50 text-red-300 font-medium rounded-md hover:bg-red-600/40 hover:border-red-500 transition-all duration-200 cursor-pointer"
+                        className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-red-700/30 border border-red-600/50 text-red-300 font-medium rounded-md hover:bg-red-600/40 hover:border-red-500 transition-all duration-200 cursor-pointer text-sm sm:text-base"
                         title="Eliminar esta lección"
                       >
-                        <HiX className="w-4 h-4" />
-                        Eliminar lección
+                        <HiX className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">Eliminar lección</span>
                       </button>
                     )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full">
                     {/* Botón Agregar otra lección - Solo mostrar si no es la última lección y no hemos llegado al máximo */}
                     {currentLessonIndex === lessons.length - 1 &&
                       lessons.length < 6 && (
@@ -805,25 +805,27 @@ const CreateLessonPage = () => {
                             formik.values.videos.length === 0 ||
                             formik.values.pdfs.length === 0
                           }
-                          className="flex items-center justify-center gap-2 px-6 py-2 bg-gray-700/50 border border-gray-600 text-gray-200 font-semibold rounded-md hover:bg-gray-600/50 hover:border-gray-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                          className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 bg-gray-700/50 border border-gray-600 text-gray-200 font-semibold rounded-md hover:bg-gray-600/50 hover:border-gray-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full text-sm sm:text-base"
                         >
-                          <HiPlus className="w-4 h-4" />
-                          Agregar otra lección
+                          <HiPlus className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">Agregar otra lección</span>
                         </button>
                       )}
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="cursor-pointer bg-button/90 hover:bg-button transition rounded-md py-2 font-semibold w-full sm:w-auto px-6 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="cursor-pointer bg-button/90 hover:bg-button transition rounded-md py-2 font-semibold w-full px-4 sm:px-6 disabled:cursor-not-allowed disabled:opacity-50 text-sm sm:text-base"
                     >
-                      {isSubmitting
-                        ? currentLessonIndex === lessons.length - 1
-                          ? "Creando curso..."
-                          : "Guardando lección..."
-                        : currentLessonIndex === lessons.length - 1
-                        ? "Finalizar y Publicar Curso"
-                        : `Continuar con Lección ${currentLessonIndex + 2}`}
+                      <span className="truncate">
+                        {isSubmitting
+                          ? currentLessonIndex === lessons.length - 1
+                            ? "Creando curso..."
+                            : "Guardando lección..."
+                          : currentLessonIndex === lessons.length - 1
+                          ? "Finalizar y Publicar Curso"
+                          : `Continuar con Lección ${currentLessonIndex + 2}`}
+                      </span>
                     </button>
                   </div>
                 </div>

@@ -25,15 +25,26 @@ export const registerUserService = async (
     });
 
     if (!data.ok) {
-      const error = await data.json();
-      throw new Error(error.message || "Error en el registro");
+      let errorMessage = "Error en el registro";
+      try {
+        const error = await data.json();
+        errorMessage = error.message || errorMessage;
+      } catch (jsonError) {
+        // Si no es JSON válido, usar el status text
+        errorMessage = `Error en el registro: ${data.statusText}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const response = await data.json();
     return response;
   } catch (error) {
     console.error("Error al registrar: ", error);
-    throw error;
+    // Re-lanzar el error para que sea capturado en el componente
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Error desconocido en el registro");
   }
 };
 
@@ -50,15 +61,26 @@ export const loginUserService = async (
     });
 
     if (!data.ok) {
-      const error = await data.json();
-      throw new Error(error.message || "Error en el login");
+      let errorMessage = "Error en el login";
+      try {
+        const error = await data.json();
+        errorMessage = error.message || errorMessage;
+      } catch (jsonError) {
+        // Si no es JSON válido, usar el status text
+        errorMessage = `Error en el login: ${data.statusText}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const response = await data.json();
     return response;
   } catch (error) {
     console.error("Error al loguearse: ", error);
-    throw error;
+    // Re-lanzar el error para que sea capturado en el componente
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Error desconocido en el login");
   }
 };
 

@@ -15,6 +15,19 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuth = async () => {
+      // Primero verificar si hay errores en los query params
+      const error = searchParams.get("error");
+      const errorDescription = searchParams.get("error_description");
+
+      if (error || errorDescription) {
+        const message = errorDescription 
+          ? decodeURIComponent(errorDescription) 
+          : "Error en la autenticación";
+        toastError(message);
+        router.replace("/login");
+        return;
+      }
+
       const token = searchParams.get("token");
 
       if (!token) {

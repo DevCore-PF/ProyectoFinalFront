@@ -70,21 +70,22 @@ const CoursesGrid = () => {
             );
           })}
         </div>
-        <div
+        <Link
+          href="/courses"
           className="flex justify-center items-center mt-10 bg-button/80 hover:bg-button
-             transition-all duration-300 rounded-lg group mx-auto w-full sm:w-auto max-w-xs sm:max-w-none"
+             transition-all duration-300 rounded-lg group mx-auto w-full sm:w-auto max-w-xs sm:max-w-none cursor-pointer"
         >
           <p className="text-slate-300 text-base sm:text-lg p-2 sm:p-[11px] rounded-l-lg">
             Ver más cursos
           </p>
 
-          <Link href="/courses" className="p-3 sm:p-[15px] rounded-r-lg">
+          <div className="p-3 sm:p-[15px] rounded-r-lg">
             <IoArrowForward
               className="text-slate-300 text-lg sm:text-xl -rotate-45 
                                group-hover:rotate-0 transition-transform duration-200"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
     </div>
   );

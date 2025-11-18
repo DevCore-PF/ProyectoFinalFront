@@ -3,6 +3,8 @@
 import React from "react";
 import { usePurchaseHistory } from "@/hooks/usePurchaseHistory";
 import { PaymentFilter } from "@/types/purchase-history.types";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/UserContext";
 import {
   FaCreditCard,
   FaCalendarAlt,
@@ -16,8 +18,11 @@ import {
   FaTimesCircle,
   FaArrowUp,
 } from "react-icons/fa";
+import { HiArrowLeft } from "react-icons/hi";
 
 const PurchaseHistoryPage = () => {
+  const router = useRouter();
+  const { user } = useAuth();
   const {
     transactions,
     stats,
@@ -128,6 +133,14 @@ const PurchaseHistoryPage = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
+          <button
+            onClick={() => router.push(user?.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard')}
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 cursor-pointer"
+          >
+            <HiArrowLeft className="w-5 h-5" />
+            Volver al Dashboard
+          </button>
+
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-font-light flex items-center space-x-3">

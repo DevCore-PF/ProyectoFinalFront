@@ -183,6 +183,30 @@ const CreateLessonPage = () => {
     }
   };
 
+  const removeLastLesson = () => {
+    if (lessons.length > 1 && currentLessonIndex === lessons.length - 1) {
+      const isLessonEmpty = !formik.values.title.trim() && 
+                           formik.values.videos.length === 0 && 
+                           formik.values.pdfs.length === 0;
+      
+      if (isLessonEmpty) {
+        // Eliminar la última lección vacía
+        const updatedLessons = lessons.slice(0, -1);
+        setLessons(updatedLessons);
+        setCurrentLessonIndex(updatedLessons.length - 1);
+        toastSuccess('Lección cancelada correctamente');
+      } else {
+        // Si tiene contenido, pedir confirmación
+        if (window.confirm('Esta lección tiene contenido. ¿Estás seguro de eliminarla?')) {
+          const updatedLessons = lessons.slice(0, -1);
+          setLessons(updatedLessons);
+          setCurrentLessonIndex(updatedLessons.length - 1);
+          toastSuccess('Lección eliminada correctamente');
+        }
+      }
+    }
+  };
+
   const handleCancel = () => {
     if (formik.dirty || currentLessonIndex > 0) {
       const hasUnsavedChanges =
@@ -751,6 +775,19 @@ const CreateLessonPage = () => {
                       >
                         <HiArrowLeft className="w-4 h-4" />
                         Lección anterior
+                      </button>
+                    )}
+
+                    {/* Botón para eliminar la última lección si fue agregada sin querer */}
+                    {lessons.length > 1 && currentLessonIndex === lessons.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={removeLastLesson}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-700/30 border border-red-600/50 text-red-300 font-medium rounded-md hover:bg-red-600/40 hover:border-red-500 transition-all duration-200 cursor-pointer"
+                        title="Eliminar esta lección"
+                      >
+                        <HiX className="w-4 h-4" />
+                        Eliminar lección
                       </button>
                     )}
                   </div>

@@ -2,8 +2,15 @@
 
 import { memberships } from "@/helpers/moks";
 import { FaCheck, FaStar } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const MembershipPlans = () => {
+  const router = useRouter();
+
+  const handleMembershipClick = () => {
+    router.push("/memberships");
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-8 sm:mt-12">
       {memberships.map((plan, index) => (
@@ -62,6 +69,7 @@ const MembershipPlans = () => {
           </div>
 
           <button
+            onClick={handleMembershipClick}
             className={`w-full font-semibold py-2.5 sm:py-3 text-sm sm:text-base rounded-lg transition-all duration-300 ${
               plan.popular
                 ? "bg-button/80 hover:bg-button text-font-light cursor-pointer hover:shadow-lg hover:shadow-button/30"

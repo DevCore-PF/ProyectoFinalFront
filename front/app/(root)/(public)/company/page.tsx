@@ -2,7 +2,57 @@
 import Link from "next/link";
 import Image from "next/image";
 //Icons
-import { FaGraduationCap, FaHandsHelping, FaLightbulb } from "react-icons/fa";
+import {
+  FaGraduationCap,
+  FaHandsHelping,
+  FaLightbulb,
+  FaLinkedin,
+  FaGithub,
+} from "react-icons/fa";
+
+const teamMembers = [
+  {
+    name: "Jesús Anaya",
+    role: "Ingeniero Principal de APIs",
+    image:
+      "https://res.cloudinary.com/dtbpi3bic/image/upload/v1763505222/JesusProfilePhoto_zb3pax.jpg",
+    linkedin: "https://www.linkedin.com/in/jesusanaya2022/",
+    github: "https://github.com/JesusAnayaMtz",
+  },
+  {
+    name: "Gonzalo Moreiro",
+    role: "Arquitecto de Sistemas",
+    image:
+      "https://res.cloudinary.com/dtbpi3bic/image/upload/v1763435601/GonzaProfilePhoto01_dmgdy6.webp",
+    linkedin: "https://www.linkedin.com/in/gonzalo-moreiro-b0b00a363/",
+    github: "https://github.com/GonzaloMoreiro",
+  },
+  {
+    name: "Laura Mussa",
+    role: "Líder de Ingeniería Front-end",
+    image:
+      "https://res.cloudinary.com/dtbpi3bic/image/upload/v1763505453/LauraProfilePhoto_zshbly.jpg",
+    linkedin:
+      "https://www.linkedin.com/in/laura-mussa-rodr%C3%ADguez-a439a2171/",
+    github: "https://github.com/LauraMussa",
+  },
+  {
+    name: "Diego Marzioni",
+    role: "Especialista en Experiencia de Usuario (UX)",
+    image:
+      "https://res.cloudinary.com/dtbpi3bic/image/upload/v1763481498/diegoProfilePhoto_wlpooq.jpg",
+    linkedin: "https://www.linkedin.com/in/diego-marzioni/",
+    github: "https://github.com/DiegoMarzioni",
+  },
+  {
+    name: "Adán Franco",
+    role: "Desarrollador Front-end",
+    image:
+      "https://res.cloudinary.com/dtbpi3bic/image/upload/v1763435206/01-Yo_stcdci.webp",
+    linkedin: "https://www.linkedin.com/in/adanlfranco/",
+    github: "https://github.com/AdanLFranco",
+  },
+];
 
 const AboutUs = () => {
   return (
@@ -58,6 +108,55 @@ const AboutUs = () => {
 
         <section className="mb-20 text-center">
           <h2 className="text-3xl font-bold mb-10 text-gray-light">
+            Nosotros: El Equipo{" "}
+            <strong className="text-accent-medium">DevCore</strong>
+          </h2>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            {teamMembers.map((member) => (
+              <div
+                key={member.name}
+                className="bg-navbar p-6 rounded-xl shadow-xl border border-gray-700 hover:border-button transition-all duration-300 flex flex-col items-center hover:text-accent-medium"
+              >
+                <Image
+                  src={member.image}
+                  alt={`Foto de ${member.name}`}
+                  width={128}
+                  height={128}
+                  className="w-32 h-32 object-cover rounded-full mb-3 border-2 border-yellow-light/50"
+                />
+                <h3 className="text-xl font-semibold text-gray-light mb-1 ">
+                  {" "}
+                  {member.name}
+                </h3>
+                <p className="text-sm text-gray-400 mb-3">{member.role}</p>{" "}
+                <div className="flex space-x-3">
+                  <Link
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-font-light transition-colors"
+                    aria-label={`LinkedIn de ${member.name}`}
+                  >
+                    <FaLinkedin size={20} />
+                  </Link>
+                  <Link
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-font-light transition-colors"
+                    aria-label={`GitHub de ${member.name}`}
+                  >
+                    <FaGithub size={20} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-20 text-center">
+          <h2 className="text-3xl font-bold mb-10 text-gray-light">
             Nuestra Filosofía: Código con Propósito
           </h2>
 
@@ -107,7 +206,8 @@ const AboutUs = () => {
 
         <section className="text-center pt-8 pb-10 border-t border-gray-700">
           <h2 className="text-3xl font-bold mb-4 text-gray-100">
-            ¿Listo para construir tu futuro con DevCore?
+            ¿Listo para construir tu{" "}
+            <strong className="text-accent-medium">futuro</strong> con DevCore?
           </h2>
           <p className="text-lg text-gray-300 mb-6">
             Únete a la comunidad que te da las herramientas y el soporte para

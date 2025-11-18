@@ -132,58 +132,56 @@ const CoursesPage = () => {
                       </div>
 
                       <div className="flex-1 flex flex-col">
-                        <div className="mb-4">
-                          {/* Título y precio */}
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
-                            <h3 className="text-font-light text-xl sm:text-2xl font-bold">
-                              {course.title}
-                            </h3>
-                            <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-lg sm:text-xl px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap">
-                              ${course.price}
-                            </span>
-                          </div>
-
-                          {/* Descripción */}
-                          <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                            {course.description}
-                          </p>
-
-                          {/* Botones - En su propia sección */}
-                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                            {!isOwnCourse && !isPurchasedCourse ? (
-                              <button
-                                disabled={loadingAddToCart ? true : false}
-                                onClick={() => handleAddToCart(course)}
-                                className="bg-slate-700/50 cursor-pointer hover:bg-slate-600/50 px-4 py-2.5 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300 disabled:hover:bg-slate-700/50 disabled:cursor-not-allowed w-full sm:w-auto text-center"
-                              >
-                                {loadingAddToCart === course.id ? (
-                                  <div className="flex items-center justify-center gap-2">
-                                    <TinyLoader />
-                                    <span>Agregando...</span>
-                                  </div>
-                                ) : (
-                                  "Agregar al carrito"
-                                )}
-                              </button>
-                            ) : isOwnCourse ? (
-                              <div className="px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold text-center">
-                                Tu curso
-                              </div>
-                            ) : isPurchasedCourse ? (
-                              <div className="px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold text-center">
-                                Curso comprado
-                              </div>
-                            ) : null}
-                            <button
-                              onClick={() =>
-                                router.push(`/course/${course.id}`)
-                              }
-                              className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2.5 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer w-full sm:w-auto text-center"
-                            >
-                              Ver Curso
-                            </button>
-                          </div>
+                        {/* Título y precio */}
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                          <h3 className="text-font-light text-xl sm:text-2xl font-bold">
+                            {course.title}
+                          </h3>
+                          <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-lg sm:text-xl px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap self-start">
+                            ${course.price}
+                          </span>
                         </div>
+
+                        {/* Descripción */}
+                        <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                          {course.description}
+                        </p>
+
+                        {/* Botones solo en móvil - ocultos en desktop */}
+                        <div className="flex flex-col gap-2 mb-4 md:hidden">
+                          {!isOwnCourse && !isPurchasedCourse ? (
+                            <button
+                              disabled={loadingAddToCart ? true : false}
+                              onClick={() => handleAddToCart(course)}
+                              className="bg-slate-700/50 cursor-pointer hover:bg-slate-600/50 px-4 py-2.5 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300 disabled:hover:bg-slate-700/50 disabled:cursor-not-allowed w-full text-center"
+                            >
+                              {loadingAddToCart === course.id ? (
+                                <div className="flex items-center justify-center gap-2">
+                                  <TinyLoader />
+                                  <span>Agregando...</span>
+                                </div>
+                              ) : (
+                                "Agregar al carrito"
+                              )}
+                            </button>
+                          ) : isOwnCourse ? (
+                            <div className="px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold text-center">
+                              Tu curso
+                            </div>
+                          ) : isPurchasedCourse ? (
+                            <div className="px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold text-center">
+                              Curso comprado
+                            </div>
+                          ) : null}
+                          <button
+                            onClick={() => router.push(`/course/${course.id}`)}
+                            className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2.5 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer w-full text-center"
+                          >
+                            Ver Curso
+                          </button>
+                        </div>
+
+                        {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-4">
                           <span className="bg-slate-700/50 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
                             {course.duration}
@@ -202,27 +200,58 @@ const CoursesPage = () => {
                           </span>
                         </div>
 
-                        <div className="border-t border-slate-700/50 pt-4">
-                          <div className="flex items-center justify-between">
-                            <div className="text-slate-400 text-xs">
-                              <span className="text-slate-500">
-                                Instructor:{" "}
-                              </span>
+                        {/* Footer con info del instructor y botones en desktop */}
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-auto pt-4 border-t border-slate-700/50">
+                          {/* Info del instructor */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-xs">
+                            <div className="text-slate-400">
+                              <span className="text-slate-500">Instructor: </span>
                               <span className="text-slate-300 font-semibold">
-                                {course.professor?.user?.name ||
-                                  "No disponible"}
+                                {course.professor?.user?.name || "No disponible"}
                               </span>
                             </div>
-                            <div className="text-slate-400 text-xs">
-                              <span className="text-slate-500">
-                                Especialidad:{" "}
-                              </span>
+                            <div className="text-slate-400">
+                              <span className="text-slate-500">Especialidad: </span>
                               <span className="text-slate-300 font-semibold">
                                 {course.professor?.speciality ||
                                   course.professor?.profession ||
                                   "No disponible"}
                               </span>
                             </div>
+                          </div>
+
+                          {/* Botones en desktop - ocultos en móvil */}
+                          <div className="hidden md:flex gap-3 flex-shrink-0">
+                            {!isOwnCourse && !isPurchasedCourse ? (
+                              <button
+                                disabled={loadingAddToCart ? true : false}
+                                onClick={() => handleAddToCart(course)}
+                                className="bg-slate-700/50 cursor-pointer hover:bg-slate-600/50 px-4 py-2.5 rounded-lg text-slate-200 text-sm font-semibold transition-all duration-300 disabled:hover:bg-slate-700/50 disabled:cursor-not-allowed whitespace-nowrap"
+                              >
+                                {loadingAddToCart === course.id ? (
+                                  <div className="flex items-center justify-center gap-2">
+                                    <TinyLoader />
+                                    <span>Agregando...</span>
+                                  </div>
+                                ) : (
+                                  "Agregar al carrito"
+                                )}
+                              </button>
+                            ) : isOwnCourse ? (
+                              <div className="px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-300 text-sm font-semibold whitespace-nowrap">
+                                Tu curso
+                              </div>
+                            ) : isPurchasedCourse ? (
+                              <div className="px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-semibold whitespace-nowrap">
+                                Curso comprado
+                              </div>
+                            ) : null}
+                            <button
+                              onClick={() => router.push(`/course/${course.id}`)}
+                              className="bg-[#7e4bde] hover:bg-[#6d3dc4] px-5 py-2.5 rounded-lg text-font-light text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 cursor-pointer whitespace-nowrap"
+                            >
+                              Ver Curso
+                            </button>
                           </div>
                         </div>
                       </div>

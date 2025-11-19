@@ -367,7 +367,7 @@ const ProfileSettings = () => {
           >
             ← Volver
           </button>
-          <h1 className="text-3xl font-title font-bold text-font-light">
+          <h1 className="text-3xl  font-bold text-font-light">
             Ajustes de Perfil
           </h1>
           <p className="text-font-light/70 mt-2">

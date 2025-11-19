@@ -440,7 +440,7 @@ const CourseDetailPage: React.FC = () => {
                         handleAddToCart(course);
                       }
                     }}
-                    className={`px-6 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto cursor-pointer
                       ${isInCart
                         ? "bg-amber-500 hover:bg-amber-600 text-font-light"
                         : "bg-button hover:bg-button/80 text-font-light"

@@ -1,6 +1,7 @@
 "use client";
 
 import { faqCategories, faqsByCategory } from "@/helpers/moks";
+import Link from "next/link";
 import { useState } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 
@@ -122,9 +123,9 @@ const FAQPage = () => {
               Nuestro equipo está listo para ayudarte a encontrar las respuestas
               que necesitas
             </p>
-            <button className="px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30">
+            <Link href={'/contact-us'} className="px-8 py-3 bg-button hover:bg-button/80 text-font-light font-semibold rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-button/30">
               Contactar con soporte
-            </button>
+            </Link>
           </div>
         </div>
       </div>

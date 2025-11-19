@@ -35,6 +35,7 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
     coursesError,
     silentRefreshProfiles,
     silentRefreshCourses,
+    isInitialLoading,
   } = useAdmin();
 
   const [activeTab, setActiveTab] = useState<ValidationTab>("professors");
@@ -257,7 +258,14 @@ const ValidationsPage = ({ onViewDetail }: validationPageProps) => {
   const goToCoursePage = (pageNumber: number) => {
     setCourseCurrentPage(pageNumber);
   };
-
+  if (isInitialLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader size="medium" />
+        <p className="text-slate-400 ml-4">Cargando solicitudes...</p>
+      </div>
+    );
+  }
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* ============[ HEADER   ]============ */}

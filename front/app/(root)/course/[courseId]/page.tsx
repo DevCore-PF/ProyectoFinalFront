@@ -378,8 +378,8 @@ const CourseDetailPage: React.FC = () => {
             </div>
 
             {/* Detalles del curso */}
-            <div className="flex-1">
-              <div className="mb-6">
+            <div className="flex-1 flex flex-col gap-4 justify-between">
+              <div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-font-light mb-4">
                   {course.title}
                 </h1>
@@ -419,8 +419,8 @@ const CourseDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Precio e instructor */}
-              <div className="flex flex-wrap items-center gap-6">
+              {/* Precio, instructor y botón agregar al carrito */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                 <div className="text-2xl font-bold text-green-400">
                   ${course.price}
                 </div>
@@ -430,6 +430,25 @@ const CourseDetailPage: React.FC = () => {
                     {course.professor?.user?.name || "Instructor"}
                   </span>
                 </div>
+                {/* Botón agregar al carrito, solo si no es el profesor ni ya comprado */}
+                {!isCourseCreator && !hasAccessToCourse && (
+                  <button
+                    onClick={() => {
+                      if (isInCart) {
+                        handleRemoveFromCart(course);
+                      } else {
+                        handleAddToCart(course);
+                      }
+                    }}
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto
+                      ${isInCart
+                        ? "bg-amber-500 hover:bg-amber-600 text-font-light"
+                        : "bg-button hover:bg-button/80 text-font-light"
+                      }`}
+                  >
+                    {isInCart ? "Quitar del carrito" : "Agregar al carrito"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

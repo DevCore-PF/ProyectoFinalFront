@@ -229,7 +229,7 @@ export default function Navbar() {
                     ? "/dashboard"
                     : user.role === "teacher"
                     ? "/teacher-dashboard"
-                    : "/admin-dashboard"
+                    : "/admin"
                 }
                 onClick={() => setMenuOpen(false)}
                 className="hover:bg-button p-2 rounded-md transition-colors duration-200"

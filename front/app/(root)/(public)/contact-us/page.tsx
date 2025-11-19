@@ -1,6 +1,6 @@
 "use client";
 //Helpers
-import { toastSuccess } from "@/helpers/alerts.helper";
+import { toastSuccess, toastError } from "@/helpers/alerts.helper";
 //Formik
 import { useFormik } from "formik";
 import {
@@ -19,12 +19,30 @@ import Link from "next/link";
 //Types
 import { ContactFormData } from "../../../../types/forms.types";
 
+import { sendContactForm } from "@/services/contact.service";
+
 const ContactPage = () => {
   const formik = useFormik<ContactFormData>({
     validationSchema: contactValidations,
     initialValues: contactInitialValues,
-    onSubmit: () => {
-      toastSuccess("Tu mensaje ha sido enviado!");
+    onSubmit: async (values, { resetForm, setSubmitting }) => {
+      try {
+        await sendContactForm({
+          name: values.name,
+          email: values.email,
+          reason: values.subject, // mapea subject a reason
+          message: values.message,
+        });
+        toastSuccess("Tu mensaje ha sido enviado!");
+        resetForm();
+      } catch (error: any) {
+        toastError(
+          error?.response?.data?.message ||
+            "Hubo un error al enviar el mensaje. Intenta nuevamente."
+        );
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -37,7 +55,7 @@ const ContactPage = () => {
       </div>
       <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-4 lg:gap-0">
         <div className="border-border border w-full lg:rounded-l-2xl rounded-2xl lg:rounded-r-none p-4 sm:p-6 md:p-8 shadow-xl">
-          <div>
+          <form onSubmit={formik.handleSubmit}>
             <div className="flex flex-col gap-4 sm:gap-6">
               <div>
                 <label htmlFor="name" className="block text-xs sm:text-sm mb-1">
@@ -151,21 +169,13 @@ const ContactPage = () => {
               </div>
               <button
                 type="submit"
-                onClick={() => {
-                  formik.setTouched({
-                    name: true,
-                    email: true,
-                    subject: true,
-                    message: true,
-                  });
-                }}
                 disabled={formik.isSubmitting}
                 className="bg-button/90 hover:bg-button cursor-pointer self-center flex transition rounded-md py-2 sm:py-2.5 mt-2 px-4 sm:px-6 disabled:cursor-not-allowed disabled:opacity-50 text-sm sm:text-base font-medium"
               >
                 Enviar mensaje
               </button>
             </div>
-          </div>
+          </form>
         </div>
 
         <div className="bg-background2 lg:rounded-r-2xl rounded-2xl lg:rounded-l-none w-full lg:w-1/2 p-4 sm:p-6 md:p-8 shadow-xl flex flex-col justify-between gap-3 sm:gap-4">

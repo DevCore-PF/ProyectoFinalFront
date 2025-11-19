@@ -5,28 +5,13 @@ import { useAuth } from "@/context/UserContext";
 import { HiCheckCircle, HiClock, HiUserCircle, HiCalendar, HiCash, HiChevronDown } from "react-icons/hi";
 import Loader from "@/components/Loaders/Loader";
 import { toastConfirm, toastError, toastSuccess } from "@/helpers/alerts.helper";
-import { getAllPendingBatchesService, markAsPaidService } from "@/services/admin.service";
+import { markAsPaidService } from "@/services/admin.service";
+import { useAdmin } from "@/context/AdminContext";
+import { PayoutBatch } from "@/types/admin.types";
 
-interface PayoutBatch {
-  payoutId: string;
-  status: "PENDING" | "PAID";
-  createdAt: string;
-  paidAt: string | null;
-  totalAmount: string;
-  professorName: string;
-  professorId: string;
-  referenceNumber?: string;
-  salesCount: number;
-}
-
-interface PayoutBatchManagementProps {
-  onCountChange: (count: number) => void;
-}
-
-export default function PayoutBatchManagement({ onCountChange }: PayoutBatchManagementProps) {
+export default function PayoutBatchManagement() {
   const { token } = useAuth();
-  const [batches, setBatches] = useState<PayoutBatch[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { pendingBatches, isLoadingPendingBatches, fetchPendingBatches, fetchPaidBatches } = useAdmin();
   const [markingAsPaid, setMarkingAsPaid] = useState<string | null>(null);
   const [referenceNumber, setReferenceNumber] = useState("");
   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
@@ -57,23 +42,6 @@ export default function PayoutBatchManagement({ onCountChange }: PayoutBatchMana
     });
   };
 
-  useEffect(() => {
-    const fetchPendingBatches = async () => {
-      try {
-        if (token) {
-          const data = await getAllPendingBatchesService(token);
-          setBatches(data);
-          onCountChange(data.length);
-        }
-      } catch (error) {
-        console.error("Error fetching batches:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPendingBatches();
-  }, [token]);
-
   const handleMarkAsPaid = async (batchId: string, professorName: string) => {
     if (!referenceNumber.trim()) {
       toastError("Debes ingresar un número de referencia");
@@ -88,11 +56,7 @@ export default function PayoutBatchManagement({ onCountChange }: PayoutBatchMana
             await markAsPaidService(token, batchId, referenceNumber);
             toastSuccess("Lote marcado como pagado exitosamente");
 
-            setBatches((prevBatches) =>
-              prevBatches.map((batch) =>
-                batch.payoutId === batchId ? { ...batch, status: "PAID", referenceNumber } : batch
-              )
-            );
+            await Promise.all([fetchPendingBatches(), fetchPaidBatches()]);
 
             setSelectedBatch(null);
             setReferenceNumber("");
@@ -109,7 +73,7 @@ export default function PayoutBatchManagement({ onCountChange }: PayoutBatchMana
   };
 
   // ============[ LOADING ]============
-  if (loading) {
+  if (isLoadingPendingBatches) {
     return (
       <div className="flex justify-center items-center h-64">
         <Loader />
@@ -118,7 +82,7 @@ export default function PayoutBatchManagement({ onCountChange }: PayoutBatchMana
   }
 
   // ============[ EMPTY STATE ]============
-  if (batches.length === 0) {
+  if (pendingBatches.length === 0) {
     return (
       <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-12 sm:p-16 text-center">
         <HiCash className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-slate-600 mb-4" />
@@ -130,12 +94,14 @@ export default function PayoutBatchManagement({ onCountChange }: PayoutBatchMana
     );
   }
 
-  const groupedBatches = groupByProfessor(batches);
+  const groupedBatches = groupByProfessor(pendingBatches);
 
   return (
     <div>
       {/* ============[ TITLE ]============ */}
-      <h2 className="text-lg sm:text-xl font-semibold text-font-light mb-4 sm:mb-6">Gestión de Lotes de Pago</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-font-light mb-4 sm:mb-6">
+        Gestión de Lotes de Pago
+      </h2>
 
       <div className="space-y-6 sm:space-y-8">
         {Object.entries(groupedBatches).map(([professorName, professorBatches]) => {

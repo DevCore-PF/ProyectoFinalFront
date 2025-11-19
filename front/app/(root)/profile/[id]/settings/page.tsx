@@ -96,9 +96,12 @@ const ProfileSettings = () => {
           direccion: userProfile.direccion || "",
           dni: userProfile.dni || "",
           telefono: userProfile.telefono || "",
+          // Usar solo la parte YYYY-MM-DD del string ISO, sin crear Date para evitar desfase
           fechaNacimiento: userProfile.fechaNacimiento
-            ? new Date(userProfile.fechaNacimiento).toISOString().split("T")[0]
-            : "",
+            ? (typeof userProfile.fechaNacimiento === 'string'
+                ? userProfile.fechaNacimiento.split('T')[0]
+                : '')
+            : '',
           genero: userProfile.genero,
         });
 
@@ -268,8 +271,20 @@ const ProfileSettings = () => {
       // Filtrar solo los campos que tienen valor
       const dataToUpdate: UpdateUserFormData = {};
       Object.entries(formData).forEach(([key, value]) => {
-        if (value && value.trim() !== "") {
-          dataToUpdate[key as keyof UpdateUserFormData] = value;
+        if (value && typeof value === 'string' && value.trim() !== "") {
+          if (key === 'fechaNacimiento') {
+            // Convertir YYYY-MM-DD a Date local y luego a ISO string
+            const [year, month, day] = value.split('-');
+            if (year && month && day) {
+              const dateObj = new Date(Number(year), Number(month) - 1, Number(day), 0, 0, 0);
+              (dataToUpdate as any)[key] = dateObj.toISOString();
+            }
+          } else if (key === 'genero') {
+            // Asegurar el tipo correcto para genero
+            (dataToUpdate as any)[key] = value as 'masculino' | 'femenino' | 'otro';
+          } else {
+            (dataToUpdate as any)[key] = value;
+          }
         }
       });
 
@@ -544,9 +559,10 @@ const ProfileSettings = () => {
                           Fecha de Nacimiento
                         </p>
                         <p className="text-font-light font-medium">
-                          {new Date(user.fechaNacimiento).toLocaleDateString(
-                            "es-ES"
-                          )}
+                          {/* Mostrar la fecha como string YYYY-MM-DD para evitar desfase */}
+                          {user.fechaNacimiento && typeof user.fechaNacimiento === 'string'
+                            ? user.fechaNacimiento.split('T')[0].split('-').reverse().join('/')
+                            : ''}
                         </p>
                       </div>
                     )}

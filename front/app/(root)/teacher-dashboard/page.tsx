@@ -6,7 +6,7 @@ import ProfessionalValidationForm from "@/components/dashboard/ProfessionalValid
 import { PurchasedCoursesGrid } from "@/components/PurchasedCoursesGrid";
 import { CourseVisibility } from "@/types/course.types";
 import { HiBookOpen, HiShoppingCart } from "react-icons/hi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useTeacherValidation } from "@/hooks/useTeacherValidation";
@@ -17,6 +17,7 @@ import TinyLoader from "@/components/Loaders/TinyLoader";
 import TopCoursesWidget from "@/components/dashboard/TopCoursesWidget";
 
 const TeacherDashboardPage = () => {
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const {
@@ -38,6 +39,16 @@ const TeacherDashboardPage = () => {
     updateCourseVisibility,
     hasCourses,
   } = useProfessorCourses();
+
+  // Auto-refresh polling cada 15 segundos (después de obtener refreshCourses)
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      refreshCourses();
+    }, 60000); // 1 minuto
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [refreshCourses]);
 
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState<"created" | "purchased">(

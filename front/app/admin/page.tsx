@@ -44,13 +44,11 @@ const AdminDashboard = () => {
     validationType?: "professor" | "course";
   }>({ tab: null, id: null, validationType: undefined });
 
-  // ============[ ESTADOS DE LOADING Y USER ]=============
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [detailUser, setDetailUser] = useState<User | null>(null);
 
   const { fetchUserById } = useAdmin();
 
-  // ============[ FUNCIÓN PARA ABRIR DETALLES CON FETCH ]=============
   const openDetail = async (tab: TabType, id: string, validationType?: "professor" | "course") => {
     if (tab === "users") {
       setIsLoadingDetail(true);
@@ -71,7 +69,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // ============[ FUNCIÓN PARA CERRAR DETALLES Y LIMPIAR ]=============
   const closeDetail = () => {
     setDetailView({ tab: null, id: null });
     setDetailUser(null);
@@ -81,7 +78,6 @@ const AdminDashboard = () => {
 
   const isShowingDetail = detailView.tab !== null;
 
-  // ============[ TYPE DE VALIDATION ]=============
   const getValidationTypeLabel = (type: ValidationType) => {
     const labels = {
       professor: "Perfil Profesional",
@@ -93,7 +89,6 @@ const AdminDashboard = () => {
     return labels[type];
   };
 
-  // ============[ STYLES DE STATUS ]=============
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -103,215 +98,122 @@ const AdminDashboard = () => {
     };
     return statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
   };
-  // ============[ COMPONENTE DE ADMINS ]=============
-  // const AdminsTab = () => (
-  //   <div className="space-y-6">
-  //     <div className="flex items-center justify-between">
-  //       <h2 className="text-2xl font-bold text-font-light">
-  //         Gestión de Administradores
-  //       </h2>
-  //       <button
-  //         onClick={handleSendAdminInvite}
-  //         className="cursor-pointer bg-button hover:bg-button/80 text-font-light px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
-  //       >
-  //         <HiMail className="w-5 h-5" />
-  //         Enviar Invitación
-  //       </button>
-  //     </div>
-
-  //     <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-  //       <h3 className="text-lg font-semibold text-font-light mb-4">
-  //         Enviar Invitación de Admin
-  //       </h3>
-  //       <div className="space-y-4">
-  //         <div>
-  //           <label className="text-slate-400 text-sm mb-2 block">
-  //             Email del nuevo admin
-  //           </label>
-  //           <input
-  //             type="email"
-  //             placeholder="admin@devcore.com"
-  //             className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button"
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="text-slate-400 text-sm mb-2 block">
-  //             Mensaje personalizado (opcional)
-  //           </label>
-  //           <textarea
-  //             placeholder="Escribe un mensaje de bienvenida..."
-  //             rows={4}
-  //             className="w-full bg-background2 border border-slate-700 rounded-lg px-4 py-3 text-font-light focus:outline-none focus:ring-2 focus:ring-button resize-none"
-  //           />
-  //         </div>
-  //         <button className="cursor-pointer w-full bg-button/80 hover:bg-button text-font-light py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-  //           <HiMail className="w-5 h-5" />
-  //           Enviar Invitación
-  //         </button>
-  //         <p className="text-slate-400 text-sm text-center">
-  //           Se enviará un link de registro profesional al email especificado
-  //         </p>
-  //       </div>
-  //     </div>
-
-  //     <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-  //       <h3 className="text-lg font-semibold text-font-light mb-4">
-  //         Administradores Actuales
-  //       </h3>
-  //       <div className="space-y-3">
-  //         {[
-  //           {
-  //             id: "1",
-  //             name: "Admin Principal",
-  //             email: "admin@devcore.com",
-  //             role: "Super Admin",
-  //             since: "2024-01-01",
-  //           },
-  //           {
-  //             id: "2",
-  //             name: "María Admin",
-  //             email: "maria.admin@devcore.com",
-  //             role: "Admin",
-  //             since: "2024-06-15",
-  //           },
-  //         ].map((admin) => (
-  //           <div
-  //             key={admin.id}
-  //             className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg"
-  //           >
-  //             <div className="flex items-center gap-4">
-  //               <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center text-font-light font-bold border border-slate-600">
-  //                 {admin.name.charAt(0)}
-  //               </div>
-  //               <div>
-  //                 <h4 className="text-font-light font-semibold">
-  //                   {admin.name}
-  //                 </h4>
-  //                 <p className="text-slate-400 text-sm">{admin.email}</p>
-  //               </div>
-  //             </div>
-  //             <div className="flex items-center gap-4">
-  //               <div className="text-right">
-  //                 <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-lg text-xs font-medium">
-  //                   {admin.role}
-  //                 </span>
-  //                 <p className="text-slate-500 text-xs mt-1">
-  //                   Desde {new Date(admin.since).toLocaleDateString("es-ES")}
-  //                 </p>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 
   return (
-    <div className="min-h-screen p-6 md:p-10">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto">
-        {/* ============[ HEADER ]============= */}
-        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 mb-6 shadow-xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">Panel de Gestión</h1>
+        {/* ============[ HEADER   ]============= */}
+        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 shadow-xl">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            {/* Título y descripción */}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-font-light mb-1 sm:mb-2">
+                Panel de Gestión
+              </h1>
+              <p className="text-slate-400 text-sm sm:text-base mb-2 sm:mb-0">
+                Gestiona todos los aspectos de tu plataforma
+              </p>
 
-              <p className="text-slate-400">Gestiona todos los aspectos de tu plataforma</p>
-              <div className="flex items-center gap-2 text-slate-400 mt-1 text-sm font-light">
-                <p>{user?.email}</p>
-                <span className="text-amber-200 border border-amber-300 bg-amber-700/40 px-2 rounded-lg">
+              {/* Info del usuario - stack en mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-slate-400 mt-2 text-xs sm:text-sm font-light">
+                <p className="truncate">{user?.email}</p>
+                <span className="inline-flex items-center w-fit text-amber-200 border border-amber-300 bg-amber-700/40 px-2 py-0.5 rounded-lg text-xs">
                   {user?.role && `Administrador`}
                 </span>
               </div>
             </div>
-            <div className="p-4 bg-slate-700/30 rounded-xl">
-              <HiShieldCheck className="w-10 h-10 text-slate-300" />
+
+            {/* Icono - oculto en mobile muy pequeño */}
+            <div className="hidden sm:flex p-3 lg:p-4 bg-slate-700/30 rounded-xl shrink-0">
+              <HiShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-slate-300" />
             </div>
           </div>
         </div>
 
         {showBar && (
           <>
-            {/* ============[ NAVEGACIÓN DE TABS ]============= */}
-            <div className="bg-background2/40 border  border-slate-700/50 rounded-xl p-2 mb-6 overflow-x-auto">
-              <div className="flex gap-2 min-w-max justify-around">
+            {/* ============[ NAVEGACIÓN DE TABS   ]============= */}
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-1.5 sm:p-2 mb-4 sm:mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+              <div className="flex gap-1 sm:gap-2 min-w-max sm:min-w-0 sm:justify-around">
                 <button
                   onClick={() => setActiveTab("validations")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all relative ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "validations"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiShieldCheck className="w-5 h-5 text-accent-light" />
-                  Solicitudes
+                  <HiShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
+                  <span className="hidden sm:inline">Solicitudes</span>
+                  <span className="sm:hidden">Solicitudes</span>
                 </button>
 
                 <button
                   onClick={() => setActiveTab("courses")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "courses"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiBookOpen className="w-5 h-5 text-accent-light" />
+                  <HiBookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
                   Cursos
                 </button>
 
                 <button
                   onClick={() => setActiveTab("users")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "users"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiUsers className="w-5 h-5 text-accent-light" />
+                  <HiUsers className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
                   Users
                 </button>
 
                 <button
                   onClick={() => setActiveTab("finances")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "finances"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiCurrencyDollar className="w-5 h-5 text-accent-light" />
+                  <HiCurrencyDollar className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
                   Finanzas
                 </button>
 
                 <button
                   onClick={() => setActiveTab("newsletter")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "newsletter"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiMail className="w-5 h-5 text-accent-light" />
+                  <HiMail className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
                   Newsletter
                 </button>
 
                 <button
                   onClick={() => setActiveTab("admins")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                  className={`cursor-pointer flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === "admins"
                       ? "bg-button/50 text-font-light"
                       : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
                   }`}
                 >
-                  <HiUserGroup className="w-5 h-5 text-accent-light" />
+                  <HiUserGroup className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light shrink-0" />
                   Admins
                 </button>
               </div>
             </div>
           </>
         )}
+
         {/* ============[ CONTENIDO DE LOS TABS ]============= */}
-        <div className="relative overflow-hidden min-h-[600px]">
+        <div className="relative overflow-hidden min-h-[400px] sm:min-h-[600px]">
           {/* ============[ VISTA PRINCIPAL DE TABS ]============= */}
           <div
             className={`transition-all duration-300 ease-in-out ${
@@ -328,7 +230,7 @@ const AdminDashboard = () => {
             {activeTab === "newsletter" && <NewsletterManagement />}
           </div>
 
-          {/* ============[ VISTA DE DETALLES de USER CON TRANSICIÓN ]============= */}
+          {/* ============[ VISTA DE DETALLES ]============= */}
           <div
             className={`${
               isShowingDetail ? "relative" : "absolute"
@@ -338,29 +240,32 @@ const AdminDashboard = () => {
           >
             {detailView.tab === "users" && (
               <>
-                {/* ============[ LOADING OVERLAY ]============= */}
                 {isLoadingDetail && (
-                  <div className="fixed min-h-screen inset-0 bg-background/80 backdrop-blur-sm flex  justify-center z-50">
+                  <div className="fixed min-h-screen inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="text-center">
                       <Loader size="medium" />
-                      <p className="text-slate-400 mt-4">Cargando información del usuario...</p>
+                      <p className="text-slate-400 mt-4 text-sm sm:text-base">
+                        Cargando información del usuario...
+                      </p>
                     </div>
                   </div>
                 )}
 
-                {/* ============[ USER DETAIL ]============= */}
                 {detailUser ? (
                   <UserDetails user={detailUser} onBack={closeDetail} />
                 ) : !isLoadingDetail ? (
-                  // ============[ ERROR STATE ]=============
-                  <div className="min-h-screen bg-background flex items-center justify-center">
+                  <div className="min-h-screen bg-background flex items-center justify-center p-4">
                     <div className="text-center">
-                      <HiUserCircle className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-                      <h2 className="text-2xl font-bold text-font-light mb-2">Usuario no encontrado</h2>
-                      <p className="text-slate-400 mb-6">No se pudo cargar la información del usuario</p>
+                      <HiUserCircle className="w-16 h-16 sm:w-24 sm:h-24 text-slate-600 mx-auto mb-4" />
+                      <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">
+                        Usuario no encontrado
+                      </h2>
+                      <p className="text-slate-400 mb-6 text-sm sm:text-base">
+                        No se pudo cargar la información del usuario
+                      </p>
                       <button
                         onClick={closeDetail}
-                        className="bg-button/80 cursor-pointer hover:bg-button text-font-light px-6 py-2 rounded-lg font-semibold transition-all"
+                        className="bg-button/80 cursor-pointer hover:bg-button text-font-light px-4 sm:px-6 py-2 rounded-lg font-semibold transition-all text-sm sm:text-base"
                       >
                         Volver
                       </button>
@@ -369,12 +274,11 @@ const AdminDashboard = () => {
                 ) : null}
               </>
             )}
-            {/* ============[ COURSE DETAIL ]=============  */}
+
             {detailView.tab === "courses" && detailView.id && (
               <CourseDetails courseId={detailView.id} onBack={closeDetail} />
             )}
 
-            {/* ============[ VALIDATION DETAIL ]=============  */}
             {detailView.tab === "validations" && detailView.id && (
               <>
                 {detailView.validationType === "professor" && (
@@ -389,62 +293,43 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* ============[ MODAL DE DETALLE DE VALIDACIÓN ]============= */}
+      {/* ============[ MODAL   ]============= */}
       {selectedValidation && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-font-light">Detalle de Solicitud</h2>
+          <div className="bg-slate-900 border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-font-light">Detalle de Solicitud</h2>
               <button
                 onClick={() => setSelectedValidation(null)}
-                className="cursor-pointer text-slate-400 hover:text-font-light transition-colors"
+                className="cursor-pointer text-slate-400 hover:text-font-light transition-colors shrink-0"
               >
-                <HiXCircle className="w-8 h-8" />
+                <HiXCircle className="w-6 h-6 sm:w-8 sm:h-8" />
               </button>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-slate-800/50 rounded-lg p-4">
-                <h3 className="text-font-light font-semibold mb-2">Información del Usuario</h3>
-                <p className="text-slate-300">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-font-light font-semibold mb-2 text-sm sm:text-base">
+                  Información del Usuario
+                </h3>
+                <p className="text-slate-300 text-sm sm:text-base break-words">
                   <span className="text-slate-400">Nombre:</span> {selectedValidation.userName}
                 </p>
-                <p className="text-slate-300">
+                <p className="text-slate-300 text-sm sm:text-base break-all">
                   <span className="text-slate-400">Email:</span> {selectedValidation.userEmail}
                 </p>
-                <p className="text-slate-300">
+                <p className="text-slate-300 text-sm sm:text-base">
                   <span className="text-slate-400">Tipo:</span>{" "}
                   {getValidationTypeLabel(selectedValidation.type)}
                 </p>
               </div>
 
-              <div className="bg-slate-800/50 rounded-lg p-4">
-                <h3 className="text-font-light font-semibold mb-2">Datos Enviados</h3>
-                <pre className="text-slate-300 text-sm overflow-x-auto">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-font-light font-semibold mb-2 text-sm sm:text-base">Datos Enviados</h3>
+                <pre className="text-slate-300 text-xs sm:text-sm overflow-x-auto">
                   {JSON.stringify(selectedValidation.data, null, 2)}
                 </pre>
               </div>
-
-              {/* <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => {
-                    handleApproveValidation(selectedValidation.id);
-                    setSelectedValidation(null);
-                  }}
-                  className="cursor-pointer flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 py-3 rounded-lg font-medium transition-all"
-                >
-                  Aprobar
-                </button>
-                <button
-                  onClick={() => {
-                    handleRejectValidation(selectedValidation.id);
-                    setSelectedValidation(null);
-                  }}
-                  className="cursor-pointer flex-1 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-slate-300 py-3 rounded-lg font-medium transition-all"
-                >
-                  Rechazar
-                </button>
-              </div> */}
             </div>
           </div>
         </div>

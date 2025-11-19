@@ -10,20 +10,8 @@ import {
   SiSwift,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
-import {
-  HiPlus,
-  HiPencil,
-  HiChartBar,
-  HiCurrencyDollar,
-  HiLink,
-} from "react-icons/hi";
-import {
-  FaUser,
-  FaChalkboardTeacher,
-  FaCreditCard,
-  FaShieldAlt,
-  FaGraduationCap,
-} from "react-icons/fa";
+import { HiPlus, HiPencil, HiChartBar, HiCurrencyDollar, HiLink } from "react-icons/hi";
+import { FaUser, FaChalkboardTeacher, FaCreditCard, FaShieldAlt, FaGraduationCap } from "react-icons/fa";
 import { HiShoppingCart } from "react-icons/hi";
 export const courses = [
   {
@@ -110,8 +98,7 @@ export const courses = [
   {
     id: 8,
     title: "Diseño UI",
-    description:
-      "Aprende a diseñar interfaces atractivas y funcionales. Descubrí las claves del color.",
+    description: "Aprende a diseñar interfaces atractivas y funcionales. Descubrí las claves del color.",
     icon: SiFigma,
     iconColor: "text-purple-500",
     bgColor: "bg-purple-500/10",
@@ -199,9 +186,9 @@ export const teacherManagementOptions = [
     title: "Ver cursos más vendidos",
     icon: <HiChartBar className="w-4 h-4" />,
     onClick: () => {
-      const topCoursesSection = document.getElementById('top-courses-section');
+      const topCoursesSection = document.getElementById("top-courses-section");
       if (topCoursesSection) {
-        topCoursesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        topCoursesSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
   },
@@ -210,7 +197,7 @@ export const teacherManagementOptions = [
     title: "Consultar ingresos",
     icon: <HiCurrencyDollar className="w-4 h-4" />,
     onClick: () => {
-      window.location.href = '/teacher-dashboard/earnings';
+      window.location.href = "/teacher-dashboard/earnings";
     },
   },
   {
@@ -314,22 +301,19 @@ export const featuresChooseUs = [
     id: 1,
     number: "01",
     title: "Horario de estudio flexible",
-    description:
-      "Organiza tus cursos según tus compromisos y responsabilidades.",
+    description: "Organiza tus cursos según tus compromisos y responsabilidades.",
   },
   {
     id: 2,
     number: "02",
     title: "Instrucciones de expertos",
-    description:
-      "Aprende de profesionales con experiencia real en diseño y desarrollo.",
+    description: "Aprende de profesionales con experiencia real en diseño y desarrollo.",
   },
   {
     id: 3,
     number: "03",
     title: "Variedad de cursos",
-    description:
-      "Explora una amplia gama de temas de diseño y desarrollo sobre distintos temas.",
+    description: "Explora una amplia gama de temas de diseño y desarrollo sobre distintos temas.",
   },
   {
     id: 4,
@@ -342,15 +326,13 @@ export const featuresChooseUs = [
     id: 5,
     number: "05",
     title: "Proyectos y ejercicios prácticos",
-    description:
-      "Desarrolla tus habilidades que requiere una experiencia en el mundo real.",
+    description: "Desarrolla tus habilidades que requiere una experiencia en el mundo real.",
   },
   {
     id: 6,
     number: "06",
     title: "Entorno de aprendizaje interactivo",
-    description:
-      "Conéctate con otros estudiantes, intercambia ideas y recibe retroalimentación.",
+    description: "Conéctate con otros estudiantes, intercambia ideas y recibe retroalimentación.",
   },
 ];
 
@@ -366,8 +348,7 @@ export const faqs = [
       "Nuestros instructores ofrecen soporte a través de foros de discusión, sesiones de Q&A en vivo y respuestas directas a tus preguntas dentro de la plataforma.",
   },
   {
-    question:
-      "¿Los cursos son a tu propio ritmo o tienen fechas fijas de inicio y fin?",
+    question: "¿Los cursos son a tu propio ritmo o tienen fechas fijas de inicio y fin?",
     answer:
       "Todos nuestros cursos son a tu propio ritmo, lo que significa que puedes comenzar cuando quieras y avanzar según tu disponibilidad.",
   },
@@ -483,7 +464,7 @@ export const faqsByCategory = {
     {
       question: "¿Puedo acceder a los cursos desde mi móvil?",
       answer:
-        "Sí, nuestra plataforma es totalmente responsive y está optimizada para dispositivos móviles. Puedes acceder a tus cursos desde cualquier navegador móvil o tablet.",
+        "Sí, nuestra plataforma es totalmente   y está optimizada para dispositivos móviles. Puedes acceder a tus cursos desde cualquier navegador móvil o tablet.",
     },
     {
       question: "¿Los cursos tienen fecha de vencimiento?",

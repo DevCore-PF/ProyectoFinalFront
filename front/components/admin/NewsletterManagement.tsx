@@ -59,7 +59,7 @@ export default function NewsletterManagement() {
 
     fetchInitialData();
   }, [token]);
-  console.log("esta es mi last", dashboardData.lastExecution);
+
   const [enableLoading, setEnableLoading] = useState(false);
 
   const handleToggleEnabled = async () => {
@@ -87,18 +87,14 @@ export default function NewsletterManagement() {
 
   const handleFrequencyChange = async (newDelayValue: string) => {
     try {
-      console.log("📤 Enviando al backend:", { delayHours: newDelayValue });
-
-      // 🟢 Enviar el NÚMERO al backend
       await updateAbandonedCartSettingsService(token!, {
-        delayHours: newDelayValue, // "24", "72", etc.
+        delayHours: newDelayValue,
       });
 
-      // 🟢 Actualizar el estado local
       setDashboardData((prev) => ({
         ...prev,
-        delayValue: newDelayValue, // Guardar el número
-        delayHours: `Despues de ${newDelayValue} horas`, // Construir el texto
+        delayValue: newDelayValue,
+        delayHours: `Despues de ${newDelayValue} horas`,
       }));
 
       toastSuccess("Tiempo de espera actualizado exitosamente");
@@ -127,7 +123,6 @@ export default function NewsletterManagement() {
             ...prev,
             lastExecution: updatedDashboard.lastExecution,
             pendingCount: updatedDashboard.pendingCount,
-            // 🟢 Actualizar también el delayValue si cambió
             delayValue: updatedDashboard.delayValue,
             delayHours: `Despues de ${updatedDashboard.delayValue} horas`,
           }));
@@ -147,6 +142,7 @@ export default function NewsletterManagement() {
     { value: "48", label: "Despues de 48 horas (2 días)" },
     { value: "72", label: "Despues de 72 horas (3 días)" },
   ];
+
   const formatLastExecution = (dateString: string) => {
     if (!dateString) return "Nunca";
 
@@ -173,32 +169,38 @@ export default function NewsletterManagement() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-font-light">Gestión de Recordatorios Automáticos</h1>
+      {/* ============[ HEADER RESPONSIVE ]============ */}
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-font-light">
+          Gestión de Recordatorios Automáticos
+        </h1>
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <div className="w-full flex items-center justify-between p-4 bg-background2/40 rounded-lg border border-slate-700/50">
-            <div className="flex items-center gap-3">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3 sm:space-y-4">
+          {/* ============[ CARD PRINCIPAL RESPONSIVE ]============ */}
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-background2/40 rounded-lg border border-slate-700/50">
+            <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
               <div
-                className={`w-10 h-10 bg-gradient-to-br rounded-full flex items-center justify-center border ${
+                className={`w-10 h-10 bg-gradient-to-br rounded-full flex items-center justify-center border shrink-0 ${
                   dashboardData.isEnabled
                     ? "from-blue-500/20 to-purple-500/20 border-blue-500/30"
                     : "from-slate-500/20 to-slate-600/20 border-slate-500/30"
                 }`}
               >
                 <HiMail
-                  className={`w-6 h-6 ${dashboardData.isEnabled ? "text-blue-300" : "text-slate-400"}`}
+                  className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                    dashboardData.isEnabled ? "text-blue-300" : "text-slate-400"
+                  }`}
                 />
               </div>
-              <div className="text-left">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-semibold text-font-light">
+              <div className="text-left min-w-0 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-font-light">
                     Recordatorio de Carritos Abandonados
                   </h3>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs font-medium ${
+                    className={`px-2 py-0.5 rounded text-xs font-medium w-fit ${
                       dashboardData.isEnabled
                         ? "bg-emerald-500/10 text-emerald-300"
                         : "bg-slate-500/10 text-slate-400"
@@ -207,43 +209,45 @@ export default function NewsletterManagement() {
                     {dashboardData.isEnabled ? "Activo" : "Inactivo"}
                   </span>
                 </div>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-400 text-xs sm:text-sm mt-1">
                   Envío único después de que el usuario abandona el carrito
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              <div className="text-left sm:text-right flex-1 sm:flex-initial">
                 <p className="text-slate-400 text-xs mb-1">Tiempo de espera</p>
-
                 <p className="text-sm font-medium text-slate-300">{dashboardData.delayHours}</p>
               </div>
             </div>
           </div>
-          <div className="bg-background2/40 w-full border border-slate-700/50 rounded-xl p-6">
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-slate-800/50 rounded-lg p-4">
+
+          {/* ============[ STATS Y CONFIGURACIÓN RESPONSIVE ]============ */}
+          <div className="bg-background2/40 w-full border border-slate-700/50 rounded-xl p-4 sm:p-6">
+            {/* Stats Grid Responsive */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <HiUserGroup className="w-5 h-5 text-blue-300" />
+                  <HiUserGroup className="w-4 h-4 sm:w-5 sm:h-5 text-blue-300" />
                   <p className="text-slate-400 text-xs">Carritos Pendientes</p>
                 </div>
-                <p className="text-2xl font-bold text-font-light">{dashboardData.pendingCount}</p>
+                <p className="text-xl sm:text-2xl font-bold text-font-light">{dashboardData.pendingCount}</p>
                 <p className="text-slate-500 text-xs mt-1">Esperando recordatorio</p>
               </div>
 
-              <div className="bg-slate-800/50 rounded-lg p-4">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <HiClock className="w-5 h-5 text-purple-300" />
+                  <HiClock className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300" />
                   <p className="text-slate-400 text-xs">Último Envío</p>
                 </div>
-                <p className="text-lg font-semibold text-font-light">
+                <p className="text-sm sm:text-lg font-semibold text-font-light break-words">
                   {formatLastExecution(dashboardData.lastExecution)}
                 </p>
               </div>
 
-              <div className="bg-slate-800/50 rounded-lg p-4">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <HiCalendar className="w-5 h-5 text-emerald-300" />
+                  <HiCalendar className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
                   <p className="text-slate-400 text-xs">Estado</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -253,7 +257,7 @@ export default function NewsletterManagement() {
                       handleToggleEnabled();
                     }}
                     disabled={enableLoading}
-                    className={`relative  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    className={`relative cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       dashboardData.isEnabled ? "bg-emerald-600" : "bg-slate-600"
                     }`}
                   >
@@ -263,7 +267,7 @@ export default function NewsletterManagement() {
                       }`}
                     />
                   </button>
-                  <span className="text-sm text-slate-300">
+                  <span className="text-xs sm:text-sm text-slate-300">
                     {dashboardData.isEnabled && !enableLoading ? (
                       "Habilitado"
                     ) : !dashboardData.isEnabled && !enableLoading ? (
@@ -284,14 +288,15 @@ export default function NewsletterManagement() {
               </div>
             </div>
 
-            <div className="border-t border-slate-700/50 pt-6 mb-6">
+            {/* Selector de Tiempo Responsive */}
+            <div className="border-t border-slate-700/50 pt-4 sm:pt-6 mb-4 sm:mb-6">
               <label className="block text-slate-300 text-sm font-medium mb-3">
                 Tiempo de Espera para Enviar Recordatorio
               </label>
               <select
                 value={dashboardData.delayValue}
                 onChange={(e) => handleFrequencyChange(e.target.value)}
-                className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:border-button transition-colors"
+                className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-font-light focus:outline-none focus:border-button transition-colors"
               >
                 {frequencyOptions.map((option) => (
                   <option key={option.value} className="bg-background" value={option.value}>
@@ -305,11 +310,12 @@ export default function NewsletterManagement() {
               </p>
             </div>
 
-            <div className="border-t border-slate-700/50 pt-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="text-slate-300 font-medium mb-1">Envío Inmediato</h4>
-                  <p className="text-slate-500 text-sm">
+            {/* Envío Inmediato Responsive */}
+            <div className="border-t border-slate-700/50 pt-4 sm:pt-6">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+                <div className="flex-1">
+                  <h4 className="text-slate-300 font-medium mb-1 text-sm sm:text-base">Envío Inmediato</h4>
+                  <p className="text-slate-500 text-xs sm:text-sm">
                     Envía recordatorios ahora mismo a todos los carritos pendientes, sin esperar el tiempo
                     configurado
                   </p>
@@ -317,17 +323,19 @@ export default function NewsletterManagement() {
                 <button
                   onClick={handleSendNow}
                   disabled={sendingNow || dashboardData.pendingCount === 0}
-                  className="bg-gradient-to-r from-button/80 cursor-pointer to-button hover:from-button hover:to-button/90 text-font-light font-medium py-2.5 px-5 rounded-lg transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="bg-gradient-to-r from-button/80 cursor-pointer to-button hover:from-button hover:to-button/90 text-font-light font-medium py-2 sm:py-2.5 px-4 sm:px-5 rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto text-sm sm:text-base"
                 >
                   {sendingNow ? (
                     <>
-                      <HiClock className="w-5 h-5 animate-spin" />
-                      Enviando...
+                      <HiClock className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <span className="hidden sm:inline">Enviando...</span>
+                      <span className="sm:hidden">Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <HiLightningBolt className="w-5 h-5" />
-                      Enviar Ahora
+                      <HiLightningBolt className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Enviar Ahora</span>
+                      <span className="sm:hidden">Enviar</span>
                     </>
                   )}
                 </button>
@@ -337,15 +345,18 @@ export default function NewsletterManagement() {
         </div>
       </div>
 
-      <div className="mt-8 bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
-        <div className="flex gap-3">
-          <HiShoppingCart className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" />
+      {/* ============[ INFO BOX RESPONSIVE ]============ */}
+      <div className="mt-6 sm:mt-8 bg-blue-500/5 border border-blue-500/20 rounded-lg p-3 sm:p-4">
+        <div className="flex gap-2 sm:gap-3">
+          <HiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-300 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-blue-300 font-medium mb-1">¿Cómo funciona el recrodatorio?</h4>
-            <p className="text-slate-400 text-sm">
+            <h4 className="text-blue-300 font-medium mb-1 text-sm sm:text-base">
+              ¿Cómo funciona el recordatorio?
+            </h4>
+            <p className="text-slate-400 text-xs sm:text-sm">
               Cuando un usuario agrega productos al carrito pero no completa la compra, el sistema esperará el
-              tiempo configurado y luego enviará un único email recordatorio invitándolo a completar su
-              compra. Cada carrito recibe solo un recordatorio.
+              tiempo configurado y luego enviará un único email recordatorio invitándolo a completar su compra.
+              Cada carrito recibe solo un recordatorio.
             </p>
           </div>
         </div>

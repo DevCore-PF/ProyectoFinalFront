@@ -34,7 +34,7 @@ const DonutChart = ({ courses, careers, memberships }: DonutChartProps) => {
   };
 
   const options = {
-    responsive: true,
+     : true,
     maintainAspectRatio: false,
     plugins: {
       legend: {

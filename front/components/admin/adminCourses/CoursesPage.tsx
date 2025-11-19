@@ -142,14 +142,13 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       </div>
     );
   };
-  // Calcula el array de cursos
+
   const paginatedCourses = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return courses.slice(startIndex, endIndex);
   }, [courses, currentPage, itemsPerPage]);
 
-  //calcula el total de paginas
   const totalPages = useMemo(() => {
     return Math.ceil(courses.length / itemsPerPage);
   }, [courses.length, itemsPerPage]);
@@ -188,7 +187,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   const deactivateMultipleCourses = async (courseIds: string[]) => {
-    setLoadingGroupAction("deactivate"); // Cambio aquí
+    setLoadingGroupAction("deactivate");
     const results = {
       success: [] as string[],
       errors: [] as { courseId: string; error: string }[],
@@ -206,7 +205,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       }
     }
 
-    setLoadingGroupAction(null); // Cambio aquí
+    setLoadingGroupAction(null);
     setSelectedCourses([]);
 
     if (results.success.length > 0) {
@@ -218,7 +217,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   const activateMultipleCourses = async (courseIds: string[]) => {
-    setLoadingGroupAction("activate"); // Cambio aquí
+    setLoadingGroupAction("activate");
     const results = {
       success: [] as string[],
       errors: [] as { courseId: string; error: string }[],
@@ -236,7 +235,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       }
     }
 
-    setLoadingGroupAction(null); // Cambio aquí
+    setLoadingGroupAction(null);
     setSelectedCourses([]);
 
     if (results.success.length > 0) {
@@ -263,7 +262,6 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     toastConfirm(
       "El curso se creará sin lecciones.",
       () => {
-        // onConfirm
         setShowLessonsModal(false);
         setCreatedCourseId(null);
         refreshCourses();
@@ -345,124 +343,134 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   const goToPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mb-6 sm:mb-8">
+          {/* ============[ HEADER   ]============= */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-font-light mb-2">Gestión de Cursos</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-font-light mb-1 sm:mb-2">
+                Gestión de Cursos
+              </h1>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => downloadCourses(courses)}
-                className="flex cursor-pointer items-center gap-2 bg-button/80 hover:bg-button/90 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+                className="flex cursor-pointer items-center gap-1.5 sm:gap-2 bg-button/80 hover:bg-button/90 text-font-light px-3 sm:px-4 py-2 rounded-lg font-medium transition-all text-sm sm:text-base"
               >
-                <HiDownload className="w-5 h-5" />
-                Exportar cursos
+                <HiDownload className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Exportar cursos</span>
+                <span className="sm:hidden">Exportar</span>
               </button>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex cursor-pointer items-center gap-2 bg-slate-700/50 hover:bg-slate-700/80 border border-slate-600 text-font-light px-4 py-2 rounded-lg font-medium transition-all"
+                className="flex cursor-pointer items-center gap-1.5 sm:gap-2 bg-slate-700/50 hover:bg-slate-700/80 border border-slate-600 text-font-light px-3 sm:px-4 py-2 rounded-lg font-medium transition-all text-sm sm:text-base"
               >
-                <FaPlus className="w-5 h-5" />
-                Crear Curso
+                <FaPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Crear Curso</span>
+                <span className="sm:hidden">Crear</span>
               </button>
             </div>
           </div>
 
-          {/* ============[ STATS CARDS ]============= */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
+          {/* ============[ STATS CARDS   ]============= */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-3 sm:p-4">
               <p className="text-slate-400 text-xs mb-1">Total</p>
-              <p className="text-2xl font-bold text-font-light">{stats.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-font-light">{stats.total}</p>
             </div>
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-3 sm:p-4">
               <p className="text-slate-400 text-xs mb-1">Activos</p>
-              <p className="text-2xl font-bold text-emerald-300">{stats.active}</p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-300">{stats.active}</p>
             </div>
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-3 sm:p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-amber-300">{stats.inactive}</p>
+              <p className="text-xl sm:text-2xl font-bold text-amber-300">{stats.inactive}</p>
             </div>
-
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-3 sm:p-4">
               <p className="text-slate-400 text-xs mb-1">Ingresos</p>
-              <p className="text-2xl font-bold text-green-300">${stats.totalRevenue.toFixed(0)}</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-300">${stats.totalRevenue.toFixed(0)}</p>
             </div>
           </div>
         </div>
 
-        {/* ============[ FILTERS AND SEARCH ]============= */}
-        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
+        {/* ============[ FILTERS   ]============= */}
+        <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {/* Búsqueda */}
             <div className="flex-1 relative">
-              <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="text"
                 placeholder="Buscar por título..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-background border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-font-light placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-border-light/80"
+                className="w-full bg-background border border-slate-700 rounded-lg pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-sm sm:text-base text-font-light placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-border-light/80"
               />
             </div>
 
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as CourseCategory)}
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
-            >
-              <option value="all">Todas las categorías</option>
-              <option value="Backend">Backend</option>
-              <option value="Front End">Frontend</option>
-              <option value="Mobile">Movil</option>
-              <option value="DataScience">Data Science</option>
-              <option value="DataBase">Base de datos</option>
-              <option value="VideoGames">Video Juegos</option>
-            </select>
+            {/* Filtros en grid   */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value as CourseCategory)}
+                className="bg-background border border-slate-700 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
+              >
+                <option value="all">Todas las categorías</option>
+                <option value="Backend">Backend</option>
+                <option value="Front End">Frontend</option>
+                <option value="Mobile">Movil</option>
+                <option value="DataScience">Data Science</option>
+                <option value="DataBase">Base de datos</option>
+                <option value="VideoGames">Video Juegos</option>
+              </select>
 
-            <select
-              value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value as CourseDifficulty)}
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
-            >
-              <option value="all">Todas las dificultades</option>
-              <option value="PRINCIPIANTE">Principiante</option>
-              <option value="INTERMEDIO">Intermedio</option>
-              <option value="AVANZADO">Avanzado</option>
-            </select>
+              <select
+                value={selectedDifficulty}
+                onChange={(e) => setSelectedDifficulty(e.target.value as CourseDifficulty)}
+                className="bg-background border border-slate-700 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
+              >
+                <option value="all">Todas las dificultades</option>
+                <option value="PRINCIPIANTE">Principiante</option>
+                <option value="INTERMEDIO">Intermedio</option>
+                <option value="AVANZADO">Avanzado</option>
+              </select>
 
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value as CourseStatus)}
-              className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
-            >
-              <option value="all">Todos los estados</option>
-              <option value="active">Activos</option>
-              <option value="inactive">Inactivos</option>
-            </select>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value as CourseStatus)}
+                className="bg-background border border-slate-700 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
+              >
+                <option value="all">Todos los estados</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+              </select>
 
-            {/* ============[ SORT ]============= */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex cursor-pointer items-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-font-light px-4 py-2.5 rounded-lg font-medium transition-all"
-            >
-              <HiFilter className="w-5 h-5" />
-              Ordenar
-              <HiChevronDown className={`w-4 h-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
-            </button>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex cursor-pointer items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-font-light px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all text-sm sm:text-base"
+              >
+                <HiFilter className="w-4 h-4 sm:w-5 sm:h-5" />
+                Ordenar
+                <HiChevronDown
+                  className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${showFilters ? "rotate-180" : ""}`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* ============[ ORDENAR POR ADVANCE FILTER ]============= */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-slate-700/50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-700/50">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">Ordenar por</label>
+                  <label className="text-slate-400 text-xs sm:text-sm mb-2 block">Ordenar por</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="title">Título</option>
                     <option value="price">Precio</option>
@@ -471,11 +479,11 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">Orden</label>
+                  <label className="text-slate-400 text-xs sm:text-sm mb-2 block">Orden</label>
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                    className="w-full bg-background border border-slate-700 rounded-lg px-4 py-2 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
+                    className="w-full bg-background border border-slate-700 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
                   >
                     <option value="asc">Ascendente</option>
                     <option value="desc">Descendente</option>
@@ -488,15 +496,15 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
         {/* ============[ LOADING ]============= */}
         {isLoadingCourses && (
-          <div className="flex flex-col justify-center items-center py-16">
+          <div className="flex flex-col justify-center items-center py-12 sm:py-16">
             <Loader size="medium" />
-            <p className="text-slate-400">Cargando cursos...</p>
+            <p className="text-slate-400 text-sm sm:text-base mt-2">Cargando cursos...</p>
           </div>
         )}
 
         {/* ============[ ERROR ]============= */}
         {coursesError && !isLoadingCourses && (
-          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-3 rounded-xl mb-6">
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl mb-4 sm:mb-6 text-sm sm:text-base">
             {coursesError}
           </div>
         )}
@@ -504,50 +512,60 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         {/* ============[ CONTENT ]============= */}
         {!isLoadingCourses && !coursesError && (
           <>
-            <div className="flex items-center justify-between mb-4">
-              {selectedCourses.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400 text-sm">{selectedCourses.length} seleccionados</span>
+            {/* Acciones seleccionados -   */}
+            {selectedCourses.length > 0 && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-4">
+                <span className="text-slate-400 text-xs sm:text-sm">
+                  {selectedCourses.length} seleccionados
+                </span>
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => deactivateMultipleCourses(selectedCourses)}
                     disabled={loadingGroupAction !== null}
-                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-amber-300/50 text-amber-200 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2"
                   >
                     {loadingGroupAction === "deactivate" ? (
                       <>
                         <TinyLoader />
-                        Procesando...
+                        <span className="hidden sm:inline">Procesando...</span>
+                        <span className="sm:hidden">...</span>
                       </>
                     ) : (
-                      "Desactivar seleccionados"
+                      <>
+                        <span className="hidden sm:inline">Desactivar seleccionados</span>
+                        <span className="sm:hidden">Desactivar</span>
+                      </>
                     )}
                   </button>
                   <button
                     onClick={() => activateMultipleCourses(selectedCourses)}
                     disabled={loadingGroupAction !== null}
-                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="cursor-pointer bg-slate-700/50 hover:bg-slate-700/80 border border-emerald-500 text-emerald-100 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2"
                   >
                     {loadingGroupAction === "activate" ? (
                       <>
                         <TinyLoader />
-                        Procesando...
+                        <span className="hidden sm:inline">Procesando...</span>
+                        <span className="sm:hidden">...</span>
                       </>
                     ) : (
-                      "Activar seleccionados"
+                      <>
+                        <span className="hidden sm:inline">Activar seleccionados</span>
+                        <span className="sm:hidden">Activar</span>
+                      </>
                     )}
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* ============[ COURSES TABLE ]============= */}
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  {/* ============[ HEAD ]============= */}
-                  <thead className="bg-slate-800/50 border-b  border-slate-700/50">
+                  <thead className="bg-slate-800/50 border-b border-slate-700/50">
                     <tr>
-                      <th className="px-4 py-4 text-left w-12 ">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left w-12">
                         <label className="inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
@@ -556,14 +574,14 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             className="sr-only"
                           />
                           <div
-                            className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
+                            className={`w-4 h-4 sm:w-5 sm:h-5 border rounded-[5px] flex items-center justify-center transition-all ${
                               selectedCourses.length === courses.length && courses.length > 0
                                 ? "border-font-light"
                                 : "border-slate-600 bg-slate-700/50"
                             }`}
                           >
                             <svg
-                              className={`w-3 h-3 text-font-light transition-opacity ${
+                              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-font-light transition-opacity ${
                                 selectedCourses.length === courses.length && courses.length > 0
                                   ? "opacity-100"
                                   : "opacity-0"
@@ -578,34 +596,35 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                           </div>
                         </label>
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">Curso</th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-40">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[200px]">
+                        Curso
+                      </th>
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[120px]">
                         Profesor
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-38">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[100px]">
                         Dificultad
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-32">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[100px]">
                         Categoría
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-29">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[100px]">
                         Rating
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-20">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[100px]">
                         Estado
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-20">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-slate-400 text-xs sm:text-sm font-semibold min-w-[80px]">
                         Precio
                       </th>
-                      <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold w-15">
+                      <th className="px-3 sm:px-4 py-3 sm:py-4 text-right text-slate-400 text-xs sm:text-sm font-semibold min-w-[100px]">
                         Acciones
                       </th>
                     </tr>
                   </thead>
 
-                  {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
-                    {paginatedCourses.map((course, index) => {
+                    {paginatedCourses.map((course) => {
                       return (
                         <tr
                           key={course.id}
@@ -613,7 +632,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             !course.isActive ? "bg-amber-300/10 hover:bg-amber-300/10! " : ""
                           }`}
                         >
-                          <td className="px-4 py-4">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
                             <label className="inline-flex items-center cursor-pointer">
                               <input
                                 type="checkbox"
@@ -622,14 +641,14 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                                 className="sr-only"
                               />
                               <div
-                                className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
+                                className={`w-4 h-4 sm:w-5 sm:h-5 border rounded-[5px] flex items-center justify-center transition-all ${
                                   selectedCourses.includes(course.id)
                                     ? "border-font-light"
                                     : "border-slate-600 bg-slate-700/50"
                                 }`}
                               >
                                 <svg
-                                  className={`w-3 h-3 text-font-light transition-opacity ${
+                                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-font-light transition-opacity ${
                                     selectedCourses.includes(course.id) ? "opacity-100" : "opacity-0"
                                   }`}
                                   fill="none"
@@ -642,13 +661,13 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               </div>
                             </label>
                           </td>
-                          <td className="px-4 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-8 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center">
-                                <HiBookOpen className="w-5 h-5 text-accent-light" />
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <div className="w-8 h-6 sm:w-10 sm:h-8 border-button/80 bg-button/20 border rounded-lg flex items-center justify-center shrink-0">
+                                <HiBookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light" />
                               </div>
-                              <div className="w-full">
-                                <p className="font-medium text-font-light truncate max-w-[200px]">
+                              <div className="min-w-0">
+                                <p className="font-medium text-font-light truncate max-w-[150px] sm:max-w-[200px] text-sm sm:text-base">
                                   {course.title}
                                 </p>
                                 <p className="text-xs text-slate-400">
@@ -657,31 +676,31 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-4">
-                            <span className="text-font-light text-sm">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                            <span className="text-font-light text-xs sm:text-sm truncate block max-w-[100px] sm:max-w-none">
                               {course.professor?.user?.name || "—"}
                             </span>
                           </td>
-                          <td className="px-4 py-4">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
                             <p
-                              className={`px-3 py-1 rounded-lg text-xs font-light border inline-flex items-center gap-1.5 ${getDificulttyBadge(
+                              className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-light border inline-flex items-center gap-1 sm:gap-1.5 ${getDificulttyBadge(
                                 course.difficulty
                               )}`}
                             >
                               {course.difficulty}
                             </p>
                           </td>
-                          <td className="px-2 py-4">
+                          <td className="px-2 sm:px-4 py-3 sm:py-4">
                             <span
-                              className={`px-3 py-1 rounded-lg text-xs font-medium border inline-flex items-center gap-1.5 ${getCategoryBadge(
+                              className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border inline-flex items-center gap-1 sm:gap-1.5 ${getCategoryBadge(
                                 course.category
                               )}`}
                             >
                               {course.category}
                             </span>
                           </td>
-                          <td className="px-4 py-4">
-                            <div className="flex items-center gap-2">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                            <div className="flex items-center gap-1 sm:gap-2">
                               {(() => {
                                 const avgRating = getAverageRating(course.id);
                                 const courseFeedbacks = feedbacksByCourse[course.id];
@@ -700,9 +719,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </div>
                           </td>
 
-                          <td className="px-4 py-4">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
                             <span
-                              className={`px-3 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
+                              className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
                                 course.status
                               )}`}
                             >
@@ -714,42 +733,44 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </span>
                           </td>
 
-                          <td className="px-4 py-4">
-                            <p className="text-emerald-200/80 text-sm flex items-center">${course.price}</p>
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                            <p className="text-emerald-200/80 text-xs sm:text-sm flex items-center">
+                              ${course.price}
+                            </p>
                           </td>
-                          <td className="px-4 py-4">
-                            <div className="flex items-center justify-end gap-2">
+                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                            <div className="flex items-center justify-end gap-1 sm:gap-2">
                               <button
                                 onClick={() => onViewDetail("courses", course.id)}
-                                className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
+                                className="p-1.5 sm:p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
                                 title="Ver curso"
                               >
-                                <HiEye className="w-4 h-4" />
+                                <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                               </button>
                               {course.isActive ? (
                                 <button
                                   onClick={() => handleChangeStatus(course.id)}
                                   disabled={loadingCourseId === course.id}
-                                  className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="p-1.5 sm:p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Desactivar curso"
                                 >
                                   {loadingCourseId === course.id ? (
                                     <TinyLoader />
                                   ) : (
-                                    <HiBan className="w-4 h-4" />
+                                    <HiBan className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                   )}
                                 </button>
                               ) : (
                                 <button
                                   onClick={() => handleChangeStatus(course.id)}
                                   disabled={loadingCourseId === course.id}
-                                  className="p-2 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400/80 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="p-1.5 sm:p-2 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400/80 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Activar curso"
                                 >
                                   {loadingCourseId === course.id ? (
                                     <TinyLoader />
                                   ) : (
-                                    <HiCheckCircle className="w-4 h-4" />
+                                    <HiCheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                   )}
                                 </button>
                               )}
@@ -764,65 +785,91 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
               {/* ============[ NO HAY CURSOS ]============= */}
               {paginatedCourses.length === 0 && (
-                <div className="text-center py-16">
-                  <HiBookOpen className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-                  <p className="text-slate-400 text-lg font-medium mb-2">No se encontraron cursos</p>
+                <div className="text-center py-12 sm:py-16">
+                  <HiBookOpen className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-slate-600 mb-4" />
+                  <p className="text-slate-400 text-base sm:text-lg font-medium mb-2">
+                    No se encontraron cursos
+                  </p>
                   <p className="text-slate-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
                 </div>
               )}
             </div>
 
-            {/* Pagination */}
+            {/* ============[ PAGINATION   ]============= */}
             {paginatedCourses.length > 0 && (
-              <div className="mt-6 flex items-center justify-between">
-                <p className="text-slate-400 text-sm">
-                  Página {currentPage} de {totalPages}
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={goToPrevPage}
-                    disabled={currentPage === 1}
-                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
-                      currentPage === 1
-                        ? "text-slate-400 opacity-50 cursor-not-allowed"
-                        : "text-font-light hover:bg-slate-700"
-                    }`}
-                  >
-                    Anterior
-                  </button>
+              <div className="mt-4 sm:mt-6">
+                {/* Info en mobile stack, desktop en línea */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                  <p className="text-slate-400 text-xs sm:text-sm text-center sm:text-left">
+                    Página {currentPage} de {totalPages}
+                  </p>
 
-                  {/* Números de página */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  {/* Botones de paginación */}
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
                     <button
-                      key={pageNum}
-                      onClick={() => goToPage(pageNum)}
-                      className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all ${
-                        currentPage === pageNum
-                          ? "bg-button/80 text-font-light"
-                          : "bg-slate-700/50 border border-slate-600 text-slate-400 hover:bg-slate-700"
+                      onClick={goToPrevPage}
+                      disabled={currentPage === 1}
+                      className={`cursor-pointer px-2.5 sm:px-4 py-1.5 sm:py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all text-xs sm:text-sm ${
+                        currentPage === 1
+                          ? "text-slate-400 opacity-50 cursor-not-allowed"
+                          : "text-font-light hover:bg-slate-700"
                       }`}
                     >
-                      {pageNum}
+                      Anterior
                     </button>
-                  ))}
 
-                  <button
-                    onClick={goToNextPage}
-                    disabled={currentPage === totalPages}
-                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
-                      currentPage === totalPages
-                        ? "text-slate-400 opacity-50 cursor-not-allowed"
-                        : "text-font-light hover:bg-slate-700"
-                    }`}
-                  >
-                    Siguiente
-                  </button>
+                    {/* Números de página - mostrar menos en mobile */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((pageNum) => {
+                        // En mobile solo mostrar página actual y adyacentes
+                        if (window.innerWidth < 640) {
+                          return (
+                            Math.abs(pageNum - currentPage) <= 1 || pageNum === 1 || pageNum === totalPages
+                          );
+                        }
+                        return true;
+                      })
+                      .map((pageNum, index, array) => {
+                        // Agregar "..." si hay saltos
+                        const prevNum = array[index - 1];
+                        const showDots = prevNum && pageNum - prevNum > 1;
+
+                        return (
+                          <div key={pageNum} className="flex items-center gap-1.5 sm:gap-2">
+                            {showDots && <span className="text-slate-400 px-1">...</span>}
+                            <button
+                              onClick={() => goToPage(pageNum)}
+                              className={`cursor-pointer px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition-all text-xs sm:text-sm ${
+                                currentPage === pageNum
+                                  ? "bg-button/80 text-font-light"
+                                  : "bg-slate-700/50 border border-slate-600 text-slate-400 hover:bg-slate-700"
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          </div>
+                        );
+                      })}
+
+                    <button
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages}
+                      className={`cursor-pointer px-2.5 sm:px-4 py-1.5 sm:py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all text-xs sm:text-sm ${
+                        currentPage === totalPages
+                          ? "text-slate-400 opacity-50 cursor-not-allowed"
+                          : "text-font-light hover:bg-slate-700"
+                      }`}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
           </>
         )}
       </div>
+
       <CourseModal isOpen={showCreateModal} onClose={handleCancelCourse} title="Crear Nuevo Curso">
         <CreateCourseAdmin
           onSuccess={(courseId) => {

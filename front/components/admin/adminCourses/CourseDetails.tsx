@@ -34,12 +34,14 @@ interface CourseDetailsProps {
   courseId: string;
   onBack: () => void;
 }
+
 export interface UserFeedback {
   id: string;
   name: string;
   image?: string | null;
   isActive: boolean;
 }
+
 const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   const {
     courses,
@@ -80,6 +82,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
 
     loadFeedbacks();
   }, [courseId]);
+
   const toggleLesson = (lessonId: string) => {
     const newExpanded = new Set(expandedLessons);
     if (newExpanded.has(lessonId)) {
@@ -122,7 +125,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
         {[1, 2, 3, 4, 5].map((star) => (
           <HiStar
             key={star}
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               star <= rating
                 ? "text-yellow-300 fill-yellow-300"
                 : "text-slate-600"
@@ -216,6 +219,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
       () => {}
     );
   };
+
   const handleBanUnban = async () => {
     setShowBanModal(true);
   };
@@ -274,6 +278,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
         ).toFixed(1)
       : "0.0";
 
+  // ============[ LOADING ]============
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -282,20 +287,21 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
     );
   }
 
+  // ============[ NOT FOUND ]============
   if (!course) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
-          <HiBookOpen className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-font-light mb-2">
+          <HiBookOpen className="w-16 h-16 sm:w-24 sm:h-24 text-slate-600 mx-auto mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">
             Curso no encontrado
           </h2>
-          <p className="text-slate-400 mb-6">
+          <p className="text-slate-400 mb-6 text-sm sm:text-base">
             No se pudo cargar la información del curso
           </p>
           <button
             onClick={onBack}
-            className="bg-button/80 cursor-pointer hover:bg-button text-font-light px-6 py-2 rounded-lg font-semibold transition-all"
+            className="bg-button/80 cursor-pointer hover:bg-button text-font-light px-4 sm:px-6 py-2 rounded-lg font-semibold transition-all text-sm sm:text-base"
           >
             Volver
           </button>
@@ -305,30 +311,30 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10">
+    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto">
-        {/* Header con navegación */}
-        <div className="mb-6">
+        {/* ============[ BACK BUTTON ]============ */}
+        <div className="mb-4 sm:mb-6">
           <button
             onClick={onBack}
-            className="flex cursor-pointer items-center gap-2 text-slate-400 hover:text-font-light transition-colors mb-4"
+            className="flex cursor-pointer items-center gap-2 text-slate-400 hover:text-font-light transition-colors text-sm sm:text-base"
           >
-            <HiArrowLeft className="w-5 h-5" />
+            <HiArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Volver a cursos
           </button>
 
-          {/* Banner si está inactivo */}
+          {/* ============[ INACTIVE BANNER ]============ */}
           {!course.isActive && (
-            <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-amber-500/20 rounded-lg">
-                  <HiBan className="w-6 h-6 text-amber-300" />
+            <div className="mt-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 sm:p-4">
+              <div className="flex items-start sm:items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-amber-500/20 rounded-lg shrink-0">
+                  <HiBan className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />
                 </div>
-                <div>
-                  <p className="text-amber-200 font-semibold text-lg">
+                <div className="min-w-0">
+                  <p className="text-amber-200 font-semibold text-base sm:text-lg">
                     Curso Inactivo
                   </p>
-                  <p className="text-amber-200/80 text-sm">
+                  <p className="text-amber-200/80 text-xs sm:text-sm">
                     Este curso está desactivado. Los usuarios ya no podrán verlo
                     ni acceder a su contenido.
                   </p>
@@ -337,31 +343,33 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             </div>
           )}
 
-          {/* Header principal */}
-          <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 shadow-xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="w-20 h-20 bg-button/40 border border-accent-light/40 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <HiBookOpen className="w-10 h-10 text-font-light" />
+          {/* ============[ MAIN HEADER ]============ */}
+          <div className="mt-4 bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1 w-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-button/40 border border-accent-light/40 rounded-xl flex items-center justify-center shrink-0">
+                  <HiBookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-font-light" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-3xl font-bold text-font-light mb-1">
+                <div className="flex-1 min-w-0 w-full sm:w-auto">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-font-light mb-1 break-words">
                     {course.title}
                   </h1>
-                  <p className="text-slate-400 mb-3">{course.description}</p>
+                  <p className="text-slate-400 mb-2 sm:mb-3 text-sm sm:text-base line-clamp-2">
+                    {course.description}
+                  </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <span
-                      className={`px-3 py-1 rounded-lg text-xs font-medium border ${getCategoryBadge(
+                      className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${getCategoryBadge(
                         course.category
                       )}`}
                     >
                       {course.category}
                     </span>
-                    <span className="px-3 py-1 bg-blue-400/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
+                    <span className="px-2 sm:px-3 py-1 bg-blue-400/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
                       {course.difficulty}
                     </span>
                     <span
-                      className={`px-3 py-1 rounded-lg text-xs font-medium border ${
+                      className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${
                         course.isActive
                           ? "bg-emerald-500/10 text-emerald-200 border-emerald-500/20"
                           : "bg-amber-500/10 text-amber-400 border-amber-500/20"
@@ -377,7 +385,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 title={course.isActive ? "Dar de baja" : "Dar de alta"}
                 onClick={handleToggleActive}
                 disabled={loadingAction}
-                className={`flex items-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 flex-shrink-0 ${
+                className={`flex items-center justify-center cursor-pointer gap-2 bg-slate-700/50 hover:bg-slate-700/90 border px-3 sm:px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 shrink-0 w-full lg:w-auto text-sm ${
                   course.isActive
                     ? "border-amber-300/50 text-amber-300"
                     : "border-emerald-400/50 text-emerald-200"
@@ -386,16 +394,17 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                 {loadingAction ? (
                   <>
                     <TinyLoader />
-                    Procesando...
+                    <span className="hidden sm:inline">Procesando...</span>
+                    <span className="sm:hidden">...</span>
                   </>
                 ) : course.isActive ? (
                   <>
-                    <HiBan className="w-5 h-5" />
+                    <HiBan className="w-4 h-4 sm:w-5 sm:h-5" />
                     Dar de baja
                   </>
                 ) : (
                   <>
-                    <HiCheckCircle className="w-5 h-5" />
+                    <HiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     Dar de alta
                   </>
                 )}
@@ -404,69 +413,69 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
           </div>
         </div>
 
-        {/* Grid de información */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Columna izquierda - Info general */}
-          <div className="lg:col-span-1 space-y-6">
+        {/* ============[ CONTENT GRID ]============ */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* ============[ LEFT COLUMN ]============ */}
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
             {/* Información básica */}
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
-                <HiBookOpen className="w-6 h-6" />
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-font-light mb-3 sm:mb-4 flex items-center gap-2">
+                <HiBookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
                 Información del Curso
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">ID del Curso</p>
-                  <p className="text-font-light font-mono text-sm bg-slate-800/50 px-3 py-2 rounded">
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">ID del Curso</p>
+                  <p className="text-font-light font-mono text-xs sm:text-sm bg-slate-800/50 px-2 sm:px-3 py-1.5 sm:py-2 rounded break-all">
                     {course.id}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Tipo</p>
-                  <p className="text-font-light">{course.type}</p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Tipo</p>
+                  <p className="text-font-light text-sm sm:text-base">{course.type}</p>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Duración</p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Duración</p>
                   <div className="flex items-center gap-2">
-                    <HiClock className="w-4 h-4 text-slate-400" />
-                    <p className="text-font-light">{course.duration}</p>
+                    <HiClock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
+                    <p className="text-font-light text-sm sm:text-base">{course.duration}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Precio</p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Precio</p>
                   <div className="flex items-center gap-2">
-                    <p className="text-emerald-300 text-xl ">
+                    <p className="text-emerald-300 text-lg sm:text-xl">
                       $ {course.price}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Profesor</p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Profesor</p>
                   <div className="flex items-center gap-2">
-                    <HiAcademicCap className="w-4 h-4 text-slate-400" />
-                    <p className="text-font-light">
+                    <HiAcademicCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
+                    <p className="text-font-light text-sm sm:text-base truncate">
                       {course.professor?.user?.name || "Sin asignar"}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">
                     Estado de revisión
                   </p>
-                  <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
+                  <span className="px-2 sm:px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg text-xs font-medium">
                     {course.status}
                   </span>
                 </div>
+
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Visibilidad</p>
-                  {/*  */}
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Visibilidad</p>
                   <span
-                    className={`px-3 py-1 rounded-lg text-xs font-medium border ${
+                    className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${
                       course.visibility === "PRIVADO"
                         ? "bg-amber-500/10 border-amber-500/20 text-amber-300"
                         : "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
@@ -479,25 +488,25 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             </div>
 
             {/* Fechas */}
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-font-light mb-4 flex items-center gap-2">
-                <HiCalendar className="w-6 h-6" />
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-font-light mb-3 sm:mb-4 flex items-center gap-2">
+                <HiCalendar className="w-5 h-5 sm:w-6 sm:h-6" />
                 Fechas
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Creación</p>
-                  <p className="text-font-light text-sm">
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Creación</p>
+                  <p className="text-font-light text-xs sm:text-sm">
                     {formatDate(course.createdAt)}
                   </p>
                 </div>
 
                 {course.updatedAt && (
                   <div>
-                    <p className="text-slate-400 text-sm mb-1">
+                    <p className="text-slate-400 text-xs sm:text-sm mb-1">
                       Última actualización
                     </p>
-                    <p className="text-font-light text-sm">
+                    <p className="text-font-light text-xs sm:text-sm">
                       {formatDate(course.updatedAt)}
                     </p>
                   </div>
@@ -506,26 +515,26 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             </div>
 
             {/* Estadísticas */}
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-font-light mb-4">
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-font-light mb-3 sm:mb-4">
                 Estadísticas
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-sm">Lecciones</span>
-                  <span className="text-font-light font-bold">
+                  <span className="text-slate-400 text-xs sm:text-sm">Lecciones</span>
+                  <span className="text-font-light font-bold text-sm sm:text-base">
                     {course.lessons?.length || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-sm">Rating</span>
-                  <span className="text-yellow-200 font-bold">
+                  <span className="text-slate-400 text-xs sm:text-sm">Rating</span>
+                  <span className="text-yellow-200 font-bold text-sm sm:text-base">
                     {averageRating || "N/A"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-sm">Reseñas</span>
-                  <span className="text-font-light font-bold">
+                  <span className="text-slate-400 text-xs sm:text-sm">Reseñas</span>
+                  <span className="text-font-light font-bold text-sm sm:text-base">
                     {localFeedbacks.length || 0}
                   </span>
                 </div>
@@ -533,23 +542,23 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
             </div>
           </div>
 
-          {/*Lecciones y Feedback */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Lecciones con acordeón */}
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <div className="flex items-center mb-4 justify-between">
-                <h2 className="text-xl font-bold text-font-light flex items-center gap-2">
-                  <HiBookOpen className="w-6 h-6" />
+          {/* ============[ RIGHT COLUMN ]============ */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            {/* ============[ LESSONS ]============ */}
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-font-light flex items-center gap-2">
+                  <HiBookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
                   Contenido del Curso
-                  <span className="text-sm font-normal text-slate-400">
+                  <span className="text-xs sm:text-sm font-normal text-slate-400">
                     ({course.lessons?.length || 0} lecciones)
                   </span>
                 </h2>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-slate-300">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <span className="text-xs sm:text-sm font-medium text-slate-300">
                     {course.visibility === "PRIVADO"
-                      ? "Solo profesor puede verlo"
+                      ? "Solo profesor"
                       : "Visible para todos"}
                   </span>
                   <button
@@ -560,9 +569,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                         : "Cambiar a privado"
                     }
                     onClick={() => handleChangeVisibility(course.id)}
-                    className={`relative inline-flex h-7 w-14 cursor-pointer items-center rounded-full transition-colors duration-300 ${
+                    className={`relative inline-flex h-7 w-14 cursor-pointer items-center rounded-full transition-colors duration-300 shrink-0 ${
                       course.visibility === CourseVisibility.PRIVATE
-                        ? "bg-amber-500/80 "
+                        ? "bg-amber-500/80"
                         : "bg-emerald-400/80"
                     }`}
                   >
@@ -591,65 +600,60 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
               </div>
 
               {course.lessons && course.lessons.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {course.lessons.map((lesson: any, index: number) => (
                     <div
                       key={lesson.id}
                       className="border border-slate-600/50 rounded-lg overflow-hidden transition-all"
                     >
-                      {/* Header de la lección */}
                       <button
                         onClick={() => toggleLesson(lesson.id)}
-                        className="w-full p-4 bg-slate-800/30 hover:bg-slate-800/50 transition-colors flex items-center justify-between text-left"
+                        className="w-full p-3 sm:p-4 bg-slate-800/30 hover:bg-slate-800/50 transition-colors flex items-center justify-between text-left"
                       >
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                          <span className="text-slate-400 font-bold text-sm flex-shrink-0">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                          <span className="text-slate-400 font-bold text-xs sm:text-sm shrink-0">
                             #{String(index + 1).padStart(2, "0")}
                           </span>
-                          <h3 className="font-semibold text-font-light truncate">
+                          <h3 className="font-semibold text-font-light truncate text-sm sm:text-base">
                             {lesson.title}
                           </h3>
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-slate-400 text-sm">
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-slate-400 text-xs sm:text-sm">
                             {lesson.urlVideos.length + lesson.urlPdfs.length}{" "}
-                            recursos
+                            <span className="hidden sm:inline">recursos</span>
                           </span>
                           {expandedLessons.has(lesson.id) ? (
-                            <HiChevronUp className="w-5 h-5 text-slate-400" />
+                            <HiChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
                           ) : (
-                            <HiChevronDown className="w-5 h-5 text-slate-400" />
+                            <HiChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
                           )}
                         </div>
                       </button>
 
-                      {/* Contenido expandible */}
                       {expandedLessons.has(lesson.id) && (
-                        <div className="p-4 bg-slate-900/20 border-t border-slate-600/30">
-                          {/* Videos */}
+                        <div className="p-3 sm:p-4 bg-slate-900/20 border-t border-slate-600/30">
                           {lesson.urlVideos.length > 0 && (
-                            <div className="mb-4">
-                              <h4 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
-                                <HiPlay className="w-4 h-4" />
+                            <div className="mb-3 sm:mb-4">
+                              <h4 className="text-slate-300 font-medium mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
+                                <HiPlay className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Videos ({lesson.urlVideos.length})
                               </h4>
                             </div>
                           )}
 
-                          {/* PDFs */}
                           {lesson.urlPdfs.length > 0 && (
-                            <div className="mb-4">
-                              <h4 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
-                                <HiDocumentText className="w-4 h-4" />
+                            <div className="mb-3 sm:mb-4">
+                              <h4 className="text-slate-300 font-medium mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
+                                <HiDocumentText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Documentos ({lesson.urlPdfs.length})
                               </h4>
                             </div>
                           )}
 
-                          {/* Sin recursos */}
                           {lesson.urlVideos.length === 0 &&
                             lesson.urlPdfs.length === 0 && (
-                              <p className="text-slate-500 text-sm">
+                              <p className="text-slate-500 text-xs sm:text-sm">
                                 No hay recursos disponibles para esta lección.
                               </p>
                             )}
@@ -659,26 +663,26 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <HiBookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400">
+                <div className="text-center py-8 sm:py-12">
+                  <HiBookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-400 text-sm sm:text-base">
                     Este curso no tiene lecciones todavía
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Feedback */}
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <div className="flex  items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-font-light  flex items-center gap-2">
-                  <HiStar className="w-6 h-6 text-yellow-200" />
+            {/* ============[ FEEDBACK ]============ */}
+            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-font-light flex items-center gap-2">
+                  <HiStar className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-200" />
                   Comentarios y reseñas
-                  <span className="text-sm font-normal text-slate-400">
+                  <span className="text-xs sm:text-sm font-normal text-slate-400">
                     ({localFeedbacks?.length || 0})
                   </span>
                 </h2>
-                <p className="flex items-center  gap-1 text-lg font-bold text-slate-200 mr-3.5">
+                <p className="flex items-center gap-1 text-base sm:text-lg font-bold text-slate-200">
                   {averageRating}/5.0
                 </p>
               </div>
@@ -691,22 +695,22 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     return (
                       <div
                         key={f.id}
-                        className={`border rounded-xl p-5 mb-4 ${
+                        className={`border rounded-xl p-4 sm:p-5 mb-4 ${
                           isToxic
                             ? "bg-amber-900/20 border-amber-500/50"
                             : "bg-slate-800/30 border-slate-700/50"
                         }`}
                       >
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0">
-                            <span className="text-font-light font-bold text-lg">
+                        <div className="flex items-start gap-3 sm:gap-4">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-button/80 flex items-center justify-center shrink-0">
+                            <span className="text-font-light font-bold text-base sm:text-lg">
                               {f.user.image ? (
                                 <Image
                                   alt="Foto de perfil del usuario"
                                   src={f.user.image}
                                   width={100}
                                   height={100}
-                                  className="w-12 h-12 rounded-full bg-button/80 flex items-center justify-center flex-shrink-0"
+                                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-button/80 flex items-center justify-center"
                                 />
                               ) : (
                                 `${f.user.name[0].toUpperCase()}`
@@ -714,15 +718,16 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                             </span>
                           </div>
 
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="">
-                                <h4 className="font-semibold text-font-light flex items-center gap-2 mb-2">
-                                  {f.user.name}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                              <div className="min-w-0">
+                                <h4 className="font-semibold text-font-light flex flex-wrap items-center gap-2 mb-1 sm:mb-2 text-sm sm:text-base">
+                                  <span className="truncate">{f.user.name}</span>
                                   {isToxic && (
-                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/50 text-amber-300 text-xs font-medium">
-                                      <HiExclamationTriangle className="w-4 h-4" />
-                                      Contenido inapropiado
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/50 text-amber-300 text-xs font-medium shrink-0">
+                                      <HiExclamationTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                      <span className="hidden sm:inline">Contenido inapropiado</span>
+                                      <span className="sm:hidden">Inapropiado</span>
                                     </span>
                                   )}
                                 </h4>
@@ -733,16 +738,14 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                               {f.rating && renderStars(f.rating)}
                             </div>
 
-                            {/* Feedback */}
                             <p
-                              className={`text-sm leading-relaxed mb-3 ${
+                              className={`text-xs sm:text-sm leading-relaxed mb-3 ${
                                 isToxic ? "text-amber-200/80" : "text-slate-300"
                               }`}
                             >
                               {f.feedback}
                             </p>
 
-                            {/* Botón de banear si es tóxico */}
                             {isToxic && (
                               <button
                                 onClick={() => {
@@ -754,7 +757,7 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                                 disabled={
                                   banUnbanUserLoading || !f.user.isActive
                                 }
-                                className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center cursor-pointer gap-2 bg-slate-700/50 border px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                                className={`disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start cursor-pointer gap-2 bg-slate-700/50 border px-3 sm:px-4 py-2 rounded-lg font-medium transition-all text-xs sm:text-sm w-full sm:w-auto ${
                                   !f.user.isActive
                                     ? "border-slate-500/50 text-slate-400"
                                     : "hover:bg-slate-700/90 border-amber-300/50 text-amber-300"
@@ -764,17 +767,21 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                                 currentUser?.id === f.user.id ? (
                                   <div className="flex gap-2 items-center">
                                     <TinyLoader />
-                                    Baneando usuario
+                                    <span className="hidden sm:inline">Baneando usuario</span>
+                                    <span className="sm:hidden">...</span>
                                   </div>
                                 ) : !f.user.isActive ? (
                                   <>
-                                    <HiBan className="w-4 h-4" />
+                                    <HiBan className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                     Usuario baneado
                                   </>
                                 ) : (
                                   <>
-                                    <HiBan className="w-4 h-4" />
-                                    Banear por comportamiento inapropiado
+                                    <HiBan className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                    <span className="hidden sm:inline">
+                                      Banear por comportamiento inapropiado
+                                    </span>
+                                    <span className="sm:hidden">Banear usuario</span>
                                   </>
                                 )}
                               </button>
@@ -785,7 +792,6 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                     );
                   })}
 
-                  {/* Modal ÚNICO fuera del map */}
                   {showBanModal && currentUser && (
                     <BanReasonModal
                       banReason={banReason}
@@ -800,9 +806,9 @@ const CourseDetails = ({ courseId, onBack }: CourseDetailsProps) => {
                   )}
                 </>
               ) : (
-                <div className="text-center py-12">
-                  <HiStar className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400">
+                <div className="text-center py-8 sm:py-12">
+                  <HiStar className="w-12 h-12 sm:w-16 sm:h-16 text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-400 text-sm sm:text-base">
                     Este curso no tiene reviews todavía
                   </p>
                 </div>

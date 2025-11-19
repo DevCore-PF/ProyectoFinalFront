@@ -1,18 +1,17 @@
 "use client";
 import { useState } from "react";
-import { HiCurrencyDollar, HiDocumentText, HiCollection } from "react-icons/hi";
+import { HiCurrencyDollar, HiMail, HiDocumentText, HiCollection } from "react-icons/hi";
 import { FaCheckCircle } from "react-icons/fa";
 
 import PendingPayoutsSummary from "./PendingPayoutsSummary";
 import SalesHistory from "./SalesHistory";
 import PayoutBatchManagement from "./PayoutBatchManagement";
 import PaidManagement from "./PaidManagement";
-import { downloadSalesHistory } from "@/helpers/adminHandlers";
 
 export default function FinancesSection() {
-  const [activeTab, setActiveTab] = useState<
-    "pending" | "sales" | "batches" | "batches-paid"
-  >("pending");
+  const [activeTab, setActiveTab] = useState<"pending" | "sales" | "batches" | "batches-paid" | "newsletter">(
+    "pending"
+  );
 
   const [pendingCount, setPendingCount] = useState(0);
   const [batchesCount, setBatchesCount] = useState(0);
@@ -21,88 +20,83 @@ export default function FinancesSection() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        {/* ============[ HEADER   ]============ */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-font-light">Finanzas</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-font-light">Finanzas</h1>
             </div>
           </div>
-       
-          {/* Tabs */}
-          <div className="flex gap-2 mb-6 border-b border-slate-700/50">
+
+          {/* ============[ TABS   ]============ */}
+          <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-6 border-b border-slate-700/50 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
             <button
               onClick={() => setActiveTab("pending")}
-              className={`pb-3 px-4 font-medium transition-all cursor-pointer flex items-center gap-2 ${
+              className={`pb-2.5 sm:pb-3 px-3 sm:px-4 font-medium transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "pending"
                   ? "text-accent-medium border-b-2 border-button"
                   : "text-slate-400 hover:text-slate-300"
               }`}
             >
-              <HiCurrencyDollar className="w-4 h-4" />
-              Lotes pendientes
+              <HiCurrencyDollar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">Lotes pendientes</span>
+              <span className="sm:hidden">Pendientes</span>
               {pendingCount > 0 && (
-                <span className="text-amber-200/80 text-xs font-bold">
-                  ({pendingCount})
-                </span>
+                <span className="text-amber-200/80 text-xs font-bold">({pendingCount})</span>
               )}
             </button>
+
             <button
               onClick={() => setActiveTab("batches")}
-              className={`pb-3 px-4 font-medium transition-all cursor-pointer flex items-center gap-2 ${
+              className={`pb-2.5 sm:pb-3 px-3 sm:px-4 font-medium transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "batches"
                   ? "text-accent-medium border-b-2 border-button"
                   : "text-slate-400 hover:text-slate-300"
               }`}
             >
-              <HiCollection className="w-4 h-4" />
-              Lotes a pagar
+              <HiCollection className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">Lotes a pagar</span>
+              <span className="sm:hidden">A pagar</span>
               {batchesCount > 0 && (
-                <span className="text-amber-200/80 text-xs font-bold ">
-                  ({batchesCount})
-                </span>
+                <span className="text-amber-200/80 text-xs font-bold">({batchesCount})</span>
               )}
             </button>
+
             <button
               onClick={() => setActiveTab("batches-paid")}
-              className={`pb-3 px-4 font-medium transition-all cursor-pointer flex items-center gap-2 ${
+              className={`pb-2.5 sm:pb-3 px-3 sm:px-4 font-medium transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "batches-paid"
                   ? "text-accent-medium border-b-2 border-button"
                   : "text-slate-400 hover:text-slate-300"
               }`}
             >
-              <FaCheckCircle className="w-4 h-4" />
-              Lotes pagados
+              <FaCheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">Lotes pagados</span>
+              <span className="sm:hidden">Pagados</span>
               {paidBatchesCount > 0 && (
-                <span className=" text-amber-200/80 text-xs font-bold ">
-                  ({paidBatchesCount})
-                </span>
+                <span className="text-amber-200/80 text-xs font-bold">({paidBatchesCount})</span>
               )}
             </button>
+
             <button
               onClick={() => setActiveTab("sales")}
-              className={`pb-3 px-4 font-medium transition-all cursor-pointer flex items-center gap-2 ${
+              className={`pb-2.5 sm:pb-3 px-3 sm:px-4 font-medium transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "sales"
                   ? "text-accent-medium border-b-2 border-button"
                   : "text-slate-400 hover:text-slate-300"
               }`}
             >
-              <HiDocumentText className="w-4 h-4" />
-              Historial de Ventas
+              <HiDocumentText className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden md:inline">Historial de Ventas</span>
+              <span className="md:hidden">Ventas</span>
             </button>
           </div>
 
-          {/* Content */}
+          {/* ============[ CONTENT ]============ */}
           <div>
-            {activeTab === "pending" && (
-              <PendingPayoutsSummary onCountChange={setPendingCount} />
-            )}
-            {activeTab === "batches" && (
-              <PayoutBatchManagement onCountChange={setBatchesCount} />
-            )}
-            {activeTab === "batches-paid" && (
-              <PaidManagement onCountChange={setPaidBatchesCount} />
-            )}
+            {activeTab === "pending" && <PendingPayoutsSummary onCountChange={setPendingCount} />}
+            {activeTab === "batches" && <PayoutBatchManagement onCountChange={setBatchesCount} />}
+            {activeTab === "batches-paid" && <PaidManagement onCountChange={setPaidBatchesCount} />}
             {activeTab === "sales" && <SalesHistory />}
           </div>
         </div>

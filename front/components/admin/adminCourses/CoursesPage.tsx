@@ -505,11 +505,6 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         {!isLoadingCourses && !coursesError && (
           <>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-slate-400">
-                Mostrando <span className="text-font-light font-semibold">{paginatedCourses.length}</span> de{" "}
-                <span className="text-font-light font-semibold">{paginatedCourses.length}</span> cursos
-              </p>
-
               {selectedCourses.length > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="text-slate-400 text-sm">{selectedCourses.length} seleccionados</span>

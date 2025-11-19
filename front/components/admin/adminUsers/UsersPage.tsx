@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import {
-  toastConfirm,
-  toastError,
-  toastSuccess,
-} from "@/helpers/alerts.helper";
+import { toastConfirm, toastError, toastSuccess } from "@/helpers/alerts.helper";
 import { UsersDetailProps } from "@/types/admin.types";
 import { UserRole } from "@/types/user.types";
 import {
@@ -62,6 +58,9 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   const [banReason, setBanReason] = useState("");
   const [userToBan, setUserToBan] = useState<string | null>(null);
   const [showGroupBanModal, setShowGroupBanModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
   const { user: contextUser } = useAuth();
   // Cargar usuarios cuando cambia el filtro de estado
   useEffect(() => {
@@ -81,6 +80,19 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     loadUsers();
   }, [selectedStatus]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Reset página cuando cambia el rol seleccionado
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedRole]);
+
+  // Reset página cuando cambia el orden
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy, sortOrder]);
   // Determinar el estado de carga según el filtro activo
   const isLoading =
     (selectedStatus === "all" && isLoadingUsers) ||
@@ -141,6 +153,11 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     };
   }, [users]);
 
+  //calcula el total de paginas
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
+  }, [filteredAndSortedUsers.length, itemsPerPage]);
+
   //============[ ESTILOS BADGE ROL ]=============
   const getRoleBadge = (role: string | null) => {
     const config = {
@@ -154,6 +171,12 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
     }
     return config[role as keyof typeof config] || config.null;
   };
+
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredAndSortedUsers.slice(startIndex, endIndex);
+  }, [filteredAndSortedUsers, currentPage, itemsPerPage]);
 
   //============[ ESTILOS BADGE STATUS ]=============
   const getStatusBadge = (isActive: boolean) => {
@@ -173,9 +196,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
   //============[ HANDLERS ]=============
   const handleSelectUser = (userId: string) => {
     setSelectedUsers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
     );
   };
 
@@ -229,8 +250,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
           } catch (error) {
             results.errors.push({
               userId,
-              error:
-                error instanceof Error ? error.message : "Error desconocido",
+              error: error instanceof Error ? error.message : "Error desconocido",
             });
           } finally {
             setLoadingGroupActivate(false);
@@ -301,8 +321,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
           } catch (error) {
             results.errors.push({
               userId,
-              error:
-                error instanceof Error ? error.message : "Error desconocido",
+              error: error instanceof Error ? error.message : "Error desconocido",
             });
           }
         }
@@ -316,15 +335,24 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
       }
     );
   };
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const goToPrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-font-light mb-2">
-                Gestión de Usuarios
-              </h1>
+              <h1 className="text-2xl font-bold text-font-light mb-2">Gestión de Usuarios</h1>
             </div>
             <button
               onClick={() => downloadUsers(users)}
@@ -339,39 +367,27 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Total</p>
-              <p className="text-2xl font-bold text-font-light">
-                {stats.total}
-              </p>
+              <p className="text-2xl font-bold text-font-light">{stats.total}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Alumnos</p>
-              <p className="text-2xl font-bold text-blue-300">
-                {stats.students}
-              </p>
+              <p className="text-2xl font-bold text-blue-300">{stats.students}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Profesores</p>
-              <p className="text-2xl font-bold text-purple-300">
-                {stats.teachers}
-              </p>
+              <p className="text-2xl font-bold text-purple-300">{stats.teachers}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Admins</p>
-              <p className="text-2xl font-bold text-amber-300">
-                {stats.admins}
-              </p>
+              <p className="text-2xl font-bold text-amber-300">{stats.admins}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Activos</p>
-              <p className="text-2xl font-bold text-emerald-300">
-                {stats.active}
-              </p>
+              <p className="text-2xl font-bold text-emerald-300">{stats.active}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-amber-400">
-                {stats.inactive}
-              </p>
+              <p className="text-2xl font-bold text-amber-400">{stats.inactive}</p>
             </div>
           </div>
         </div>
@@ -418,11 +434,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
             >
               <HiFilter className="w-5 h-5" />
               Ordenar
-              <HiChevronDown
-                className={`w-4 h-4 transition-transform ${
-                  showFilters ? "rotate-180" : ""
-                }`}
-              />
+              <HiChevronDown className={`w-4 h-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
             </button>
           </div>
 
@@ -431,9 +443,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
             <div className="mt-4 pt-4 border-t border-slate-700/50">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">
-                    Ordenar por
-                  </label>
+                  <label className="text-slate-400 text-sm mb-2 block">Ordenar por</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
@@ -445,9 +455,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">
-                    Orden
-                  </label>
+                  <label className="text-slate-400 text-sm mb-2 block">Orden</label>
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
@@ -481,24 +489,10 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
         {!isLoading && !currentError && (
           <>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-slate-400">
-                Mostrando{" "}
-                <span className="text-font-light font-semibold">
-                  {filteredAndSortedUsers.length}
-                </span>{" "}
-                de{" "}
-                <span className="text-font-light font-semibold">
-                  {users.length}
-                </span>{" "}
-                usuarios
-              </p>
-
               {selectedUsers.length > 0 && (
                 <>
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400 text-sm">
-                      {selectedUsers.length} seleccionados
-                    </span>
+                    <span className="text-slate-400 text-sm">{selectedUsers.length} seleccionados</span>
                     <button
                       onClick={handleGroupBan}
                       disabled={loadingGroupBan}
@@ -546,8 +540,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                           <input
                             type="checkbox"
                             checked={
-                              selectedUsers.length ===
-                                filteredAndSortedUsers.length &&
+                              selectedUsers.length === filteredAndSortedUsers.length &&
                               filteredAndSortedUsers.length > 0
                             }
                             onChange={handleSelectAll}
@@ -555,8 +548,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                           />
                           <div
                             className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
-                              selectedUsers.length ===
-                                filteredAndSortedUsers.length &&
+                              selectedUsers.length === filteredAndSortedUsers.length &&
                               filteredAndSortedUsers.length > 0
                                 ? " border-font-light"
                                 : "border-slate-600 bg-slate-700/50"
@@ -564,8 +556,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                           >
                             <svg
                               className={`w-3 h-3 text-font-light transition-opacity ${
-                                selectedUsers.length ===
-                                  filteredAndSortedUsers.length &&
+                                selectedUsers.length === filteredAndSortedUsers.length &&
                                 filteredAndSortedUsers.length > 0
                                   ? "opacity-100"
                                   : "opacity-0"
@@ -575,42 +566,26 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                               stroke="currentColor"
                               strokeWidth="3"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
                         </label>
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
-                        Usuario
-                      </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
-                        Rol
-                      </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
-                        Estado
-                      </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">
-                        Registro
-                      </th>
-                      <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold">
-                        Acciones
-                      </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Usuario</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Rol</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Estado</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Registro</th>
+                      <th className="px-4 py-4 text-right text-slate-400 text-sm font-semibold">Acciones</th>
                     </tr>
                   </thead>
 
                   {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
-                    {filteredAndSortedUsers.map((user) => (
+                    {paginatedUsers.map((user) => (
                       <tr
                         key={user.id}
                         className={`transition-colors hover:bg-slate-800/30 ${
-                          !user.isActive
-                            ? "bg-amber-300/10 hover:bg-amber-300/10! "
-                            : ""
+                          !user.isActive ? "bg-amber-300/10 hover:bg-amber-300/10! " : ""
                         }`}
                       >
                         <td className="px-4 py-4">
@@ -630,20 +605,14 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                             >
                               <svg
                                 className={`w-3 h-3 text-font-light transition-opacity ${
-                                  selectedUsers.includes(user.id)
-                                    ? "opacity-100"
-                                    : "opacity-0"
+                                  selectedUsers.includes(user.id) ? "opacity-100" : "opacity-0"
                                 }`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                                 strokeWidth="3"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M5 13l4 4L19 7"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
                             </div>
                           </label>
@@ -671,9 +640,7 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                             </div>
 
                             <div>
-                              <p className="font-medium text-font-light">
-                                {user.name}
-                              </p>
+                              <p className="font-medium text-font-light">{user.name}</p>
                               <p className="text-sm flex items-center gap-1 text-slate-400">
                                 <HiMail className="w-3 h-3" />
                                 {user.email}
@@ -722,19 +689,14 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
                             >
                               <HiEye className="w-4 h-4" />
                             </button>
-                            {user.id ===
-                            contextUser?.id ? null : user.isActive ? (
+                            {user.id === contextUser?.id ? null : user.isActive ? (
                               <button
                                 onClick={() => handleBanUser(user.id)}
                                 disabled={loadingUserId === user.id}
                                 className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700/90 border border-amber-300/50 text-amber-300 rounded-lg transition-all"
                                 title="Banear usuario"
                               >
-                                {loadingUserId === user.id ? (
-                                  <TinyLoader />
-                                ) : (
-                                  <HiBan className="w-4 h-4" />
-                                )}
+                                {loadingUserId === user.id ? <TinyLoader /> : <HiBan className="w-4 h-4" />}
                               </button>
                             ) : (
                               <button
@@ -759,31 +721,58 @@ const UsersPage = ({ onViewDetail }: UsersDetailProps) => {
               </div>
 
               {/* ============[ NO HAY USERS ]============= */}
-              {filteredAndSortedUsers.length === 0 && (
+              {paginatedUsers.length === 0 && (
                 <div className="text-center py-16">
                   <HiUserCircle className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-                  <p className="text-slate-400 text-lg font-medium mb-2">
-                    No se encontraron usuarios
-                  </p>
-                  <p className="text-slate-500 text-sm">
-                    Intenta ajustar los filtros de búsqueda
-                  </p>
+                  <p className="text-slate-400 text-lg font-medium mb-2">No se encontraron usuarios</p>
+                  <p className="text-slate-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
                 </div>
               )}
             </div>
 
             {/* Pagination */}
-            {filteredAndSortedUsers.length > 0 && (
+            {paginatedUsers.length > 0 && (
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-slate-400 text-sm">Página 1 de 1</p>
+                <p className="text-slate-400 text-sm">
+                  Página {currentPage} de {totalPages} 
+                </p>
                 <div className="flex gap-2">
-                  <button className="cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-400 rounded-lg font-medium opacity-50 cursor-not-allowed">
+                  <button
+                    onClick={goToPrevPage}
+                    disabled={currentPage === 1}
+                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
+                      currentPage === 1
+                        ? "text-slate-400 opacity-50 cursor-not-allowed"
+                        : "text-font-light hover:bg-slate-700"
+                    }`}
+                  >
                     Anterior
                   </button>
-                  <button className="cursor-pointer px-4 py-2 bg-button/80 text-font-light rounded-lg font-medium">
-                    1
-                  </button>
-                  <button className="cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-400 rounded-lg font-medium opacity-50 cursor-not-allowed">
+
+                  {/* Números de página */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => goToPage(pageNum)}
+                      className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all ${
+                        currentPage === pageNum
+                          ? "bg-button/80 text-font-light"
+                          : "bg-slate-700/50 border border-slate-600 text-slate-400 hover:bg-slate-700"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
+                      currentPage === totalPages
+                        ? "text-slate-400 opacity-50 cursor-not-allowed"
+                        : "text-font-light hover:bg-slate-700"
+                    }`}
+                  >
                     Siguiente
                   </button>
                 </div>

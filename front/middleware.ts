@@ -79,6 +79,7 @@ export function middleware(request: NextRequest) {
     if (user.role === null) {
       return NextResponse.redirect(new URL('/', request.url));
     }
+    
   }
   
   // ============================================
@@ -91,14 +92,6 @@ export function middleware(request: NextRequest) {
     if (user.role !== 'admin') {
       return NextResponse.redirect(new URL('/', request.url));
     }
-    
-    // ============[ HEADERS NO-CACHE PARA ADMIN ]============
-    const response = NextResponse.next();
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-    response.headers.set('x-middleware-cache', 'no-cache');
-    return response;
   }
   
   // ============================================

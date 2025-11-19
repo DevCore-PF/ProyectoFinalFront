@@ -10,8 +10,7 @@ export const metadata: Metadata = {
   title: "DevCore - Admin",
   description: "Panel de administración de DevCore",
 };
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+
 export default function AdminLayout({
   children,
 }: Readonly<{

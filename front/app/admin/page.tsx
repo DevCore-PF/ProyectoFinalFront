@@ -29,7 +29,8 @@ import ProfileValidationDetails from "@/components/admin/ProfileValidationDetail
 import NewsletterManagement from "@/components/admin/NewsletterManagement";
 
 type ValidationType = "professor" | "course_create" | "course_edit" | "profile_edit" | "role_change";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<TabType>("validations");
   const [searchTerm, setSearchTerm] = useState("");

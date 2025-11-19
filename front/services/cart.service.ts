@@ -13,7 +13,10 @@ export const getCartService = async (token: string) => {
     throw new Error("Error al obtener el carrito");
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('esta es la data de mi carrito',data);
+  
+  return data;
 };
 export const addToCartService = async (token: string, courseId: string) => {
   try {
@@ -34,14 +37,11 @@ export const addToCartService = async (token: string, courseId: string) => {
     return response.json();
   } catch (error) {
     console.error("Error al agregar al carrito:", error);
-    throw error; 
+    throw error;
   }
 };
 
-export const removeFromCartService = async (
-  token: string,
-  courseId: string
-) => {
+export const removeFromCartService = async (token: string, courseId: string) => {
   const response = await fetch(`${API_URL}/cart/remove/${courseId}`, {
     method: "DELETE",
     headers: {

@@ -33,7 +33,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user, token, setToken } = useAuth();
+  const { user, token } = useAuth();
 
   useEffect(() => {
     if (user && token) {
@@ -45,7 +45,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshCart = async () => {
     if (!token) {
-      // No token available
       return;
     }
 

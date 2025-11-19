@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import {
-  toastConfirm,
-  toastError,
-  toastSuccess,
-} from "@/helpers/alerts.helper";
+import { toastConfirm, toastError, toastSuccess } from "@/helpers/alerts.helper";
 import {
   HiSearch,
   HiFilter,
@@ -29,14 +25,7 @@ import CreateLessonAdmin from "./CreateLessonAdmin";
 import { CourseVisibility } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
-type CourseCategory =
-  | "all"
-  | "Backend"
-  | "Frontend"
-  | "Mobile"
-  | "DataScience"
-  | "DataBase"
-  | "VideoGames";
+type CourseCategory = "all" | "Backend" | "Frontend" | "Mobile" | "DataScience" | "DataBase" | "VideoGames";
 
 type CourseDifficulty = "all" | "Principiante" | "Intermedio" | "Avanzado";
 type SortBy = "title" | "price" | "createdAt" | "rating";
@@ -58,27 +47,22 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] =
-    useState<CourseCategory>("all");
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState<CourseDifficulty>("all");
+  const [selectedCategory, setSelectedCategory] = useState<CourseCategory>("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<CourseDifficulty>("all");
   const [selectedStatus, setSelectedStatus] = useState<CourseStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("createdAt");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [loadingCourseId, setLoadingCourseId] = useState<string | null>(null);
-  const [loadingGroupAction, setLoadingGroupAction] = useState<
-    "activate" | "deactivate" | null
-  >(null);
+  const [loadingGroupAction, setLoadingGroupAction] = useState<"activate" | "deactivate" | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showLessonsModal, setShowLessonsModal] = useState(false);
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
-
-  const [feedbacksByCourse, setFeedbacksByCourse] = useState<
-    Record<string, CourseReview[]>
-  >({});
+  const [feedbacksByCourse, setFeedbacksByCourse] = useState<Record<string, CourseReview[]>>({});
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,29 +77,20 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       title: debouncedSearchTerm || undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       difficulty: selectedDifficulty !== "all" ? selectedDifficulty : undefined,
-      isActive:
-        selectedStatus === "all" ? undefined : selectedStatus === "active",
+      isActive: selectedStatus === "all" ? undefined : selectedStatus === "active",
       sortBy,
       sortOrder,
     };
 
     refreshCourses(filters);
-  }, [
-    debouncedSearchTerm,
-    selectedCategory,
-    selectedDifficulty,
-    selectedStatus,
-    sortBy,
-    sortOrder,
-  ]);
+    setCurrentPage(1);
+  }, [debouncedSearchTerm, selectedCategory, selectedDifficulty, selectedStatus, sortBy, sortOrder]);
 
   useEffect(() => {
     refreshCourses();
   }, []);
 
-  {
-    /* ============[ ESTADISTICAS ]============= */
-  }
+  /* ============[ ESTADISTICAS ]============= */
   const stats = useMemo(() => {
     return {
       total: courses.length,
@@ -125,12 +100,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     };
   }, [courses]);
 
-  {
-    /* ============[ ESTILOS BADGE STATUS ]============= */
-  }
-  {
-
-  }
+  /* ============[ ESTILOS BADGE STATUS ]============= */
   const getStatusBadge = (status: string) => {
     return status === "PUBLICADO"
       ? "bg-emerald-500/10 text-emerald-300/90 border-emerald-500/20"
@@ -138,7 +108,6 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       ? "bg-amber-500/10 text-amber-200 border-amber-500/20"
       : "bg-slate-500/10 text-slate-200 border-slate-500/20";
   };
-
 
   /* ============[ ESTILOS BADGE CATEGORY ]============= */
   const getCategoryBadge = (category: string) => {
@@ -167,16 +136,23 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
         {[1, 2, 3, 4, 5].map((star) => (
           <HiStar
             key={star}
-            className={`w-4 h-4 ${
-              star <= rating
-                ? "text-yellow-400 fill-yellow-400"
-                : "text-slate-600"
-            }`}
+            className={`w-4 h-4 ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-slate-600"}`}
           />
         ))}
       </div>
     );
   };
+  // Calcula el array de cursos
+  const paginatedCourses = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return courses.slice(startIndex, endIndex);
+  }, [courses, currentPage, itemsPerPage]);
+
+  //calcula el total de paginas
+  const totalPages = useMemo(() => {
+    return Math.ceil(courses.length / itemsPerPage);
+  }, [courses.length, itemsPerPage]);
 
   /* ============[ CALCULAR RATING PROMEDIO ]============= */
   const getAverageRating = (courseId: string): number => {
@@ -199,9 +175,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   /* ============[ HANDLERS ]============= */
   const handleSelectCourse = (courseId: string) => {
     setSelectedCourses((prev) =>
-      prev.includes(courseId)
-        ? prev.filter((id) => id !== courseId)
-        : [...prev, courseId]
+      prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
     );
   };
 
@@ -272,6 +246,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
       toastError(`${results.errors.length} cursos fallaron`);
     }
   };
+
   const handleCloseLessonsModal = () => {
     toastConfirm(
       "El curso se creó pero sin lecciones.",
@@ -325,9 +300,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           await activateDeactivateCourse(courseId);
           await silentRefreshCourses();
           toastSuccess(
-            courses.find((c) => c.id === courseId)?.isActive
-              ? "Curso desactivado"
-              : "Curso activado"
+            courses.find((c) => c.id === courseId)?.isActive ? "Curso desactivado" : "Curso activado"
           );
         } catch (error) {
           console.log(error);
@@ -350,10 +323,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             feedbackMap[course.id] = courseFeedbacks;
           }
         } catch (error) {
-          console.error(
-            `Error cargando feecback para el curso ${course.id}:`,
-            error
-          );
+          console.error(`Error cargando feecback para el curso ${course.id}:`, error);
         }
       }
       setFeedbacksByCourse(feedbackMap);
@@ -364,15 +334,24 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
     }
   }, [courses]);
 
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const goToPrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-font-light mb-2">
-                Gestión de Cursos
-              </h1>
+              <h1 className="text-2xl font-bold text-font-light mb-2">Gestión de Cursos</h1>
             </div>
             <div className="flex gap-2">
               <button
@@ -396,28 +375,20 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Total</p>
-              <p className="text-2xl font-bold text-font-light">
-                {stats.total}
-              </p>
+              <p className="text-2xl font-bold text-font-light">{stats.total}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Activos</p>
-              <p className="text-2xl font-bold text-emerald-300">
-                {stats.active}
-              </p>
+              <p className="text-2xl font-bold text-emerald-300">{stats.active}</p>
             </div>
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Inactivos</p>
-              <p className="text-2xl font-bold text-amber-300">
-                {stats.inactive}
-              </p>
+              <p className="text-2xl font-bold text-amber-300">{stats.inactive}</p>
             </div>
 
             <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4">
               <p className="text-slate-400 text-xs mb-1">Ingresos</p>
-              <p className="text-2xl font-bold text-green-300">
-                ${stats.totalRevenue.toFixed(0)}
-              </p>
+              <p className="text-2xl font-bold text-green-300">${stats.totalRevenue.toFixed(0)}</p>
             </div>
           </div>
         </div>
@@ -438,9 +409,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
             <select
               value={selectedCategory}
-              onChange={(e) =>
-                setSelectedCategory(e.target.value as CourseCategory)
-              }
+              onChange={(e) => setSelectedCategory(e.target.value as CourseCategory)}
               className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las categorías</option>
@@ -454,9 +423,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
             <select
               value={selectedDifficulty}
-              onChange={(e) =>
-                setSelectedDifficulty(e.target.value as CourseDifficulty)
-              }
+              onChange={(e) => setSelectedDifficulty(e.target.value as CourseDifficulty)}
               className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todas las dificultades</option>
@@ -467,9 +434,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
             <select
               value={selectedStatus}
-              onChange={(e) =>
-                setSelectedStatus(e.target.value as CourseStatus)
-              }
+              onChange={(e) => setSelectedStatus(e.target.value as CourseStatus)}
               className="bg-background border border-slate-700 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:ring-1 focus:ring-border-light/80 cursor-pointer"
             >
               <option value="all">Todos los estados</option>
@@ -484,11 +449,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             >
               <HiFilter className="w-5 h-5" />
               Ordenar
-              <HiChevronDown
-                className={`w-4 h-4 transition-transform ${
-                  showFilters ? "rotate-180" : ""
-                }`}
-              />
+              <HiChevronDown className={`w-4 h-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
             </button>
           </div>
 
@@ -497,9 +458,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
             <div className="mt-4 pt-4 border-t border-slate-700/50">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">
-                    Ordenar por
-                  </label>
+                  <label className="text-slate-400 text-sm mb-2 block">Ordenar por</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
@@ -512,9 +471,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 text-sm mb-2 block">
-                    Orden
-                  </label>
+                  <label className="text-slate-400 text-sm mb-2 block">Orden</label>
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
@@ -549,22 +506,13 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           <>
             <div className="flex items-center justify-between mb-4">
               <p className="text-slate-400">
-                Mostrando{" "}
-                <span className="text-font-light font-semibold">
-                  {courses.length}
-                </span>{" "}
-                de{" "}
-                <span className="text-font-light font-semibold">
-                  {courses.length}
-                </span>{" "}
-                cursos
+                Mostrando <span className="text-font-light font-semibold">{paginatedCourses.length}</span> de{" "}
+                <span className="text-font-light font-semibold">{paginatedCourses.length}</span> cursos
               </p>
 
               {selectedCourses.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400 text-sm">
-                    {selectedCourses.length} seleccionados
-                  </span>
+                  <span className="text-slate-400 text-sm">{selectedCourses.length} seleccionados</span>
                   <button
                     onClick={() => deactivateMultipleCourses(selectedCourses)}
                     disabled={loadingGroupAction !== null}
@@ -608,25 +556,20 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                         <label className="inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={
-                              selectedCourses.length === courses.length &&
-                              courses.length > 0
-                            }
+                            checked={selectedCourses.length === courses.length && courses.length > 0}
                             onChange={handleSelectAll}
                             className="sr-only"
                           />
                           <div
                             className={`w-5 h-5 border rounded-[5px] flex items-center justify-center transition-all ${
-                              selectedCourses.length === courses.length &&
-                              courses.length > 0
+                              selectedCourses.length === courses.length && courses.length > 0
                                 ? "border-font-light"
                                 : "border-slate-600 bg-slate-700/50"
                             }`}
                           >
                             <svg
                               className={`w-3 h-3 text-font-light transition-opacity ${
-                                selectedCourses.length === courses.length &&
-                                courses.length > 0
+                                selectedCourses.length === courses.length && courses.length > 0
                                   ? "opacity-100"
                                   : "opacity-0"
                               }`}
@@ -635,18 +578,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               stroke="currentColor"
                               strokeWidth="3"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
                         </label>
                       </th>
-                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">
-                        Curso
-                      </th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-64">Curso</th>
                       <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold w-40">
                         Profesor
                       </th>
@@ -673,14 +610,12 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
 
                   {/* ============[ BODY ]============= */}
                   <tbody className="divide-y divide-slate-700/50">
-                    {courses.map((course, index) => {
+                    {paginatedCourses.map((course, index) => {
                       return (
                         <tr
                           key={course.id}
                           className={`transition-colors hover:bg-slate-800/30 ${
-                            !course.isActive
-                              ? "bg-amber-300/10 hover:bg-amber-300/10! "
-                              : ""
+                            !course.isActive ? "bg-amber-300/10 hover:bg-amber-300/10! " : ""
                           }`}
                         >
                           <td className="px-4 py-4">
@@ -700,20 +635,14 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               >
                                 <svg
                                   className={`w-3 h-3 text-font-light transition-opacity ${
-                                    selectedCourses.includes(course.id)
-                                      ? "opacity-100"
-                                      : "opacity-0"
+                                    selectedCourses.includes(course.id) ? "opacity-100" : "opacity-0"
                                   }`}
                                   fill="none"
                                   viewBox="0 0 24 24"
                                   stroke="currentColor"
                                   strokeWidth="3"
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M5 13l4 4L19 7"
-                                  />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                               </div>
                             </label>
@@ -760,18 +689,16 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             <div className="flex items-center gap-2">
                               {(() => {
                                 const avgRating = getAverageRating(course.id);
-                                const courseFeedbacks =
-                                  feedbacksByCourse[course.id];
+                                const courseFeedbacks = feedbacksByCourse[course.id];
 
                                 return (
                                   <>
                                     {renderStars(avgRating)}
-                                    {courseFeedbacks &&
-                                      courseFeedbacks.length > 0 && (
-                                        <span className="text-slate-400 text-xs">
-                                          ({courseFeedbacks.length})
-                                        </span>
-                                      )}
+                                    {courseFeedbacks && courseFeedbacks.length > 0 && (
+                                      <span className="text-slate-400 text-xs">
+                                        ({courseFeedbacks.length})
+                                      </span>
+                                    )}
                                   </>
                                 );
                               })()}
@@ -791,18 +718,14 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                                 : "Rechazado"}
                             </span>
                           </td>
-                      
+
                           <td className="px-4 py-4">
-                            <p className="text-emerald-200/80 text-sm flex items-center">
-                              ${course.price}
-                            </p>
+                            <p className="text-emerald-200/80 text-sm flex items-center">${course.price}</p>
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center justify-end gap-2">
                               <button
-                                onClick={() =>
-                                  onViewDetail("courses", course.id)
-                                }
+                                onClick={() => onViewDetail("courses", course.id)}
                                 className="p-2 cursor-pointer bg-slate-700/50 hover:bg-slate-700 border border-button/50 text-accent-medium rounded-lg transition-all"
                                 title="Ver curso"
                               >
@@ -845,31 +768,58 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               </div>
 
               {/* ============[ NO HAY CURSOS ]============= */}
-              {courses.length === 0 && (
+              {paginatedCourses.length === 0 && (
                 <div className="text-center py-16">
                   <HiBookOpen className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-                  <p className="text-slate-400 text-lg font-medium mb-2">
-                    No se encontraron cursos
-                  </p>
-                  <p className="text-slate-500 text-sm">
-                    Intenta ajustar los filtros de búsqueda
-                  </p>
+                  <p className="text-slate-400 text-lg font-medium mb-2">No se encontraron cursos</p>
+                  <p className="text-slate-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
                 </div>
               )}
             </div>
 
             {/* Pagination */}
-            {courses.length > 0 && (
+            {paginatedCourses.length > 0 && (
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-slate-400 text-sm">Página 1 de 1</p>
+                <p className="text-slate-400 text-sm">
+                  Página {currentPage} de {totalPages}
+                </p>
                 <div className="flex gap-2">
-                  <button className="cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-400 rounded-lg font-medium opacity-50 cursor-not-allowed">
+                  <button
+                    onClick={goToPrevPage}
+                    disabled={currentPage === 1}
+                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
+                      currentPage === 1
+                        ? "text-slate-400 opacity-50 cursor-not-allowed"
+                        : "text-font-light hover:bg-slate-700"
+                    }`}
+                  >
                     Anterior
                   </button>
-                  <button className="cursor-pointer px-4 py-2 bg-button/80 text-font-light rounded-lg font-medium">
-                    1
-                  </button>
-                  <button className="cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 text-slate-400 rounded-lg font-medium opacity-50 cursor-not-allowed">
+
+                  {/* Números de página */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => goToPage(pageNum)}
+                      className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all ${
+                        currentPage === pageNum
+                          ? "bg-button/80 text-font-light"
+                          : "bg-slate-700/50 border border-slate-600 text-slate-400 hover:bg-slate-700"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`cursor-pointer px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg font-medium transition-all ${
+                      currentPage === totalPages
+                        ? "text-slate-400 opacity-50 cursor-not-allowed"
+                        : "text-font-light hover:bg-slate-700"
+                    }`}
+                  >
                     Siguiente
                   </button>
                 </div>
@@ -878,11 +828,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
           </>
         )}
       </div>
-      <CourseModal
-        isOpen={showCreateModal}
-        onClose={handleCancelCourse}
-        title="Crear Nuevo Curso"
-      >
+      <CourseModal isOpen={showCreateModal} onClose={handleCancelCourse} title="Crear Nuevo Curso">
         <CreateCourseAdmin
           onSuccess={(courseId) => {
             setCreatedCourseId(courseId);

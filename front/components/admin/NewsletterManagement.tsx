@@ -24,7 +24,6 @@ import TinyLoader from "../Loaders/TinyLoader";
 
 export default function NewsletterManagement() {
   const { token } = useAuth();
-  const [expandedNewsletter, setExpandedNewsletter] = useState<string | null>(null);
   const [sendingNow, setSendingNow] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -172,23 +171,15 @@ export default function NewsletterManagement() {
     );
   }
 
-  const isExpanded = expandedNewsletter === "abandoned-cart";
-
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-font-light mb-2">Gestión de Recordatorios Automáticos</h2>
-        <p className="text-slate-400 text-sm">
-          Configura el envío automático de recordatorios para carritos abandonados
-        </p>
+        <h1 className="text-2xl font-bold text-font-light">Gestión de Recordatorios Automáticos</h1>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-4">
-          <button
-            onClick={() => setExpandedNewsletter(isExpanded ? null : "abandoned-cart")}
-            className="w-full flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-700/50 hover:bg-slate-800/50 transition-all cursor-pointer"
-          >
+          <div className="w-full flex items-center justify-between p-4 bg-background2/40 rounded-lg border border-slate-700/50">
             <div className="flex items-center gap-3">
               <div
                 className={`w-10 h-10 bg-gradient-to-br rounded-full flex items-center justify-center border ${
@@ -227,131 +218,119 @@ export default function NewsletterManagement() {
 
                 <p className="text-sm font-medium text-slate-300">{dashboardData.delayHours}</p>
               </div>
-              <HiChevronDown
-                className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
-              />
             </div>
-          </button>
-
-          <div
-            className={`grid grid-cols-1 gap-4 pl-4 transition-all duration-300 overflow-hidden ${
-              isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-6">
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <HiUserGroup className="w-5 h-5 text-blue-300" />
-                    <p className="text-slate-400 text-xs">Carritos Pendientes</p>
-                  </div>
-                  <p className="text-2xl font-bold text-font-light">{dashboardData.pendingCount}</p>
-                  <p className="text-slate-500 text-xs mt-1">Esperando recordatorio</p>
+          </div>
+          <div className="bg-background2/40 w-full border border-slate-700/50 rounded-xl p-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <HiUserGroup className="w-5 h-5 text-blue-300" />
+                  <p className="text-slate-400 text-xs">Carritos Pendientes</p>
                 </div>
-
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <HiClock className="w-5 h-5 text-purple-300" />
-                    <p className="text-slate-400 text-xs">Último Envío</p>
-                  </div>
-                  <p className="text-lg font-semibold text-font-light">
-                    {formatLastExecution(dashboardData.lastExecution)}
-                  </p>
-                </div>
-
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <HiCalendar className="w-5 h-5 text-emerald-300" />
-                    <p className="text-slate-400 text-xs">Estado</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleEnabled();
-                      }}
-                      disabled={enableLoading}
-                      className={`relative  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        dashboardData.isEnabled ? "bg-emerald-600" : "bg-slate-600"
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          dashboardData.isEnabled ? "translate-x-6" : "translate-x-1"
-                        }`}
-                      />
-                    </button>
-                    <span className="text-sm text-slate-300">
-                      {dashboardData.isEnabled && !enableLoading ? (
-                        "Habilitado"
-                      ) : !dashboardData.isEnabled && !enableLoading ? (
-                        "Deshabilitado"
-                      ) : !dashboardData.isEnabled && enableLoading ? (
-                        <div className="flex items-center gap-1">
-                          Habilitando
-                          <TinyLoader />
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          Desabilitando
-                          <TinyLoader />
-                        </div>
-                      )}
-                    </span>
-                  </div>
-                </div>
+                <p className="text-2xl font-bold text-font-light">{dashboardData.pendingCount}</p>
+                <p className="text-slate-500 text-xs mt-1">Esperando recordatorio</p>
               </div>
 
-              <div className="border-t border-slate-700/50 pt-6 mb-6">
-                <label className="block text-slate-300 text-sm font-medium mb-3">
-                  Tiempo de Espera para Enviar Recordatorio
-                </label>
-                <select
-                  value={dashboardData.delayValue}
-                  onChange={(e) => handleFrequencyChange(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:border-button transition-colors"
-                >
-                  {frequencyOptions.map((option) => (
-                    <option key={option.value} className="bg-background" value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-slate-500 text-xs mt-2">
-                  El recordatorio se enviará una sola vez, {dashboardData.delayHours.toLowerCase()} de que el
-                  usuario abandone el carrito
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <HiClock className="w-5 h-5 text-purple-300" />
+                  <p className="text-slate-400 text-xs">Último Envío</p>
+                </div>
+                <p className="text-lg font-semibold text-font-light">
+                  {formatLastExecution(dashboardData.lastExecution)}
                 </p>
               </div>
 
-              <div className="border-t border-slate-700/50 pt-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="text-slate-300 font-medium mb-1">Envío Inmediato</h4>
-                    <p className="text-slate-500 text-sm">
-                      Envía recordatorios ahora mismo a todos los carritos pendientes, sin esperar el tiempo
-                      configurado
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleSendNow}
-                    disabled={sendingNow || dashboardData.pendingCount === 0}
-                    className="bg-gradient-to-r from-button/80 cursor-pointer to-button hover:from-button hover:to-button/90 text-font-light font-medium py-2.5 px-5 rounded-lg transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                  >
-                    {sendingNow ? (
-                      <>
-                        <HiClock className="w-5 h-5 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <HiLightningBolt className="w-5 h-5" />
-                        Enviar Ahora
-                      </>
-                    )}
-                  </button>
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <HiCalendar className="w-5 h-5 text-emerald-300" />
+                  <p className="text-slate-400 text-xs">Estado</p>
                 </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleEnabled();
+                    }}
+                    disabled={enableLoading}
+                    className={`relative  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      dashboardData.isEnabled ? "bg-emerald-600" : "bg-slate-600"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        dashboardData.isEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                  <span className="text-sm text-slate-300">
+                    {dashboardData.isEnabled && !enableLoading ? (
+                      "Habilitado"
+                    ) : !dashboardData.isEnabled && !enableLoading ? (
+                      "Deshabilitado"
+                    ) : !dashboardData.isEnabled && enableLoading ? (
+                      <div className="flex items-center gap-1">
+                        Habilitando
+                        <TinyLoader />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        Desabilitando
+                        <TinyLoader />
+                      </div>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-700/50 pt-6 mb-6">
+              <label className="block text-slate-300 text-sm font-medium mb-3">
+                Tiempo de Espera para Enviar Recordatorio
+              </label>
+              <select
+                value={dashboardData.delayValue}
+                onChange={(e) => handleFrequencyChange(e.target.value)}
+                className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-font-light focus:outline-none focus:border-button transition-colors"
+              >
+                {frequencyOptions.map((option) => (
+                  <option key={option.value} className="bg-background" value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-slate-500 text-xs mt-2">
+                El recordatorio se enviará una sola vez, {dashboardData.delayHours.toLowerCase()} de que el
+                usuario abandone el carrito
+              </p>
+            </div>
+
+            <div className="border-t border-slate-700/50 pt-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="text-slate-300 font-medium mb-1">Envío Inmediato</h4>
+                  <p className="text-slate-500 text-sm">
+                    Envía recordatorios ahora mismo a todos los carritos pendientes, sin esperar el tiempo
+                    configurado
+                  </p>
+                </div>
+                <button
+                  onClick={handleSendNow}
+                  disabled={sendingNow || dashboardData.pendingCount === 0}
+                  className="bg-gradient-to-r from-button/80 cursor-pointer to-button hover:from-button hover:to-button/90 text-font-light font-medium py-2.5 px-5 rounded-lg transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {sendingNow ? (
+                    <>
+                      <HiClock className="w-5 h-5 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <HiLightningBolt className="w-5 h-5" />
+                      Enviar Ahora
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>

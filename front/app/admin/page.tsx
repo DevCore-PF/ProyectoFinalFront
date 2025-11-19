@@ -28,19 +28,13 @@ import UserDetails from "@/components/admin/adminUsers/UserDetails";
 import ProfileValidationDetails from "@/components/admin/ProfileValidationDetails";
 import NewsletterManagement from "@/components/admin/NewsletterManagement";
 
-type ValidationType =
-  | "professor"
-  | "course_create"
-  | "course_edit"
-  | "profile_edit"
-  | "role_change";
+type ValidationType = "professor" | "course_create" | "course_edit" | "profile_edit" | "role_change";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<TabType>("validations");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [selectedValidation, setSelectedValidation] =
-    useState<ValidationRequest | null>(null);
+  const [selectedValidation, setSelectedValidation] = useState<ValidationRequest | null>(null);
   const [showBar, setShowBar] = useState(true);
 
   const { user } = useAuth();
@@ -57,11 +51,7 @@ const AdminDashboard = () => {
   const { fetchUserById } = useAdmin();
 
   // ============[ FUNCIÓN PARA ABRIR DETALLES CON FETCH ]=============
-  const openDetail = async (
-    tab: TabType,
-    id: string,
-    validationType?: "professor" | "course"
-  ) => {
+  const openDetail = async (tab: TabType, id: string, validationType?: "professor" | "course") => {
     if (tab === "users") {
       setIsLoadingDetail(true);
       setDetailView({ tab, id });
@@ -111,9 +101,7 @@ const AdminDashboard = () => {
       banned: "bg-slate-500/10 text-slate-400 border-slate-500/20",
       pending: "bg-blue-500/10 text-blue-300 border-blue-500/20",
     };
-    return (
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.active
-    );
+    return statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
   };
   // ============[ COMPONENTE DE ADMINS ]=============
   // const AdminsTab = () => (
@@ -226,13 +214,9 @@ const AdminDashboard = () => {
         <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 md:p-8 mb-6 shadow-xl">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">
-                Panel de Gestión
-              </h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-font-light mb-2">Panel de Gestión</h1>
 
-              <p className="text-slate-400">
-                Gestiona todos los aspectos de tu plataforma
-              </p>
+              <p className="text-slate-400">Gestiona todos los aspectos de tu plataforma</p>
               <div className="flex items-center gap-2 text-slate-400 mt-1 text-sm font-light">
                 <p>{user?.email}</p>
                 <span className="text-amber-200 border border-amber-300 bg-amber-700/40 px-2 rounded-lg">
@@ -300,17 +284,6 @@ const AdminDashboard = () => {
                 </button>
 
                 <button
-                  onClick={() => setActiveTab("admins")}
-                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                    activeTab === "admins"
-                      ? "bg-button/50 text-font-light"
-                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
-                  }`}
-                >
-                  <HiUserGroup className="w-5 h-5 text-accent-light" />
-                  Admins
-                </button>
-                <button
                   onClick={() => setActiveTab("newsletter")}
                   className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
                     activeTab === "newsletter"
@@ -320,6 +293,18 @@ const AdminDashboard = () => {
                 >
                   <HiMail className="w-5 h-5 text-accent-light" />
                   Newsletter
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("admins")}
+                  className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeTab === "admins"
+                      ? "bg-button/50 text-font-light"
+                      : "text-slate-400 hover:text-font-light hover:bg-slate-800/50"
+                  }`}
+                >
+                  <HiUserGroup className="w-5 h-5 text-accent-light" />
+                  Admins
                 </button>
               </div>
             </div>
@@ -336,12 +321,8 @@ const AdminDashboard = () => {
             }`}
           >
             {activeTab === "admins" && <AdminForm />}
-            {activeTab === "validations" && (
-              <ValidationsPage onViewDetail={openDetail} />
-            )}
-            {activeTab === "courses" && (
-              <CoursesPage onViewDetail={openDetail} />
-            )}
+            {activeTab === "validations" && <ValidationsPage onViewDetail={openDetail} />}
+            {activeTab === "courses" && <CoursesPage onViewDetail={openDetail} />}
             {activeTab === "users" && <UsersPage onViewDetail={openDetail} />}
             {activeTab === "finances" && <FinancesPage />}
             {activeTab === "newsletter" && <NewsletterManagement />}
@@ -352,9 +333,7 @@ const AdminDashboard = () => {
             className={`${
               isShowingDetail ? "relative" : "absolute"
             } top-0 left-0 w-full transition-all duration-300 ease-in-out ${
-              isShowingDetail
-                ? "translate-x-0 opacity-100"
-                : "translate-x-full opacity-0 pointer-events-none"
+              isShowingDetail ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
             }`}
           >
             {detailView.tab === "users" && (
@@ -364,9 +343,7 @@ const AdminDashboard = () => {
                   <div className="fixed min-h-screen inset-0 bg-background/80 backdrop-blur-sm flex  justify-center z-50">
                     <div className="text-center">
                       <Loader size="medium" />
-                      <p className="text-slate-400 mt-4">
-                        Cargando información del usuario...
-                      </p>
+                      <p className="text-slate-400 mt-4">Cargando información del usuario...</p>
                     </div>
                   </div>
                 )}
@@ -379,12 +356,8 @@ const AdminDashboard = () => {
                   <div className="min-h-screen bg-background flex items-center justify-center">
                     <div className="text-center">
                       <HiUserCircle className="w-24 h-24 text-slate-600 mx-auto mb-4" />
-                      <h2 className="text-2xl font-bold text-font-light mb-2">
-                        Usuario no encontrado
-                      </h2>
-                      <p className="text-slate-400 mb-6">
-                        No se pudo cargar la información del usuario
-                      </p>
+                      <h2 className="text-2xl font-bold text-font-light mb-2">Usuario no encontrado</h2>
+                      <p className="text-slate-400 mb-6">No se pudo cargar la información del usuario</p>
                       <button
                         onClick={closeDetail}
                         className="bg-button/80 cursor-pointer hover:bg-button text-font-light px-6 py-2 rounded-lg font-semibold transition-all"
@@ -405,16 +378,10 @@ const AdminDashboard = () => {
             {detailView.tab === "validations" && detailView.id && (
               <>
                 {detailView.validationType === "professor" && (
-                  <ProfileValidationDetails
-                    profileId={detailView.id}
-                    onBack={closeDetail}
-                  />
+                  <ProfileValidationDetails profileId={detailView.id} onBack={closeDetail} />
                 )}
                 {detailView.validationType === "course" && (
-                  <CourseValidationDetails
-                    courseId={detailView.id}
-                    onBack={closeDetail}
-                  />
+                  <CourseValidationDetails courseId={detailView.id} onBack={closeDetail} />
                 )}
               </>
             )}
@@ -427,9 +394,7 @@ const AdminDashboard = () => {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-font-light">
-                Detalle de Solicitud
-              </h2>
+              <h2 className="text-2xl font-bold text-font-light">Detalle de Solicitud</h2>
               <button
                 onClick={() => setSelectedValidation(null)}
                 className="cursor-pointer text-slate-400 hover:text-font-light transition-colors"
@@ -440,16 +405,12 @@ const AdminDashboard = () => {
 
             <div className="space-y-4">
               <div className="bg-slate-800/50 rounded-lg p-4">
-                <h3 className="text-font-light font-semibold mb-2">
-                  Información del Usuario
-                </h3>
+                <h3 className="text-font-light font-semibold mb-2">Información del Usuario</h3>
                 <p className="text-slate-300">
-                  <span className="text-slate-400">Nombre:</span>{" "}
-                  {selectedValidation.userName}
+                  <span className="text-slate-400">Nombre:</span> {selectedValidation.userName}
                 </p>
                 <p className="text-slate-300">
-                  <span className="text-slate-400">Email:</span>{" "}
-                  {selectedValidation.userEmail}
+                  <span className="text-slate-400">Email:</span> {selectedValidation.userEmail}
                 </p>
                 <p className="text-slate-300">
                   <span className="text-slate-400">Tipo:</span>{" "}
@@ -458,9 +419,7 @@ const AdminDashboard = () => {
               </div>
 
               <div className="bg-slate-800/50 rounded-lg p-4">
-                <h3 className="text-font-light font-semibold mb-2">
-                  Datos Enviados
-                </h3>
+                <h3 className="text-font-light font-semibold mb-2">Datos Enviados</h3>
                 <pre className="text-slate-300 text-sm overflow-x-auto">
                   {JSON.stringify(selectedValidation.data, null, 2)}
                 </pre>

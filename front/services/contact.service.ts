@@ -5,8 +5,10 @@ export interface ContactForm {
   message: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+
 export async function sendContactForm(data: ContactForm) {
-  const res = await fetch('/api/contact', {
+  const res = await fetch(`${API_URL}/contact`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

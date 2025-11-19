@@ -1,12 +1,6 @@
 // context/AdminContext.tsx
 "use client";
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import {
   activateDeactivateCourseService,
   activateUserService,
@@ -16,6 +10,9 @@ import {
   deactivateUserService,
   getActiveUsersService,
   getAllCoursesAdminService,
+  getAllPaidBatchesService,
+  getAllPendingBatchesService,
+  getAllPendingSummaryService,
   getAllProfessorProfilesService,
   getAllUsersService,
   getCourseFeedbackService,
@@ -29,6 +26,8 @@ import { Course, CourseVisibility } from "@/types/course.types";
 import {
   CourseReview,
   GetAllCoursesAdminParams,
+  PayoutBatch,
+  PendingSummary,
   ProfessorProfileAdmin,
 } from "@/types/admin.types";
 import { useAuth } from "./UserContext";
@@ -40,6 +39,9 @@ interface AdminContextType {
   courses: Course[];
   feedbacks: CourseReview[];
   professorProfiles: ProfessorProfileAdmin[];
+  pendingBatches: PayoutBatch[];
+  paidBatches: PayoutBatch[];
+  pendingSummary: PendingSummary[];
 
   // Loading states
   isLoadingUsers: boolean;
@@ -48,6 +50,10 @@ interface AdminContextType {
   isLoadingInactive: boolean;
   isLoadingActive: boolean;
   isLoadingFeedbacks: boolean;
+  isInitialLoading: boolean;
+  isLoadingPendingBatches: boolean;
+  isLoadingPaidBatches: boolean;
+  isLoadingPendingSummary: boolean;
 
   // Errors
   usersError: string | null;
@@ -71,6 +77,9 @@ interface AdminContextType {
   fetchProfessorProfiles: () => Promise<ProfessorProfileAdmin[]>;
   activateDeactivateCourse: (CourseId: string) => Promise<void>;
   fetchFeedback: (courseId: string) => Promise<CourseReview[] | undefined>;
+  fetchPendingBatches: () => Promise<void>;
+  fetchPaidBatches: () => Promise<void>;
+  fetchPendingSummary: () => Promise<void>;
 
   // User actions
   deactivateUser: (id: string, banReason: string) => Promise<void>;
@@ -90,10 +99,11 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // State
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [professorProfiles, setProfessorProfile] = useState<
-    ProfessorProfileAdmin[]
-  >([]);
+  const [professorProfiles, setProfessorProfile] = useState<ProfessorProfileAdmin[]>([]);
   const [feedbacks, setFeedbacks] = useState<CourseReview[]>([]);
+  const [pendingBatches, setPendingBatches] = useState<PayoutBatch[]>([]);
+  const [paidBatches, setPaidBatches] = useState<PayoutBatch[]>([]);
+  const [pendingSummary, setPendingSummary] = useState<PendingSummary[]>([]);
 
   // Loading states
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
@@ -102,6 +112,10 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [isLoadingActive, setIsLoadingActive] = useState(false);
   const [isLoadingInactive, setIsLoadingInactive] = useState(false);
   const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isLoadingPendingBatches, setIsLoadingPendingBatches] = useState(false);
+  const [isLoadingPaidBatches, setIsLoadingPaidBatches] = useState(false);
+  const [isLoadingPendingSummary, setIsLoadingPendingSummary] = useState(false);
 
   // Error states
   const [usersError, setUsersError] = useState<string | null>(null);
@@ -227,13 +241,53 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchPendingBatches = async () => {
+    setIsLoadingPendingBatches(true);
+    try {
+      if (token) {
+        const data = await getAllPendingBatchesService(token);
+        setPendingBatches(data);
+      }
+    } catch (error) {
+      console.error("Error fetching pending batches:", error);
+    } finally {
+      setIsLoadingPendingBatches(false);
+    }
+  };
+
+  const fetchPaidBatches = async () => {
+    setIsLoadingPaidBatches(true);
+    try {
+      if (token) {
+        const data = await getAllPaidBatchesService(token);
+        setPaidBatches(data);
+      }
+    } catch (error) {
+      console.error("Error fetching paid batches:", error);
+    } finally {
+      setIsLoadingPaidBatches(false);
+    }
+  };
+
+  const fetchPendingSummary = async () => {
+    setIsLoadingPendingSummary(true);
+    try {
+      if (token) {
+        const data = await getAllPendingSummaryService(token);
+        setPendingSummary(data);
+      }
+    } catch (error) {
+      console.error("Error fetching pending summary:", error);
+    } finally {
+      setIsLoadingPendingSummary(false);
+    }
+  };
+
   const activateUser = async (userId: string) => {
     try {
       if (token) {
         await activateUserService(token, userId);
-        setUsers((prev) =>
-          prev.map((u) => (u.id === userId ? { ...u, isActive: true } : u))
-        );
+        setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isActive: true } : u)));
       }
     } catch (error) {
       console.log(error);
@@ -245,9 +299,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     try {
       if (token) {
         await deactivateUserService(userId, token, banReason);
-        setUsers((prev) =>
-          prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u))
-        );
+        setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u)));
       }
     } catch (error) {
       console.log(error);
@@ -260,11 +312,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       if (token) {
         await activateDeactivateCourseService(token, courseId);
         // ESTO ES LO QUE TE FALTABA - Actualizar el estado local
-        setCourses((prev) =>
-          prev.map((c) =>
-            c.id === courseId ? { ...c, isActive: !c.isActive } : c
-          )
-        );
+        setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, isActive: !c.isActive } : c)));
       }
     } catch (error) {
       setCoursesError("Error al cambiar estado de curso");
@@ -367,6 +415,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       throw error;
     }
   };
+
   ///////////////////////////////////// Refresh functions
   const silentRefreshProfiles = async () => {
     try {
@@ -389,6 +438,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error en silent refresh courses:", error);
     }
   };
+
   const refreshUsers = async () => {
     await fetchUsers();
   };
@@ -402,22 +452,36 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const refreshAll = async () => {
-    await Promise.all([fetchUsers(), fetchCourses(), fetchProfessorProfiles()]);
+    setIsInitialLoading(true);
+    try {
+      await Promise.all([
+        fetchUsers(),
+        fetchCourses(),
+        fetchProfessorProfiles(),
+        fetchPendingBatches(),
+        fetchPaidBatches(),
+        fetchPendingSummary(),
+      ]);
+    } finally {
+      setIsInitialLoading(false);
+    }
   };
 
   useEffect(() => {
-    refreshAll();
-  }, []);
+    if (token) {
+      refreshAll();
+    }
+  }, [token]);
 
   const value: AdminContextType = {
     users,
     courses,
-    // stats,
     isLoadingUsers,
     isLoadingCourses,
     isLoadingProfiles,
     isLoadingActive,
     isLoadingInactive,
+    isInitialLoading,
     activeError,
     inactiveError,
     usersError,
@@ -447,11 +511,18 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     silentRefreshProfiles,
     approveCourse,
     rejectCourse,
+    pendingBatches,
+    paidBatches,
+    isLoadingPendingBatches,
+    isLoadingPaidBatches,
+    fetchPendingBatches,
+    fetchPaidBatches,
+    pendingSummary,
+    isLoadingPendingSummary,
+    fetchPendingSummary,
   };
 
-  return (
-    <AdminContext.Provider value={value}>{children}</AdminContext.Provider>
-  );
+  return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 };
 
 // Custom hook

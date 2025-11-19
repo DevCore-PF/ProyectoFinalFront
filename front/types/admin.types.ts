@@ -13,12 +13,7 @@ export type AdminTabType =
   | "reports"
   | "analytics";
 
-export type ValidationType =
-  | "professor"
-  | "course_create"
-  | "course_edit"
-  | "profile_edit"
-  | "role_change";
+export type ValidationType = "professor" | "course_create" | "course_edit" | "profile_edit" | "role_change";
 
 export interface ValidationRequest {
   id: string;
@@ -128,14 +123,7 @@ export interface UsersDetailProps {
   onViewDetail: (tab: TabType, id: string) => void;
 }
 
-export type TabType =
-  | "overview"
-  | "validations"
-  | "courses"
-  | "users"
-  | "finances"
-  | "admins"
-  | "newsletter";
+export type TabType = "overview" | "validations" | "courses" | "users" | "finances" | "admins" | "newsletter";
 
 export interface UserDetailsProps {
   user: User;
@@ -311,9 +299,27 @@ export interface Sale {
   payoutStatus: string;
 }
 export interface AbandonedCartDashboard {
-  isEnabled: boolean; 
-  delayHours: string; 
-  delayValue: string; 
-  pendingCount: number; 
-  lastExecution: string; 
+  isEnabled: boolean;
+  delayHours: string;
+  delayValue: string;
+  pendingCount: number;
+  lastExecution: string;
+}
+export interface PayoutBatch {
+  payoutId: string;
+  status: "PENDING" | "PAID";
+  createdAt: string;
+  paidAt: string | null;
+  totalAmount: string;
+  professorName: string;
+  professorId: string;
+  referenceNumber?: string;
+  salesCount: number;
+}
+
+export interface PendingSummary {
+  professorId: string;
+  professorName: string;
+  totalOwed: number;
+  salesCount: number;
 }

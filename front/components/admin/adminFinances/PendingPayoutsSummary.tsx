@@ -2,66 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/UserContext";
-import {
-  getAllPendingSummaryService,
-  createBatchService,
-} from "@/services/admin.service";
-import {
-  HiCurrencyDollar,
-  HiUserGroup,
-  HiShoppingCart,
-  HiCash,
-} from "react-icons/hi";
+import { createBatchService } from "@/services/admin.service";
+import { HiCurrencyDollar, HiUserGroup, HiShoppingCart, HiCash } from "react-icons/hi";
 import Loader from "@/components/Loaders/Loader";
-import {
-  toastConfirm,
-  toastError,
-  toastSuccess,
-} from "@/helpers/alerts.helper";
+import { toastConfirm, toastError, toastSuccess } from "@/helpers/alerts.helper";
+import { PendingSummary } from "@/types/admin.types";
+import { useAdmin } from "@/context/AdminContext";
 
-interface PendingSummary {
-  professorId: string;
-  professorName: string;
-  totalOwed: number;
-  salesCount: number;
-}
 
-interface PendingPayoutsSummaryProps {
-  onCountChange: (count: number) => void;
-}
-
-export default function PendingPayoutsSummary({
-  onCountChange,
-}: PendingPayoutsSummaryProps) {
+export default function PendingPayoutsSummary() {
   const { token } = useAuth();
-  const [pendingSummary, setPendingSummary] = useState<PendingSummary[]>([]);
-  const [loading, setLoading] = useState(true);
   const [creatingBatch, setCreatingBatch] = useState<string | null>(null);
+  const { pendingSummary, isLoadingPendingSummary, fetchPendingSummary, fetchPendingBatches } = useAdmin();
 
-  useEffect(() => {
-    fetchPendingSummary();
-  }, []);
-
-  const fetchPendingSummary = async () => {
-    try {
-      setLoading(true);
-      if (token) {
-        const data = await getAllPendingSummaryService(token);
-        setPendingSummary(data);
-        onCountChange(data.length);
-      }
-    } catch (error) {
-      toastError("Error al cargar el resumen de pagos pendientes");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateBatch = async (
-    professorId: string,
-    professorName: string
-  ) => {
+  const handleCreateBatch = async (professorId: string, professorName: string) => {
     toastConfirm(
       `Crear lote de pago para ${professorName}?`,
       async () => {
@@ -70,6 +24,7 @@ export default function PendingPayoutsSummary({
           if (token) {
             await createBatchService(token, professorId);
             toastSuccess(`Lote creado exitosamente para ${professorName}`);
+            await Promise.all([fetchPendingSummary(), fetchPendingBatches()]);
           }
           fetchPendingSummary();
         } catch (error) {
@@ -84,7 +39,7 @@ export default function PendingPayoutsSummary({
   };
 
   // ============[ LOADING ]============
-  if (loading) {
+  if (isLoadingPendingSummary) {
     return (
       <div className="flex justify-center items-center h-64">
         <Loader />
@@ -97,12 +52,8 @@ export default function PendingPayoutsSummary({
     return (
       <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-12 sm:p-16 text-center">
         <HiCurrencyDollar className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-slate-600 mb-4" />
-        <p className="text-slate-400 text-base sm:text-lg font-medium mb-2">
-          No hay pagos pendientes
-        </p>
-        <p className="text-slate-500 text-sm">
-          Todos los profesores están al día con sus pagos
-        </p>
+        <p className="text-slate-400 text-base sm:text-lg font-medium mb-2">No hay pagos pendientes</p>
+        <p className="text-slate-500 text-sm">Todos los profesores están al día con sus pagos</p>
       </div>
     );
   }
@@ -121,9 +72,7 @@ export default function PendingPayoutsSummary({
             </div>
             <p className="text-slate-400 text-xs sm:text-sm font-medium">Total a Pagar</p>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold text-emerald-300">
-            ${totalOwed.toFixed(2)}
-          </p>
+          <p className="text-2xl sm:text-3xl font-bold text-emerald-300">${totalOwed.toFixed(2)}</p>
         </div>
 
         <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6 hover:border-slate-600 transition-all">
@@ -133,9 +82,7 @@ export default function PendingPayoutsSummary({
             </div>
             <p className="text-slate-400 text-xs sm:text-sm font-medium">Profesores</p>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold text-font-light">
-            {pendingSummary.length}
-          </p>
+          <p className="text-2xl sm:text-3xl font-bold text-font-light">{pendingSummary.length}</p>
         </div>
 
         <div className="bg-background2/40 border border-slate-700/50 rounded-xl p-4 sm:p-6 hover:border-slate-600 transition-all sm:col-span-2 lg:col-span-1">
@@ -143,9 +90,7 @@ export default function PendingPayoutsSummary({
             <div className="p-2 sm:p-3 bg-purple-500/10 rounded-lg">
               <HiShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-purple-300" />
             </div>
-            <p className="text-slate-400 text-xs sm:text-sm font-medium">
-              Ventas Pendientes
-            </p>
+            <p className="text-slate-400 text-xs sm:text-sm font-medium">Ventas Pendientes</p>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-font-light">{totalSales}</p>
         </div>
@@ -177,8 +122,7 @@ export default function PendingPayoutsSummary({
                       {professor.professorName}
                     </h3>
                     <p className="text-slate-400 text-xs">
-                      {professor.salesCount}{" "}
-                      {professor.salesCount === 1 ? "curso" : "cursos"}
+                      {professor.salesCount} {professor.salesCount === 1 ? "curso" : "cursos"}
                     </p>
                   </div>
                 </div>
@@ -195,22 +139,13 @@ export default function PendingPayoutsSummary({
 
             {/* Action Button */}
             <button
-              onClick={() =>
-                handleCreateBatch(
-                  professor.professorId,
-                  professor.professorName
-                )
-              }
+              onClick={() => handleCreateBatch(professor.professorId, professor.professorName)}
               disabled={creatingBatch === professor.professorId}
               className="w-full bg-gradient-to-r cursor-pointer from-button/80 to-button hover:from-button hover:to-button/90 text-font-light font-medium py-2.5 sm:py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               {creatingBatch === professor.professorId ? (
                 <>
-                  <svg
-                    className="animate-spin h-4 h-4 sm:h-5 sm:w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
+                  <svg className="animate-spin h-4 h-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none">
                     <circle
                       className="opacity-25"
                       cx="12"

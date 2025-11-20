@@ -2,7 +2,7 @@
 
 //Next/React
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 //Types
 import { Course, CourseCategory } from "@/types/course.types";
 //Context
@@ -21,9 +21,11 @@ import {
 import Loader from "@/components/Loaders/Loader";
 import TinyLoader from "@/components/Loaders/TinyLoader";
 
-const CoursesPage = () => {
+function CoursesPage() {
   const { user, token } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [courses, setCourses] = useState<Course[]>([]);
   const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>(
     []
@@ -37,6 +39,25 @@ const CoursesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
+    // Leer filtros desde la URL al cargar
+    useEffect(() => {
+      const cat = searchParams.get("category") || "all";
+      const diff = searchParams.get("difficulty") || "all";
+      const search = searchParams.get("search") || "";
+      setSelectedCategory(cat);
+      setSelectedDifficulty(diff);
+      setSearchTerm(search);
+    }, [searchParams]);
+
+    // Actualizar la URL cuando cambian los filtros
+    useEffect(() => {
+      const params = new URLSearchParams();
+      if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
+      if (selectedDifficulty && selectedDifficulty !== "all") params.set("difficulty", selectedDifficulty);
+      if (searchTerm) params.set("search", searchTerm);
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    }, [selectedCategory, selectedDifficulty, searchTerm, pathname, router]);
   const coursesPerPage = 6;
 
   useEffect(() => {
@@ -246,9 +267,15 @@ const CoursesPage = () => {
                       <div className="flex-1 flex flex-col min-w-0">
                         {/* Título y precio */}
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
-                          <h3 className="text-font-light text-lg sm:text-xl lg:text-2xl font-bold break-words">
+                          <a
+                            href={`/course/${course.id}`}
+                            className="text-font-light text-lg sm:text-xl lg:text-2xl font-bold break-words hover:underline focus:underline outline-none"
+                            target="_self"
+                            rel="noopener noreferrer"
+                            tabIndex={0}
+                          >
                             {course.title}
-                          </h3>
+                          </a>
                           <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-base sm:text-lg lg:text-xl px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap self-start">
                             ${course.price}
                           </span>
@@ -525,4 +552,13 @@ const CoursesPage = () => {
   );
 };
 
-export default CoursesPage;
+
+import { Suspense } from "react";
+
+export default function CoursesPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-400">Cargando cursos...</div>}>
+      <CoursesPage />
+    </Suspense>
+  );
+}

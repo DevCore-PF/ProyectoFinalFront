@@ -442,7 +442,7 @@ const CourseDetailPage: React.FC = () => {
                     }}
                     className={`px-6 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto cursor-pointer
                       ${isInCart
-                        ? "bg-amber-500 hover:bg-amber-600 text-font-light"
+                        ? "bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold"
                         : "bg-button hover:bg-button/80 text-font-light"
                       }`}
                   >

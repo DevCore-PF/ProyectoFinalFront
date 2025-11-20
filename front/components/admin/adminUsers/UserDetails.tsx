@@ -514,17 +514,6 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                       </p>
                     </div>
                   )}
-
-                  {currentUser.emailVerificationToken && (
-                    <div>
-                      <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                        Token de verificación
-                      </p>
-                      <p className="text-font-light font-mono text-xs bg-slate-800/50 px-2 sm:px-3 py-1.5 sm:py-2 rounded truncate">
-                        {currentUser.emailVerificationToken}
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             )}

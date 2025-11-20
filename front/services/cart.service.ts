@@ -14,7 +14,6 @@ export const getCartService = async (token: string) => {
   }
 
   const data = await response.json();
-  console.log('esta es la data de mi carrito',data);
   
   return data;
 };

@@ -43,7 +43,7 @@ export function middleware(request: NextRequest) {
   
   if (isAuthRoute) {
     // Si tiene token Y tiene rol → redirigir a home
-    if (user && user.role !== null) {
+    if (user && user.role !== null  && user.isEmailVerified) {
       return NextResponse.redirect(new URL('/', request.url));
     }
     // Si tiene token pero sin rol → redirigir a /role

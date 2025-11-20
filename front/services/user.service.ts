@@ -353,3 +353,40 @@ export const getCoursesByIdServices = async (token: string) => {
     throw error;
   }
 };
+
+/**
+ * MEtodo para el deslogueo
+ */
+// async serverLogout(userId: string) {
+//   await this.userService.clearSocialTokens(userId);
+//   return { message: 'Sesión cerrada exitosamente.' };
+// }
+
+// @Post('logout')
+// @UseGuards(AuthGuard('jwt'))
+// @ApiOperation({ summary: 'Cerrar sesion del usuario' })
+// @ApiResponse({ status: 200, description: 'Sesion cerrada correctamente' })
+// async logout(@Req() req) {
+//   const userId = req.user.sub;
+//   await this.authService.serverLogout(userId);
+//   return { message: 'Sesion cerrada correctamente' };
+// }
+
+export const logoutService = async (token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      throw new Error("Error triggering abandoned cart emails");
+    }
+    const data = response.json();
+    console.log('devuelve algo???',data);
+    
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

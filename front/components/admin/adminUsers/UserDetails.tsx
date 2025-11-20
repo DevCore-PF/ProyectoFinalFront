@@ -380,14 +380,14 @@ const UserDetails = ({ user, onBack }: UserDetailsProps) => {
                         Google
                       </span>
                     )}
-                    {currentUser.isGitAcocount && (
+                    {currentUser.isGitHubAccount && (
                       <span className="px-2 sm:px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
                         <FaGithub className="w-3 h-3" />
                         GitHub
                       </span>
                     )}
                     {!currentUser.isGoogleAccount &&
-                      !currentUser.isGitAcocount && (
+                      !currentUser.isGitHubAccount && (
                         <span className="px-2 sm:px-3 py-1 bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5">
                           <HiMail className="w-3 h-3" />
                           Email

@@ -40,7 +40,11 @@ const LoginForm = () => {
   const [loadingResender, setLoadingResender] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  useEffect(() => {
+    setUser(null);
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("userTimestamp");
+  }, []);
   const formik = useFormik<LoginFormData>({
     initialValues: loginInitialValues,
     validationSchema: loginValidations,
@@ -67,9 +71,7 @@ const LoginForm = () => {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleResendEmail = async (user: User) => {
@@ -91,11 +93,10 @@ const LoginForm = () => {
       setShowEmailNotVerified(true);
     }
   }, [user]);
- 
 
   useEffect(() => {
-    const passwordReset = searchParams.get('passwordReset');
-    if (passwordReset === 'true') {
+    const passwordReset = searchParams.get("passwordReset");
+    if (passwordReset === "true") {
       toastSuccess("Contraseña restablecida exitosamente. Ya puedes iniciar sesión.");
     }
   }, [searchParams]);
@@ -135,10 +136,7 @@ const LoginForm = () => {
     <div className="min-h-screen text-font-light flex flex-col">
       <header className="p-6">
         <div className="flex  gap-2 items-center text-[1.5rem] font-medium  ">
-          <Link
-            href={"/"}
-            className="flex items-center space-x-2 cursor-pointer"
-          >
+          <Link href={"/"} className="flex items-center space-x-2 cursor-pointer">
             <Image
               alt="logoDev"
               src="https://res.cloudinary.com/dtbpi3bic/image/upload/v1761576978/logoDevCorchetes_vh3ui7.webp"
@@ -165,9 +163,7 @@ const LoginForm = () => {
               <div className="flex flex-col items-center gap-3 mb-6">
                 <div className="text-center">
                   {canResend ? (
-                    <p className="text-green-300/70 text-sm ">
-                      Ya puedes reenviar el código
-                    </p>
+                    <p className="text-green-300/70 text-sm ">Ya puedes reenviar el código</p>
                   ) : (
                     <p className="text-gray-400 text-sm ">
                       Podrás reenviar el código en:{" "}
@@ -202,9 +198,7 @@ const LoginForm = () => {
               </div>
             </>
           ) : (
-            <p className="text-gray-400 text-center mb-6">
-              Iniciá sesión para ingresar a tu cuenta.
-            </p>
+            <p className="text-gray-400 text-center mb-6">Iniciá sesión para ingresar a tu cuenta.</p>
           )}
           <div className="flex flex-col gap-4">
             <div>
@@ -217,9 +211,7 @@ const LoginForm = () => {
                 placeholder="Ingresa tu email"
                 {...formik.getFieldProps("email")}
                 className={`w-full h-12 rounded-md bg-background2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
-                  formik.touched.email && formik.errors.email
-                    ? "border border-amber-400/50"
-                    : ""
+                  formik.touched.email && formik.errors.email ? "border border-amber-400/50" : ""
                 }`}
               />
               {formik.errors.email && formik.touched.email && (
@@ -243,9 +235,7 @@ const LoginForm = () => {
                   placeholder="Ingresa tu contraseña"
                   {...formik.getFieldProps("password")}
                   className={`w-full h-12 rounded-md bg-background2 px-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-purple-300/50 ${
-                    formik.touched.password && formik.errors.password
-                      ? "border border-amber-400/50"
-                      : ""
+                    formik.touched.password && formik.errors.password ? "border border-amber-400/50" : ""
                   }`}
                 />
                 <button
@@ -303,10 +293,7 @@ const LoginForm = () => {
 
             <p className="text-center text-gray-400 text-sm mt-2">
               ¿Todavía no tenés una cuenta?{" "}
-              <Link
-                href="/register"
-                className="text-accent-medium hover:underline"
-              >
+              <Link href="/register" className="text-accent-medium hover:underline">
                 Registrate
               </Link>
               <span className="items-center text-xl">&rarr;</span>

@@ -9,6 +9,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
 //Services
 import { updateRoleService } from "@/services/user.service";
 //Formik
@@ -40,23 +42,20 @@ const page = () => {
 
         if (token) {
           const data = await updateRoleService(formik.values.role, token);
+
           if (data.access_token) {
+            Cookies.set("auth-token", data.access_token, { path: "/" });
             setToken(data.access_token);
           }
           setUser(data.userReturn);
 
           const rol = formik.values.role === "student" ? "alumn@" : "profesor";
 
-          if (
-            data.userReturn.isEmailVerified ||
-            data.userReturn.isGoogleAccount
-          ) {
+          if (data.userReturn.isEmailVerified || data.userReturn.isGoogleAccount) {
             toastSuccess("Login exitoso!");
             window.location.href = "/";
           } else {
-            toastSuccess(
-              `Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`
-            );
+            toastSuccess(`Has seleccionado ${rol}. Revisa tu email para verificar tu cuenta.`);
             window.location.href = "/login";
           }
         }
@@ -149,11 +148,7 @@ const page = () => {
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br from-accent-medium/10 to-transparent transition-opacity duration-500
-                    ${
-                      formik.values.role === "teacher"
-                        ? "opacity-100"
-                        : "opacity-0 group-hover:opacity-50"
-                    }`}
+                    ${formik.values.role === "teacher" ? "opacity-100" : "opacity-0 group-hover:opacity-50"}`}
                 ></div>
 
                 <div
@@ -185,9 +180,7 @@ const page = () => {
                     </div>
 
                     <div className="text-center space-y-2">
-                      <h3 className="text-3xl sm:text-4xl font-semibold">
-                        Profesor
-                      </h3>
+                      <h3 className="text-3xl sm:text-4xl font-semibold">Profesor</h3>
                       <p className="text-sm sm:text-base text-font-light/60 max-w-xs">
                         Crea cursos y comparte tu conocimiento
                       </p>
@@ -213,11 +206,7 @@ const page = () => {
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br from-accent-medium/10 to-transparent transition-opacity duration-500
-                    ${
-                      formik.values.role === "student"
-                        ? "opacity-100"
-                        : "opacity-0 group-hover:opacity-50"
-                    }`}
+                    ${formik.values.role === "student" ? "opacity-100" : "opacity-0 group-hover:opacity-50"}`}
                 ></div>
 
                 <div
@@ -249,9 +238,7 @@ const page = () => {
                     </div>
 
                     <div className="text-center space-y-2">
-                      <h3 className="text-3xl sm:text-4xl font-semibold">
-                        Alumn@
-                      </h3>
+                      <h3 className="text-3xl sm:text-4xl font-semibold">Alumn@</h3>
                       <p className="text-sm sm:text-base text-font-light/60 max-w-xs">
                         Aprende y desarrolla nuevas habilidades
                       </p>

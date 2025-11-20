@@ -289,6 +289,7 @@ export const approveProfileService = async (token: string, profileId: string) =>
       throw new Error(error.message || "Error al aprovar perfil");
     }
     const data = response.json();
+
     return data;
   } catch (error) {
     console.log(error);
@@ -644,3 +645,154 @@ export const triggerAllRemindersService = async (token: string) => {
   return response.json();
 };
 
+export const approveTeacherService = async (token: string, userId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/profiles/approved-teacher/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al aprobar usuario");
+    }
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const rejectTeacherService = async (token: string, userId: string, reason: string) => {
+  console.log("ID para API: ", userId, typeof userId);
+  try {
+    const response = await fetch(`${API_URL}/profiles/reject-teacher/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ reason }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al rechazar usuario");
+    }
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// /profiles/approved-teacher/{userId}
+// /profiles/reject-teacher/{userId}
+/**
+ * Endpoint para aprobar al usuario cambie de rol de alumno a profesor
+ */
+// @Patch('approved-teacher/:userId')
+// @ApiApproveTeacherDoc()
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
+// @Roles('admin')
+// async approvedTeacherRequest(@Param('userID', ParseUUIDPipe) userId: string) {
+//   return this.profilesService.approvedTeacherRequest(userId);
+// }
+
+// /**
+//  * Endpoint para rechazar la solicitud de cambio de rol de alumno a profesor
+//  */
+// @Patch('reject-teacher/:userId')
+// @ApiRejectTeacherDoc()
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
+// @Roles('admin')
+// async rejectTeacherRequest(
+//   @Param('userID', ParseUUIDPipe) userId: string,
+//   @Body() rejectDto: RejectRequestDto,
+// ) {
+//   return this.profilesService.rejectTeacherRequest(userId, rejectDto);
+// }
+// async approvedTeacherRequest(userId: string) {
+//   //Buscamos al ususrio(por su perfil de profesor)
+//   const user = await this.userRepository.findUserWithProfile(userId);
+
+//   if(!user) {
+//     throw new NotFoundException('Usuario no encontrado')
+//   }
+
+//   const profile = user.professorProfile;
+//   if(!profile) {
+//     throw new NotFoundException('Este usuario no tienes una solicitud de perfil de profesor')
+//   }
+
+//   if(profile.approvalStatus !== ApprovalStatus.PENDING){
+//     throw new ConflictException('Esta solicitud ya fue procesada')
+//   }
+
+//   //actualizamos su estatus
+//   profile.approvalStatus = ApprovalStatus.APPROVED;
+
+//   //cambiamos el rol
+//   user.role = UserRole.TEACHER;
+//   //regreamos a false la solicitud
+//   user.isRequestingTeacherRole = false;
+
+//   //guardamos en los cambios
+//   await this.profilesRepository.save(profile);
+//   await this.userRepository.save(user);
+
+//   try {
+//     await this.mailService.sendRoleRequestApprovedEmail(user.email, user.name, "Profesor")
+//   } catch(emailError) {
+//     throw new BadRequestException('Error al enviar el email de solicitud de profesor:', emailError)
+//   }
+
+//   return {
+//     message: 'Solicitud de ascenso a profesor aprobada correctamente'
+//   }
+
+// }
+
+// /**
+//  * MEtodo que rechaza el cambio de rol de estudiante a profesor
+//  */
+// async rejectTeacherRequest(userId: string, rejectDto: RejectRequestDto){
+//   const {reason} = rejectDto;
+
+//   //buscamos al usuario y su perfil
+//   const user = await this.userRepository.findUserWithProfile(userId);
+
+//   if(!user) {
+//     throw new NotFoundException('Usuario no encontrado')
+//   }
+
+//   const profile = user.professorProfile;
+
+//   if(!profile) {
+//     throw new NotFoundException('Este usuario no tiene un solicitud de cambio de rol')
+//   }
+
+//   //valida que la solicitud este en pendiente
+//   if(profile.approvalStatus !== ApprovalStatus.PENDING) {
+//     throw new ConflictException('Esta solicitud ya fue procesada (aprobada o rechazada')
+//   }
+
+//   //actualizamos el perfil con el estado y motivo del rechazo
+//   profile.approvalStatus = ApprovalStatus.REJECTED;
+//   profile.rejectionReason = reason;
+
+//   //regresamos a false
+//   user.isRequestingTeacherRole = false;
+
+//   //enviamos el email de rechazo
+//   try {
+//     await this.mailService.sendRoleRequestRejectedEmail(user.email, user.name, reason)
+//   } catch(emailError) {
+//     throw new BadRequestException(`Solicitud de rol rechazada para el ${user.id}, pero fallo el envio del email`, emailError)
+//   }
+
+//   return {
+//     message: 'Solicitud rechazada exitosamente'
+//   }
+// }

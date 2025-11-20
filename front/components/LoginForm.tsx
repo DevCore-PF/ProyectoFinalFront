@@ -89,7 +89,7 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (user && !user.isEmailVerified) {
+    if (user && !user.isEmailVerified && (!user?.isGoogleAccount || !user?.isGoogleAccount)) {
       setShowEmailNotVerified(true);
     }
   }, [user]);

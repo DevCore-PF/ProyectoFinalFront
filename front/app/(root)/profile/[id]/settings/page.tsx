@@ -192,7 +192,6 @@ const today = new Date().toISOString().split("T")[0];
 
         // Si el resultado indica que debemos refrescar los datos del usuario
         if (result.imageUrl?.startsWith("refresh_user_data_")) {
-          console.log("🔄 Refrescando datos del usuario...");
           try {
             await refreshUser();
             // Obtener la imagen actualizada del contexto

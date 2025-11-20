@@ -62,7 +62,7 @@ const CourseValidationDetails = ({ courseId, onBack }: CourseValidationDetailsPr
 
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
-    console.log("este es mi curso", foundCourse);
+
 
     if (foundCourse) {
       setCourse(foundCourse);

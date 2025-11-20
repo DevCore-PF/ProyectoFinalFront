@@ -228,7 +228,6 @@ export const getAllCoursesAdminService = async (token: string, params?: GetAllCo
     }
 
     const data = await response.json();
-    console.log("aca vienen todos los cursos", data);
 
     return data;
   } catch (error) {
@@ -249,7 +248,6 @@ export const getProfessorByIdService = async (token: string, userId: string) => 
       throw new Error(error.message || "Error al obtener perfil del profesor");
     }
     const data = await response.json();
-    console.log("esta es la respuesta de cursos del profe", data);
     return data;
   } catch (error) {
     console.log(error);
@@ -395,8 +393,6 @@ export const getAllSalesService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los pagos");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis pagos ", data);
-
     return data;
   } catch (error) {
     console.log(error);
@@ -417,7 +413,6 @@ export const getAllSalesPendingService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los pagos pendientes");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis pagos pendientes ", data);
 
     return data;
   } catch (error) {
@@ -439,7 +434,6 @@ export const getAllSalesPaidService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los pagos pagados");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis pagos pagados ", data);
 
     return data;
   } catch (error) {
@@ -501,7 +495,6 @@ export const getAllPendingSummaryService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los lotes creados");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis lotes creados ", data);
 
     return data;
   } catch (error) {
@@ -523,7 +516,6 @@ export const getAllBatchesService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los lotes ");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis lotes ", data);
 
     return data;
   } catch (error) {
@@ -545,7 +537,6 @@ export const getAllPendingBatchesService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los lotes pendientes");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis lotes pendientes ", data);
 
     return data;
   } catch (error) {
@@ -567,7 +558,6 @@ export const getAllPaidBatchesService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los lotes pagos");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis lotes pagos ", data);
 
     return data;
   } catch (error) {
@@ -589,7 +579,6 @@ export const getAbandonedCartDashboardService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los carritos abandonados");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis carritos abandonados dashboard ", data);
 
     return data;
   } catch (error) {
@@ -611,7 +600,6 @@ export const getAbandonedCartSettingsService = async (token: string) => {
       throw new Error(error.message || "Error al obtener los carritos abandonados");
     }
     const data = await response.json();
-    console.log("Esta es la respuesta de todos mis carritos abandonados ESTEEEE", data);
 
     return data;
   } catch (error) {

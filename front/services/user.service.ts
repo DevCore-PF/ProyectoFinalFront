@@ -188,8 +188,6 @@ export const uploadProfileImageService = async (
 
     const data = await response.json();
 
-    // 🔍 LOG PARA VER QUÉ DEVUELVE EL BACKEND
-    console.log("Respuesta completa del backend:", data);
 
     // Intenta extraer la URL de diferentes posibles campos
     let imageUrl =
@@ -354,24 +352,6 @@ export const getCoursesByIdServices = async (token: string) => {
   }
 };
 
-/**
- * MEtodo para el deslogueo
- */
-// async serverLogout(userId: string) {
-//   await this.userService.clearSocialTokens(userId);
-//   return { message: 'Sesión cerrada exitosamente.' };
-// }
-
-// @Post('logout')
-// @UseGuards(AuthGuard('jwt'))
-// @ApiOperation({ summary: 'Cerrar sesion del usuario' })
-// @ApiResponse({ status: 200, description: 'Sesion cerrada correctamente' })
-// async logout(@Req() req) {
-//   const userId = req.user.sub;
-//   await this.authService.serverLogout(userId);
-//   return { message: 'Sesion cerrada correctamente' };
-// }
-
 export const logoutService = async (token: string) => {
   try {
     const response = await fetch(`${API_URL}/auth/logout`, {
@@ -382,7 +362,6 @@ export const logoutService = async (token: string) => {
       throw new Error("Error triggering abandoned cart emails");
     }
     const data = response.json();
-    console.log('devuelve algo???',data);
     
     return data;
   } catch (error) {

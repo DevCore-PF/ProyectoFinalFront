@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import {
-  toastSuccess,
-  toastError,
-  toastConfirm,
-} from "@/helpers/alerts.helper";
+import { toastSuccess, toastError, toastConfirm } from "@/helpers/alerts.helper";
 import { RxCross2 } from "react-icons/rx";
 import {
   HiArrowLeft,
@@ -25,27 +21,23 @@ import Loader from "../Loaders/Loader";
 import TinyLoader from "../Loaders/TinyLoader";
 import { ProfessorProfileAdmin } from "@/types/admin.types";
 import RejectedReasonModal from "./RejectedReasonModal";
+import { useAuth } from "@/context/UserContext";
+import { approveTeacherService, rejectTeacherService } from "@/services/admin.service";
 
 interface ProfessorValidationDetailsProps {
   profileId: string;
   onBack: () => void;
 }
 
-const ProfessorValidationDetails = ({
-  profileId,
-  onBack,
-}: ProfessorValidationDetailsProps) => {
-  const { professorProfiles, approveProfile, refreshProfiles, rejectProfile } =
-    useAdmin();
-  const [professor, setProfessor] = useState<ProfessorProfileAdmin | null>(
-    null
-  );
+const ProfessorValidationDetails = ({ profileId, onBack }: ProfessorValidationDetailsProps) => {
+  const { professorProfiles, approveProfile, refreshProfiles, rejectProfile } = useAdmin();
+  const [professor, setProfessor] = useState<ProfessorProfileAdmin | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingApprove, setLoadingApprove] = useState(false);
   const [loadingReject, setLoadingReject] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rejectedReason, setRejectedReason] = useState("");
-
+  const { token } = useAuth();
   useEffect(() => {
     const foundProfessor = professorProfiles.find((p) => p.id === profileId);
     if (foundProfessor) {
@@ -84,6 +76,76 @@ const ProfessorValidationDetails = ({
     return labels[status as keyof typeof labels] || status;
   };
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const handleApproveStudent = async () => {
+    toastConfirm(
+      "¿Aprobar solicitud de profesor?",
+      async () => {
+        setLoadingApprove(true);
+        try {
+          if (professor?.user.id && token) {
+            await approveTeacherService(token, professor.user.id);
+            await refreshProfiles();
+            toastSuccess("Solicitud aprobada correctamente");
+          }
+        } catch (error) {
+          console.error(error);
+          toastError("Error al aprobar la solicitud");
+        } finally {
+          setLoadingApprove(false);
+        }
+      },
+      () => {}
+    );
+  };
+  const handleRejectStudent = async () => {
+    if (professor?.approvalStatus === "pending") {
+      setIsModalOpen(true);
+    }
+  };
+  const handleRejectStudentConfirm = async () => {
+    if (!rejectedReason.trim()) {
+      toastError("Debes proporcionar un motivo de rechazo");
+      return;
+    }
+    if (rejectedReason.trim().length < 10) {
+      toastError("El motivo debe tener al menos 10 caracteres");
+      return;
+    }
+    setIsModalOpen(false);
+
+    toastConfirm(
+      "¿Rechazar solicitud de profesor?",
+      async () => {
+        setLoadingReject(true);
+        console.log("Request a backend:", {
+          url: `${API_URL}/profiles/reject-teacher/${professor?.user.id}`,
+          method: "PATCH",
+          body: JSON.stringify({ reason: rejectedReason }),
+        });
+        try {
+          if (!professor?.user.id || typeof professor.user.id !== "string") {
+            toastError("ID de usuario inválido para rechazo");
+            setLoadingReject(false);
+            setRejectedReason("");
+            return;
+          }
+          if (professor?.user.id && token) {
+            await rejectTeacherService(token, professor.user.id, rejectedReason);
+            await refreshProfiles();
+            toastSuccess("Solicitud rechazada");
+          }
+        } catch (error) {
+          console.error(error);
+          toastError("Error al rechazar la solicitud");
+        } finally {
+          setLoadingReject(false);
+          setRejectedReason("");
+        }
+      },
+      () => {}
+    );
+  };
   const handleApprove = async (profileId: string) => {
     toastConfirm(
       "¿Aprobar solicitud de profesor?",
@@ -157,9 +219,7 @@ const ProfessorValidationDetails = ({
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
           <HiUser className="w-16 h-16 sm:w-24 sm:h-24 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">
-            Profesor no encontrado
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">Profesor no encontrado</h2>
           <p className="text-slate-400 mb-6 text-sm sm:text-base">
             No se pudo cargar la información del profesor
           </p>
@@ -195,12 +255,10 @@ const ProfessorValidationDetails = ({
                   <HiExclamation className="w-5 h-5 sm:w-6 sm:h-6 text-blue-300" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-blue-200 font-semibold text-base sm:text-lg">
-                    Solicitud Pendiente
-                  </p>
+                  <p className="text-blue-200 font-semibold text-base sm:text-lg">Solicitud Pendiente</p>
                   <p className="text-blue-200/80 text-xs sm:text-sm">
-                    Esta solicitud está esperando aprobación. Revisa la
-                    información y decide si aprobar o rechazar.
+                    Esta solicitud está esperando aprobación. Revisa la información y decide si aprobar o
+                    rechazar.
                   </p>
                 </div>
               </div>
@@ -214,17 +272,12 @@ const ProfessorValidationDetails = ({
                   <HiXCircle className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-amber-200 font-semibold text-base sm:text-lg">
-                    Solicitud Rechazada
-                  </p>
+                  <p className="text-amber-200 font-semibold text-base sm:text-lg">Solicitud Rechazada</p>
                   <p className="text-amber-200/80 text-xs sm:text-sm">
                     Esta solicitud fue rechazada previamente.
                   </p>
                   <p className="text-amber-200/80 text-xs sm:text-sm break-words">
-                    Motivo:{" "}
-                    {professor.rejectionReason
-                      ? professor.rejectionReason
-                      : "No se encontró motivo"}
+                    Motivo: {professor.rejectionReason ? professor.rejectionReason : "No se encontró motivo"}
                   </p>
                 </div>
               </div>
@@ -238,9 +291,7 @@ const ProfessorValidationDetails = ({
                   <HiCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-emerald-200 font-semibold text-base sm:text-lg">
-                    Solicitud Aprobada
-                  </p>
+                  <p className="text-emerald-200 font-semibold text-base sm:text-lg">Solicitud Aprobada</p>
                   <p className="text-emerald-100 text-xs sm:text-sm">
                     Este profesor fue aprobado y puede crear cursos.
                   </p>
@@ -268,9 +319,7 @@ const ProfessorValidationDetails = ({
                   <h1 className="text-2xl sm:text-3xl font-bold text-font-light mb-1 break-words">
                     {professor.user.name}
                   </h1>
-                  <p className="text-slate-400 mb-2 sm:mb-3 text-sm sm:text-base">
-                    {professor.profession}
-                  </p>
+                  <p className="text-slate-400 mb-2 sm:mb-3 text-sm sm:text-base">{professor.profession}</p>
                   <div className="flex flex-wrap items-center gap-2">
                     <span
                       className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
@@ -294,7 +343,48 @@ const ProfessorValidationDetails = ({
               </div>
 
               {/* ============[ ACTION BUTTONS ]============ */}
-              {professor.approvalStatus === "pending" && (
+              {professor.approvalStatus === "pending" && professor.user.role  === "student" && (
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full lg:w-auto">
+                  <button
+                    onClick={handleRejectStudent}
+                    disabled={loadingReject || loadingApprove}
+                    className="flex items-center justify-center cursor-pointer gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 text-sm sm:text-base"
+                  >
+                    {loadingReject ? (
+                      <>
+                        <TinyLoader />
+                        <span className="hidden sm:inline">Rechazando...</span>
+                        <span className="sm:hidden">...</span>
+                      </>
+                    ) : (
+                      <>
+                        <HiXCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Rechazar
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleApproveStudent}
+                    disabled={loadingApprove || loadingReject}
+                    className="flex items-center justify-center cursor-pointer gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 text-sm sm:text-base"
+                  >
+                    {loadingApprove ? (
+                      <>
+                        <TinyLoader />
+                        <span className="hidden sm:inline">Aprobando...</span>
+                        <span className="sm:hidden">...</span>
+                      </>
+                    ) : (
+                      <>
+                        <HiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Aprobar
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {professor.approvalStatus === "pending" && professor.user.role === "teacher" && (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full lg:w-auto">
                   <button
                     onClick={handleReject}
@@ -354,9 +444,7 @@ const ProfessorValidationDetails = ({
                     <HiMail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     Email
                   </p>
-                  <p className="text-font-light text-sm sm:text-base break-all">
-                    {professor.user.email}
-                  </p>
+                  <p className="text-font-light text-sm sm:text-base break-all">{professor.user.email}</p>
                 </div>
 
                 <div>
@@ -364,15 +452,11 @@ const ProfessorValidationDetails = ({
                     <HiPhone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     Teléfono
                   </p>
-                  <p className="text-font-light text-sm sm:text-base">
-                    {professor.phone}
-                  </p>
+                  <p className="text-font-light text-sm sm:text-base">{professor.phone}</p>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                    ID de Usuario
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">ID de Usuario</p>
                   <p className="text-font-light font-mono text-xs bg-slate-800/50 px-2 sm:px-3 py-1.5 sm:py-2 rounded break-all">
                     {professor.user.id}
                   </p>
@@ -394,16 +478,8 @@ const ProfessorValidationDetails = ({
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-xs sm:text-sm">
-                    Cuenta Google
-                  </span>
-                  <span
-                    className={
-                      professor.user.isGoogleAccount
-                        ? "text-emerald-300"
-                        : "text-slate-300"
-                    }
-                  >
+                  <span className="text-slate-400 text-xs sm:text-sm">Cuenta Google</span>
+                  <span className={professor.user.isGoogleAccount ? "text-emerald-300" : "text-slate-300"}>
                     {professor.user.isGoogleAccount ? (
                       <HiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     ) : (
@@ -412,16 +488,8 @@ const ProfessorValidationDetails = ({
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-xs sm:text-sm">
-                    Cuenta GitHub
-                  </span>
-                  <span
-                    className={
-                      professor.user.isGitHubAccount
-                        ? "text-emerald-300"
-                        : "text-slate-300"
-                    }
-                  >
+                  <span className="text-slate-400 text-xs sm:text-sm">Cuenta GitHub</span>
+                  <span className={professor.user.isGitHubAccount ? "text-emerald-300" : "text-slate-300"}>
                     {professor.user.isGitHubAccount ? (
                       <HiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     ) : (
@@ -430,15 +498,9 @@ const ProfessorValidationDetails = ({
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-xs sm:text-sm">
-                    Perfil Completo
-                  </span>
+                  <span className="text-slate-400 text-xs sm:text-sm">Perfil Completo</span>
                   <span
-                    className={
-                      professor.user.hasCompletedProfile
-                        ? "text-emerald-300"
-                        : "text-slate-300"
-                    }
+                    className={professor.user.hasCompletedProfile ? "text-emerald-300" : "text-slate-300"}
                   >
                     {professor.user.hasCompletedProfile ? (
                       <HiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -458,21 +520,13 @@ const ProfessorValidationDetails = ({
               </h2>
               <div className="space-y-2 sm:space-y-3">
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                    Registro de usuario
-                  </p>
-                  <p className="text-font-light text-xs sm:text-sm">
-                    {formatDate(professor.user.createdAt)}
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Registro de usuario</p>
+                  <p className="text-font-light text-xs sm:text-sm">{formatDate(professor.user.createdAt)}</p>
                 </div>
 
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                    Última actualización
-                  </p>
-                  <p className="text-font-light text-xs sm:text-sm">
-                    {formatDate(professor.user.updatedAt)}
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Última actualización</p>
+                  <p className="text-font-light text-xs sm:text-sm">{formatDate(professor.user.updatedAt)}</p>
                 </div>
               </div>
             </div>
@@ -488,37 +542,25 @@ const ProfessorValidationDetails = ({
               </h2>
               <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-2">
-                    Profesión
-                  </p>
-                  <p className="text-font-light text-base sm:text-lg font-medium">
-                    {professor.profession}
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-2">Profesión</p>
+                  <p className="text-font-light text-base sm:text-lg font-medium">{professor.profession}</p>
                 </div>
 
                 {professor.speciality && (
                   <div>
-                    <p className="text-slate-400 text-xs sm:text-sm mb-2">
-                      Especialidad
-                    </p>
-                    <p className="text-font-light text-sm sm:text-base">
-                      {professor.speciality}
-                    </p>
+                    <p className="text-slate-400 text-xs sm:text-sm mb-2">Especialidad</p>
+                    <p className="text-font-light text-sm sm:text-base">{professor.speciality}</p>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-2">
-                    Biografía
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-2">Biografía</p>
                   {professor.biography ? (
                     <p className="text-font-light leading-relaxed bg-slate-800/30 p-3 sm:p-4 rounded-lg text-sm sm:text-base">
                       {professor.biography}
                     </p>
                   ) : (
-                    <p className="text-slate-500 italic text-sm">
-                      Sin biografía proporcionada
-                    </p>
+                    <p className="text-slate-500 italic text-sm">Sin biografía proporcionada</p>
                   )}
                 </div>
               </div>
@@ -530,8 +572,7 @@ const ProfessorValidationDetails = ({
                 <HiExternalLink className="w-5 h-5 sm:w-6 sm:h-6" />
                 Enlaces Profesionales
               </h2>
-              {professor.professionalLinks &&
-              professor.professionalLinks.length > 0 ? (
+              {professor.professionalLinks && professor.professionalLinks.length > 0 ? (
                 <div className="space-y-2 sm:space-y-3">
                   {professor.professionalLinks.map((link, index) => (
                     <a
@@ -542,16 +583,12 @@ const ProfessorValidationDetails = ({
                       className="flex items-center gap-2 p-2.5 sm:p-3 bg-slate-800/30 hover:bg-slate-800/50 rounded-lg transition-colors group"
                     >
                       <HiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-accent-light shrink-0" />
-                      <span className="text-font-light text-xs sm:text-sm truncate">
-                        {link}
-                      </span>
+                      <span className="text-font-light text-xs sm:text-sm truncate">{link}</span>
                     </a>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 italic text-sm">
-                  No hay enlaces profesionales proporcionados
-                </p>
+                <p className="text-slate-500 italic text-sm">No hay enlaces profesionales proporcionados</p>
               )}
             </div>
 
@@ -586,9 +623,7 @@ const ProfessorValidationDetails = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 italic text-sm">
-                  No hay certificados cargados
-                </p>
+                <p className="text-slate-500 italic text-sm">No hay certificados cargados</p>
               )}
             </div>
 
@@ -600,9 +635,7 @@ const ProfessorValidationDetails = ({
               </h2>
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
-                  <span className="text-slate-300 text-xs sm:text-sm">
-                    Términos generales
-                  </span>
+                  <span className="text-slate-300 text-xs sm:text-sm">Términos generales</span>
                   {professor.agreedToTerms ? (
                     <HiCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />
                   ) : (
@@ -610,9 +643,7 @@ const ProfessorValidationDetails = ({
                   )}
                 </div>
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
-                  <span className="text-slate-300 text-xs sm:text-sm">
-                    Políticas de información
-                  </span>
+                  <span className="text-slate-300 text-xs sm:text-sm">Políticas de información</span>
                   {professor.agreedToInfo ? (
                     <HiCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />
                   ) : (
@@ -620,9 +651,7 @@ const ProfessorValidationDetails = ({
                   )}
                 </div>
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
-                  <span className="text-slate-300 text-xs sm:text-sm">
-                    Términos de aprobación
-                  </span>
+                  <span className="text-slate-300 text-xs sm:text-sm">Términos de aprobación</span>
                   {professor.agreedToAproveed ? (
                     <HiCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />
                   ) : (
@@ -644,7 +673,7 @@ const ProfessorValidationDetails = ({
             setIsModalOpen(false);
             setRejectedReason("");
           }}
-          onConfirm={confirmRejected}
+          onConfirm={professor?.user.role === "student" ? handleRejectStudentConfirm : confirmRejected}
         />
       )}
     </div>

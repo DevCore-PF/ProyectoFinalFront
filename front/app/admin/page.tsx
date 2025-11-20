@@ -87,15 +87,7 @@ const AdminDashboard = () => {
     return labels[type];
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      inactive: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-      banned: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-      pending: "bg-blue-500/10 text-blue-300 border-blue-500/20",
-    };
-    return statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
-  };
+
 
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-10">
@@ -103,7 +95,7 @@ const AdminDashboard = () => {
         {/* ============[ HEADER   ]============= */}
         <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 shadow-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            {/* Título y descripción */}
+       
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-font-light mb-1 sm:mb-2">
                 Panel de Gestión
@@ -112,7 +104,6 @@ const AdminDashboard = () => {
                 Gestiona todos los aspectos de tu plataforma
               </p>
 
-              {/* Info del usuario - stack en mobile */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-slate-400 mt-2 text-xs sm:text-sm font-light">
                 <p className="truncate">{user?.email}</p>
                 <span className="inline-flex items-center w-fit text-amber-200 border border-amber-300 bg-amber-700/40 px-2 py-0.5 rounded-lg text-xs">
@@ -121,7 +112,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Icono - oculto en mobile muy pequeño */}
             <div className="hidden sm:flex p-3 lg:p-4 bg-slate-700/30 rounded-xl shrink-0">
               <HiShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-slate-300" />
             </div>
@@ -337,3 +327,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

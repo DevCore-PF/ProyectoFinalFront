@@ -1,16 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  /* --background: #242645; */
   --background: #1f213c;
   --foreground: #171717;
-  --color: #c64f06;
-  --color: #c288f9; /* ganancias de profesores */
-  --color2:#689df1;/* ganancias de admin */
-  --color2:#61d6af;/* ganancias totales */
-  
+  --background-light: #a2a6e6;
 }
-
+[data-theme="light"] {
+  --background: #f8f9fc;           /* Gris muy claro */
+  --background2: #ffffff;          /* Blanco para cards */
+  --navbar: #ffffff;
+  --footer: #f0f2f7;
+  --border: #d1d6e0;              /* Bordes visibles */
+  --border-light: #e5e8f0;
+  --button: #7e4bde;              /* Morado mantiene identidad */
+  --accent-light: #6938d0;        /* Morado más oscuro para contraste */
+  --accent-medium: #8563d1;
+  --font-light: #111827;          /* Casi negro para texto principal */
+  --font-dark: #6b7280;           /* Gris medio para secundario */
+}
 @theme {
   --color-background: var(--background);
   --color-background2: #3f4273;
@@ -34,10 +41,16 @@
   --font-mono: var(--font-mono);
 }
 
+[data-theme="light"] body {
+  background: var(--background);
+  color: var(--font-light);
+}
+
 body {
   background: var(--color-background);
   color: var(--color-font-light);
   font-family: var(--font-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 html,
 body {
@@ -53,10 +66,8 @@ input[type="checkbox"]:checked + div .checkbox-indicator {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  box-shadow: 0 0 0px 1000px
-    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
-  -webkit-box-shadow: 0 0 0px 1000px
-    color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px color-mix(in srgb, var(--background2) 95%, white 5%) inset !important;
   -webkit-text-fill-color: #f0f0f0 !important;
   caret-color: #f0f0f0 !important;
   transition: background-color 9999s ease-in-out 0s !important;
@@ -94,4 +105,15 @@ button[data-cancel-button]:hover {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(126, 75, 222, 0.7);
+}
+
+[data-theme="light"] .custom-scrollbar {
+  scrollbar-color: rgba(126, 75, 222, 0.4) rgba(0, 0, 0, 0.05);
+}
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(126, 75, 222, 0.4);
 }

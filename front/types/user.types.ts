@@ -1,4 +1,3 @@
-
 import { Course } from "./course.types";
 import Image from "next/image";
 import { ProfessorProfile } from "./professor.types";
@@ -25,7 +24,7 @@ export interface User {
   emailVerificationToken?: string;
   googleId?: string | null;
   isGoogleAccount: boolean;
-  isGitAcocount: boolean;
+  isGitHubAccount: boolean;
   createdAt: string;
   updatedAt?: string;
   enrollments: {

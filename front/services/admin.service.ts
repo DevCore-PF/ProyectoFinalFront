@@ -70,6 +70,7 @@ export const getUserByIdService = async (userId: string) => {
       throw new Error(error.message || "Error al conseguir usuario por id");
     }
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.log(error);
@@ -227,6 +228,7 @@ export const getAllCoursesAdminService = async (token: string, params?: GetAllCo
     }
 
     const data = await response.json();
+    console.log("aca vienen todos los cursos", data);
 
     return data;
   } catch (error) {
@@ -574,7 +576,6 @@ export const getAllPaidBatchesService = async (token: string) => {
   }
 };
 
-
 export const getAbandonedCartDashboardService = async (token: string) => {
   try {
     const response = await fetch(`${API_URL}/admin/settings/abandoned-cart-dashboard`, {
@@ -619,23 +620,18 @@ export const getAbandonedCartSettingsService = async (token: string) => {
   }
 };
 
-
-
 export const updateAbandonedCartSettingsService = async (
   token: string,
   settings: { isEnabled?: boolean; delayHours?: string }
 ) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/admin/settings/abandoned-cart`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(settings),
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings/abandoned-cart`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(settings),
+  });
 
   if (!response.ok) {
     throw new Error("Error updating abandoned cart settings");
@@ -645,16 +641,13 @@ export const updateAbandonedCartSettingsService = async (
 };
 
 export const triggerAllRemindersService = async (token: string) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/admin/settings/trigger-all-reminders`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings/trigger-all-reminders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Error triggering abandoned cart emails");
@@ -662,3 +655,4 @@ export const triggerAllRemindersService = async (token: string) => {
 
   return response.json();
 };
+

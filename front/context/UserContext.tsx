@@ -1,18 +1,11 @@
 "use client";
 import { clearSession } from "@/helpers/session.helpers";
-import { getCurrentUserService } from "@/services/user.service";
+import { getCurrentUserService, logoutService } from "@/services/user.service";
 import { User } from "@/types/user.types";
 import { decodeToken } from "@/lib/jwt";
 import Cookies from "js-cookie";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-  useRef,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from "react";
 
 interface AuthContextType {
   token: string | null;
@@ -55,9 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             const now = Date.now();
             if (!userTimestamp || now - parseInt(userTimestamp) > 30000) {
-              console.log(
-                "Datos de usuario antiguos, se refrescarán automáticamente"
-              );
+              console.log("Datos de usuario antiguos, se refrescarán automáticamente");
             }
           } catch (error) {
             console.error("Error al parsear usuario:", error);
@@ -77,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 ...freshUserData,
                 profileImage: freshUserData.profileImage || freshUserWithImage.image,
               };
-              
+
               setUserState(normalizedUserData);
               sessionStorage.setItem("user", JSON.stringify(normalizedUserData));
               sessionStorage.setItem("userTimestamp", Date.now().toString());
@@ -116,12 +107,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const freshUserWithImage = freshUserData as User & { image?: string };
           const normalizedUserData = {
             ...freshUserData,
-            hasCompletedProfile:
-              freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
-            profileImage:
-              freshUserData.profileImage ||
-              freshUserWithImage.image ||
-              user.profileImage,
+            hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
+            profileImage: freshUserData.profileImage || freshUserWithImage.image || user.profileImage,
           };
 
           setUserState(normalizedUserData);
@@ -174,12 +161,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshUser = async () => {
     if (!token || !user?.id) {
-      // No token or user to refresh
       return;
     }
 
     try {
-      // Refreshing user data
       const freshUserData = await getCurrentUserService(token, user.id);
 
       const freshUserWithImage = freshUserData as User & {
@@ -188,16 +173,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
       const normalizedUserData = {
         ...freshUserData,
-        hasCompletedProfile:
-          freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
-        profileImage:
-          freshUserData.profileImage ||
-          freshUserWithImage.image ||
-          user.profileImage,
+        hasCompletedProfile: freshUserData.hasCompletedProfile ?? user.hasCompletedProfile,
+        profileImage: freshUserData.profileImage || freshUserWithImage.image || user.profileImage,
       };
 
       setUser(normalizedUserData);
-      // User updated in context and sessionStorage
     } catch (error) {
       console.error("Error al refrescar usuario:", error);
       if (error instanceof Error) {
@@ -209,7 +189,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           errorMessage.includes("not found") ||
           errorMessage.includes("error obteniendo usuario")
         ) {
-          // User not found, logging out
           logout();
           return;
         }
@@ -218,28 +197,61 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     if (isLoggingOut.current) {
       return;
     }
-
     isLoggingOut.current = true;
 
     try {
+      if (token) {
+        await logoutService(token);
+      }
+
       clearSession();
-      // Eliminar la cookie con las mismas opciones con las que se creó
       Cookies.remove("auth-token", { path: "/" });
       setTokenState(null);
       setUserState(null);
 
-      setTimeout(() => {
+      if (user?.isGoogleAccount) {
+        // Revocar el token de Google
+        window.location.href = "https://accounts.google.com/o/oauth2/revoke?token=" + token;
+      } else if (user?.isGitHubAccount) {
         window.location.href = "/";
-      }, 100);
+      } else {
+        // Usuario con credenciales normales
+        window.location.href = "/";
+      }
     } catch (error) {
       console.error("Error durante logout:", error);
       window.location.href = "/";
+    } finally {
+      isLoggingOut.current = false;
     }
   };
+
+  // const logout = () => {
+  //   if (isLoggingOut.current) {
+  //     return;
+  //   }
+
+  //   isLoggingOut.current = true;
+
+  //   try {
+  //     clearSession();
+  //     // Eliminar la cookie con las mismas opciones con las que se creó
+  //     Cookies.remove("auth-token", { path: "/" });
+  //     setTokenState(null);
+  //     setUserState(null);
+
+  //     setTimeout(() => {
+  //       window.location.href = "/";
+  //     }, 100);
+  //   } catch (error) {
+  //     console.error("Error durante logout:", error);
+  //     window.location.href = "/";
+  //   }
+  // };
 
   return (
     <AuthContext.Provider

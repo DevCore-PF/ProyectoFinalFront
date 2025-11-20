@@ -114,19 +114,7 @@ const TeacherDashboardPage = () => {
           </div>
         )}
 
-        {/* Mostrar botón solo si necesita validación o fue rechazado, PERO no si está pending */}
-        {(needsValidation || isRejected) && !isPending && !showForm && (
-          <div className="mb-6 text-center">
-            <button
-              onClick={handleShowValidationForm}
-              className="px-6 py-3 bg-button/80 cursor-pointer hover:bg-button text-font-light font-medium rounded-lg transition-all duration-200"
-            >
-              {needsValidation
-                ? "Completar Perfil Profesional"
-                : "Actualizar Perfil"}
-            </button>
-          </div>
-        )}
+
 
         {showForm && (
           <div className="mb-6">

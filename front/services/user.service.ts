@@ -382,6 +382,8 @@ export const logoutService = async (token: string) => {
       throw new Error("Error triggering abandoned cart emails");
     }
     const data = response.json();
+    console.log('devuelve algo???',data);
+    
     return data;
   } catch (error) {
     console.log(error);

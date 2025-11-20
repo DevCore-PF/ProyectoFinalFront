@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const isLoggingOut = useRef(false);
-
+  
   // Efecto inicial: cargar token y usuario
   useEffect(() => {
     const initializeAuth = async () => {
@@ -196,39 +196,71 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw error;
     }
   };
-
   const logout = async () => {
     if (isLoggingOut.current) {
       return;
     }
+
     isLoggingOut.current = true;
 
     try {
+      // 1. Llamar al backend para limpiar tokens sociales
       if (token) {
         await logoutService(token);
       }
 
+      // 2. Limpiar el estado local
       clearSession();
       Cookies.remove("auth-token", { path: "/" });
+      localStorage.clear();
+      sessionStorage.clear();
       setTokenState(null);
       setUserState(null);
 
-      if (user?.isGoogleAccount) {
-        // Revocar el token de Google
-        window.location.href = "https://accounts.google.com/o/oauth2/revoke?token=" + token;
-      } else if (user?.isGitHubAccount) {
+      setTimeout(() => {
         window.location.href = "/";
-      } else {
-        // Usuario con credenciales normales
-        window.location.href = "/";
-      }
+      }, 100);
     } catch (error) {
       console.error("Error durante logout:", error);
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "/";
     } finally {
       isLoggingOut.current = false;
     }
   };
+  // const logout = async () => {
+  //   if (isLoggingOut.current) {
+  //     return;
+  //   }
+  //   isLoggingOut.current = true;
+
+  //   try {
+  //     if (token) {
+  //       await logoutService(token);
+  //     }
+
+  //     clearSession();
+  //     Cookies.remove("auth-token", { path: "/" });
+  //     setTokenState(null);
+  //     setUserState(null);
+
+  //     if (user?.isGoogleAccount) {
+  //       // Revocar el token de Google
+  //       window.location.href = "https://accounts.google.com/o/oauth2/revoke?token=" + token;
+  //     } else if (user?.isGitHubAccount) {
+  //       window.location.href = "/";
+  //     } else {
+  //       // Usuario con credenciales normales
+  //       window.location.href = "/";
+  //     }
+  //   } catch (error) {
+  //     console.error("Error durante logout:", error);
+  //     window.location.href = "/";
+  //   } finally {
+  //     isLoggingOut.current = false;
+  //   }
+  // };
 
   // const logout = () => {
   //   if (isLoggingOut.current) {

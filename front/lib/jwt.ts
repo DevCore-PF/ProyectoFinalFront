@@ -5,6 +5,7 @@ export interface JwtPayload {
   role: 'student' | 'teacher' | 'admin' | null;
   iat?: number;
   exp?: number;
+  isEmailVerified: boolean;
 }
 
 export function decodeToken(token: string): JwtPayload | null {

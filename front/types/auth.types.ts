@@ -1,4 +1,3 @@
-
 export interface LoginFormData {
   email: string;
   password: string;
@@ -30,5 +29,4 @@ export interface RegisterResponse {
   userReturn: User;
 }
 
-import { ProfessorProfile } from "./professor.types";import { User } from "./user.types";
-
+import { User } from "./user.types";

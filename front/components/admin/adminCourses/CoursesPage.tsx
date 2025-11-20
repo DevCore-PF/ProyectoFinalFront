@@ -25,8 +25,14 @@ import CreateLessonAdmin from "./CreateLessonAdmin";
 import { CourseVisibility } from "@/types/course.types";
 
 type CourseStatus = "all" | "active" | "inactive";
-type CourseCategory = "all" | "Backend" | "Frontend" | "Mobile" | "DataScience" | "DataBase" | "VideoGames";
-
+type CourseCategory =
+  | "all"
+  | "Backend"
+  | "FrontEnd"
+  | "MobileDevelopment"
+  | "DataScience"
+  | "Database"
+  | "VideoGames";
 type CourseDifficulty = "all" | "Principiante" | "Intermedio" | "Avanzado";
 type SortBy = "title" | "price" | "createdAt" | "rating";
 type SortOrder = "asc" | "desc";
@@ -110,16 +116,35 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   /* ============[ ESTILOS BADGE CATEGORY ]============= */
-  const getCategoryBadge = (category: string) => {
-    const config = {
-      Backend: "bg-blue-400/10 text-blue-200 border-blue-500/20",
-      "Front End": "bg-purple-400/10 text-purple-300 border-purple-500/20",
-      FullStack: "bg-green-400/10 text-green-300 border-green-500/20",
-      DevOps: "bg-orange-400/10 text-orange-300 border-orange-500/20",
-    };
-    return config[category as keyof typeof config];
+  // const getCategoryBadge = (category: string) => {
+  //   const config = {
+  //     Backend: "bg-blue-400/10 text-blue-200 border-blue-500/20",
+  //     Frontend: "bg-purple-400/10 text-purple-300 border-purple-500/20",
+  //     FullStack: "bg-green-400/10 text-green-300 border-green-500/20",
+  //     DevOps: "bg-orange-400/10 text-orange-300 border-orange-500/20",
+  //   };
+  //   return config[category as keyof typeof config];
+  // };
+const getCategoryBadge = (category: string) => {
+  const config = {
+    "Backend": "bg-blue-400/10 text-blue-200 border-blue-500/20",
+    "Frontend": "bg-purple-400/10 text-purple-300 border-purple-500/20",
+    "Mobile Development": "bg-pink-400/10 text-pink-300 border-pink-500/20",
+    "Data Science": "bg-cyan-400/10 text-cyan-300 border-cyan-500/20",
+    "Database": "bg-indigo-400/10 text-indigo-300 border-indigo-500/20",
+    "Video Games": "bg-fuchsia-400/10 text-fuchsia-300 border-fuchsia-500/20",
+    "UI/UX Design": "bg-rose-400/10 text-rose-300 border-rose-500/20",
+    "Cybersecurity": "bg-red-400/10 text-red-200 border-red-500/20",
+    "DevOps": "bg-orange-400/10 text-orange-300 border-orange-500/20",
+    "Artificial Intelligence": "bg-violet-400/10 text-violet-300 border-violet-500/20",
+    "Machine Learning": "bg-purple-400/10 text-purple-200 border-purple-500/20",
+    "Digital Marketing": "bg-amber-400/10 text-amber-300 border-amber-500/20",
+    "Web Development": "bg-green-400/10 text-green-300 border-green-500/20",
+    "QA & Testing": "bg-teal-400/10 text-teal-300 border-teal-500/20",
+    "Automation": "bg-lime-400/10 text-lime-300 border-lime-500/20",
   };
-
+  return config[category as keyof typeof config] || "bg-gray-400/10 text-gray-300 border-gray-500/20";
+};
   const getDificulttyBadge = (difficulty: string) => {
     const config = {
       PRINCIPIANTE: "text-blue-200 border-blue-300/40",
@@ -420,11 +445,20 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
               >
                 <option value="all">Todas las categorías</option>
                 <option value="Backend">Backend</option>
-                <option value="Front End">Frontend</option>
-                <option value="Mobile">Movil</option>
-                <option value="DataScience">Data Science</option>
-                <option value="DataBase">Base de datos</option>
-                <option value="VideoGames">Video Juegos</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Mobile Development">Movil</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Database">Base de datos</option>
+                <option value="Video Games">Video Juegos</option>
+                <option value="UI/UX Design">Diseño UX/UI</option>
+                <option value="Cybersecurity">Ciberseguridad</option>
+                <option value="DevOps">DevOps</option>
+                <option value="Artificial Intelligence">Inteligencia Artificial</option>
+                <option value="Machine Learning">Aprendizaje Automático</option>
+                <option value="Digital Marketing">Marketing Digital</option>
+                <option value="Web Development">Desarrollo Web</option>
+                <option value="QA & Testing">QA & Pruebas</option>
+                <option value="Automation">Automatización</option>
               </select>
 
               <select
@@ -690,9 +724,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                               {course.difficulty}
                             </p>
                           </td>
-                          <td className="px-2 sm:px-4 py-3 sm:py-4">
+                          <td className="px-2 text-center sm:px-4 py-3 sm:py-4">
                             <span
-                              className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border inline-flex items-center gap-1 sm:gap-1.5 ${getCategoryBadge(
+                              className={`px-2  py-1 rounded-lg text-xs font-medium border inline-flex items-center gap-1 sm:gap-1.5 ${getCategoryBadge(
                                 course.category
                               )}`}
                             >
@@ -719,9 +753,9 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
                             </div>
                           </td>
 
-                          <td className="px-3 sm:px-4 py-3 sm:py-4">
+                          <td className="px-3 sm:px-4 py-3 w-full sm:py-4">
                             <span
-                              className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
+                              className={`px-2 sm:px-1 py-1 rounded-lg text-xs font-medium border ${getStatusBadge(
                                 course.status
                               )}`}
                             >

@@ -310,7 +310,7 @@ const CreateLessonPage = () => {
       {createLoading ? (
         <div className="flex flex-col min-h-screen justify-center items-center">
           <Loader size="medium" />
-          <p className="text-slate-400">Creando clase...</p>
+          <p className="text-slate-400">Creando curso...</p>
         </div>
       ) : (
         <div className="min-h-screen p-6">
@@ -805,7 +805,7 @@ const CreateLessonPage = () => {
                             formik.values.videos.length === 0 ||
                             formik.values.pdfs.length === 0
                           }
-                          className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 bg-gray-700/50 border border-gray-600 text-gray-200 font-semibold rounded-md hover:bg-gray-600/50 hover:border-gray-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full text-sm sm:text-base"
+                          className="flex cursor-pointer items-center justify-center gap-2 px-4 sm:px-6 py-2 bg-gray-700/50 border border-gray-600 text-gray-200 font-semibold rounded-md hover:bg-gray-600/50 hover:border-gray-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full text-sm sm:text-base"
                         >
                           <HiPlus className="w-4 h-4 flex-shrink-0" />
                           <span className="truncate">Agregar otra lección</span>

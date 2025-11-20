@@ -220,7 +220,7 @@ const TeacherCourseCard = ({
       {/* Botón de acción */}
       <button
         onClick={() => router.push(`/course/${course.id}`)}
-        className="w-full bg-gradient-to-r from-[#7e4bde] to-[#6d3dc4] hover:from-[#6d3dc4] hover:to-[#5c2db3] text-font-light py-2.5 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 hover:shadow-lg hover:shadow-[#7e4bde]/30 transform hover:scale-[1.02]"
+        className="w-full bg-button/80  cursor-pointer  hover:bg-button  text-font-light py-2.5 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 hover:shadow-lg  transform hover:scale-[1.02]"
       >
         Ver detalles del curso
       </button>

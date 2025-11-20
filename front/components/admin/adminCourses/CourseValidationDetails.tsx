@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import {
-  toastSuccess,
-  toastError,
-  toastConfirm,
-} from "@/helpers/alerts.helper";
+import { toastSuccess, toastError, toastConfirm } from "@/helpers/alerts.helper";
 import {
   HiArrowLeft,
   HiCheckCircle,
@@ -40,10 +36,7 @@ interface CourseValidationDetailsProps {
   onBack: () => void;
 }
 
-const CourseValidationDetails = ({
-  courseId,
-  onBack,
-}: CourseValidationDetailsProps) => {
+const CourseValidationDetails = ({ courseId, onBack }: CourseValidationDetailsProps) => {
   const { courses, refreshCourses } = useAdmin();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,9 +44,7 @@ const CourseValidationDetails = ({
   const [loadingReject, setLoadingReject] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rejectedReason, setRejectedReason] = useState("");
-  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
-    new Set()
-  );
+  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(new Set());
   const [loadingVisibility, setLoadingVisibility] = useState(false);
   const { changeVisibility, approveCourse, rejectCourse } = useAdmin();
 
@@ -71,6 +62,8 @@ const CourseValidationDetails = ({
 
   useEffect(() => {
     const foundCourse = courses.find((c) => c.id === courseId);
+    console.log("este es mi curso", foundCourse);
+
     if (foundCourse) {
       setCourse(foundCourse);
     }
@@ -186,8 +179,7 @@ const CourseValidationDetails = ({
         setLoadingVisibility(true);
         try {
           const currentCourse = courses.find((c) => c.id === courseId);
-          const wasPublic =
-            currentCourse?.visibility === CourseVisibility.PUBLIC;
+          const wasPublic = currentCourse?.visibility === CourseVisibility.PUBLIC;
 
           await changeVisibility(courseId);
 
@@ -217,9 +209,7 @@ const CourseValidationDetails = ({
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
           <HiBookOpen className="w-16 h-16 sm:w-24 sm:h-24 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">
-            Curso no encontrado
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-font-light mb-2">Curso no encontrado</h2>
           <p className="text-slate-400 mb-6 text-sm sm:text-base">
             No se pudo cargar la información del curso
           </p>
@@ -259,8 +249,7 @@ const CourseValidationDetails = ({
                     Curso Pendiente de Revisión
                   </p>
                   <p className="text-blue-200/80 text-xs sm:text-sm">
-                    Este curso está esperando aprobación. Revisa el contenido y
-                    decide si publicar o rechazar.
+                    Este curso está esperando aprobación. Revisa el contenido y decide si publicar o rechazar.
                   </p>
                 </div>
               </div>
@@ -274,9 +263,7 @@ const CourseValidationDetails = ({
                   <HiXCircle className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-amber-200 font-semibold text-base sm:text-lg">
-                    Curso Rechazado
-                  </p>
+                  <p className="text-amber-200 font-semibold text-base sm:text-lg">Curso Rechazado</p>
                   <p className="text-amber-200/80 text-xs sm:text-sm">
                     Este curso fue rechazado previamente.
                   </p>
@@ -292,9 +279,7 @@ const CourseValidationDetails = ({
                   <HiCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-emerald-200 font-semibold text-base sm:text-lg">
-                    Curso Publicado
-                  </p>
+                  <p className="text-emerald-200 font-semibold text-base sm:text-lg">Curso Publicado</p>
                   <p className="text-emerald-100 text-xs sm:text-sm">
                     Este curso está activo y disponible para los estudiantes.
                   </p>
@@ -330,9 +315,7 @@ const CourseValidationDetails = ({
                   <h1 className="text-2xl sm:text-3xl font-bold text-font-light mb-2 break-words">
                     {course.title}
                   </h1>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-3 line-clamp-2">
-                    {course.description}
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-3 line-clamp-2">{course.description}</p>
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
                     <div className="flex items-center gap-2 text-slate-300">
                       <HiClock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -340,9 +323,7 @@ const CourseValidationDetails = ({
                     </div>
                     <div className="flex items-center gap-2 text-slate-300">
                       <HiCurrencyDollar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span className="font-semibold">
-                        ${parseFloat(course.price).toFixed(2)}
-                      </span>
+                      <span className="font-semibold">${parseFloat(course.price).toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-2 text-slate-300">
                       <span>{course.lessons?.length || 0} lecciones</span>
@@ -415,9 +396,7 @@ const CourseValidationDetails = ({
                     }
                     onClick={() => handleChangeVisibility(course.id)}
                     className={`relative inline-flex h-7 w-14 cursor-pointer disabled:cursor-not-allowed items-center rounded-full transition-colors duration-300 shrink-0 ${
-                      course.visibility === CourseVisibility.PRIVATE
-                        ? "bg-amber-500/80"
-                        : "bg-emerald-400/80"
+                      course.visibility === CourseVisibility.PRIVATE ? "bg-amber-500/80" : "bg-emerald-400/80"
                     }`}
                   >
                     <span
@@ -427,14 +406,11 @@ const CourseValidationDetails = ({
                           : "translate-x-[2px]"
                       }`}
                     >
-                      {course.visibility === CourseVisibility.PRIVATE &&
-                      !loadingVisibility ? (
+                      {course.visibility === CourseVisibility.PRIVATE && !loadingVisibility ? (
                         <HiLockClosed className="w-4 h-4 text-amber-800" />
-                      ) : course.visibility === CourseVisibility.PRIVATE &&
-                        loadingVisibility ? (
+                      ) : course.visibility === CourseVisibility.PRIVATE && loadingVisibility ? (
                         <TinyLoader />
-                      ) : course.visibility === CourseVisibility.PUBLIC &&
-                        !loadingVisibility ? (
+                      ) : course.visibility === CourseVisibility.PUBLIC && !loadingVisibility ? (
                         <HiLockOpen className="w-4 h-4 text-emerald-800" />
                       ) : (
                         <TinyLoader />
@@ -501,15 +477,11 @@ const CourseValidationDetails = ({
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-400 text-xs sm:text-sm">Tipo</span>
-                  <span className="text-font-light font-medium text-xs sm:text-sm">
-                    {course.type}
-                  </span>
+                  <span className="text-font-light font-medium text-xs sm:text-sm">{course.type}</span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-400 text-xs sm:text-sm">Visibilidad</span>
-                  <span className="text-font-light font-medium text-xs sm:text-sm">
-                    {course.visibility}
-                  </span>
+                  <span className="text-font-light font-medium text-xs sm:text-sm">{course.visibility}</span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
                   <span className="text-slate-400 text-xs sm:text-sm">Feedbacks</span>
@@ -529,17 +501,11 @@ const CourseValidationDetails = ({
               <div className="space-y-2 sm:space-y-3">
                 <div>
                   <p className="text-slate-400 text-xs sm:text-sm mb-1">Creación</p>
-                  <p className="text-font-light text-xs sm:text-sm">
-                    {formatDate(course.createdAt)}
-                  </p>
+                  <p className="text-font-light text-xs sm:text-sm">{formatDate(course.createdAt)}</p>
                 </div>
                 <div>
-                  <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                    Última actualización
-                  </p>
-                  <p className="text-font-light text-xs sm:text-sm">
-                    {formatDate(course.updatedAt)}
-                  </p>
+                  <p className="text-slate-400 text-xs sm:text-sm mb-1">Última actualización</p>
+                  <p className="text-font-light text-xs sm:text-sm">{formatDate(course.updatedAt)}</p>
                 </div>
               </div>
             </div>
@@ -621,30 +587,26 @@ const CourseValidationDetails = ({
                                 Videos ({lesson.urlVideos.length})
                               </h4>
                               <div className="space-y-2">
-                                {lesson.urlVideos.map(
-                                  (video: string, videoIndex: number) => (
-                                    <a
-                                      key={videoIndex}
-                                      href={video}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-800/50 hover:bg-slate-800/70 rounded-lg transition-colors group"
-                                    >
-                                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center justify-center shrink-0">
-                                        <HiPlay className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-font-light text-xs sm:text-sm font-medium group-hover:text-accent-light transition-colors">
-                                          Video {videoIndex + 1}
-                                        </p>
-                                        <p className="text-slate-400 text-xs truncate">
-                                          {video}
-                                        </p>
-                                      </div>
-                                      <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-accent-light transition-colors shrink-0" />
-                                    </a>
-                                  )
-                                )}
+                                {lesson.urlVideos.map((video: string, videoIndex: number) => (
+                                  <a
+                                    key={videoIndex}
+                                    href={video}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-800/50 hover:bg-slate-800/70 rounded-lg transition-colors group"
+                                  >
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                      <HiPlay className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-font-light text-xs sm:text-sm font-medium group-hover:text-accent-light transition-colors">
+                                        Video {videoIndex + 1}
+                                      </p>
+                                      <p className="text-slate-400 text-xs truncate">{video}</p>
+                                    </div>
+                                    <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-accent-light transition-colors shrink-0" />
+                                  </a>
+                                ))}
                               </div>
                             </div>
                           )}
@@ -657,39 +619,48 @@ const CourseValidationDetails = ({
                                 Documentos ({lesson.urlPdfs.length})
                               </h4>
                               <div className="space-y-2">
-                                {lesson.urlPdfs.map(
-                                  (pdf: string, pdfIndex: number) => (
-                                    <a
-                                      key={pdfIndex}
-                                      href={pdf}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-800/50 hover:bg-slate-800/70 rounded-lg transition-colors group"
-                                    >
-                                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center justify-center shrink-0">
-                                        <HiDocumentText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-font-light text-xs sm:text-sm font-medium group-hover:text-accent-light transition-colors">
-                                          Documento {pdfIndex + 1}
-                                        </p>
-                                        <p className="text-slate-400 text-xs truncate">
-                                          {pdf}
-                                        </p>
-                                      </div>
-                                      <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-accent-light transition-colors shrink-0" />
-                                    </a>
-                                  )
+                                {lesson.urlPdfs.map((pdf: string, pdfIndex: number) => (
+                                  <a
+                                    key={pdfIndex}
+                                    href={pdf}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-800/50 hover:bg-slate-800/70 rounded-lg transition-colors group"
+                                  >
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                      <HiDocumentText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-font-light text-xs sm:text-sm font-medium group-hover:text-accent-light transition-colors">
+                                        Documento {pdfIndex + 1}
+                                      </p>
+                                      <p className="text-slate-400 text-xs truncate">{pdf}</p>
+                                    </div>
+                                    <HiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-accent-light transition-colors shrink-0" />
+                                  </a>
+                                ))}
+                                {/* ===== additionalData dentro del header de la lección ===== */}
+                                {lesson.aditionalData && (
+                                  <div className="text-center">
+                                    <h4>Contenido adcional</h4>
+                                    <ul>
+                                      {lesson.aditionalData.map((c: string) => {
+                                        return (
+                                          <li className="mt-2 text-xs sm:text-sm text-accent-light bg-button/10 border border-accent-light/40 rounded px-2 py-1 inline-block">
+                                            {c}
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
                                 )}
                               </div>
                             </div>
                           )}
 
                           {/* Sin recursos */}
-                          {(!lesson.urlVideos ||
-                            lesson.urlVideos.length === 0) &&
-                            (!lesson.urlPdfs ||
-                              lesson.urlPdfs.length === 0) && (
+                          {(!lesson.urlVideos || lesson.urlVideos.length === 0) &&
+                            (!lesson.urlPdfs || lesson.urlPdfs.length === 0) && (
                               <p className="text-slate-500 text-xs sm:text-sm italic text-center py-4">
                                 No hay recursos disponibles para esta lección.
                               </p>
@@ -715,18 +686,12 @@ const CourseValidationDetails = ({
               <div className="space-y-2 sm:space-y-3">
                 <div className="p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
                   <p className="text-slate-400 text-xs sm:text-sm mb-1">ID del Curso</p>
-                  <p className="text-font-light font-mono text-xs break-all">
-                    {course.id}
-                  </p>
+                  <p className="text-font-light font-mono text-xs break-all">{course.id}</p>
                 </div>
                 {course.professor?.id && (
                   <div className="p-2.5 sm:p-3 bg-slate-800/30 rounded-lg">
-                    <p className="text-slate-400 text-xs sm:text-sm mb-1">
-                      ID del Profesor
-                    </p>
-                    <p className="text-font-light font-mono text-xs break-all">
-                      {course.professor.id}
-                    </p>
+                    <p className="text-slate-400 text-xs sm:text-sm mb-1">ID del Profesor</p>
+                    <p className="text-font-light font-mono text-xs break-all">{course.professor.id}</p>
                   </div>
                 )}
               </div>

@@ -12,10 +12,7 @@ interface AdditionalContentModalProps {
   onClose: () => void;
 }
 
-const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
+const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({ isOpen, onClose }) => {
   const { token } = useAuth();
   const { courses, isLoading: coursesLoading } = useProfessorCourses();
 
@@ -29,9 +26,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
     setMounted(true);
   }, []);
 
-  const selectedCourseData = courses.find(
-    (course) => course.id === selectedCourse
-  );
+  const selectedCourseData = courses.find((course) => course.id === selectedCourse);
   const lessons = selectedCourseData?.lessons || [];
 
   const addUrlField = () => {
@@ -127,9 +122,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
               Seleccionar Curso
             </label>
             {coursesLoading ? (
-              <div className="bg-slate-800/50 rounded-lg p-3 text-slate-400 text-sm">
-                Cargando cursos...
-              </div>
+              <div className="bg-slate-800/50 rounded-lg p-3 text-slate-400 text-sm">Cargando cursos...</div>
             ) : (
               <select
                 value={selectedCourse}
@@ -138,18 +131,25 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
                   setSelectedLesson(""); // Reset lesson when course changes
                 }}
                 className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-font-light focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-                style={{ 
+                style={{
                   backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 0.5rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1.5em 1.5em',
-                  paddingRight: '2.5rem',
-                  fontSize: '0.813rem'
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.5em 1.5em",
+                  paddingRight: "2.5rem",
+                  fontSize: "0.813rem",
                 }}
               >
-                <option value="" style={{ fontSize: '0.813rem' }}>Selecciona un curso</option>
+                <option value="" style={{ fontSize: "0.813rem" }}>
+                  Selecciona un curso
+                </option>
                 {courses.map((course) => (
-                  <option key={course.id} value={course.id} title={course.title} style={{ fontSize: '0.813rem' }}>
+                  <option
+                    key={course.id}
+                    value={course.id}
+                    title={course.title}
+                    style={{ fontSize: "0.813rem" }}
+                  >
                     {course.title.length > 35 ? `${course.title.substring(0, 35)}...` : course.title}
                   </option>
                 ))}
@@ -167,18 +167,25 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
                 value={selectedLesson}
                 onChange={(e) => setSelectedLesson(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-font-light focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-                style={{ 
+                style={{
                   backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 0.5rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1.5em 1.5em',
-                  paddingRight: '2.5rem',
-                  fontSize: '0.813rem'
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.5em 1.5em",
+                  paddingRight: "2.5rem",
+                  fontSize: "0.813rem",
                 }}
               >
-                <option value="" style={{ fontSize: '0.813rem' }}>Selecciona una lección</option>
+                <option value="" style={{ fontSize: "0.813rem" }}>
+                  Selecciona una lección
+                </option>
                 {lessons.map((lesson) => (
-                  <option key={lesson.id} value={lesson.id} title={lesson.title} style={{ fontSize: '0.813rem' }}>
+                  <option
+                    key={lesson.id}
+                    value={lesson.id}
+                    title={lesson.title}
+                    style={{ fontSize: "0.813rem" }}
+                  >
                     {lesson.title.length > 35 ? `${lesson.title.substring(0, 35)}...` : lesson.title}
                   </option>
                 ))}
@@ -206,7 +213,7 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
                       <button
                         type="button"
                         onClick={() => removeUrlField(index)}
-                        className="bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 rounded-lg px-3 transition-colors flex-shrink-0"
+                        className="bg-amber-600/20 cursor-pointer text-amber-400 hover:bg-amber-600/30 rounded-lg px-3 transition-colors flex-shrink-0"
                       >
                         <HiTrash className="text-base sm:text-lg" />
                       </button>
@@ -237,12 +244,8 @@ const AdditionalContentModal: React.FC<AdditionalContentModalProps> = ({
           </button>
           <button
             onClick={handleSubmit}
-            disabled={
-              !selectedLesson ||
-              isSubmitting ||
-              urls.every((url) => url.trim() === "")
-            }
-            className="px-4 sm:px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-font-light rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base order-1 sm:order-2"
+            disabled={!selectedLesson || isSubmitting || urls.every((url) => url.trim() === "")}
+            className="px-4 sm:px-6 py-2 bg-button/80 cursor-pointer hover:bg-button text-font-light rounded-lg hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base order-1 sm:order-2"
           >
             {isSubmitting ? "Agregando..." : "Agregar Contenido"}
           </button>

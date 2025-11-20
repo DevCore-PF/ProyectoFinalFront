@@ -116,15 +116,7 @@ const CoursesPage = ({ onViewDetail }: CoursesPageProps) => {
   };
 
   /* ============[ ESTILOS BADGE CATEGORY ]============= */
-  // const getCategoryBadge = (category: string) => {
-  //   const config = {
-  //     Backend: "bg-blue-400/10 text-blue-200 border-blue-500/20",
-  //     Frontend: "bg-purple-400/10 text-purple-300 border-purple-500/20",
-  //     FullStack: "bg-green-400/10 text-green-300 border-green-500/20",
-  //     DevOps: "bg-orange-400/10 text-orange-300 border-orange-500/20",
-  //   };
-  //   return config[category as keyof typeof config];
-  // };
+
 const getCategoryBadge = (category: string) => {
   const config = {
     "Backend": "bg-blue-400/10 text-blue-200 border-blue-500/20",

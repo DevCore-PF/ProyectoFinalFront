@@ -87,36 +87,35 @@ const AdminDashboard = () => {
     return labels[type];
   };
 
-
-
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto">
         {/* ============[ HEADER   ]============= */}
-        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 shadow-xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-       
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-font-light mb-1 sm:mb-2">
-                Panel de Gestión
-              </h1>
-              <p className="text-slate-400 text-sm sm:text-base mb-2 sm:mb-0">
-                Gestiona todos los aspectos de tu plataforma
-              </p>
+        {showBar && (
+          <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 shadow-xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-font-light mb-1 sm:mb-2">
+                  Panel de Gestión
+                </h1>
+                <p className="text-slate-400 text-sm sm:text-base mb-2 sm:mb-0">
+                  Gestiona todos los aspectos de tu plataforma
+                </p>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-slate-400 mt-2 text-xs sm:text-sm font-light">
-                <p className="truncate">{user?.email}</p>
-                <span className="inline-flex items-center w-fit text-amber-200 border border-amber-300 bg-amber-700/40 px-2 py-0.5 rounded-lg text-xs">
-                  {user?.role && `Administrador`}
-                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-slate-400 mt-2 text-xs sm:text-sm font-light">
+                  <p className="truncate">{user?.email}</p>
+                  <span className="inline-flex items-center w-fit text-amber-200 border border-amber-300 bg-amber-700/40 px-2 py-0.5 rounded-lg text-xs">
+                    {user?.role && `Administrador`}
+                  </span>
+                </div>
+              </div>
+
+              <div className="hidden sm:flex p-3 lg:p-4 bg-slate-700/30 rounded-xl shrink-0">
+                <HiShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-slate-300" />
               </div>
             </div>
-
-            <div className="hidden sm:flex p-3 lg:p-4 bg-slate-700/30 rounded-xl shrink-0">
-              <HiShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-slate-300" />
-            </div>
           </div>
-        </div>
+        )}
 
         {showBar && (
           <>
@@ -327,4 +326,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

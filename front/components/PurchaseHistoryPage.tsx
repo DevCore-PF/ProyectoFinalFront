@@ -134,7 +134,7 @@ const PurchaseHistoryPage = () => {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => router.push(user?.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard')}
+            onClick={() => router.push(user?.role === 'teacher' ? '/teacher-dashboard' : '/dashboard')}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 cursor-pointer"
           >
             <HiArrowLeft className="w-5 h-5" />

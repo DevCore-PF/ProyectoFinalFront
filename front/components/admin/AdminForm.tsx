@@ -38,7 +38,6 @@ const AdminForm = ({ onClose }: InviteAdminFormProps) => {
         if (token) {
           const data = await registerAdminSerivice(token, values);
         }
-        console.log("Invitando admin:", values);
         toastSuccess("Invitación enviada exitosamente!");
         formik.resetForm();
       } catch (error) {

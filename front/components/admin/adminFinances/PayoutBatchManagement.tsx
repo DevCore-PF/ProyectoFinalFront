@@ -189,12 +189,7 @@ export default function PayoutBatchManagement() {
 
                         {/* Status */}
                         <div className="flex flex-wrap items-center gap-2">
-                          {batch.salesCount > 0 && (
-                            <span className="text-slate-400 text-xs sm:text-sm">
-                              {batch.salesCount} curso
-                              {batch.salesCount > 1 ? "s" : ""}
-                            </span>
-                          )}
+                         
                           <span
                             className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border inline-flex items-center gap-1 ${
                               batch.status === "PAID"
@@ -209,6 +204,12 @@ export default function PayoutBatchManagement() {
                             )}
                             {batch.status === "PAID" ? "Pagado" : "Pendiente"}
                           </span>
+                           {batch.salesCount > 0 && (
+                            <span className="text-slate-400 text-xs sm:text-sm">
+                              {batch.salesCount} curso
+                              {batch.salesCount > 1 ? "s" : ""}
+                            </span>
+                          )}
                           {batch.status === "PAID" && batch.referenceNumber && (
                             <span className="text-slate-400 text-xs break-all">
                               Ref: {batch.referenceNumber}

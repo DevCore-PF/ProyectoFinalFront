@@ -159,7 +159,7 @@ const TeacherDashboardPage = () => {
           <div className="flex border-b border-slate-700/50 mb-6 overflow-x-auto">
             <button
               onClick={() => setActiveTab('created')}
-              className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
+              className={`px-3 sm:px-4 py-3 cursor-pointer text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
                 activeTab === 'created'
                   ? 'text-blue-400 border-blue-400'
                   : 'text-slate-400 border-transparent hover:text-slate-300'
@@ -173,7 +173,7 @@ const TeacherDashboardPage = () => {
             </button>
             <button
               onClick={() => setActiveTab('purchased')}
-              className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
+              className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium cursor-pointer transition-all duration-200 border-b-2 whitespace-nowrap ${
                 activeTab === 'purchased'
                   ? 'text-green-400 border-green-400'
                   : 'text-slate-400 border-transparent hover:text-slate-300'
@@ -234,7 +234,7 @@ const TeacherDashboardPage = () => {
                         onClick={() =>
                           router.push("/teacher-dashboard/create-course")
                         }
-                        className="px-6 py-3 bg-accent-medium hover:bg-accent-light text-font-light font-medium rounded-lg transition-all duration-200"
+                        className="px-6 py-3 bg-button/90 hover:button cursor-pointer text-font-light font-medium rounded-lg transition-all duration-200"
                       >
                         Crear mi primer curso
                       </button>

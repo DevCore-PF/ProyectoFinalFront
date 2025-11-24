@@ -16,10 +16,10 @@ const MembershipPlans = () => {
       {memberships.map((plan, index) => (
         <div
           key={index}
-          className={`relative bg-slate-800/40 backdrop-blur-sm border rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:transform hover:scale-[1.02] ${
+          className={`flex flex-col justify-between relative bg-slate-800/40 backdrop-blur-sm border rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:transform hover:scale-[1.02] ${
             plan.popular
-              ? "border-button/60 hover:border-button hover:shadow-2xl hover:shadow-button/20"
-              : "border-border-light/50 hover:border-border-light/70 hover:shadow-xl"
+              ? "  border-button/60 hover:border-button hover:shadow-2xl hover:shadow-button/20"
+              : "border-border-light/50 hover:border-border-light/70 hover:shadow-xl "
           }`}
           style={{
             transitionDelay: `${index * 50}ms`,
@@ -43,13 +43,9 @@ const MembershipPlans = () => {
           )}
 
           <div className="text-center mb-4 sm:mb-6">
-            <h3 className="text-font-light text-xl sm:text-2xl font-bold mb-2">
-              {plan.name}
-            </h3>
+            <h3 className="text-font-light text-xl sm:text-2xl font-bold mb-2">{plan.name}</h3>
             <div className="mb-2">
-              <span className="text-font-light text-3xl sm:text-4xl font-bold">
-                ${plan.price}
-              </span>
+              <span className="text-font-light text-3xl sm:text-4xl font-bold">${plan.price}</span>
               <span className="text-slate-300 text-sm sm:text-base">{plan.period}</span>
             </div>
             <span className="text-slate-400 text-xs sm:text-sm">{plan.duration}</span>
@@ -61,9 +57,7 @@ const MembershipPlans = () => {
                 <div className="mt-1">
                   <FaCheck className="text-accent-medium text-xs sm:text-sm" />
                 </div>
-                <span className="text-slate-200 text-xs sm:text-sm leading-relaxed">
-                  {feature}
-                </span>
+                <span className="text-slate-200 text-xs sm:text-sm leading-relaxed">{feature}</span>
               </div>
             ))}
           </div>

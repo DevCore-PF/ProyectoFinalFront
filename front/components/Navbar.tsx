@@ -28,7 +28,6 @@ export default function Navbar() {
                   height={500}
                   className="h-8 w-8"
                 />
-                <span className={`hidden lg:block font-logo`}>DevCore</span>
               </Link>
             </div>
 
@@ -133,7 +132,6 @@ export default function Navbar() {
                 height={500}
                 className="h-8 w-8"
               />
-              <span className="text-lg font-logo">DevCore</span>
             </Link>
 
             {/* Botón hamburguesa */}
